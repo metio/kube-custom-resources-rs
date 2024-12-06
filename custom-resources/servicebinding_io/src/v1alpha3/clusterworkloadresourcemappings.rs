@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ClusterWorkloadResourceMappingSpec defines the desired state of ClusterWorkloadResourceMapping
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "servicebinding.io",
-    version = "v1alpha3",
-    kind = "ClusterWorkloadResourceMapping",
-    plural = "clusterworkloadresourcemappings"
-)]
+#[kube(group = "servicebinding.io", version = "v1alpha3", kind = "ClusterWorkloadResourceMapping", plural = "clusterworkloadresourcemappings")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterWorkloadResourceMappingSpec {
     /// Versions is the collection of versions for a given resource, with mappings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,7 +37,7 @@ pub struct ClusterWorkloadResourceMappingVersions {
     pub volumes: Option<String>,
 }
 
-/// ClusterWorkloadResourceMappingContainer defines the mapping for a specific fragment of an workload resource to a Container-like structure.
+/// ClusterWorkloadResourceMappingContainer defines the mapping for a specific fragment of an workload resource to a Container-like structure. 
 ///  Each mapping defines exactly one path that may match multiple container-like fragments within the workload resource. For each object matching the path the name, env and volumeMounts expressions are resolved to find those structures.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterWorkloadResourceMappingVersionsContainers {
@@ -55,10 +50,7 @@ pub struct ClusterWorkloadResourceMappingVersionsContainers {
     /// Path is the JSONPath within the workload resource that matches an existing fragment that is container-like.
     pub path: String,
     /// VolumeMounts is a Restricted JSONPath that references the slice of volume mounts for the container with the container-like workload resource fragment. The referenced location is created if it does not exist. Defaults to `.volumeMounts`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<String>,
 }
+

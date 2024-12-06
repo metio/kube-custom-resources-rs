@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired behavior of AdminNetworkPolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "policy.networking.k8s.io",
-    version = "v1alpha1",
-    kind = "AdminNetworkPolicy",
-    plural = "adminnetworkpolicies"
-)]
+#[kube(group = "policy.networking.k8s.io", version = "v1alpha1", kind = "AdminNetworkPolicy", plural = "adminnetworkpolicies")]
 #[kube(status = "AdminNetworkPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AdminNetworkPolicySpec {
     /// Egress is the list of Egress rules to be applied to the selected pods.
     /// A total of 100 rules will be allowed in each ANP instance.
@@ -31,8 +26,8 @@ pub struct AdminNetworkPolicySpec {
     /// is written. Thus, a rule that appears at the top of the egress rules
     /// would take the highest precedence.
     /// ANPs with no egress rules do not affect egress traffic.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub egress: Option<Vec<AdminNetworkPolicyEgress>>,
@@ -43,8 +38,8 @@ pub struct AdminNetworkPolicySpec {
     /// is written. Thus, a rule that appears at the top of the ingress rules
     /// would take the highest precedence.
     /// ANPs with no ingress rules do not affect ingress traffic.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<Vec<AdminNetworkPolicyIngress>>,
@@ -56,14 +51,14 @@ pub struct AdminNetworkPolicySpec {
     /// policies with the same priority could both match a connection, then the
     /// implementation can apply any of the matching policies to the connection, and
     /// there is no way for the user to reliably determine which one it will choose.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub priority: i32,
     /// Subject defines the pods to which this AdminNetworkPolicy applies.
     /// Note that host-networked pods are not included in subject selection.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub subject: AdminNetworkPolicySubject,
 }
@@ -82,24 +77,24 @@ pub struct AdminNetworkPolicyEgress {
     /// then pass execution to any NetworkPolicies that select the pod.
     /// If the pod is not selected by any NetworkPolicies then execution
     /// is passed to any BaselineAdminNetworkPolicies that select the pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub action: AdminNetworkPolicyEgressAction,
     /// Name is an identifier for this rule, that may be no more than 100 characters
     /// in length. This field should be used by the implementation to help
     /// improve observability, readability and error-reporting for any applied
     /// AdminNetworkPolicies.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Ports allows for matching traffic based on port and protocols.
     /// This field is a list of destination ports for the outgoing egress traffic.
     /// If Ports is not set then the rule does not filter traffic via port.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<AdminNetworkPolicyEgressPorts>>,
@@ -107,8 +102,8 @@ pub struct AdminNetworkPolicyEgress {
     /// If any AdminNetworkPolicyEgressPeer matches the destination of outgoing
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub to: Vec<AdminNetworkPolicyEgressTo>,
 }
@@ -129,67 +124,63 @@ pub enum AdminNetworkPolicyEgressAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressPorts {
     /// Port selects a port on a pod(s) based on number.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNumber")]
     pub port_number: Option<AdminNetworkPolicyEgressPortsPortNumber>,
     /// PortRange selects a port range on a pod(s) based on provided start and end
     /// values.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portRange")]
     pub port_range: Option<AdminNetworkPolicyEgressPortsPortRange>,
 }
 
 /// Port selects a port on a pod(s) based on number.
-///
-///
+/// 
+/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressPortsPortNumber {
     /// Number defines a network port value.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub port: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub protocol: String,
 }
 
 /// PortRange selects a port range on a pod(s) based on provided start and end
 /// values.
-///
-///
+/// 
+/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressPortsPortRange {
     /// End defines a network port that is the end of a port range, the End value
     /// must be greater than Start.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub end: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
     /// Start defines a network port that is the start of a port range, the Start
     /// value must be less than End.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub start: i32,
 }
@@ -202,16 +193,16 @@ pub struct AdminNetworkPolicyEgressPortsPortRange {
 pub struct AdminNetworkPolicyEgressTo {
     /// Namespaces defines a way to select all pods within a set of Namespaces.
     /// Note that host-networked pods are not included in this type of peer.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<AdminNetworkPolicyEgressToNamespaces>,
     /// Pods defines a way to select a set of pods in
     /// a set of namespaces. Note that host-networked pods
     /// are not included in this type of peer.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<AdminNetworkPolicyEgressToPods>,
@@ -219,26 +210,18 @@ pub struct AdminNetworkPolicyEgressTo {
 
 /// Namespaces defines a way to select all pods within a set of Namespaces.
 /// Note that host-networked pods are not included in this type of peer.
-///
-///
+/// 
+/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressToNamespaces {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AdminNetworkPolicyEgressToNamespacesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -262,8 +245,8 @@ pub struct AdminNetworkPolicyEgressToNamespacesMatchExpressions {
 /// Pods defines a way to select a set of pods in
 /// a set of namespaces. Note that host-networked pods
 /// are not included in this type of peer.
-///
-///
+/// 
+/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressToPods {
@@ -282,21 +265,12 @@ pub struct AdminNetworkPolicyEgressToPods {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressToPodsNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<AdminNetworkPolicyEgressToPodsNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<AdminNetworkPolicyEgressToPodsNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -322,20 +296,12 @@ pub struct AdminNetworkPolicyEgressToPodsNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressToPodsPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AdminNetworkPolicyEgressToPodsPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -369,24 +335,24 @@ pub struct AdminNetworkPolicyIngress {
     /// then pass execution to any NetworkPolicies that select the pod.
     /// If the pod is not selected by any NetworkPolicies then execution
     /// is passed to any BaselineAdminNetworkPolicies that select the pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub action: AdminNetworkPolicyIngressAction,
     /// From is the list of sources whose traffic this rule applies to.
     /// If any AdminNetworkPolicyIngressPeer matches the source of incoming
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub from: Vec<AdminNetworkPolicyIngressFrom>,
     /// Name is an identifier for this rule, that may be no more than 100 characters
     /// in length. This field should be used by the implementation to help
     /// improve observability, readability and error-reporting for any applied
     /// AdminNetworkPolicies.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -395,8 +361,8 @@ pub struct AdminNetworkPolicyIngress {
     /// the pods selected for this policy i.e the subject of the policy.
     /// So it matches on the destination port for the ingress traffic.
     /// If Ports is not set then the rule does not filter traffic via port.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<AdminNetworkPolicyIngressPorts>>,
@@ -420,16 +386,16 @@ pub enum AdminNetworkPolicyIngressAction {
 pub struct AdminNetworkPolicyIngressFrom {
     /// Namespaces defines a way to select all pods within a set of Namespaces.
     /// Note that host-networked pods are not included in this type of peer.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<AdminNetworkPolicyIngressFromNamespaces>,
     /// Pods defines a way to select a set of pods in
     /// a set of namespaces. Note that host-networked pods
     /// are not included in this type of peer.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<AdminNetworkPolicyIngressFromPods>,
@@ -437,26 +403,18 @@ pub struct AdminNetworkPolicyIngressFrom {
 
 /// Namespaces defines a way to select all pods within a set of Namespaces.
 /// Note that host-networked pods are not included in this type of peer.
-///
-///
+/// 
+/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressFromNamespaces {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AdminNetworkPolicyIngressFromNamespacesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -480,8 +438,8 @@ pub struct AdminNetworkPolicyIngressFromNamespacesMatchExpressions {
 /// Pods defines a way to select a set of pods in
 /// a set of namespaces. Note that host-networked pods
 /// are not included in this type of peer.
-///
-///
+/// 
+/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressFromPods {
@@ -500,21 +458,12 @@ pub struct AdminNetworkPolicyIngressFromPods {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressFromPodsNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<AdminNetworkPolicyIngressFromPodsNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<AdminNetworkPolicyIngressFromPodsNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -540,21 +489,12 @@ pub struct AdminNetworkPolicyIngressFromPodsNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressFromPodsPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<AdminNetworkPolicyIngressFromPodsPodSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<AdminNetworkPolicyIngressFromPodsPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -580,75 +520,71 @@ pub struct AdminNetworkPolicyIngressFromPodsPodSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressPorts {
     /// Port selects a port on a pod(s) based on number.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNumber")]
     pub port_number: Option<AdminNetworkPolicyIngressPortsPortNumber>,
     /// PortRange selects a port range on a pod(s) based on provided start and end
     /// values.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portRange")]
     pub port_range: Option<AdminNetworkPolicyIngressPortsPortRange>,
 }
 
 /// Port selects a port on a pod(s) based on number.
-///
-///
+/// 
+/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressPortsPortNumber {
     /// Number defines a network port value.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub port: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub protocol: String,
 }
 
 /// PortRange selects a port range on a pod(s) based on provided start and end
 /// values.
-///
-///
+/// 
+/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressPortsPortRange {
     /// End defines a network port that is the end of a port range, the End value
     /// must be greater than Start.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub end: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
     /// Start defines a network port that is the start of a port range, the Start
     /// value must be less than End.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     pub start: i32,
 }
 
 /// Subject defines the pods to which this AdminNetworkPolicy applies.
 /// Note that host-networked pods are not included in subject selection.
-///
-///
+/// 
+/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicySubject {
@@ -664,20 +600,12 @@ pub struct AdminNetworkPolicySubject {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicySubjectNamespaces {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AdminNetworkPolicySubjectNamespacesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -716,21 +644,12 @@ pub struct AdminNetworkPolicySubjectPods {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicySubjectPodsNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<AdminNetworkPolicySubjectPodsNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<AdminNetworkPolicySubjectPodsNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -756,20 +675,12 @@ pub struct AdminNetworkPolicySubjectPodsNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicySubjectPodsPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AdminNetworkPolicySubjectPodsPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -795,3 +706,4 @@ pub struct AdminNetworkPolicySubjectPodsPodSelectorMatchExpressions {
 pub struct AdminNetworkPolicyStatus {
     pub conditions: Vec<Condition>,
 }
+

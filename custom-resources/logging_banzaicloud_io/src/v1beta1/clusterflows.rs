@@ -5,53 +5,32 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "logging.banzaicloud.io",
-    version = "v1beta1",
-    kind = "ClusterFlow",
-    plural = "clusterflows"
-)]
+#[kube(group = "logging.banzaicloud.io", version = "v1beta1", kind = "ClusterFlow", plural = "clusterflows")]
 #[kube(namespaced)]
 #[kube(status = "ClusterFlowStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterFlowSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<ClusterFlowFilters>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flowLabel")]
     pub flow_label: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalOutputRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalOutputRefs")]
     pub global_output_refs: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeLabelInRouter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeLabelInRouter")]
     pub include_label_in_router: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loggingRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingRef")]
     pub logging_ref: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<Vec<ClusterFlowMatch>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputRefs")]
     pub output_refs: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selectors: Option<BTreeMap<String, String>>,
@@ -63,19 +42,11 @@ pub struct ClusterFlowFilters {
     pub concat: Option<ClusterFlowFiltersConcat>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dedot: Option<ClusterFlowFiltersDedot>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "detectExceptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "detectExceptions")]
     pub detect_exceptions: Option<ClusterFlowFiltersDetectExceptions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub elasticsearch_genid: Option<ClusterFlowFiltersElasticsearchGenid>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enhanceK8s"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enhanceK8s")]
     pub enhance_k8s: Option<ClusterFlowFiltersEnhanceK8s>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub geoip: Option<ClusterFlowFiltersGeoip>,
@@ -245,11 +216,7 @@ pub struct ClusterFlowFiltersEnhanceK8sCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersEnhanceK8sCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterFlowFiltersEnhanceK8sCaFileMountFromSecretKeyRef>,
 }
 
@@ -264,11 +231,7 @@ pub struct ClusterFlowFiltersEnhanceK8sCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersEnhanceK8sCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterFlowFiltersEnhanceK8sCaFileValueFromSecretKeyRef>,
 }
 
@@ -293,11 +256,7 @@ pub struct ClusterFlowFiltersEnhanceK8sClientCert {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersEnhanceK8sClientCertMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterFlowFiltersEnhanceK8sClientCertMountFromSecretKeyRef>,
 }
 
@@ -312,11 +271,7 @@ pub struct ClusterFlowFiltersEnhanceK8sClientCertMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersEnhanceK8sClientCertValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterFlowFiltersEnhanceK8sClientCertValueFromSecretKeyRef>,
 }
 
@@ -341,11 +296,7 @@ pub struct ClusterFlowFiltersEnhanceK8sClientKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersEnhanceK8sClientKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterFlowFiltersEnhanceK8sClientKeyMountFromSecretKeyRef>,
 }
 
@@ -360,11 +311,7 @@ pub struct ClusterFlowFiltersEnhanceK8sClientKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersEnhanceK8sClientKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterFlowFiltersEnhanceK8sClientKeyValueFromSecretKeyRef>,
 }
 
@@ -559,11 +506,7 @@ pub struct ClusterFlowFiltersParserParseCustomPatternPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersParserParseCustomPatternPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterFlowFiltersParserParseCustomPatternPathMountFromSecretKeyRef>,
 }
 
@@ -578,11 +521,7 @@ pub struct ClusterFlowFiltersParserParseCustomPatternPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersParserParseCustomPatternPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterFlowFiltersParserParseCustomPatternPathValueFromSecretKeyRef>,
 }
 
@@ -666,13 +605,8 @@ pub struct ClusterFlowFiltersParserParsePatternsCustomPatternPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersParserParsePatternsCustomPatternPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterFlowFiltersParserParsePatternsCustomPatternPathMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterFlowFiltersParserParsePatternsCustomPatternPathMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -686,13 +620,8 @@ pub struct ClusterFlowFiltersParserParsePatternsCustomPatternPathMountFromSecret
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersParserParsePatternsCustomPatternPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterFlowFiltersParserParsePatternsCustomPatternPathValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterFlowFiltersParserParsePatternsCustomPatternPathValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -789,13 +718,8 @@ pub struct ClusterFlowFiltersParserParsersCustomPatternPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersParserParsersCustomPatternPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterFlowFiltersParserParsersCustomPatternPathMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterFlowFiltersParserParsersCustomPatternPathMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -809,13 +733,8 @@ pub struct ClusterFlowFiltersParserParsersCustomPatternPathMountFromSecretKeyRef
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersParserParsersCustomPatternPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterFlowFiltersParserParsersCustomPatternPathValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterFlowFiltersParserParsersCustomPatternPathValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -898,13 +817,8 @@ pub struct ClusterFlowFiltersParserParsersPatternsCustomPatternPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersParserParsersPatternsCustomPatternPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterFlowFiltersParserParsersPatternsCustomPatternPathMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterFlowFiltersParserParsersPatternsCustomPatternPathMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -918,13 +832,8 @@ pub struct ClusterFlowFiltersParserParsersPatternsCustomPatternPathMountFromSecr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFlowFiltersParserParsersPatternsCustomPatternPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterFlowFiltersParserParsersPatternsCustomPatternPathValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterFlowFiltersParserParsersPatternsCustomPatternPathValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1154,10 +1063,7 @@ pub struct ClusterFlowStatus {
     pub active: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub problems: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "problemsCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "problemsCount")]
     pub problems_count: Option<i64>,
 }
+

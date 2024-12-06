@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec defines the desired state of GCPGatewayPolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "networking.gke.io",
-    version = "v1",
-    kind = "GCPGatewayPolicy",
-    plural = "gcpgatewaypolicies"
-)]
+#[kube(group = "networking.gke.io", version = "v1", kind = "GCPGatewayPolicy", plural = "gcpgatewaypolicies")]
 #[kube(namespaced)]
 #[kube(status = "GCPGatewayPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GCPGatewayPolicySpec {
     /// Default defines default gateway policy configuration for the targeted resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -35,11 +30,7 @@ pub struct GCPGatewayPolicySpec {
 /// Default defines default gateway policy configuration for the targeted resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GCPGatewayPolicyDefault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowGlobalAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowGlobalAccess")]
     pub allow_global_access: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslPolicy")]
     pub ssl_policy: Option<String>,
@@ -66,3 +57,4 @@ pub struct GCPGatewayPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

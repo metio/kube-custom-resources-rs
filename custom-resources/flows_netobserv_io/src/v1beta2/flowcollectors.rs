@@ -4,11 +4,11 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -19,36 +19,23 @@ use self::prelude::*;
 /// and accepted without a formal agreement for maintenance. The product maintainers might provide some support
 /// for these features as a best effort only.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "flows.netobserv.io",
-    version = "v1beta2",
-    kind = "FlowCollector",
-    plural = "flowcollectors"
-)]
+#[kube(group = "flows.netobserv.io", version = "v1beta2", kind = "FlowCollector", plural = "flowcollectors")]
 #[kube(status = "FlowCollectorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FlowCollectorSpec {
     /// Agent configuration for flows extraction.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agent: Option<FlowCollectorAgent>,
     /// `consolePlugin` defines the settings related to the OpenShift Console plugin, when available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consolePlugin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolePlugin")]
     pub console_plugin: Option<FlowCollectorConsolePlugin>,
     /// `deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br>
     /// - `Direct` (default) to make the flow processor listen directly from the agents.<br>
     /// - `Kafka` to make flows sent to a Kafka pipeline before consumption by the processor.<br>
     /// Kafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentModel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentModel")]
     pub deployment_model: Option<FlowCollectorDeploymentModel>,
     /// `exporters` define additional optional exporters for custom consumption or storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -63,11 +50,7 @@ pub struct FlowCollectorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// `networkPolicy` defines ingress network policy settings for NetObserv components isolation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicy")]
     pub network_policy: Option<FlowCollectorNetworkPolicy>,
     /// `processor` defines the settings of the component that receives the flows from the agent,
     /// enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
@@ -107,29 +90,17 @@ pub struct FlowCollectorAgentEbpf {
     /// `cacheActiveTimeout` is the max period during which the reporter aggregates flows before sending.
     /// Increasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load,
     /// however you can expect higher memory consumption and an increased latency in the flow collection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheActiveTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheActiveTimeout")]
     pub cache_active_timeout: Option<String>,
     /// `cacheMaxFlows` is the max number of flows in an aggregate; when reached, the reporter sends the flows.
     /// Increasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load,
     /// however you can expect higher memory consumption and an increased latency in the flow collection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheMaxFlows"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheMaxFlows")]
     pub cache_max_flows: Option<i32>,
     /// `excludeInterfaces` contains the interface names that are excluded from flow tracing.
     /// An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression.
     /// Otherwise it is matched as a case-sensitive string.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeInterfaces")]
     pub exclude_interfaces: Option<Vec<String>>,
     /// List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>
     /// - `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting
@@ -144,18 +115,10 @@ pub struct FlowCollectorAgentEbpf {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flowFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flowFilter")]
     pub flow_filter: Option<FlowCollectorAgentEbpfFlowFilter>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorAgentEbpfImagePullPolicy>,
     /// `interfaces` contains the interface names from where flows are collected. If empty, the agent
     /// fetches all the interfaces in the system, excepting the ones listed in `excludeInterfaces`.
@@ -164,11 +127,7 @@ pub struct FlowCollectorAgentEbpf {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interfaces: Option<Vec<String>>,
     /// `kafkaBatchSize` limits the maximum size of a request in bytes before being sent to a partition. Ignored when not using Kafka. Default: 1MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafkaBatchSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaBatchSize")]
     pub kafka_batch_size: Option<i64>,
     /// `logLevel` defines the log level for the NetObserv eBPF Agent
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -216,19 +175,11 @@ pub struct FlowCollectorAgentEbpfAdvancedScheduling {
     pub affinity: Option<FlowCollectorAgentEbpfAdvancedSchedulingAffinity>,
     /// `nodeSelector` allows scheduling of pods only onto nodes that have each of the specified labels.
     /// For documentation, refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, indicates the pod's priority. For documentation, refer to https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#how-to-use-priority-and-preemption.
     /// If not specified, default priority is used, or zero if there is no default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// `tolerations` is a list of tolerations that allow the pod to schedule onto nodes with matching taints.
     /// For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
@@ -240,25 +191,13 @@ pub struct FlowCollectorAgentEbpfAdvancedScheduling {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinity>,
 }
 
@@ -309,8 +248,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityPreferred
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -328,8 +266,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityPreferred
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -372,8 +309,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityRequiredD
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -391,8 +327,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityRequiredD
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -511,8 +446,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityPreferredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -546,8 +480,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityPreferredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -634,8 +567,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityRequiredDu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -669,8 +601,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityRequiredDu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -788,8 +719,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -823,8 +753,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -911,8 +840,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -946,8 +874,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorAgentEbpfAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -983,11 +910,7 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1043,11 +966,7 @@ pub struct FlowCollectorAgentEbpfFlowFilter {
     /// To filter a single port, set a single port as an integer value. For example, `sourcePorts: 80`.
     /// To filter a range of ports, use a "start-end" range in string format. For example, `sourcePorts: "80-100"`.
     /// To filter two ports, use a "port1,port2" in string format. For example, `ports: "80,100"`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourcePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourcePorts")]
     pub source_ports: Option<IntOrString>,
     /// `tcpFlags` defines the TCP flags to filter flows by.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpFlags")]
@@ -1143,11 +1062,7 @@ pub struct FlowCollectorAgentEbpfMetrics {
     /// `disableAlerts` is a list of alerts that should be disabled.
     /// Possible values are:<br>
     /// `NetObservDroppedFlows`, which is triggered when the eBPF agent is missing packets or flows, such as when the BPF hashmap is busy or full, or the capacity limiter is being triggered.<br>
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableAlerts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAlerts")]
     pub disable_alerts: Option<Vec<String>>,
     /// Set `enable` to `false` to disable eBPF agent metrics collection. It is enabled by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1173,21 +1088,13 @@ pub struct FlowCollectorAgentEbpfMetricsServer {
 pub struct FlowCollectorAgentEbpfMetricsServerTls {
     /// `insecureSkipVerify` allows skipping client-side verification of the provided certificate.
     /// If set to `true`, the `providedCaFile` field is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// TLS configuration when `type` is set to `Provided`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provided: Option<FlowCollectorAgentEbpfMetricsServerTlsProvided>,
     /// Reference to the CA file when `type` is set to `Provided`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providedCaFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providedCaFile")]
     pub provided_ca_file: Option<FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFile>,
     /// Select the type of TLS configuration:<br>
     /// - `Disabled` (default) to not configure TLS for the endpoint.
@@ -1268,10 +1175,10 @@ pub enum FlowCollectorAgentEbpfMetricsServerTlsType {
 pub struct FlowCollectorAgentEbpfResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<FlowCollectorAgentEbpfResourcesClaims>>,
@@ -1306,42 +1213,22 @@ pub struct FlowCollectorAgentEbpfResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentIpfix {
     /// `cacheActiveTimeout` is the max period during which the reporter aggregates flows before sending.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheActiveTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheActiveTimeout")]
     pub cache_active_timeout: Option<String>,
     /// `cacheMaxFlows` is the max number of flows in an aggregate; when reached, the reporter sends the flows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheMaxFlows"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheMaxFlows")]
     pub cache_max_flows: Option<i32>,
     /// `clusterNetworkOperator` defines the settings related to the OpenShift Cluster Network Operator, when available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNetworkOperator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetworkOperator")]
     pub cluster_network_operator: Option<FlowCollectorAgentIpfixClusterNetworkOperator>,
     /// `forceSampleAll` allows disabling sampling in the IPFIX-based flow reporter.
     /// It is not recommended to sample all the traffic with IPFIX, as it might generate cluster instability.
     /// If you REALLY want to do that, set this flag to `true`. Use at your own risk.
     /// When it is set to `true`, the value of `sampling` is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forceSampleAll"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceSampleAll")]
     pub force_sample_all: Option<bool>,
     /// `ovnKubernetes` defines the settings of the OVN-Kubernetes network plugin, when available. This configuration is used when using OVN's IPFIX exports, without OpenShift. When using OpenShift, refer to the `clusterNetworkOperator` property instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ovnKubernetes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ovnKubernetes")]
     pub ovn_kubernetes: Option<FlowCollectorAgentIpfixOvnKubernetes>,
     /// `sampling` is the sampling rate on the reporter. 100 means one flow on 100 is sent.
     /// To ensure cluster stability, it is not possible to set a value below 2.
@@ -1363,18 +1250,10 @@ pub struct FlowCollectorAgentIpfixClusterNetworkOperator {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentIpfixOvnKubernetes {
     /// `containerName` defines the name of the container to configure for IPFIX.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// `daemonSetName` defines the name of the DaemonSet controlling the OVN-Kubernetes pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "daemonSetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "daemonSetName")]
     pub daemon_set_name: Option<String>,
     /// Namespace where OVN-Kubernetes pods are deployed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1405,28 +1284,16 @@ pub struct FlowCollectorConsolePlugin {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorConsolePluginImagePullPolicy>,
     /// `logLevel` for the console plugin backend
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorConsolePluginLogLevel>,
     /// `portNaming` defines the configuration of the port-to-service name translation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portNaming"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNaming")]
     pub port_naming: Option<FlowCollectorConsolePluginPortNaming>,
     /// `quickFilters` configures quick filter presets for the Console plugin
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "quickFilters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "quickFilters")]
     pub quick_filters: Option<Vec<FlowCollectorConsolePluginQuickFilters>>,
     /// `replicas` defines the number of replicas (pods) to start.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1475,19 +1342,11 @@ pub struct FlowCollectorConsolePluginAdvancedScheduling {
     pub affinity: Option<FlowCollectorConsolePluginAdvancedSchedulingAffinity>,
     /// `nodeSelector` allows scheduling of pods only onto nodes that have each of the specified labels.
     /// For documentation, refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, indicates the pod's priority. For documentation, refer to https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#how-to-use-priority-and-preemption.
     /// If not specified, default priority is used, or zero if there is no default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// `tolerations` is a list of tolerations that allow the pod to schedule onto nodes with matching taints.
     /// For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
@@ -1499,27 +1358,14 @@ pub struct FlowCollectorConsolePluginAdvancedScheduling {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -1569,8 +1415,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityPrefe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1588,8 +1433,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityPrefe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1632,8 +1476,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityRequi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1651,8 +1494,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityRequi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1771,8 +1613,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1806,8 +1647,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1894,8 +1734,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1929,8 +1768,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2048,8 +1886,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityPr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2083,8 +1920,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityPr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2171,8 +2007,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityRe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2206,8 +2041,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityRe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorConsolePluginAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2243,11 +2077,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2259,11 +2089,7 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscaler {
     /// `maxReplicas` is the upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicas")]
     pub max_replicas: Option<i32>,
     /// Metrics used by the pod autoscaler. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2273,11 +2099,7 @@ pub struct FlowCollectorConsolePluginAutoscaler {
     /// alpha feature gate HPAScaleToZero is enabled and at least one Object or External
     /// metric is configured. Scaling is active as long as at least one metric value is
     /// available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
     /// `status` describes the desired status regarding deploying an horizontal pod autoscaler.<br>
     /// - `Disabled` does not deploy an horizontal pod autoscaler.<br>
@@ -2288,11 +2110,7 @@ pub struct FlowCollectorConsolePluginAutoscaler {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscalerMetrics {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerResource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResource")]
     pub container_resource: Option<FlowCollectorConsolePluginAutoscalerMetricsContainerResource>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub external: Option<FlowCollectorConsolePluginAutoscalerMetricsExternal>,
@@ -2315,17 +2133,9 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsContainerResource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscalerMetricsContainerResourceTarget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -2348,19 +2158,9 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsExternalMetric {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscalerMetricsExternalMetricSelector {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<FlowCollectorConsolePluginAutoscalerMetricsExternalMetricSelectorMatchExpressions>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<FlowCollectorConsolePluginAutoscalerMetricsExternalMetricSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2374,17 +2174,9 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsExternalMetricSelectorMatc
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscalerMetricsExternalTarget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -2402,11 +2194,7 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsObject {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscalerMetricsObjectDescribedObject {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     pub kind: String,
     pub name: String,
@@ -2421,19 +2209,9 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsObjectMetric {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscalerMetricsObjectMetricSelector {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<FlowCollectorConsolePluginAutoscalerMetricsObjectMetricSelectorMatchExpressions>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<FlowCollectorConsolePluginAutoscalerMetricsObjectMetricSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2447,17 +2225,9 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsObjectMetricSelectorMatchE
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscalerMetricsObjectTarget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -2480,18 +2250,9 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsPodsMetric {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscalerMetricsPodsMetricSelector {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<FlowCollectorConsolePluginAutoscalerMetricsPodsMetricSelectorMatchExpressions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<FlowCollectorConsolePluginAutoscalerMetricsPodsMetricSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2505,17 +2266,9 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsPodsMetricSelectorMatchExp
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscalerMetricsPodsTarget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -2531,17 +2284,9 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsResource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscalerMetricsResourceTarget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -2614,10 +2359,10 @@ pub struct FlowCollectorConsolePluginQuickFilters {
 pub struct FlowCollectorConsolePluginResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<FlowCollectorConsolePluginResourcesClaims>>,
@@ -2669,11 +2414,7 @@ pub struct FlowCollectorExporters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<FlowCollectorExportersKafka>,
     /// OpenTelemetry configuration, such as the IP address and port to send enriched logs or metrics to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openTelemetry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
     pub open_telemetry: Option<FlowCollectorExportersOpenTelemetry>,
     /// `type` selects the type of exporters. The available options are `Kafka` and `IPFIX`.
     #[serde(rename = "type")]
@@ -2722,18 +2463,10 @@ pub struct FlowCollectorExportersKafka {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersKafkaSasl {
     /// Reference to the secret or config map containing the client ID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientIDReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientIDReference")]
     pub client_id_reference: Option<FlowCollectorExportersKafkaSaslClientIdReference>,
     /// Reference to the secret or config map containing the client secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecretReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecretReference")]
     pub client_secret_reference: Option<FlowCollectorExportersKafkaSaslClientSecretReference>,
     /// Type of SASL authentication to use, or `Disabled` if SASL is not used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -2814,11 +2547,7 @@ pub struct FlowCollectorExportersKafkaTls {
     pub enable: Option<bool>,
     /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
     /// If set to `true`, the `caCert` field is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
@@ -2891,11 +2620,7 @@ pub struct FlowCollectorExportersOpenTelemetry {
     /// Custom fields mapping to an OpenTelemetry conformant format.
     /// By default, NetObserv format proposal is used: https://github.com/rhobs/observability-data-model/blob/main/network-observability.md#format-proposal .
     /// As there is currently no accepted standard for L3 or L4 enriched network logs, you can freely override it with your own.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldsMapping"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldsMapping")]
     pub fields_mapping: Option<Vec<FlowCollectorExportersOpenTelemetryFieldsMapping>>,
     /// Headers to add to messages (optional)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2945,11 +2670,7 @@ pub struct FlowCollectorExportersOpenTelemetryMetrics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// Specify how often metrics are sent to a collector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pushTimeInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pushTimeInterval")]
     pub push_time_interval: Option<String>,
 }
 
@@ -2973,11 +2694,7 @@ pub struct FlowCollectorExportersOpenTelemetryTls {
     pub enable: Option<bool>,
     /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
     /// If set to `true`, the `caCert` field is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
@@ -3072,18 +2789,10 @@ pub struct FlowCollectorKafka {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorKafkaSasl {
     /// Reference to the secret or config map containing the client ID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientIDReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientIDReference")]
     pub client_id_reference: Option<FlowCollectorKafkaSaslClientIdReference>,
     /// Reference to the secret or config map containing the client secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecretReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecretReference")]
     pub client_secret_reference: Option<FlowCollectorKafkaSaslClientSecretReference>,
     /// Type of SASL authentication to use, or `Disabled` if SASL is not used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -3164,11 +2873,7 @@ pub struct FlowCollectorKafkaTls {
     pub enable: Option<bool>,
     /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
     /// If set to `true`, the `caCert` field is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
@@ -3276,33 +2981,17 @@ pub struct FlowCollectorLoki {
     pub monolithic: Option<FlowCollectorLokiMonolithic>,
     /// `readTimeout` is the maximum console plugin loki query total time limit.
     /// A timeout of zero means no timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeout")]
     pub read_timeout: Option<String>,
     /// `writeBatchSize` is the maximum batch size (in bytes) of Loki logs to accumulate before sending.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeBatchSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBatchSize")]
     pub write_batch_size: Option<i64>,
     /// `writeBatchWait` is the maximum time to wait before sending a Loki batch.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeBatchWait"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBatchWait")]
     pub write_batch_wait: Option<String>,
     /// `writeTimeout` is the maximum Loki time connection / request limit.
     /// A timeout of zero means no timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeTimeout")]
     pub write_timeout: Option<String>,
 }
 
@@ -3311,32 +3000,16 @@ pub struct FlowCollectorLoki {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiAdvanced {
     /// `staticLabels` is a map of common labels to set on each flow in Loki storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticLabels")]
     pub static_labels: Option<BTreeMap<String, String>>,
     /// `writeMaxBackoff` is the maximum backoff time for Loki client connection between retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeMaxBackoff"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeMaxBackoff")]
     pub write_max_backoff: Option<String>,
     /// `writeMaxRetries` is the maximum number of retries for Loki client connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeMaxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeMaxRetries")]
     pub write_max_retries: Option<i32>,
     /// `writeMinBackoff` is the initial backoff time for Loki client connection between retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeMinBackoff"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeMinBackoff")]
     pub write_min_backoff: Option<String>,
 }
 
@@ -3365,20 +3038,12 @@ pub struct FlowCollectorLokiManual {
     /// `ingesterUrl` is the address of an existing Loki ingester service to push the flows to. When using the Loki Operator,
     /// set it to the Loki gateway service with the `network` tenant set in path, for example
     /// https://loki-gateway-http.netobserv.svc:8080/api/logs/v1/network.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingesterUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingesterUrl")]
     pub ingester_url: Option<String>,
     /// `querierUrl` specifies the address of the Loki querier service.
     /// When using the Loki Operator, set it to the Loki gateway service with the `network` tenant set in path, for example
     /// https://loki-gateway-http.netobserv.svc:8080/api/logs/v1/network.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "querierUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "querierUrl")]
     pub querier_url: Option<String>,
     /// TLS client configuration for Loki status URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusTls")]
@@ -3420,11 +3085,7 @@ pub struct FlowCollectorLokiManualStatusTls {
     pub enable: Option<bool>,
     /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
     /// If set to `true`, the `caCert` field is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
@@ -3502,11 +3163,7 @@ pub struct FlowCollectorLokiManualTls {
     pub enable: Option<bool>,
     /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
     /// If set to `true`, the `caCert` field is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
@@ -3579,18 +3236,10 @@ pub enum FlowCollectorLokiManualTlsUserCertType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMicroservices {
     /// `ingesterUrl` is the address of an existing Loki ingester service to push the flows to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingesterUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingesterUrl")]
     pub ingester_url: Option<String>,
     /// `querierURL` specifies the address of the Loki querier service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "querierUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "querierUrl")]
     pub querier_url: Option<String>,
     /// `tenantID` is the Loki `X-Scope-OrgID` header that identifies the tenant for each request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
@@ -3611,11 +3260,7 @@ pub struct FlowCollectorLokiMicroservicesTls {
     pub enable: Option<bool>,
     /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
     /// If set to `true`, the `caCert` field is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
@@ -3718,11 +3363,7 @@ pub struct FlowCollectorLokiMonolithicTls {
     pub enable: Option<bool>,
     /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
     /// If set to `true`, the `caCert` field is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
@@ -3795,11 +3436,7 @@ pub struct FlowCollectorNetworkPolicy {
     /// `additionalNamespaces` contains additional namespaces allowed to connect to the NetObserv namespace.
     /// It provides flexibility in the network policy configuration, but if you need a more specific
     /// configuration, you can disable it and install your own instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalNamespaces")]
     pub additional_namespaces: Option<Vec<String>>,
     /// Set `enable` to `true` to deploy network policies on the namespaces used by NetObserv (main and privileged). It is disabled by default.
     /// These network policies better isolate the NetObserv components to prevent undesired connections to them.
@@ -3822,48 +3459,24 @@ pub struct FlowCollectorProcessor {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub advanced: Option<FlowCollectorProcessorAdvanced>,
     /// `clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorProcessorImagePullPolicy>,
     /// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
     /// This setting is ignored when Kafka is disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafkaConsumerAutoscaler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaConsumerAutoscaler")]
     pub kafka_consumer_autoscaler: Option<FlowCollectorProcessorKafkaConsumerAutoscaler>,
     /// `kafkaConsumerBatchSize` indicates to the broker the maximum batch size, in bytes, that the consumer accepts. Ignored when not using Kafka. Default: 10MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafkaConsumerBatchSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaConsumerBatchSize")]
     pub kafka_consumer_batch_size: Option<i64>,
     /// `kafkaConsumerQueueCapacity` defines the capacity of the internal message queue used in the Kafka consumer client. Ignored when not using Kafka.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafkaConsumerQueueCapacity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaConsumerQueueCapacity")]
     pub kafka_consumer_queue_capacity: Option<i64>,
     /// `kafkaConsumerReplicas` defines the number of replicas (pods) to start for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
     /// This setting is ignored when Kafka is disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafkaConsumerReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaConsumerReplicas")]
     pub kafka_consumer_replicas: Option<i32>,
     /// `logLevel` of the processor runtime
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -3879,11 +3492,7 @@ pub struct FlowCollectorProcessor {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<FlowCollectorProcessorMetrics>,
     /// Set `multiClusterDeployment` to `true` to enable multi clusters feature. This adds `clusterName` label to flows data
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiClusterDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiClusterDeployment")]
     pub multi_cluster_deployment: Option<bool>,
     /// `resources` are the compute resources required by this container.
     /// For more information, see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -3891,11 +3500,7 @@ pub struct FlowCollectorProcessor {
     pub resources: Option<FlowCollectorProcessorResources>,
     /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic.
     /// When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetLabels")]
     pub subnet_labels: Option<FlowCollectorProcessorSubnetLabels>,
 }
 
@@ -3906,39 +3511,19 @@ pub struct FlowCollectorProcessor {
 pub struct FlowCollectorProcessorAdvanced {
     /// `conversationEndTimeout` is the time to wait after a network flow is received, to consider the conversation ended.
     /// This delay is ignored when a FIN packet is collected for TCP flows (see `conversationTerminatingTimeout` instead).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conversationEndTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationEndTimeout")]
     pub conversation_end_timeout: Option<String>,
     /// `conversationHeartbeatInterval` is the time to wait between "tick" events of a conversation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conversationHeartbeatInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationHeartbeatInterval")]
     pub conversation_heartbeat_interval: Option<String>,
     /// `conversationTerminatingTimeout` is the time to wait from detected FIN flag to end a conversation. Only relevant for TCP flows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conversationTerminatingTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversationTerminatingTimeout")]
     pub conversation_terminating_timeout: Option<String>,
     /// `dropUnusedFields` [deprecated (*)] this setting is not used anymore.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dropUnusedFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dropUnusedFields")]
     pub drop_unused_fields: Option<bool>,
     /// `enableKubeProbes` is a flag to enable or disable Kubernetes liveness and readiness probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableKubeProbes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableKubeProbes")]
     pub enable_kube_probes: Option<bool>,
     /// `env` allows passing custom environment variables to underlying components. Useful for passing
     /// some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be
@@ -3947,11 +3532,7 @@ pub struct FlowCollectorProcessorAdvanced {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
     /// `healthPort` is a collector HTTP port in the Pod that exposes the health check API
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthPort")]
     pub health_port: Option<i32>,
     /// Port of the flow collector (host port).
     /// By convention, some values are forbidden. It must be greater than 1024 and different from
@@ -3959,11 +3540,7 @@ pub struct FlowCollectorProcessorAdvanced {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// `profilePort` allows setting up a Go pprof profiler listening to this port
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "profilePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilePort")]
     pub profile_port: Option<i32>,
     /// scheduling controls how the pods are scheduled on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3971,11 +3548,7 @@ pub struct FlowCollectorProcessorAdvanced {
     /// Define secondary networks to be checked for resources identification.
     /// To guarantee a correct identification, indexed values must form an unique identifier across the cluster.
     /// If the same index is used by several resources, those resources might be incorrectly labeled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryNetworks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryNetworks")]
     pub secondary_networks: Option<Vec<FlowCollectorProcessorAdvancedSecondaryNetworks>>,
 }
 
@@ -3987,19 +3560,11 @@ pub struct FlowCollectorProcessorAdvancedScheduling {
     pub affinity: Option<FlowCollectorProcessorAdvancedSchedulingAffinity>,
     /// `nodeSelector` allows scheduling of pods only onto nodes that have each of the specified labels.
     /// For documentation, refer to https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, indicates the pod's priority. For documentation, refer to https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#how-to-use-priority-and-preemption.
     /// If not specified, default priority is used, or zero if there is no default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// `tolerations` is a list of tolerations that allow the pod to schedule onto nodes with matching taints.
     /// For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#scheduling.
@@ -4011,25 +3576,13 @@ pub struct FlowCollectorProcessorAdvancedScheduling {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorAdvancedSchedulingAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinity>,
 }
 
@@ -4080,8 +3633,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityPreferred
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4099,8 +3651,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityPreferred
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4143,8 +3694,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityRequiredD
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4162,8 +3712,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityRequiredD
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4282,8 +3831,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityPreferredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4317,8 +3865,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityPreferredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4405,8 +3952,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityRequiredDu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4440,8 +3986,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityRequiredDu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4559,8 +4104,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4594,8 +4138,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4682,8 +4225,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4717,8 +4259,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct FlowCollectorProcessorAdvancedSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4754,11 +4295,7 @@ pub struct FlowCollectorProcessorAdvancedSchedulingTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -4790,11 +4327,7 @@ pub enum FlowCollectorProcessorImagePullPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscaler {
     /// `maxReplicas` is the upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicas")]
     pub max_replicas: Option<i32>,
     /// Metrics used by the pod autoscaler. For documentation, refer to https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4804,11 +4337,7 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscaler {
     /// alpha feature gate HPAScaleToZero is enabled and at least one Object or External
     /// metric is configured. Scaling is active as long as at least one metric value is
     /// available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
     /// `status` describes the desired status regarding deploying an horizontal pod autoscaler.<br>
     /// - `Disabled` does not deploy an horizontal pod autoscaler.<br>
@@ -4819,13 +4348,8 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscaler {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetrics {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerResource"
-    )]
-    pub container_resource:
-        Option<FlowCollectorProcessorKafkaConsumerAutoscalerMetricsContainerResource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResource")]
+    pub container_resource: Option<FlowCollectorProcessorKafkaConsumerAutoscalerMetricsContainerResource>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub external: Option<FlowCollectorProcessorKafkaConsumerAutoscalerMetricsExternal>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4847,17 +4371,9 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsContainerResource
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsContainerResourceTarget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -4875,8 +4391,7 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsExternal {
 pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsExternalMetric {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector:
-        Option<FlowCollectorProcessorKafkaConsumerAutoscalerMetricsExternalMetricSelector>,
+    pub selector: Option<FlowCollectorProcessorKafkaConsumerAutoscalerMetricsExternalMetricSelector>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4888,8 +4403,7 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsExternalMetricSel
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsExternalMetricSelectorMatchExpressions
-{
+pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsExternalMetricSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4898,17 +4412,9 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsExternalMetricSel
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsExternalTarget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -4926,11 +4432,7 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsObject {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsObjectDescribedObject {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     pub kind: String,
     pub name: String,
@@ -4952,8 +4454,7 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsObjectMetricSelec
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsObjectMetricSelectorMatchExpressions
-{
+pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsObjectMetricSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4962,17 +4463,9 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsObjectMetricSelec
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsObjectTarget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -4995,19 +4488,9 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsPodsMetric {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsPodsMetricSelector {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<FlowCollectorProcessorKafkaConsumerAutoscalerMetricsPodsMetricSelectorMatchExpressions>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<FlowCollectorProcessorKafkaConsumerAutoscalerMetricsPodsMetricSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5021,17 +4504,9 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsPodsMetricSelecto
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsPodsTarget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -5047,17 +4522,9 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsResource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsResourceTarget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -5110,11 +4577,7 @@ pub struct FlowCollectorProcessorMetrics {
     /// Possible values are:<br>
     /// `NetObservNoFlows`, which is triggered when no flows are being observed for a certain period.<br>
     /// `NetObservLokiError`, which is triggered when flows are being dropped due to Loki errors.<br>
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableAlerts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAlerts")]
     pub disable_alerts: Option<Vec<String>>,
     /// `includeList` is a list of metric names to specify which ones to generate.
     /// The names correspond to the names in Prometheus without the prefix. For example,
@@ -5125,11 +4588,7 @@ pub struct FlowCollectorProcessorMetrics {
     /// `workload_egress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled),
     /// `namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled).
     /// More information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeList")]
     pub include_list: Option<Vec<String>>,
     /// Metrics server endpoint configuration for Prometheus scraper
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5152,21 +4611,13 @@ pub struct FlowCollectorProcessorMetricsServer {
 pub struct FlowCollectorProcessorMetricsServerTls {
     /// `insecureSkipVerify` allows skipping client-side verification of the provided certificate.
     /// If set to `true`, the `providedCaFile` field is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// TLS configuration when `type` is set to `Provided`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provided: Option<FlowCollectorProcessorMetricsServerTlsProvided>,
     /// Reference to the CA file when `type` is set to `Provided`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providedCaFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providedCaFile")]
     pub provided_ca_file: Option<FlowCollectorProcessorMetricsServerTlsProvidedCaFile>,
     /// Select the type of TLS configuration:<br>
     /// - `Disabled` (default) to not configure TLS for the endpoint.
@@ -5247,10 +4698,10 @@ pub enum FlowCollectorProcessorMetricsServerTlsType {
 pub struct FlowCollectorProcessorResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<FlowCollectorProcessorResourcesClaims>>,
@@ -5286,20 +4737,12 @@ pub struct FlowCollectorProcessorResourcesClaims {
 pub struct FlowCollectorProcessorSubnetLabels {
     /// `customLabels` allows to customize subnets and IPs labelling, such as to identify cluster-external workloads or web services.
     /// If you enable `openShiftAutoDetect`, `customLabels` can override the detected subnets in case they overlap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customLabels")]
     pub custom_labels: Option<Vec<FlowCollectorProcessorSubnetLabelsCustomLabels>>,
     /// `openShiftAutoDetect` allows, when set to `true`, to detect automatically the machines, pods and services subnets based on the
     /// OpenShift install configuration and the Cluster Network Operator configuration. Indirectly, this is a way to accurately detect
     /// external traffic: flows that are not labeled for those subnets are external to the cluster. Enabled by default on OpenShift.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openShiftAutoDetect"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openShiftAutoDetect")]
     pub open_shift_auto_detect: Option<bool>,
 }
 
@@ -5349,11 +4792,7 @@ pub struct FlowCollectorPrometheusQuerier {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorPrometheusQuerierManual {
     /// Set `true` to forward logged in user token in queries to Prometheus
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardUserToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardUserToken")]
     pub forward_user_token: Option<bool>,
     /// TLS client configuration for Prometheus URL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5374,11 +4813,7 @@ pub struct FlowCollectorPrometheusQuerierManualTls {
     pub enable: Option<bool>,
     /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
     /// If set to `true`, the `caCert` field is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
@@ -5462,3 +4897,4 @@ pub struct FlowCollectorStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
+

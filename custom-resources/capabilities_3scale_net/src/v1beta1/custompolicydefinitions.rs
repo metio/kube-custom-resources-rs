@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// CustomPolicyDefinitionSpec defines the desired state of CustomPolicyDefinition
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "capabilities.3scale.net",
-    version = "v1beta1",
-    kind = "CustomPolicyDefinition",
-    plural = "custompolicydefinitions"
-)]
+#[kube(group = "capabilities.3scale.net", version = "v1beta1", kind = "CustomPolicyDefinition", plural = "custompolicydefinitions")]
 #[kube(namespaced)]
 #[kube(status = "CustomPolicyDefinitionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CustomPolicyDefinitionSpec {
     /// Name is the name of the custom policy
     pub name: String,
     /// ProviderAccountRef references account provider credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerAccountRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerAccountRef")]
     pub provider_account_ref: Option<CustomPolicyDefinitionProviderAccountRef>,
     /// Schema is the schema of the custom policy
     pub schema: CustomPolicyDefinitionSchema,
@@ -74,20 +65,13 @@ pub struct CustomPolicyDefinitionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration reflects the generation of the most recently observed Backend Spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ID of the custom policy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyID")]
     pub policy_id: Option<i64>,
     /// ProviderAccountHost contains the 3scale account's provider URL
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerAccountHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerAccountHost")]
     pub provider_account_host: Option<String>,
 }
+

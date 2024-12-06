@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// SnowIPPoolSpec defines the desired state of SnowIPPool.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "anywhere.eks.amazonaws.com",
-    version = "v1alpha1",
-    kind = "SnowIPPool",
-    plural = "snowippools"
-)]
+#[kube(group = "anywhere.eks.amazonaws.com", version = "v1alpha1", kind = "SnowIPPool", plural = "snowippools")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SnowIPPoolSpec {
     /// IPPools defines a list of ip pool for the DNI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -44,4 +39,6 @@ pub struct SnowIPPoolPools {
 
 /// SnowIPPoolStatus defines the observed state of SnowIPPool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SnowIPPoolStatus {}
+pub struct SnowIPPoolStatus {
+}
+

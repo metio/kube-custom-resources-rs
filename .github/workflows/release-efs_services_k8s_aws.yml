@@ -33,7 +33,6 @@ jobs:
           --allow-dirty
           --token ${{ secrets.CRATES_IO_TOKEN }}
           --package kcr_efs_services_k8s_aws
-          --all-features
           --jobs 1
           --no-verify
         env:

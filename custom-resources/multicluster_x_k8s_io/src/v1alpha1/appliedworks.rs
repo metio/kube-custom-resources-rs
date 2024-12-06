@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec represents the desired configuration of AppliedWork.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "multicluster.x-k8s.io",
-    version = "v1alpha1",
-    kind = "AppliedWork",
-    plural = "appliedworks"
-)]
+#[kube(group = "multicluster.x-k8s.io", version = "v1alpha1", kind = "AppliedWork", plural = "appliedworks")]
 #[kube(status = "AppliedWorkStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AppliedWorkSpec {
     /// WorkName represents the name of the related work on the hub.
     #[serde(rename = "workName")]
@@ -39,11 +34,7 @@ pub struct AppliedWorkStatus {
     /// The resource relating to the item will also be removed from managed cluster.
     /// The deleted resource may still be present until the finalizers for that resource are finished.
     /// However, the resource will not be undeleted, so it can be removed from this list and eventual consistency is preserved.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appliedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedResources")]
     pub applied_resources: Option<Vec<AppliedWorkStatusAppliedResources>>,
 }
 
@@ -79,3 +70,4 @@ pub struct AppliedWorkStatusAppliedResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
+

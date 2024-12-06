@@ -5,24 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// MachinePoolNameLeaseSpec is a minimal resource for obtaining unique machine pool names of a limited length.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hive.openshift.io",
-    version = "v1",
-    kind = "MachinePoolNameLease",
-    plural = "machinepoolnameleases"
-)]
+#[kube(group = "hive.openshift.io", version = "v1", kind = "MachinePoolNameLease", plural = "machinepoolnameleases")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct MachinePoolNameLeaseSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct MachinePoolNameLeaseSpec {
+}
 
 /// MachinePoolNameLeaseStatus defines the observed state of MachinePoolNameLease.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachinePoolNameLeaseStatus {}
+pub struct MachinePoolNameLeaseStatus {
+}
+

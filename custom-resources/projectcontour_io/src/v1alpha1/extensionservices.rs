@@ -4,42 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ExtensionServiceSpec defines the desired state of an ExtensionService resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "projectcontour.io",
-    version = "v1alpha1",
-    kind = "ExtensionService",
-    plural = "extensionservices"
-)]
+#[kube(group = "projectcontour.io", version = "v1alpha1", kind = "ExtensionService", plural = "extensionservices")]
 #[kube(namespaced)]
 #[kube(status = "ExtensionServiceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ExtensionServiceSpec {
     /// CircuitBreakerPolicy specifies the circuit breaker budget across the extension service.
     /// If defined this overrides the global circuit breaker budget.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "circuitBreakerPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "circuitBreakerPolicy")]
     pub circuit_breaker_policy: Option<ExtensionServiceCircuitBreakerPolicy>,
     /// The policy for load balancing GRPC service requests. Note that the
     /// `Cookie` and `RequestHash` load balancing strategies cannot be used
     /// here.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerPolicy")]
     pub load_balancer_policy: Option<ExtensionServiceLoadBalancerPolicy>,
     /// Protocol may be used to specify (or override) the protocol used to reach this Service.
     /// Values may be h2 or h2c. If omitted, protocol-selection falls back on Service annotations.
@@ -49,11 +36,7 @@ pub struct ExtensionServiceSpec {
     /// send requests to the extension service. Since Contour always uses the
     /// v3 Envoy API, this is currently fixed at "v3". However, other
     /// protocol options will be available in future.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolVersion")]
     pub protocol_version: Option<ExtensionServiceProtocolVersion>,
     /// Services specifies the set of Kubernetes Service resources that
     /// receive GRPC extension API requests.
@@ -64,11 +47,7 @@ pub struct ExtensionServiceSpec {
     /// Weight field in each entry.
     pub services: Vec<ExtensionServiceServices>,
     /// The timeout policy for requests to the services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutPolicy")]
     pub timeout_policy: Option<ExtensionServiceTimeoutPolicy>,
     /// UpstreamValidation defines how to verify the backend service's certificate
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -80,40 +59,20 @@ pub struct ExtensionServiceSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExtensionServiceCircuitBreakerPolicy {
     /// The maximum number of connections that a single Envoy instance allows to the Kubernetes Service; defaults to 1024.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// The maximum number of pending requests that a single Envoy instance allows to the Kubernetes Service; defaults to 1024.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingRequests")]
     pub max_pending_requests: Option<i32>,
     /// The maximum parallel requests a single Envoy instance allows to the Kubernetes Service; defaults to 1024
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequests")]
     pub max_requests: Option<i32>,
     /// The maximum number of parallel retries a single Envoy instance allows to the Kubernetes Service; defaults to 3.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
     /// PerHostMaxConnections is the maximum number of connections
     /// that Envoy will allow to each individual host in a cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perHostMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perHostMaxConnections")]
     pub per_host_max_connections: Option<i32>,
 }
 
@@ -127,11 +86,7 @@ pub struct ExtensionServiceLoadBalancerPolicy {
     /// supplied list of hash policies is invalid, it will be ignored. If the
     /// list of hash policies is empty after validation, the load balancing
     /// strategy will fall back to the default `RoundRobin`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHashPolicies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHashPolicies")]
     pub request_hash_policies: Option<Vec<ExtensionServiceLoadBalancerPolicyRequestHashPolicies>>,
     /// Strategy specifies the policy used to balance requests
     /// across the pool of backend pods. Valid policy names are
@@ -150,32 +105,18 @@ pub struct ExtensionServiceLoadBalancerPolicyRequestHashPolicies {
     /// HashSourceIP should be set to true when request source IP hash based
     /// load balancing is desired. It must be the only hash option field set,
     /// otherwise this request hash policy object will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hashSourceIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashSourceIP")]
     pub hash_source_ip: Option<bool>,
     /// HeaderHashOptions should be set when request header hash based load
     /// balancing is desired. It must be the only hash option field set,
     /// otherwise this request hash policy object will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerHashOptions"
-    )]
-    pub header_hash_options:
-        Option<ExtensionServiceLoadBalancerPolicyRequestHashPoliciesHeaderHashOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerHashOptions")]
+    pub header_hash_options: Option<ExtensionServiceLoadBalancerPolicyRequestHashPoliciesHeaderHashOptions>,
     /// QueryParameterHashOptions should be set when request query parameter hash based load
     /// balancing is desired. It must be the only hash option field set,
     /// otherwise this request hash policy object will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameterHashOptions"
-    )]
-    pub query_parameter_hash_options:
-        Option<ExtensionServiceLoadBalancerPolicyRequestHashPoliciesQueryParameterHashOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameterHashOptions")]
+    pub query_parameter_hash_options: Option<ExtensionServiceLoadBalancerPolicyRequestHashPoliciesQueryParameterHashOptions>,
     /// Terminal is a flag that allows for short-circuiting computing of a hash
     /// for a given request. If set to true, and the request attribute specified
     /// in the attribute hash options is present, no further hash policies will
@@ -249,11 +190,7 @@ pub struct ExtensionServiceTimeoutPolicy {
     pub idle: Option<String>,
     /// Timeout for how long connection from the proxy to the upstream service is kept when there are no active requests.
     /// If not supplied, Envoy's default value of 1h applies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleConnection")]
     pub idle_connection: Option<String>,
     /// Timeout for receiving a response from the server after processing a request from client.
     /// If not supplied, Envoy's default value of 15s applies.
@@ -277,11 +214,7 @@ pub struct ExtensionServiceValidation {
     pub subject_name: String,
     /// List of keys, of which at least one is expected to be present in the 'subjectAltName of the
     /// presented certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectNames")]
     pub subject_names: Option<Vec<String>>,
 }
 
@@ -296,3 +229,4 @@ pub struct ExtensionServiceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

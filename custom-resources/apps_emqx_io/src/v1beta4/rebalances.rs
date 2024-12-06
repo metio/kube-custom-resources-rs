@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.emqx.io",
-    version = "v1beta4",
-    kind = "Rebalance",
-    plural = "rebalances"
-)]
+#[kube(group = "apps.emqx.io", version = "v1beta4", kind = "Rebalance", plural = "rebalances")]
 #[kube(namespaced)]
 #[kube(status = "RebalanceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RebalanceSpec {
     #[serde(rename = "instanceName")]
     pub instance_name: String,
@@ -31,75 +26,35 @@ pub struct RebalanceSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RebalanceRebalanceStrategy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "absConnThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "absConnThreshold")]
     pub abs_conn_threshold: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "absSessThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "absSessThreshold")]
     pub abs_sess_threshold: Option<i32>,
     #[serde(rename = "connEvictRate")]
     pub conn_evict_rate: i32,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relConnThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relConnThreshold")]
     pub rel_conn_threshold: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relSessThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relSessThreshold")]
     pub rel_sess_threshold: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessEvictRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessEvictRate")]
     pub sess_evict_rate: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitHealthCheck")]
     pub wait_health_check: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitTakeover"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitTakeover")]
     pub wait_takeover: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RebalanceStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completedTime")]
     pub completed_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rebalanceStates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebalanceStates")]
     pub rebalance_states: Option<Vec<RebalanceStatusRebalanceStates>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startedTime")]
     pub started_time: Option<String>,
 }
 
@@ -120,3 +75,4 @@ pub struct RebalanceStatusRebalanceStates {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

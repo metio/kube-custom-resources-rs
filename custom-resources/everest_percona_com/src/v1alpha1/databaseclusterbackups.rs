@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// DatabaseClusterBackupSpec defines the desired state of DatabaseClusterBackup.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "everest.percona.com",
-    version = "v1alpha1",
-    kind = "DatabaseClusterBackup",
-    plural = "databaseclusterbackups"
-)]
+#[kube(group = "everest.percona.com", version = "v1alpha1", kind = "DatabaseClusterBackup", plural = "databaseclusterbackups")]
 #[kube(namespaced)]
 #[kube(status = "DatabaseClusterBackupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DatabaseClusterBackupSpec {
     /// BackupStorageName is the name of the BackupStorage used for backups.
     /// The BackupStorage must be created in the same namespace as the DatabaseCluster.
@@ -47,13 +42,10 @@ pub struct DatabaseClusterBackupStatus {
     /// Gaps identifies if there are gaps detected in the PITR logs
     pub gaps: bool,
     /// LatestRestorableTime is the latest time that can be used for PITR restore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latestRestorableTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
     pub latest_restorable_time: Option<String>,
     /// State is the DatabaseBackup state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

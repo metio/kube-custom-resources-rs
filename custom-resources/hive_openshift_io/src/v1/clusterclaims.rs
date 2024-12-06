@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterClaimSpec defines the desired state of the ClusterClaim.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hive.openshift.io",
-    version = "v1",
-    kind = "ClusterClaim",
-    plural = "clusterclaims"
-)]
+#[kube(group = "hive.openshift.io", version = "v1", kind = "ClusterClaim", plural = "clusterclaims")]
 #[kube(namespaced)]
 #[kube(status = "ClusterClaimStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterClaimSpec {
     /// ClusterPoolName is the name of the cluster pool from which to claim a cluster.
     #[serde(rename = "clusterPoolName")]
@@ -77,3 +72,4 @@ pub struct ClusterClaimStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifetime: Option<String>,
 }
+

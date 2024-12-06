@@ -4,31 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// HierarchySpec defines the desired state of Hierarchy
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hnc.x-k8s.io",
-    version = "v1alpha2",
-    kind = "HierarchyConfiguration",
-    plural = "hierarchyconfigurations"
-)]
+#[kube(group = "hnc.x-k8s.io", version = "v1alpha2", kind = "HierarchyConfiguration", plural = "hierarchyconfigurations")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HierarchyConfigurationSpec {
     /// AllowCascadingDeletion indicates if the subnamespaces of this namespace are allowed to cascading delete.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowCascadingDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCascadingDeletion")]
     pub allow_cascading_deletion: Option<bool>,
     /// Annotations is a list of annotations and values to apply to the current namespace and all of its descendants. All annotation keys must match a regex specified on the command line by --managed-namespace-annotation. A namespace cannot have a KVP that conflicts with one of its ancestors.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -69,3 +60,4 @@ pub struct HierarchyConfigurationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

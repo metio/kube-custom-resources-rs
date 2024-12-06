@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// NodeUnitSpec defines the desired state of NodeUnit
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "site.superedge.io",
-    version = "v1alpha1",
-    kind = "NodeUnit",
-    plural = "nodeunits"
-)]
+#[kube(group = "site.superedge.io", version = "v1alpha1", kind = "NodeUnit", plural = "nodeunits")]
 #[kube(status = "NodeUnitStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeUnitSpec {
     /// If specified, If node exists, join nodeunit directly
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -50,18 +45,10 @@ pub struct NodeUnitSelector {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<NodeUnitSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -134,3 +121,4 @@ pub struct NodeUnitStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub readyrate: Option<String>,
 }
+

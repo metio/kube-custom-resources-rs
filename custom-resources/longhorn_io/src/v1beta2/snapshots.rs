@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// SnapshotSpec defines the desired state of Longhorn Snapshot
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "Snapshot",
-    plural = "snapshots"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "Snapshot", plural = "snapshots")]
 #[kube(namespaced)]
 #[kube(status = "SnapshotStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SnapshotSpec {
     /// require creating a new snapshot
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createSnapshot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createSnapshot")]
     pub create_snapshot: Option<bool>,
     /// The labels of snapshot
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -47,44 +38,25 @@ pub struct SnapshotStatus {
     pub checksum: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub children: Option<BTreeMap<String, bool>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "markRemoved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "markRemoved")]
     pub mark_removed: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyToUse"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyToUse")]
     pub ready_to_use: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreSize")]
     pub restore_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCreated")]
     pub user_created: Option<bool>,
 }
+

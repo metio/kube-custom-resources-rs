@@ -5,23 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ServerStatusRequestSpec is the specification for a ServerStatusRequest.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "velero.io",
-    version = "v1",
-    kind = "ServerStatusRequest",
-    plural = "serverstatusrequests"
-)]
+#[kube(group = "velero.io", version = "v1", kind = "ServerStatusRequest", plural = "serverstatusrequests")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct ServerStatusRequestSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct ServerStatusRequestSpec {
+}
 
 /// ServerStatusRequestStatus is the current status of a ServerStatusRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -34,18 +30,10 @@ pub struct ServerStatusRequestStatus {
     pub plugins: Option<Vec<ServerStatusRequestStatusPlugins>>,
     /// ProcessedTimestamp is when the ServerStatusRequest was processed
     /// by the ServerStatusRequestController.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "processedTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "processedTimestamp")]
     pub processed_timestamp: Option<String>,
     /// ServerVersion is the Velero server version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverVersion")]
     pub server_version: Option<String>,
 }
 
@@ -62,3 +50,4 @@ pub struct ServerStatusRequestStatusPlugins {
     pub kind: String,
     pub name: String,
 }
+

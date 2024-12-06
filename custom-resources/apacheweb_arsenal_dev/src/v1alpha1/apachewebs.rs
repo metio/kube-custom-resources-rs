@@ -5,27 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "apacheweb.arsenal.dev",
-    version = "v1alpha1",
-    kind = "Apacheweb",
-    plural = "apachewebs"
-)]
+#[kube(group = "apacheweb.arsenal.dev", version = "v1alpha1", kind = "Apacheweb", plural = "apachewebs")]
 #[kube(namespaced)]
 #[kube(status = "ApachewebStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct ApachewebSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<ApachewebLoadBalancer>,
     #[serde(rename = "serverName")]
     pub server_name: String,
@@ -38,27 +29,15 @@ pub struct ApachewebSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApachewebLoadBalancer {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backEndService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backEndService")]
     pub back_end_service: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endPointsList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endPointsList")]
     pub end_points_list: Option<Vec<ApachewebLoadBalancerEndPointsList>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proto: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyPaths"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyPaths")]
     pub proxy_paths: Option<Vec<ApachewebLoadBalancerProxyPaths>>,
     #[serde(rename = "serverPort")]
     pub server_port: i32,
@@ -76,11 +55,7 @@ pub struct ApachewebLoadBalancerEndPointsList {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApachewebLoadBalancerProxyPaths {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endPointsList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endPointsList")]
     pub end_points_list: Option<Vec<ApachewebLoadBalancerProxyPathsEndPointsList>>,
     pub path: String,
 }
@@ -118,11 +93,7 @@ pub struct ApachewebWebServer {
 pub struct ApachewebStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endPoints")]
     pub end_points: Option<Vec<ApachewebStatusEndPoints>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyPaths"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyPaths")]
     pub proxy_paths: Option<Vec<ApachewebStatusProxyPaths>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webServer")]
     pub web_server: Option<ApachewebStatusWebServer>,
@@ -140,11 +111,7 @@ pub struct ApachewebStatusEndPoints {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApachewebStatusProxyPaths {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endPointsList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endPointsList")]
     pub end_points_list: Option<Vec<ApachewebStatusProxyPathsEndPointsList>>,
     pub path: String,
 }
@@ -168,3 +135,4 @@ pub struct ApachewebStatusWebServer {
     #[serde(rename = "serverPort")]
     pub server_port: i32,
 }
+

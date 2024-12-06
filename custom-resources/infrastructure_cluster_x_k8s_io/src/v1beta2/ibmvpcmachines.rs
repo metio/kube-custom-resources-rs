@@ -4,78 +4,49 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// IBMVPCMachineSpec defines the desired state of IBMVPCMachine.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta2",
-    kind = "IBMVPCMachine",
-    plural = "ibmvpcmachines"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "IBMVPCMachine", plural = "ibmvpcmachines")]
 #[kube(namespaced)]
 #[kube(status = "IBMVPCMachineStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMVPCMachineSpec {
     /// BootVolume contains machines's boot volume configurations like size, iops etc..
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bootVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootVolume")]
     pub boot_volume: Option<IBMVPCMachineBootVolume>,
     /// CatalogOffering is the Catalog Offering OS image which would be installed on the instance.
     /// An OfferingCRN or VersionCRN is required, the PlanCRN is optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catalogOffering"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catalogOffering")]
     pub catalog_offering: Option<IBMVPCMachineCatalogOffering>,
     /// Image is the OS image which would be install on the instance.
     /// ID will take higher precedence over Name if both specified.
     pub image: IBMVPCMachineImage,
     /// LoadBalancerPoolMembers is the set of IBM Cloud VPC Load Balancer Backend Pools the machine should be added to as a member.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerPoolMembers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerPoolMembers")]
     pub load_balancer_pool_members: Option<Vec<IBMVPCMachineLoadBalancerPoolMembers>>,
     /// Name of the instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// PlacementTarget is the placement restrictions to use for the virtual server instance. No restrictions are used when this field is not defined.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "placementTarget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "placementTarget")]
     pub placement_target: Option<IBMVPCMachinePlacementTarget>,
     /// PrimaryNetworkInterface is required to specify subnet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryNetworkInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryNetworkInterface")]
     pub primary_network_interface: Option<IBMVPCMachinePrimaryNetworkInterface>,
     /// Profile indicates the flavor of instance. Example: bx2-8x32	means 8 vCPUs	32 GB RAM	16 Gbps
     /// TODO: add a reference link of profile
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profile: Option<String>,
     /// ProviderID is the unique identifier as specified by the cloud provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
     /// SSHKeys is the SSH pub keys that will be used to access VM.
     /// ID will take higher precedence over Name if both specified.
@@ -91,11 +62,7 @@ pub struct IBMVPCMachineSpec {
 pub struct IBMVPCMachineBootVolume {
     /// DeleteVolumeOnInstanceDelete If set to true, when deleting the instance the volume will also be deleted.
     /// Default is set as true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deleteVolumeOnInstanceDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteVolumeOnInstanceDelete")]
     pub delete_volume_on_instance_delete: Option<bool>,
     /// EncryptionKey is the root key to use to wrap the data encryption key for the volume and this points to the CRN
     /// and possible values are as follows.
@@ -103,11 +70,7 @@ pub struct IBMVPCMachineBootVolume {
     /// Key](https://cloud.ibm.com/docs/key-protect?topic=key-protect-getting-started-tutorial) or [Hyper Protect Crypto
     /// Service Root Key](https://cloud.ibm.com/docs/hs-crypto?topic=hs-crypto-get-started) for this resource.
     /// If unspecified, the `encryption` type for the volume will be `provider_managed`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionKeyCRN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKeyCRN")]
     pub encryption_key_crn: Option<String>,
     /// Iops is the maximum I/O operations per second (IOPS) to use for the volume. Applicable only to volumes using a profile
     /// family of `custom`.
@@ -147,21 +110,13 @@ pub enum IBMVPCMachineBootVolumeProfile {
 pub struct IBMVPCMachineCatalogOffering {
     /// OfferingCRN defines the IBM Cloud Catalog Offering CRN. Using the OfferingCRN expects that the latest version of the Offering will be used.
     /// If a specific version should be used instead, rely on VersionCRN.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "offeringCRN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offeringCRN")]
     pub offering_crn: Option<String>,
     /// PlanCRN defines the IBM Cloud Catalog Offering Plan CRN to use for the Offering.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "planCRN")]
     pub plan_crn: Option<String>,
     /// VersionCRN defines the IBM Cloud Catalog Offering Version CRN. A specific version of the Catalog Offering will be used, as defined by this CRN.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "versionCRN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionCRN")]
     pub version_crn: Option<String>,
 }
 
@@ -218,25 +173,13 @@ pub struct IBMVPCMachineLoadBalancerPoolMembersPool {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCMachinePlacementTarget {
     /// DedicatedHost defines the Dedicated Host to place a VPC Machine (Instance) on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dedicatedHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dedicatedHost")]
     pub dedicated_host: Option<IBMVPCMachinePlacementTargetDedicatedHost>,
     /// DedicatedHostGroup defines the Dedicated Host Group to use when placing a VPC Machine (Instance).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dedicatedHostGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dedicatedHostGroup")]
     pub dedicated_host_group: Option<IBMVPCMachinePlacementTargetDedicatedHostGroup>,
     /// PlacementGroup defines the Placement Group to use when placing a VPC Machine (Instance).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "placementGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "placementGroup")]
     pub placement_group: Option<IBMVPCMachinePlacementTargetPlacementGroup>,
 }
 
@@ -277,11 +220,7 @@ pub struct IBMVPCMachinePlacementTargetPlacementGroup {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCMachinePrimaryNetworkInterface {
     /// SecurityGroups defines a set of IBM Cloud VPC Security Groups to attach to the network interface.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<IBMVPCMachinePrimaryNetworkInterfaceSecurityGroups>>,
     /// Subnet ID of the network interface.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -324,41 +263,21 @@ pub struct IBMVPCMachineStatus {
     /// FailureMessage will be set in the event that there is a terminal problem
     /// reconciling the Machine and will contain a more verbose string suitable
     /// for logging and human consumption.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// FailureReason will be set in the event that there is a terminal problem
     /// reconciling the Machine and will contain a succinct value suitable
     /// for machine interpretation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// InstanceID defines the IBM Cloud VPC Instance UUID.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceID")]
     pub instance_id: Option<String>,
     /// InstanceStatus is the status of the IBM Cloud instance for this machine.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceState")]
     pub instance_state: Option<String>,
     /// LoadBalancerPoolMembers is the status of IBM Cloud VPC Load Balancer Backend Pools the machine is a member.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerPoolMembers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerPoolMembers")]
     pub load_balancer_pool_members: Option<Vec<IBMVPCMachineStatusLoadBalancerPoolMembers>>,
     /// Ready is true when the provider resource is ready.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -411,3 +330,4 @@ pub struct IBMVPCMachineStatusLoadBalancerPoolMembersPool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

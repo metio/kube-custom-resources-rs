@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// IntentsSpec defines the desired state of ClientIntents
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.otterize.com",
-    version = "v1alpha2",
-    kind = "ClientIntents",
-    plural = "clientintents"
-)]
+#[kube(group = "k8s.otterize.com", version = "v1alpha2", kind = "ClientIntents", plural = "clientintents")]
 #[kube(namespaced)]
 #[kube(status = "ClientIntentsStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClientIntentsSpec {
     pub calls: Vec<ClientIntentsCalls>,
     pub service: ClientIntentsService,
@@ -29,11 +24,7 @@ pub struct ClientIntentsSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClientIntentsCalls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseResources")]
     pub database_resources: Option<Vec<ClientIntentsCallsDatabaseResources>>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -89,3 +80,4 @@ pub struct ClientIntentsStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDate")]
     pub up_to_date: Option<bool>,
 }
+

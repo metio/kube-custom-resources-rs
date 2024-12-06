@@ -4,39 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// InternetGatewaySpec defines the desired state of InternetGateway.
-///
+/// 
 /// Describes an internet gateway.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ec2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "InternetGateway",
-    plural = "internetgateways"
-)]
+#[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "InternetGateway", plural = "internetgateways")]
 #[kube(namespaced)]
 #[kube(status = "InternetGatewayStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct InternetGatewaySpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeTableRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeTableRefs")]
     pub route_table_refs: Option<Vec<InternetGatewayRouteTableRefs>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeTables"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeTables")]
     pub route_tables: Option<Vec<String>>,
     /// The tags. The value parameter is required, but if you don't want the tag
     /// to have a value, specify the parameter with no value, and we set the value
@@ -50,7 +37,7 @@ pub struct InternetGatewaySpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcRef")]
@@ -61,7 +48,7 @@ pub struct InternetGatewaySpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -95,7 +82,7 @@ pub struct InternetGatewayTags {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -122,11 +109,7 @@ pub struct InternetGatewayStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<InternetGatewayStatusAckResourceMetadata>,
     /// Any VPCs attached to the internet gateway.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -138,11 +121,7 @@ pub struct InternetGatewayStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The ID of the internet gateway.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internetGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internetGatewayID")]
     pub internet_gateway_id: Option<String>,
     /// The ID of the Amazon Web Services account that owns the internet gateway.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
@@ -180,3 +159,4 @@ pub struct InternetGatewayStatusAttachments {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
     pub vpc_id: Option<String>,
 }
+

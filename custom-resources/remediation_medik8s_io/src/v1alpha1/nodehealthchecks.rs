@@ -4,83 +4,62 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// NodeHealthCheckSpec defines the desired state of NodeHealthCheck
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "remediation.medik8s.io",
-    version = "v1alpha1",
-    kind = "NodeHealthCheck",
-    plural = "nodehealthchecks"
-)]
+#[kube(group = "remediation.medik8s.io", version = "v1alpha1", kind = "NodeHealthCheck", plural = "nodehealthchecks")]
 #[kube(status = "NodeHealthCheckStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeHealthCheckSpec {
     /// EscalatingRemediations contain a list of ordered remediation templates with a timeout.
     /// The remediation templates will be used one after another, until the unhealthy node
     /// gets healthy within the timeout of the currently processed remediation. The order of
     /// remediation is defined by the "order" field of each "escalatingRemediation".
-    ///
-    ///
+    /// 
+    /// 
     /// Mutually exclusive with RemediationTemplate
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "escalatingRemediations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "escalatingRemediations")]
     pub escalating_remediations: Option<Vec<NodeHealthCheckEscalatingRemediations>>,
     /// Remediation is allowed if at least "MinHealthy" nodes selected by "selector" are healthy.
     /// Expects either a positive integer value or a percentage value.
     /// Percentage values must be positive whole numbers and are capped at 100%.
     /// 100% is valid and will block all remediation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minHealthy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minHealthy")]
     pub min_healthy: Option<IntOrString>,
     /// PauseRequests will prevent any new remediation to start, while in-flight remediations
     /// keep running. Each entry is free form, and ideally represents the requested party reason
     /// for this pausing - i.e:
     ///     "imaginary-cluster-upgrade-manager-operator"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pauseRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pauseRequests")]
     pub pause_requests: Option<Vec<String>>,
     /// RemediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
-    ///
-    ///
+    /// 
+    /// 
     /// If a node needs remediation the controller will create an object from this template
     /// and then it should be picked up by a remediation provider.
-    ///
-    ///
+    /// 
+    /// 
     /// Mutually exclusive with EscalatingRemediations
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remediationTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
     /// Label selector to match nodes whose health will be exercised.
-    ///
-    ///
+    /// 
+    /// 
     /// Selecting both control-plane and worker nodes in one NHC CR is
     /// highly discouraged and can result in undesired behaviour.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: mandatory now for above reason, but for backwards compatibility existing
     /// CRs will continue to work with an empty selector, which matches all nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -88,11 +67,7 @@ pub struct NodeHealthCheckSpec {
     /// UnhealthyConditions contains a list of the conditions that determine
     /// whether a node is considered unhealthy.  The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyConditions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
     pub unhealthy_conditions: Option<Vec<NodeHealthCheckUnhealthyConditions>>,
 }
 
@@ -105,8 +80,8 @@ pub struct NodeHealthCheckEscalatingRemediations {
     pub order: i64,
     /// RemediationTemplate is a reference to a remediation template
     /// provided by a remediation provider.
-    ///
-    ///
+    /// 
+    /// 
     /// If a node needs remediation the controller will create an object from this template
     /// and then it should be picked up by a remediation provider.
     #[serde(rename = "remediationTemplate")]
@@ -115,8 +90,8 @@ pub struct NodeHealthCheckEscalatingRemediations {
     /// before the next remediation (if any) will be used. When the last remediation times out,
     /// the overall remediation is considered as failed.
     /// As a safeguard for preventing parallel remediations, a minimum of 60s is enforced.
-    ///
-    ///
+    /// 
+    /// 
     /// Expects a string of decimal numbers each with optional
     /// fraction and a unit suffix, eg "300ms", "1.5h" or "2h45m".
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
@@ -125,18 +100,14 @@ pub struct NodeHealthCheckEscalatingRemediations {
 
 /// RemediationTemplate is a reference to a remediation template
 /// provided by a remediation provider.
-///
-///
+/// 
+/// 
 /// If a node needs remediation the controller will create an object from this template
 /// and then it should be picked up by a remediation provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeHealthCheckEscalatingRemediationsRemediationTemplate {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -162,11 +133,7 @@ pub struct NodeHealthCheckEscalatingRemediationsRemediationTemplate {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -176,21 +143,17 @@ pub struct NodeHealthCheckEscalatingRemediationsRemediationTemplate {
 
 /// RemediationTemplate is a reference to a remediation template
 /// provided by an infrastructure provider.
-///
-///
+/// 
+/// 
 /// If a node needs remediation the controller will create an object from this template
 /// and then it should be picked up by a remediation provider.
-///
-///
+/// 
+/// 
 /// Mutually exclusive with EscalatingRemediations
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeHealthCheckRemediationTemplate {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -216,11 +179,7 @@ pub struct NodeHealthCheckRemediationTemplate {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -229,31 +188,23 @@ pub struct NodeHealthCheckRemediationTemplate {
 }
 
 /// Label selector to match nodes whose health will be exercised.
-///
-///
+/// 
+/// 
 /// Selecting both control-plane and worker nodes in one NHC CR is
 /// highly discouraged and can result in undesired behaviour.
-///
-///
+/// 
+/// 
 /// Note: mandatory now for above reason, but for backwards compatibility existing
 /// CRs will continue to work with an empty selector, which matches all nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeHealthCheckSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<NodeHealthCheckSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -280,8 +231,8 @@ pub struct NodeHealthCheckSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeHealthCheckUnhealthyConditions {
     /// Duration of the condition specified when a node is considered unhealthy.
-    ///
-    ///
+    /// 
+    /// 
     /// Expects a string of decimal numbers each with optional
     /// fraction and a unit suffix, eg "300ms", "1.5h" or "2h45m".
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
@@ -302,33 +253,17 @@ pub struct NodeHealthCheckStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// HealthyNodes specified the number of healthy nodes observed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthyNodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyNodes")]
     pub healthy_nodes: Option<i64>,
     /// InFlightRemediations records the timestamp when remediation triggered per node.
     /// Deprecated in favour of UnhealthyNodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inFlightRemediations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inFlightRemediations")]
     pub in_flight_remediations: Option<BTreeMap<String, String>>,
     /// LastUpdateTime is the last time the status was updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdateTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
     pub last_update_time: Option<String>,
     /// ObservedNodes specified the number of nodes observed by using the NHC spec.selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedNodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedNodes")]
     pub observed_nodes: Option<i64>,
     /// Phase represents the current phase of this Config.
     /// Known phases are Disabled, Paused, Remediating and Enabled, based on:\n
@@ -341,11 +276,7 @@ pub struct NodeHealthCheckStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     /// UnhealthyNodes tracks currently unhealthy nodes and their remediations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyNodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodes")]
     pub unhealthy_nodes: Option<Vec<NodeHealthCheckStatusUnhealthyNodes>>,
 }
 
@@ -355,11 +286,7 @@ pub struct NodeHealthCheckStatusUnhealthyNodes {
     /// ConditionsHealthyTimestamp is RFC 3339 date and time at which the unhealthy conditions didn't match anymore.
     /// The remediation CR will be deleted at that time, but the node will still be tracked as unhealthy until all
     /// remediation CRs are actually deleted, when remediators finished cleanup and removed their finalizers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conditionsHealthyTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conditionsHealthyTimestamp")]
     pub conditions_healthy_timestamp: Option<String>,
     /// Name is the name of the unhealthy node
     pub name: String,
@@ -376,11 +303,7 @@ pub struct NodeHealthCheckStatusUnhealthyNodesRemediations {
     /// Started is the creation time of the remediation CR
     pub started: String,
     /// TemplateName is required when using several templates of the same kind
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateName")]
     pub template_name: Option<String>,
     /// TimedOut is the time when the remediation timed out.
     /// Applicable for escalating remediations only.
@@ -392,11 +315,7 @@ pub struct NodeHealthCheckStatusUnhealthyNodesRemediations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeHealthCheckStatusUnhealthyNodesRemediationsResource {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -422,14 +341,11 @@ pub struct NodeHealthCheckStatusUnhealthyNodesRemediationsResource {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// BackupSpec defines the desired state of Backup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infinispan.org",
-    version = "v2alpha1",
-    kind = "Restore",
-    plural = "restores"
-)]
+#[kube(group = "infinispan.org", version = "v2alpha1", kind = "Restore", plural = "restores")]
 #[kube(namespaced)]
 #[kube(status = "RestoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RestoreSpec {
     /// The Infinispan Backup to restore
     pub backup: String,
@@ -37,48 +32,28 @@ pub struct RestoreSpec {
 /// InfinispanContainerSpec specify resource requirements per container
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreContainer {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cliExtraJvmOpts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliExtraJvmOpts")]
     pub cli_extra_jvm_opts: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraJvmOpts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraJvmOpts")]
     pub extra_jvm_opts: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routerExtraJvmOpts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routerExtraJvmOpts")]
     pub router_extra_jvm_opts: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreResources {
     /// Deprecated and to be removed on subsequent release. Use .Templates instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheConfigs")]
     pub cache_configs: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub caches: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub counters: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protoSchemas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protoSchemas")]
     pub proto_schemas: Option<Vec<String>>,
     /// Deprecated and to be removed on subsequent release. Use .Tasks instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -98,3 +73,4 @@ pub struct RestoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
+

@@ -4,49 +4,32 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// FeatureFlagConfigurationSpec defines the desired state of FeatureFlagConfiguration
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "core.openfeature.dev",
-    version = "v1alpha1",
-    kind = "FeatureFlagConfiguration",
-    plural = "featureflagconfigurations"
-)]
+#[kube(group = "core.openfeature.dev", version = "v1alpha1", kind = "FeatureFlagConfiguration", plural = "featureflagconfigurations")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FeatureFlagConfigurationSpec {
     /// FeatureFlagSpec is the json representation of the feature flag
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureFlagSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureFlagSpec")]
     pub feature_flag_spec: Option<String>,
     /// FlagDSpec [DEPRECATED]: superseded by FlagSourceConfiguration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flagDSpec")]
     pub flag_d_spec: Option<FeatureFlagConfigurationFlagDSpec>,
     /// ServiceProvider [DEPRECATED]: superseded by FlagSourceConfiguration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceProvider")]
     pub service_provider: Option<FeatureFlagConfigurationServiceProvider>,
     /// SyncProvider [DEPRECATED]: superseded by FlagSourceConfiguration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncProvider")]
     pub sync_provider: Option<FeatureFlagConfigurationSyncProvider>,
 }
 
@@ -55,11 +38,7 @@ pub struct FeatureFlagConfigurationSpec {
 pub struct FeatureFlagConfigurationFlagDSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub envs: Option<Vec<FeatureFlagConfigurationFlagDSpecEnvs>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPort")]
     pub metrics_port: Option<i32>,
 }
 
@@ -88,11 +67,7 @@ pub struct FeatureFlagConfigurationFlagDSpecEnvs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureFlagConfigurationFlagDSpecEnvsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<FeatureFlagConfigurationFlagDSpecEnvsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -100,18 +75,10 @@ pub struct FeatureFlagConfigurationFlagDSpecEnvsValueFrom {
     pub field_ref: Option<FeatureFlagConfigurationFlagDSpecEnvsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<FeatureFlagConfigurationFlagDSpecEnvsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<FeatureFlagConfigurationFlagDSpecEnvsValueFromSecretKeyRef>,
 }
 
@@ -135,11 +102,7 @@ pub struct FeatureFlagConfigurationFlagDSpecEnvsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureFlagConfigurationFlagDSpecEnvsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -151,11 +114,7 @@ pub struct FeatureFlagConfigurationFlagDSpecEnvsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureFlagConfigurationFlagDSpecEnvsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -195,8 +154,8 @@ pub struct FeatureFlagConfigurationServiceProvider {
     ///     and the version of the actual struct is irrelevant.
     ///  5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type
     ///     will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control.
-    ///
-    ///
+    /// 
+    /// 
     /// Instead of using this type, create a locally provided and used type that is well-focused on your reference.
     /// For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -217,18 +176,14 @@ pub struct FeatureFlagConfigurationServiceProvider {
 ///     and the version of the actual struct is irrelevant.
 ///  5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type
 ///     will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control.
-///
-///
+/// 
+/// 
 /// Instead of using this type, create a locally provided and used type that is well-focused on your reference.
 /// For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureFlagConfigurationServiceProviderCredentials {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -254,11 +209,7 @@ pub struct FeatureFlagConfigurationServiceProviderCredentials {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -277,11 +228,7 @@ pub enum FeatureFlagConfigurationServiceProviderName {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureFlagConfigurationSyncProvider {
     /// HttpSyncConfiguration defines the desired configuration for a http sync
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpSyncConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpSyncConfiguration")]
     pub http_sync_configuration: Option<FeatureFlagConfigurationSyncProviderHttpSyncConfiguration>,
     pub name: String,
 }
@@ -289,11 +236,7 @@ pub struct FeatureFlagConfigurationSyncProvider {
 /// HttpSyncConfiguration defines the desired configuration for a http sync
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureFlagConfigurationSyncProviderHttpSyncConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// Target is the target url for flagd to poll
     pub target: String,
@@ -301,4 +244,6 @@ pub struct FeatureFlagConfigurationSyncProviderHttpSyncConfiguration {
 
 /// FeatureFlagConfigurationStatus defines the observed state of FeatureFlagConfiguration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeatureFlagConfigurationStatus {}
+pub struct FeatureFlagConfigurationStatus {
+}
+

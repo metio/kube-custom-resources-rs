@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// DatabaseClusterRestoreSpec defines the desired state of DatabaseClusterRestore.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "everest.percona.com",
-    version = "v1alpha1",
-    kind = "DatabaseClusterRestore",
-    plural = "databaseclusterrestores"
-)]
+#[kube(group = "everest.percona.com", version = "v1alpha1", kind = "DatabaseClusterRestore", plural = "databaseclusterrestores")]
 #[kube(namespaced)]
 #[kube(status = "DatabaseClusterRestoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DatabaseClusterRestoreSpec {
     /// DataSource defines a data source for restoration.
     #[serde(rename = "dataSource")]
@@ -35,18 +30,10 @@ pub struct DatabaseClusterRestoreSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterRestoreDataSource {
     /// BackupSource is the backup source to restore from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSource")]
     pub backup_source: Option<DatabaseClusterRestoreDataSourceBackupSource>,
     /// DBClusterBackupName is the name of the DB cluster backup to restore from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dbClusterBackupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbClusterBackupName")]
     pub db_cluster_backup_name: Option<String>,
     /// PITR is the point-in-time recovery configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -95,3 +82,4 @@ pub struct DatabaseClusterRestoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

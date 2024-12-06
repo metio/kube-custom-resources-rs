@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Test spec.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "chainsaw.kyverno.io",
-    version = "v1alpha2",
-    kind = "Test",
-    plural = "tests"
-)]
+#[kube(group = "chainsaw.kyverno.io", version = "v1alpha2", kind = "Test", plural = "tests")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TestSpec {
     /// Bindings defines additional binding key/values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -72,18 +67,10 @@ pub struct TestBindings {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestCleanup {
     /// DelayBeforeCleanup adds a delay between the time a test ends and the time cleanup starts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "delayBeforeCleanup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "delayBeforeCleanup")]
     pub delay_before_cleanup: Option<String>,
     /// If set, do not delete the resources after running a test.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipDelete")]
     pub skip_delete: Option<bool>,
 }
 
@@ -186,11 +173,7 @@ pub struct TestErrorCatchCommand {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestErrorCatchCommandOutputs>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -256,11 +239,7 @@ pub struct TestErrorCatchDelete {
     /// DeletionPropagationPolicy decides if a deletion will propagate to the dependents of
     /// the object, and how the garbage collector will handle the propagation.
     /// Overrides the deletion propagation policy set in the Configuration, the Test and the TestStep.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPropagationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPropagationPolicy")]
     pub deletion_propagation_policy: Option<TestErrorCatchDeleteDeletionPropagationPolicy>,
     /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -369,11 +348,7 @@ pub struct TestErrorCatchDescribe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
     /// Show Events indicates whether to include related events.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "showEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "showEvents")]
     pub show_events: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -544,11 +519,7 @@ pub struct TestErrorCatchScript {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestErrorCatchScriptOutputs>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -680,7 +651,8 @@ pub struct TestErrorCatchWaitForCondition {
 
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestErrorCatchWaitForDeletion {}
+pub struct TestErrorCatchWaitForDeletion {
+}
 
 /// JsonPath specifies the json path condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -702,11 +674,7 @@ pub struct TestExecution {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub skip: Option<bool>,
     /// TerminationGracePeriod forces the termination grace period on pods, statefulsets, daemonsets and deployments.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriod")]
     pub termination_grace_period: Option<String>,
 }
 
@@ -744,11 +712,7 @@ pub struct TestSteps {
     /// DeletionPropagationPolicy decides if a deletion will propagate to the dependents of
     /// the object, and how the garbage collector will handle the propagation.
     /// Overrides the deletion propagation policy set in both the Configuration and the Test.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPropagationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPropagationPolicy")]
     pub deletion_propagation_policy: Option<TestStepsDeletionPropagationPolicy>,
     /// Description contains a description of the test step.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -760,11 +724,7 @@ pub struct TestSteps {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// SkipDelete determines whether the resources created by the step should be deleted after the test step is executed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipDelete")]
     pub skip_delete: Option<bool>,
     /// Template determines whether resources should be considered for templating.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -944,11 +904,7 @@ pub struct TestStepsCatchCommand {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TestStepsCatchCommandEnv>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1006,11 +962,7 @@ pub struct TestStepsCatchDelete {
     /// DeletionPropagationPolicy decides if a deletion will propagate to the dependents of
     /// the object, and how the garbage collector will handle the propagation.
     /// Overrides the deletion propagation policy set in the Configuration, the Test and the TestStep.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPropagationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPropagationPolicy")]
     pub deletion_propagation_policy: Option<TestStepsCatchDeleteDeletionPropagationPolicy>,
     /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1060,11 +1012,7 @@ pub struct TestStepsCatchDeleteRef {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestStepsCatchDeleteRefLabelSelector>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
@@ -1080,20 +1028,12 @@ pub struct TestStepsCatchDeleteRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsCatchDeleteRefLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TestStepsCatchDeleteRefLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1135,11 +1075,7 @@ pub struct TestStepsCatchDescribe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
     /// Show Events indicates whether to include related events.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "showEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "showEvents")]
     pub show_events: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1304,11 +1240,7 @@ pub struct TestStepsCatchScript {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TestStepsCatchScriptEnv>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1424,7 +1356,8 @@ pub struct TestStepsCatchWaitForCondition {
 
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestStepsCatchWaitForDeletion {}
+pub struct TestStepsCatchWaitForDeletion {
+}
 
 /// JsonPath specifies the json path condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1593,11 +1526,7 @@ pub struct TestStepsCleanupCommand {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TestStepsCleanupCommandEnv>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1655,11 +1584,7 @@ pub struct TestStepsCleanupDelete {
     /// DeletionPropagationPolicy decides if a deletion will propagate to the dependents of
     /// the object, and how the garbage collector will handle the propagation.
     /// Overrides the deletion propagation policy set in the Configuration, the Test and the TestStep.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPropagationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPropagationPolicy")]
     pub deletion_propagation_policy: Option<TestStepsCleanupDeleteDeletionPropagationPolicy>,
     /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1709,11 +1634,7 @@ pub struct TestStepsCleanupDeleteRef {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestStepsCleanupDeleteRefLabelSelector>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
@@ -1729,20 +1650,12 @@ pub struct TestStepsCleanupDeleteRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsCleanupDeleteRefLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TestStepsCleanupDeleteRefLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1784,11 +1697,7 @@ pub struct TestStepsCleanupDescribe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
     /// Show Events indicates whether to include related events.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "showEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "showEvents")]
     pub show_events: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1953,11 +1862,7 @@ pub struct TestStepsCleanupScript {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TestStepsCleanupScriptEnv>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2073,7 +1978,8 @@ pub struct TestStepsCleanupWaitForCondition {
 
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestStepsCleanupWaitForDeletion {}
+pub struct TestStepsCleanupWaitForDeletion {
+}
 
 /// JsonPath specifies the json path condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2261,11 +2167,7 @@ pub struct TestStepsFinallyCommand {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TestStepsFinallyCommandEnv>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2323,11 +2225,7 @@ pub struct TestStepsFinallyDelete {
     /// DeletionPropagationPolicy decides if a deletion will propagate to the dependents of
     /// the object, and how the garbage collector will handle the propagation.
     /// Overrides the deletion propagation policy set in the Configuration, the Test and the TestStep.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPropagationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPropagationPolicy")]
     pub deletion_propagation_policy: Option<TestStepsFinallyDeleteDeletionPropagationPolicy>,
     /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2377,11 +2275,7 @@ pub struct TestStepsFinallyDeleteRef {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestStepsFinallyDeleteRefLabelSelector>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
@@ -2397,20 +2291,12 @@ pub struct TestStepsFinallyDeleteRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsFinallyDeleteRefLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TestStepsFinallyDeleteRefLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2452,11 +2338,7 @@ pub struct TestStepsFinallyDescribe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
     /// Show Events indicates whether to include related events.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "showEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "showEvents")]
     pub show_events: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2621,11 +2503,7 @@ pub struct TestStepsFinallyScript {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TestStepsFinallyScriptEnv>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2741,7 +2619,8 @@ pub struct TestStepsFinallyWaitForCondition {
 
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestStepsFinallyWaitForDeletion {}
+pub struct TestStepsFinallyWaitForDeletion {
+}
 
 /// JsonPath specifies the json path condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2799,11 +2678,7 @@ pub struct TestStepsTry {
     pub command: Option<TestStepsTryCommand>,
     /// ContinueOnError determines whether a test should continue or not in case the operation was not successful.
     /// Even if the test continues executing, it will still be reported as failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "continueOnError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "continueOnError")]
     pub continue_on_error: Option<bool>,
     /// Create represents a creation operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2941,11 +2816,7 @@ pub struct TestStepsTryCommand {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TestStepsTryCommandEnv>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3003,11 +2874,7 @@ pub struct TestStepsTryDelete {
     /// DeletionPropagationPolicy decides if a deletion will propagate to the dependents of
     /// the object, and how the garbage collector will handle the propagation.
     /// Overrides the deletion propagation policy set in the Configuration, the Test and the TestStep.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPropagationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPropagationPolicy")]
     pub deletion_propagation_policy: Option<TestStepsTryDeleteDeletionPropagationPolicy>,
     /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3057,11 +2924,7 @@ pub struct TestStepsTryDeleteRef {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
     /// Label selector to match objects to delete
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestStepsTryDeleteRefLabelSelector>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
@@ -3077,20 +2940,12 @@ pub struct TestStepsTryDeleteRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestStepsTryDeleteRefLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TestStepsTryDeleteRefLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -3132,11 +2987,7 @@ pub struct TestStepsTryDescribe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
     /// Show Events indicates whether to include related events.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "showEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "showEvents")]
     pub show_events: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3301,11 +3152,7 @@ pub struct TestStepsTryScript {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TestStepsTryScriptEnv>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3421,7 +3268,8 @@ pub struct TestStepsTryWaitForCondition {
 
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestStepsTryWaitForDeletion {}
+pub struct TestStepsTryWaitForDeletion {
+}
 
 /// JsonPath specifies the json path condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3462,3 +3310,4 @@ pub struct TestTimeouts {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<String>,
 }
+

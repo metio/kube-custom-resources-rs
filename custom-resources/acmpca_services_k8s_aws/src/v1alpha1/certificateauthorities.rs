@@ -4,14 +4,14 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// CertificateAuthoritySpec defines the desired state of CertificateAuthority.
-///
+/// 
 /// Contains information about your private certificate authority (CA). Your
 /// private CA can issue and revoke X.509 digital certificates. Digital certificates
 /// verify that the entity named in the certificate Subject field owns or controls
@@ -25,17 +25,12 @@ use self::prelude::*;
 /// (https://docs.aws.amazon.com/privateca/latest/APIReference/API_ImportCertificateAuthorityCertificate.html)
 /// action to import the signed certificate into Certificate Manager (ACM).
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "acmpca.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "CertificateAuthority",
-    plural = "certificateauthorities"
-)]
+#[kube(group = "acmpca.services.k8s.aws", version = "v1alpha1", kind = "CertificateAuthority", plural = "certificateauthorities")]
 #[kube(namespaced)]
 #[kube(status = "CertificateAuthorityStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CertificateAuthoritySpec {
     /// Name and bit size of the private key algorithm, the name of the signing algorithm,
     /// and X.500 certificate subject information.
@@ -43,52 +38,44 @@ pub struct CertificateAuthoritySpec {
     pub certificate_authority_configuration: CertificateAuthorityCertificateAuthorityConfiguration,
     /// Specifies a cryptographic key management compliance standard used for handling
     /// CA keys.
-    ///
+    /// 
     /// Default: FIPS_140_2_LEVEL_3_OR_HIGHER
-    ///
+    /// 
     /// Some Amazon Web Services Regions do not support the default. When creating
     /// a CA in these Regions, you must provide FIPS_140_2_LEVEL_2_OR_HIGHER as the
     /// argument for KeyStorageSecurityStandard. Failure to do this results in an
     /// InvalidArgsException with the message, "A certificate authority cannot be
     /// created in this region with the specified security standard."
-    ///
+    /// 
     /// For information about security standard support in various Regions, see Storage
     /// and security compliance of Amazon Web Services Private CA private keys (https://docs.aws.amazon.com/privateca/latest/userguide/data-protection.html#private-keys).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyStorageSecurityStandard"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyStorageSecurityStandard")]
     pub key_storage_security_standard: Option<String>,
     /// Contains information to enable Online Certificate Status Protocol (OCSP)
     /// support, to enable a certificate revocation list (CRL), to enable both, or
     /// to enable neither. The default is for both certificate validation mechanisms
     /// to be disabled.
-    ///
+    /// 
     /// The following requirements apply to revocation configurations.
-    ///
+    /// 
     ///    * A configuration disabling CRLs or OCSP must contain only the Enabled=False
     ///    parameter, and will fail if other parameters such as CustomCname or ExpirationInDays
     ///    are included.
-    ///
+    /// 
     ///    * In a CRL configuration, the S3BucketName parameter must conform to Amazon
     ///    S3 bucket naming rules (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html).
-    ///
+    /// 
     ///    * A configuration containing a custom Canonical Name (CNAME) parameter
     ///    for CRLs or OCSP must conform to RFC2396 (https://www.ietf.org/rfc/rfc2396.txt)
     ///    restrictions on the use of special characters in a CNAME.
-    ///
+    /// 
     ///    * In a CRL or OCSP configuration, the value of a CNAME parameter must
     ///    not include a protocol prefix such as "http://" or "https://".
-    ///
+    /// 
     /// For more information, see the OcspConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_OcspConfiguration.html)
     /// and CrlConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CrlConfiguration.html)
     /// types.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revocationConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revocationConfiguration")]
     pub revocation_configuration: Option<CertificateAuthorityRevocationConfiguration>,
     /// Key-value pairs that will be attached to the new private CA. You can associate
     /// up to 50 tags with a private CA. For information using tags with IAM to manage
@@ -102,7 +89,7 @@ pub struct CertificateAuthoritySpec {
     /// require a revocation mechanism, or short-lived certificates that may optionally
     /// omit revocation because they expire quickly. Short-lived certificate validity
     /// is limited to seven days.
-    ///
+    /// 
     /// The default value is GENERAL_PURPOSE.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usageMode")]
     pub usage_mode: Option<String>,
@@ -114,23 +101,11 @@ pub struct CertificateAuthoritySpec {
 pub struct CertificateAuthorityCertificateAuthorityConfiguration {
     /// Describes the certificate extensions to be added to the certificate signing
     /// request (CSR).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csrExtensions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csrExtensions")]
     pub csr_extensions: Option<CertificateAuthorityCertificateAuthorityConfigurationCsrExtensions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyAlgorithm")]
     pub key_algorithm: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signingAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingAlgorithm")]
     pub signing_algorithm: Option<String>,
     /// Contains information about the certificate subject. The Subject field in
     /// the certificate identifies the entity that owns or controls the public key
@@ -160,53 +135,21 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensions {
 pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsKeyUsage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crlSign")]
     pub crl_sign: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataEncipherment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEncipherment")]
     pub data_encipherment: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "decipherOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "decipherOnly")]
     pub decipher_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "digitalSignature"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "digitalSignature")]
     pub digital_signature: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encipherOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encipherOnly")]
     pub encipher_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyAgreement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyAgreement")]
     pub key_agreement: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyCertSign"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyCertSign")]
     pub key_cert_sign: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyEncipherment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyEncipherment")]
     pub key_encipherment: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonRepudiation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonRepudiation")]
     pub non_repudiation: Option<bool>,
 }
 
@@ -302,13 +245,8 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSub
 
 /// Defines the X.500 relative distinguished name (RDN).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSubjectInformationAccessAccessLocationDirectoryNameCustomAttributes
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectIdentifier"
-    )]
+pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSubjectInformationAccessAccessLocationDirectoryNameCustomAttributes {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectIdentifier")]
     pub object_identifier: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -318,13 +256,8 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSub
 /// defined in Subject Alternative Name (https://datatracker.ietf.org/doc/html/rfc5280)
 /// in RFC 5280.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSubjectInformationAccessAccessLocationEdiPartyName
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nameAssigner"
-    )]
+pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSubjectInformationAccessAccessLocationEdiPartyName {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameAssigner")]
     pub name_assigner: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "partyName")]
     pub party_name: Option<String>,
@@ -334,8 +267,7 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSub
 /// and value. The OID must satisfy the regular expression shown below. For more
 /// information, see NIST's definition of Object Identifier (OID) (https://csrc.nist.gov/glossary/term/Object_Identifier).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSubjectInformationAccessAccessLocationOtherName
-{
+pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSubjectInformationAccessAccessLocationOtherName {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "typeID")]
     pub type_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -345,19 +277,10 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSub
 /// Describes the type and format of extension access. Only one of CustomObjectIdentifier
 /// or AccessMethodType may be provided. Providing both results in InvalidArgsException.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSubjectInformationAccessAccessMethod
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessMethodType"
-    )]
+pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSubjectInformationAccessAccessMethod {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMethodType")]
     pub access_method_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customObjectIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customObjectIdentifier")]
     pub custom_object_identifier: Option<String>,
 }
 
@@ -369,32 +292,15 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationCsrExtensionsSub
 /// in the certificate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateAuthorityCertificateAuthorityConfigurationSubject {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonName")]
     pub common_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customAttributes"
-    )]
-    pub custom_attributes:
-        Option<Vec<CertificateAuthorityCertificateAuthorityConfigurationSubjectCustomAttributes>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "distinguishedNameQualifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customAttributes")]
+    pub custom_attributes: Option<Vec<CertificateAuthorityCertificateAuthorityConfigurationSubjectCustomAttributes>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "distinguishedNameQualifier")]
     pub distinguished_name_qualifier: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generationQualifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generationQualifier")]
     pub generation_qualifier: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "givenName")]
     pub given_name: Option<String>,
@@ -404,19 +310,11 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationSubject {
     pub locality: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "organizationalUnit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "organizationalUnit")]
     pub organizational_unit: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pseudonym: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serialNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serialNumber")]
     pub serial_number: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
@@ -429,11 +327,7 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationSubject {
 /// Defines the X.500 relative distinguished name (RDN).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateAuthorityCertificateAuthorityConfigurationSubjectCustomAttributes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectIdentifier")]
     pub object_identifier: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -443,23 +337,23 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationSubjectCustomAtt
 /// support, to enable a certificate revocation list (CRL), to enable both, or
 /// to enable neither. The default is for both certificate validation mechanisms
 /// to be disabled.
-///
+/// 
 /// The following requirements apply to revocation configurations.
-///
+/// 
 ///    * A configuration disabling CRLs or OCSP must contain only the Enabled=False
 ///    parameter, and will fail if other parameters such as CustomCname or ExpirationInDays
 ///    are included.
-///
+/// 
 ///    * In a CRL configuration, the S3BucketName parameter must conform to Amazon
 ///    S3 bucket naming rules (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html).
-///
+/// 
 ///    * A configuration containing a custom Canonical Name (CNAME) parameter
 ///    for CRLs or OCSP must conform to RFC2396 (https://www.ietf.org/rfc/rfc2396.txt)
 ///    restrictions on the use of special characters in a CNAME.
-///
+/// 
 ///    * In a CRL or OCSP configuration, the value of a CNAME parameter must
 ///    not include a protocol prefix such as "http://" or "https://".
-///
+/// 
 /// For more information, see the OcspConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_OcspConfiguration.html)
 /// and CrlConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CrlConfiguration.html)
 /// types.
@@ -474,73 +368,65 @@ pub struct CertificateAuthorityRevocationConfiguration {
     /// Your private CA copies the CNAME or the S3 bucket name to the CRL Distribution
     /// Points extension of each certificate it issues. Your S3 bucket policy must
     /// give write permission to Amazon Web Services Private CA.
-    ///
+    /// 
     /// Amazon Web Services Private CA assets that are stored in Amazon S3 can be
     /// protected with encryption. For more information, see Encrypting Your CRLs
     /// (https://docs.aws.amazon.com/privateca/latest/userguide/PcaCreateCa.html#crl-encryption).
-    ///
+    /// 
     /// Your private CA uses the value in the ExpirationInDays parameter to calculate
     /// the nextUpdate field in the CRL. The CRL is refreshed prior to a certificate's
     /// expiration date or when a certificate is revoked. When a certificate is revoked,
     /// it appears in the CRL until the certificate expires, and then in one additional
     /// CRL after expiration, and it always appears in the audit report.
-    ///
+    /// 
     /// A CRL is typically updated approximately 30 minutes after a certificate is
     /// revoked. If for any reason a CRL update fails, Amazon Web Services Private
     /// CA makes further attempts every 15 minutes.
-    ///
+    /// 
     /// CRLs contain the following fields:
-    ///
+    /// 
     ///    * Version: The current version number defined in RFC 5280 is V2. The integer
     ///    value is 0x1.
-    ///
+    /// 
     ///    * Signature Algorithm: The name of the algorithm used to sign the CRL.
-    ///
+    /// 
     ///    * Issuer: The X.500 distinguished name of your private CA that issued
     ///    the CRL.
-    ///
+    /// 
     ///    * Last Update: The issue date and time of this CRL.
-    ///
+    /// 
     ///    * Next Update: The day and time by which the next CRL will be issued.
-    ///
+    /// 
     ///    * Revoked Certificates: List of revoked certificates. Each list item contains
     ///    the following information. Serial Number: The serial number, in hexadecimal
     ///    format, of the revoked certificate. Revocation Date: Date and time the
     ///    certificate was revoked. CRL Entry Extensions: Optional extensions for
     ///    the CRL entry. X509v3 CRL Reason Code: Reason the certificate was revoked.
-    ///
+    /// 
     ///    * CRL Extensions: Optional extensions for the CRL. X509v3 Authority Key
     ///    Identifier: Identifies the public key associated with the private key
     ///    used to sign the certificate. X509v3 CRL Number:: Decimal sequence number
     ///    for the CRL.
-    ///
+    /// 
     ///    * Signature Algorithm: Algorithm used by your private CA to sign the CRL.
-    ///
+    /// 
     ///    * Signature Value: Signature computed over the CRL.
-    ///
+    /// 
     /// Certificate revocation lists created by Amazon Web Services Private CA are
     /// DER-encoded. You can use the following OpenSSL command to list a CRL.
-    ///
+    /// 
     /// openssl crl -inform DER -text -in crl_path -noout
-    ///
+    /// 
     /// For more information, see Planning a certificate revocation list (CRL) (https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html)
     /// in the Amazon Web Services Private Certificate Authority User Guide
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "crlConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "crlConfiguration")]
     pub crl_configuration: Option<CertificateAuthorityRevocationConfigurationCrlConfiguration>,
     /// Contains information to enable and configure Online Certificate Status Protocol
     /// (OCSP) for validating certificate revocation status.
-    ///
+    /// 
     /// When you revoke a certificate, OCSP responses may take up to 60 minutes to
     /// reflect the new status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ocspConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspConfiguration")]
     pub ocsp_configuration: Option<CertificateAuthorityRevocationConfigurationOcspConfiguration>,
 }
 
@@ -553,101 +439,81 @@ pub struct CertificateAuthorityRevocationConfiguration {
 /// Your private CA copies the CNAME or the S3 bucket name to the CRL Distribution
 /// Points extension of each certificate it issues. Your S3 bucket policy must
 /// give write permission to Amazon Web Services Private CA.
-///
+/// 
 /// Amazon Web Services Private CA assets that are stored in Amazon S3 can be
 /// protected with encryption. For more information, see Encrypting Your CRLs
 /// (https://docs.aws.amazon.com/privateca/latest/userguide/PcaCreateCa.html#crl-encryption).
-///
+/// 
 /// Your private CA uses the value in the ExpirationInDays parameter to calculate
 /// the nextUpdate field in the CRL. The CRL is refreshed prior to a certificate's
 /// expiration date or when a certificate is revoked. When a certificate is revoked,
 /// it appears in the CRL until the certificate expires, and then in one additional
 /// CRL after expiration, and it always appears in the audit report.
-///
+/// 
 /// A CRL is typically updated approximately 30 minutes after a certificate is
 /// revoked. If for any reason a CRL update fails, Amazon Web Services Private
 /// CA makes further attempts every 15 minutes.
-///
+/// 
 /// CRLs contain the following fields:
-///
+/// 
 ///    * Version: The current version number defined in RFC 5280 is V2. The integer
 ///    value is 0x1.
-///
+/// 
 ///    * Signature Algorithm: The name of the algorithm used to sign the CRL.
-///
+/// 
 ///    * Issuer: The X.500 distinguished name of your private CA that issued
 ///    the CRL.
-///
+/// 
 ///    * Last Update: The issue date and time of this CRL.
-///
+/// 
 ///    * Next Update: The day and time by which the next CRL will be issued.
-///
+/// 
 ///    * Revoked Certificates: List of revoked certificates. Each list item contains
 ///    the following information. Serial Number: The serial number, in hexadecimal
 ///    format, of the revoked certificate. Revocation Date: Date and time the
 ///    certificate was revoked. CRL Entry Extensions: Optional extensions for
 ///    the CRL entry. X509v3 CRL Reason Code: Reason the certificate was revoked.
-///
+/// 
 ///    * CRL Extensions: Optional extensions for the CRL. X509v3 Authority Key
 ///    Identifier: Identifies the public key associated with the private key
 ///    used to sign the certificate. X509v3 CRL Number:: Decimal sequence number
 ///    for the CRL.
-///
+/// 
 ///    * Signature Algorithm: Algorithm used by your private CA to sign the CRL.
-///
+/// 
 ///    * Signature Value: Signature computed over the CRL.
-///
+/// 
 /// Certificate revocation lists created by Amazon Web Services Private CA are
 /// DER-encoded. You can use the following OpenSSL command to list a CRL.
-///
+/// 
 /// openssl crl -inform DER -text -in crl_path -noout
-///
+/// 
 /// For more information, see Planning a certificate revocation list (CRL) (https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html)
 /// in the Amazon Web Services Private Certificate Authority User Guide
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateAuthorityRevocationConfigurationCrlConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customCNAME"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customCNAME")]
     pub custom_cname: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationInDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationInDays")]
     pub expiration_in_days: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3BucketName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3BucketName")]
     pub s3_bucket_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3ObjectACL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3ObjectACL")]
     pub s3_object_acl: Option<String>,
 }
 
 /// Contains information to enable and configure Online Certificate Status Protocol
 /// (OCSP) for validating certificate revocation status.
-///
+/// 
 /// When you revoke a certificate, OCSP responses may take up to 60 minutes to
 /// reflect the new status.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateAuthorityRevocationConfigurationOcspConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ocspCustomCNAME"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspCustomCNAME")]
     pub ocsp_custom_cname: Option<String>,
 }
 
@@ -671,19 +537,11 @@ pub struct CertificateAuthorityStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<CertificateAuthorityStatusAckResourceMetadata>,
     /// The base64 PEM-encoded certificate signing request (CSR) for your private
     /// CA certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateSigningRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateSigningRequest")]
     pub certificate_signing_request: Option<String>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -695,18 +553,10 @@ pub struct CertificateAuthorityStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdAt")]
     pub created_at: Option<String>,
     /// Reason the request to create your private CA failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// Date and time at which your private CA was last updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastStateChangeAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStateChangeAt")]
     pub last_state_change_at: Option<String>,
     /// Date and time after which your private CA certificate is not valid.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
@@ -715,21 +565,13 @@ pub struct CertificateAuthorityStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
     pub not_before: Option<String>,
     /// The Amazon Web Services account ID that owns the certificate authority.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownerAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerAccount")]
     pub owner_account: Option<String>,
     /// The period during which a deleted CA can be restored. For more information,
     /// see the PermanentDeletionTimeInDays parameter of the DeleteCertificateAuthorityRequest
     /// (https://docs.aws.amazon.com/privateca/latest/APIReference/API_DeleteCertificateAuthorityRequest.html)
     /// action.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restorableUntil"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restorableUntil")]
     pub restorable_until: Option<String>,
     /// Serial number of your private CA.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -760,3 +602,4 @@ pub struct CertificateAuthorityStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

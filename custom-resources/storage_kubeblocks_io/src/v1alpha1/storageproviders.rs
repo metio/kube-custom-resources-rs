@@ -4,43 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// StorageProviderSpec defines the desired state of `StorageProvider`.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "storage.kubeblocks.io",
-    version = "v1alpha1",
-    kind = "StorageProvider",
-    plural = "storageproviders"
-)]
+#[kube(group = "storage.kubeblocks.io", version = "v1alpha1", kind = "StorageProvider", plural = "storageproviders")]
 #[kube(status = "StorageProviderStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct StorageProviderSpec {
     /// Specifies the name of the CSI driver used to access remote storage.
     /// This field can be empty, it indicates that the storage is not accessible via CSI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiDriverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiDriverName")]
     pub csi_driver_name: Option<String>,
     /// A Go template that used to render and generate `k8s.io/api/core/v1.Secret`
     /// resources for a specific CSI driver.
     /// For example, `accessKey` and `secretKey` needed by CSI-S3 are stored in this
     /// `Secret` resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiDriverSecretTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiDriverSecretTemplate")]
     pub csi_driver_secret_template: Option<String>,
     /// A Go template used to render and generate `k8s.io/api/core/v1.Secret`.
     /// This `Secret` involves the configuration details required by the `datasafed` tool
@@ -48,37 +35,21 @@ pub struct StorageProviderSpec {
     /// `bucket`, 'region', 'accessKey', 'secretKey', or something else for S3 storage.
     /// This field can be empty, it means this kind of storage is not accessible via
     /// the `datasafed` tool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasafedConfigTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasafedConfigTemplate")]
     pub datasafed_config_template: Option<String>,
     /// Describes the parameters required for storage.
     /// The parameters defined here can be referenced in the above templates,
     /// and `kbcli` uses this definition for dynamic command-line parameter parsing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parametersSchema"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parametersSchema")]
     pub parameters_schema: Option<StorageProviderParametersSchema>,
     /// A Go template that renders and generates `k8s.io/api/core/v1.PersistentVolumeClaim`
     /// resources. This PVC can reference the `StorageClass` created from `storageClassTemplate`,
     /// allowing Pods to access remote storage by mounting the PVC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimTemplate")]
     pub persistent_volume_claim_template: Option<String>,
     /// A Go template utilized to render and generate `kubernetes.storage.k8s.io.v1.StorageClass`
     /// resources. The `StorageClass' created by this template is aimed at using the CSI driver.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassTemplate")]
     pub storage_class_template: Option<String>,
 }
 
@@ -89,18 +60,10 @@ pub struct StorageProviderSpec {
 pub struct StorageProviderParametersSchema {
     /// Defines which parameters are credential fields, which need to be handled specifically.
     /// For instance, these should be stored in a `Secret` instead of a `ConfigMap`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialFields")]
     pub credential_fields: Option<Vec<String>>,
     /// Defines the parameters in OpenAPI V3.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openAPIV3Schema"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openAPIV3Schema")]
     pub open_apiv3_schema: Option<BTreeMap<String, serde_json::Value>>,
 }
 
@@ -121,3 +84,4 @@ pub enum StorageProviderStatusPhase {
     NotReady,
     Ready,
 }
+

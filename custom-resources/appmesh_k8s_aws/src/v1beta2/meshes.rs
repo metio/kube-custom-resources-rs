@@ -4,51 +4,34 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// MeshSpec defines the desired state of Mesh refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_MeshSpec.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appmesh.k8s.aws",
-    version = "v1beta2",
-    kind = "Mesh",
-    plural = "meshes"
-)]
+#[kube(group = "appmesh.k8s.aws", version = "v1beta2", kind = "Mesh", plural = "meshes")]
 #[kube(status = "MeshStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshSpec {
     /// AWSName is the AppMesh Mesh object's name. If unspecified or empty, it defaults to be "${name}" of k8s Mesh
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsName")]
     pub aws_name: Option<String>,
     /// The egress filter rules for the service mesh. If unspecified, default settings from AWS API will be applied. Refer to AWS Docs for default settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressFilter")]
     pub egress_filter: Option<MeshEgressFilter>,
     /// The AWS IAM account ID of the service mesh owner. Required if the account ID is not your own.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshOwner")]
     pub mesh_owner: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "meshServiceDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshServiceDiscovery")]
     pub mesh_service_discovery: Option<MeshMeshServiceDiscovery>,
     /// NamespaceSelector selects Namespaces using labels to designate mesh membership. This field follows standard label selector semantics: 	if present but empty, it selects all namespaces. 	if absent, it selects no namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<MeshNamespaceSelector>,
 }
 
@@ -72,11 +55,7 @@ pub enum MeshEgressFilterType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshMeshServiceDiscovery {
     /// The ipPreference for the mesh.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipPreference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipPreference")]
     pub ip_preference: Option<MeshMeshServiceDiscoveryIpPreference>,
 }
 
@@ -92,18 +71,10 @@ pub enum MeshMeshServiceDiscoveryIpPreference {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<MeshNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -129,10 +100,7 @@ pub struct MeshStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshARN")]
     pub mesh_arn: Option<String>,
     /// The generation observed by the Mesh controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

@@ -5,29 +5,20 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// RemoteClusterSpec defines the specification of a remote cluster
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "RemoteCluster",
-    plural = "remoteclusters"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "RemoteCluster", plural = "remoteclusters")]
 #[kube(status = "RemoteClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RemoteClusterSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configOverride"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverride")]
     pub config_override: Option<BTreeMap<String, serde_json::Value>>,
     /// RemoteClusterKubeConfig refers to a secret by which we'll use to connect remote cluster
     #[serde(rename = "kubeConfig")]
@@ -59,11 +50,7 @@ pub struct RemoteClusterStatus {
     pub conditions: Option<Vec<RemoteClusterStatusConditions>>,
     #[serde(rename = "currentVersion")]
     pub current_version: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
 
@@ -75,3 +62,4 @@ pub struct RemoteClusterStatusConditions {
     #[serde(rename = "type")]
     pub r#type: String,
 }
+

@@ -4,34 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ApiSpec defines the desired state of Api.
-///
+/// 
 /// Represents an API.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apigatewayv2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "API",
-    plural = "apis"
-)]
+#[kube(group = "apigatewayv2.services.k8s.aws", version = "v1alpha1", kind = "API", plural = "apis")]
 #[kube(namespaced)]
 #[kube(status = "APIStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct APISpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiKeySelectionExpression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKeySelectionExpression")]
     pub api_key_selection_expression: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basepath: Option<String>,
@@ -40,53 +31,25 @@ pub struct APISpec {
     /// Represents a CORS configuration. Supported only for HTTP APIs. See Configuring
     /// CORS (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html)
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "corsConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "corsConfiguration")]
     pub cors_configuration: Option<APICorsConfiguration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsARN")]
     pub credentials_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableExecuteAPIEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableExecuteAPIEndpoint")]
     pub disable_execute_api_endpoint: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableSchemaValidation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSchemaValidation")]
     pub disable_schema_validation: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failOnWarnings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOnWarnings")]
     pub fail_on_warnings: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolType")]
     pub protocol_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeKey")]
     pub route_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeSelectionExpression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeSelectionExpression")]
     pub route_selection_expression: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
@@ -101,39 +64,19 @@ pub struct APISpec {
 /// for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APICorsConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowCredentials"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCredentials")]
     pub allow_credentials: Option<bool>,
     /// Represents a collection of allowed headers. Supported only for HTTP APIs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowHeaders")]
     pub allow_headers: Option<Vec<String>>,
     /// Represents a collection of methods. Supported only for HTTP APIs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowMethods"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowMethods")]
     pub allow_methods: Option<Vec<String>>,
     /// Represents a collection of origins. Supported only for HTTP APIs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowOrigins"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowOrigins")]
     pub allow_origins: Option<Vec<String>>,
     /// Represents a collection of allowed headers. Supported only for HTTP APIs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposeHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeHeaders")]
     pub expose_headers: Option<Vec<String>>,
     /// An integer with a value between -1 and 86400. Supported only for HTTP APIs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
@@ -146,23 +89,11 @@ pub struct APIStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<APIStatusAckResourceMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiEndpoint")]
     pub api_endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiGatewayManaged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGatewayManaged")]
     pub api_gateway_managed: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiID")]
     pub api_id: Option<String>,
@@ -172,17 +103,9 @@ pub struct APIStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createdDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "importInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "importInfo")]
     pub import_info: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub warnings: Option<Vec<String>>,
@@ -209,3 +132,4 @@ pub struct APIStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

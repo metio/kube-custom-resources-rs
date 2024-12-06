@@ -4,68 +4,39 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "litmuschaos.io",
-    version = "v1alpha1",
-    kind = "ChaosEngine",
-    plural = "chaosengines"
-)]
+#[kube(group = "litmuschaos.io", version = "v1alpha1", kind = "ChaosEngine", plural = "chaosengines")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ChaosEngineSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub appinfo: Option<ChaosEngineAppinfo>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "auxiliaryAppInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auxiliaryAppInfo")]
     pub auxiliary_app_info: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chaosServiceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chaosServiceAccount")]
     pub chaos_service_account: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<ChaosEngineComponents>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultHealthCheck")]
     pub default_health_check: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "engineState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineState")]
     pub engine_state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub experiments: Option<Vec<ChaosEngineExperiments>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobCleanUpPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobCleanUpPolicy")]
     pub job_clean_up_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selectors: Option<ChaosEngineSelectors>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
 }
 
@@ -91,17 +62,9 @@ pub struct ChaosEngineComponents {
 pub struct ChaosEngineComponentsRunner {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runnerAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runnerAnnotations")]
     pub runner_annotations: Option<ChaosEngineComponentsRunnerRunnerAnnotations>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runnerLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runnerLabels")]
     pub runner_labels: Option<BTreeMap<String, String>>,
     /// Pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -111,7 +74,8 @@ pub struct ChaosEngineComponentsRunner {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ChaosEngineComponentsRunnerRunnerAnnotations {}
+pub struct ChaosEngineComponentsRunnerRunnerAnnotations {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineComponentsRunnerRunnerLabels {
@@ -134,11 +98,7 @@ pub struct ChaosEngineComponentsRunnerTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// Period of time the toleration tolerates the taint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -155,11 +115,7 @@ pub struct ChaosEngineComponentsSidecar {
     pub env_from: Option<Vec<ChaosEngineComponentsSidecarEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<ChaosEngineComponentsSidecarSecrets>>,
@@ -182,28 +138,16 @@ pub struct ChaosEngineComponentsSidecarEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineComponentsSidecarEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ChaosEngineComponentsSidecarEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ChaosEngineComponentsSidecarEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ChaosEngineComponentsSidecarEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ChaosEngineComponentsSidecarEnvValueFromSecretKeyRef>,
 }
 
@@ -224,11 +168,7 @@ pub struct ChaosEngineComponentsSidecarEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineComponentsSidecarEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -239,11 +179,7 @@ pub struct ChaosEngineComponentsSidecarEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineComponentsSidecarEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -269,11 +205,7 @@ pub struct ChaosEngineComponentsSidecarEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineComponentsSidecarEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ChaosEngineComponentsSidecarEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -330,39 +262,19 @@ pub struct ChaosEngineExperimentsSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecComponents {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMaps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMaps")]
     pub config_maps: Option<Vec<ChaosEngineExperimentsSpecComponentsConfigMaps>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ChaosEngineExperimentsSpecComponentsEnv>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "experimentAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentAnnotations")]
     pub experiment_annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "experimentImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentImage")]
     pub experiment_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<ChaosEngineExperimentsSpecComponentsSecrets>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCheckTimeouts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCheckTimeouts")]
     pub status_check_timeouts: Option<ChaosEngineExperimentsSpecComponentsStatusCheckTimeouts>,
     /// Pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -394,29 +306,16 @@ pub struct ChaosEngineExperimentsSpecComponentsEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecComponentsEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ChaosEngineExperimentsSpecComponentsEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ChaosEngineExperimentsSpecComponentsEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ChaosEngineExperimentsSpecComponentsEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ChaosEngineExperimentsSpecComponentsEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ChaosEngineExperimentsSpecComponentsEnvValueFromSecretKeyRef>,
 }
 
@@ -437,11 +336,7 @@ pub struct ChaosEngineExperimentsSpecComponentsEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecComponentsEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -452,11 +347,7 @@ pub struct ChaosEngineExperimentsSpecComponentsEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecComponentsEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -523,11 +414,7 @@ pub struct ChaosEngineExperimentsSpecComponentsTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// Period of time the toleration tolerates the taint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -536,42 +423,22 @@ pub struct ChaosEngineExperimentsSpecComponentsTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbe {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cmdProbe/inputs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cmdProbe/inputs")]
     pub cmd_probe_inputs: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpProbe/inputs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProbe/inputs")]
     pub http_probe_inputs: Option<ChaosEngineExperimentsSpecProbeHttpProbeInputs>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sProbe/inputs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sProbe/inputs")]
     pub k8s_probe_inputs: Option<ChaosEngineExperimentsSpecProbeK8sProbeInputs>,
     pub mode: String,
     pub name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "promProbe/inputs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "promProbe/inputs")]
     pub prom_probe_inputs: Option<ChaosEngineExperimentsSpecProbePromProbeInputs>,
     #[serde(rename = "runProperties")]
     pub run_properties: ChaosEngineExperimentsSpecProbeRunProperties,
     /// inputs needed for the SLO probe
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sloProbe/inputs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sloProbe/inputs")]
     pub slo_probe_inputs: Option<ChaosEngineExperimentsSpecProbeSloProbeInputs>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -610,45 +477,24 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnv>>,
     /// HostNetwork define the hostNetwork of the external pod it supports boolean values and default value is false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// Image for the source pod
     pub image: String,
     /// ImagePullPolicy for the source pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// ImagePullSecrets for source pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
-    pub image_pull_secrets:
-        Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceImagePullSecrets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceImagePullSecrets>>,
     /// InheritInputs define to inherit experiment details in probe pod it supports boolean values and default value is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inheritInputs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inheritInputs")]
     pub inherit_inputs: Option<bool>,
     /// Labels for the source pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// NodeSelector for the source pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Privileged for the source pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -657,11 +503,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceTolerations>>,
     /// VolumesMount for the source pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMount")]
     pub volume_mount: Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumeMount>>,
     /// Volumes for the source pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -685,32 +527,17 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -730,11 +557,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -745,11 +568,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromFieldR
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -792,11 +611,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// Period of time the toleration tolerates the taint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -810,11 +625,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumeMount {
     #[serde(rename = "mountPath")]
     pub mount_path: String,
     /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -825,11 +636,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumeMount {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive. This field is beta in 1.15.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -837,13 +644,8 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumeMount {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumes {
     /// AWSElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesAwsElasticBlockStore>,
     /// AzureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesAzureDisk>,
@@ -863,11 +665,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCsi>,
     /// DownwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApi>,
     /// EmptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
@@ -876,23 +674,14 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesFc>,
     /// FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesFlexVolume>,
     /// Flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesFlocker>,
     /// GCEPersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesGcePersistentDisk>,
     /// GitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesGitRepo>,
@@ -911,29 +700,14 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesNfs>,
     /// PersistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesPersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesPersistentVolumeClaim>,
     /// PhotonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesPhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesPhotonPersistentDisk>,
     /// PortworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesPortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesPortworxVolume>,
     /// Items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjected>,
@@ -953,13 +727,8 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesStorageos>,
     /// VsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
-    pub vsphere_volume:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesVsphereVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesVsphereVolume>,
 }
 
 /// AWSElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
@@ -983,11 +752,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesAwsElasticB
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesAzureDisk {
     /// Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// The Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -1032,16 +797,11 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCephfs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCephfsSecretRef>,
+    pub secret_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCephfsSecretRef>,
     /// Optional: User is the rados user name, default is admin More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
@@ -1066,8 +826,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCinder {
     pub read_only: Option<bool>,
     /// Optional: points to a secret object containing parameters used to connect to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCinderSecretRef>,
+    pub secret_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCinderSecretRef>,
     /// volume id used to identify the volume in cinder. More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
     pub volume_id: String,
@@ -1085,16 +844,11 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCinderSecre
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesConfigMap {
     /// Optional: mode bits to use on created files by default. Must be a value between 0 and 0777. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// If unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesConfigMapItems>>,
+    pub items: Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesConfigMapItems>>,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1124,22 +878,13 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// NodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCsiNodePublishSecretRef>,
     /// Specifies a read-only configuration for the volume. Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// VolumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -1155,16 +900,11 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesCsiNodePubl
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApi {
     /// Optional: mode bits to use on created files by default. Must be a value between 0 and 0777. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApiItems>>,
+    pub items: Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -1172,33 +912,22 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApi
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits to use on this file, must be a value between 0 and 0777. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1207,14 +936,9 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApi
 
 /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApiItemsResourceFieldRef
-{
+pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1247,11 +971,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1274,8 +994,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesFlexVolume 
     pub read_only: Option<bool>,
     /// Optional: SecretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesFlexVolumeSecretRef>,
 }
 
 /// Optional: SecretRef is reference to the secret object containing sensitive information to pass to the plugin scripts. This may be empty if no secret object is specified. If the secret object contains more than one secret, all secrets are passed to the plugin scripts.
@@ -1290,18 +1009,10 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesFlexVolumeS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesFlocker {
     /// Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -1361,37 +1072,21 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesIscsi {
     /// whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// Filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// Custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// Target iSCSI Qualified Name.
     pub iqn: String,
     /// iSCSI Interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// iSCSI Target Lun number.
     pub lun: i32,
@@ -1403,8 +1098,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesIscsi {
     pub read_only: Option<bool>,
     /// CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesIscsiSecretRef>,
+    pub secret_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesIscsiSecretRef>,
     /// iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
     pub target_portal: String,
@@ -1470,11 +1164,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesPortworxVol
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjected {
     /// Mode bits to use on created files by default. Must be a value between 0 and 0777. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// list of volume projections
     pub sources: Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSources>,
@@ -1513,8 +1203,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSo
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesConfigMapItems
-{
+pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesConfigMapItems {
     /// The key to project.
     pub key: String,
     /// Optional: mode bits to use on this file, must be a value between 0 and 0777. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
@@ -1550,14 +1239,9 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSo
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesDownwardApiItemsFieldRef
-{
+pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1566,14 +1250,9 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSo
 
 /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1587,9 +1266,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSo
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesSecret {
     /// If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1612,17 +1289,12 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSo
 
 /// information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesServiceAccountToken
-{
+pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesProjectedSourcesServiceAccountToken {
     /// Audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
     /// ExpirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// Path is the path relative to the mount point of the file to project the token into.
     pub path: String,
@@ -1693,11 +1365,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesScaleIo {
     /// The host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// The name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -1706,34 +1374,18 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesScaleIoSecretRef,
     /// Flag to enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// Indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned. Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// The ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// The name of the storage system as configured in ScaleIO.
     pub system: String,
     /// The name of a volume already created in the ScaleIO system that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -1749,11 +1401,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesScaleIoSecr
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesSecret {
     /// Optional: mode bits to use on created files by default. Must be a value between 0 and 0777. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1762,11 +1410,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
     /// Name of the secret in the pod's namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -1793,21 +1437,12 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesStorageos {
     pub read_only: Option<bool>,
     /// SecretRef specifies the secret to use for obtaining the StorageOS API credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesStorageosSecretRef>,
+    pub secret_ref: Option<ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesStorageosSecretRef>,
     /// VolumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// VolumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -1826,18 +1461,10 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesVsphereVolu
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// Storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// Storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// Path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -1846,11 +1473,7 @@ pub struct ChaosEngineExperimentsSpecProbeCmdProbeInputsSourceVolumesVsphereVolu
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeHttpProbeInputs {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub method: ChaosEngineExperimentsSpecProbeHttpProbeInputsMethod,
     pub url: String,
@@ -1877,11 +1500,7 @@ pub struct ChaosEngineExperimentsSpecProbeHttpProbeInputsMethodPost {
     pub body: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodyPath")]
     pub body_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     pub criteria: String,
     #[serde(rename = "responseCode")]
@@ -1890,29 +1509,17 @@ pub struct ChaosEngineExperimentsSpecProbeHttpProbeInputsMethodPost {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeK8sProbeInputs {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelector")]
     pub field_selector: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     pub operation: String,
     pub resource: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceNames")]
     pub resource_names: Option<String>,
     pub version: String,
 }
@@ -1937,40 +1544,20 @@ pub struct ChaosEngineExperimentsSpecProbePromProbeInputsComparator {
 pub struct ChaosEngineExperimentsSpecProbeRunProperties {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attempt: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evaluationTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationTimeout")]
     pub evaluation_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelay")]
     pub initial_delay: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
     pub interval: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "probePollingInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probePollingInterval")]
     pub probe_polling_interval: Option<String>,
     #[serde(rename = "probeTimeout")]
     pub probe_timeout: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stopOnFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopOnFailure")]
     pub stop_on_failure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verbosity: Option<String>,
@@ -1982,18 +1569,10 @@ pub struct ChaosEngineExperimentsSpecProbeSloProbeInputs {
     /// Comparator check for the correctness of the probe output
     pub comparator: ChaosEngineExperimentsSpecProbeSloProbeInputsComparator,
     /// EvaluationWindow is the time period for which the metrics will be evaluated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evaluationWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationWindow")]
     pub evaluation_window: Option<ChaosEngineExperimentsSpecProbeSloProbeInputsEvaluationWindow>,
     /// InsecureSkipVerify flag to skip certificate checks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// PlatformEndpoint for the monitoring service endpoint
     #[serde(rename = "platformEndpoint")]
@@ -2022,18 +1601,10 @@ pub struct ChaosEngineExperimentsSpecProbeSloProbeInputsComparator {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosEngineExperimentsSpecProbeSloProbeInputsEvaluationWindow {
     /// End time of evaluation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evaluationEndTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationEndTime")]
     pub evaluation_end_time: Option<i64>,
     /// Start time of evaluation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evaluationStartTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationStartTime")]
     pub evaluation_start_time: Option<i64>,
 }
 
@@ -2084,3 +1655,4 @@ pub struct ChaosEngineSelectorsWorkloads {
     pub names: Option<String>,
     pub namespace: String,
 }
+

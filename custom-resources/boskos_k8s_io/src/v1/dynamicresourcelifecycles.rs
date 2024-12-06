@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "boskos.k8s.io",
-    version = "v1",
-    kind = "DRLCObject",
-    plural = "dynamicresourcelifecycles"
-)]
+#[kube(group = "boskos.k8s.io", version = "v1", kind = "DRLCObject", plural = "dynamicresourcelifecycles")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DRLCObjectSpec {
     /// Config information about how to create the object
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -50,3 +45,4 @@ pub struct DRLCObjectConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

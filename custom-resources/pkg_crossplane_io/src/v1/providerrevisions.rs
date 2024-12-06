@@ -4,44 +4,31 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ProviderRevisionSpec specifies configuration for a ProviderRevision.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "pkg.crossplane.io",
-    version = "v1",
-    kind = "ProviderRevision",
-    plural = "providerrevisions"
-)]
+#[kube(group = "pkg.crossplane.io", version = "v1", kind = "ProviderRevision", plural = "providerrevisions")]
 #[kube(status = "ProviderRevisionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ProviderRevisionSpec {
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
     /// ControllerConfigRef references a ControllerConfig resource that will be
     /// used to configure the packaged controller Deployment.
     /// Deprecated: Use RuntimeConfigReference instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerConfigRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerConfigRef")]
     pub controller_config_ref: Option<ProviderRevisionControllerConfigRef>,
     /// DesiredState of the PackageRevision. Can be either Active or Inactive.
     #[serde(rename = "desiredState")]
@@ -49,11 +36,7 @@ pub struct ProviderRevisionSpec {
     /// IgnoreCrossplaneConstraints indicates to the package manager whether to
     /// honor Crossplane version constrains specified by the package.
     /// Default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreCrossplaneConstraints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCrossplaneConstraints")]
     pub ignore_crossplane_constraints: Option<bool>,
     /// Package image used by install Pod to extract package contents.
     pub image: String,
@@ -61,57 +44,33 @@ pub struct ProviderRevisionSpec {
     /// applied to any images pulled for the package, such as a provider's
     /// controller image.
     /// Default is IfNotPresent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packagePullPolicy")]
     pub package_pull_policy: Option<String>,
     /// PackagePullSecrets are named secrets in the same namespace that can be
     /// used to fetch packages from private registries. They are also applied to
     /// any images pulled for the package, such as a provider's controller image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packagePullSecrets")]
     pub package_pull_secrets: Option<Vec<ProviderRevisionPackagePullSecrets>>,
     /// Revision number. Indicates when the revision will be garbage collected
     /// based on the parent's RevisionHistoryLimit.
     pub revision: i64,
     /// RuntimeConfigRef references a RuntimeConfig resource that will be used
     /// to configure the package runtime.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeConfigRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeConfigRef")]
     pub runtime_config_ref: Option<ProviderRevisionRuntimeConfigRef>,
     /// SkipDependencyResolution indicates to the package manager whether to skip
     /// resolving dependencies for a package. Setting this value to true may have
     /// unintended consequences.
     /// Default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipDependencyResolution"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipDependencyResolution")]
     pub skip_dependency_resolution: Option<bool>,
     /// TLSClientSecretName is the name of the TLS Secret that stores client
     /// certificates of the Provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientSecretName")]
     pub tls_client_secret_name: Option<String>,
     /// TLSServerSecretName is the name of the TLS Secret that stores server
     /// certificates of the Provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsServerSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsServerSecretName")]
     pub tls_server_secret_name: Option<String>,
 }
 
@@ -142,11 +101,7 @@ pub struct ProviderRevisionPackagePullSecrets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProviderRevisionRuntimeConfigRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -162,39 +117,19 @@ pub struct ProviderRevisionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Dependency information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "foundDependencies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "foundDependencies")]
     pub found_dependencies: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installedDependencies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installedDependencies")]
     pub installed_dependencies: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "invalidDependencies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "invalidDependencies")]
     pub invalid_dependencies: Option<i64>,
     /// References to objects owned by PackageRevision.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectRefs")]
     pub object_refs: Option<Vec<ProviderRevisionStatusObjectRefs>>,
     /// PermissionRequests made by this package. The package declares that its
     /// controller needs these permissions to run. The RBAC manager is
     /// responsible for granting them.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "permissionRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "permissionRequests")]
     pub permission_requests: Option<Vec<ProviderRevisionStatusPermissionRequests>>,
 }
 
@@ -226,18 +161,10 @@ pub struct ProviderRevisionStatusPermissionRequests {
     /// NonResourceURLs is a set of partial urls that a user should have access to.  *s are allowed, but only as the full, final step in the path
     /// Since non-resource URLs are not namespaced, this field is only applicable for ClusterRoles referenced from a ClusterRoleBinding.
     /// Rules can either apply to API resources (such as "pods" or "secrets") or non-resource URL paths (such as "/api"),  but not both.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonResourceURLs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonResourceURLs")]
     pub non_resource_ur_ls: Option<Vec<String>>,
     /// ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceNames")]
     pub resource_names: Option<Vec<String>>,
     /// Resources is a list of resources this rule applies to. '*' represents all resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -245,3 +172,4 @@ pub struct ProviderRevisionStatusPermissionRequests {
     /// Verbs is a list of Verbs that apply to ALL the ResourceKinds contained in this rule. '*' represents all verbs.
     pub verbs: Vec<String>,
 }
+

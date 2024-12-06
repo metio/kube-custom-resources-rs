@@ -4,54 +4,37 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// ConnectionSpec defines the desired state of Connection
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "mariadb.mmontes.io",
-    version = "v1alpha1",
-    kind = "Connection",
-    plural = "connections"
-)]
+#[kube(group = "mariadb.mmontes.io", version = "v1alpha1", kind = "Connection", plural = "connections")]
 #[kube(namespaced)]
 #[kube(status = "ConnectionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ConnectionSpec {
     /// Database to use when configuring the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<String>,
     /// HealthCheck to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<ConnectionHealthCheck>,
     /// Host to connect to. If not provided, it defaults to the MariaDB host or to the MaxScale host.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// MariaDBRef is a reference to the MariaDB to connect to. Either MariaDBRef or MaxScaleRef must be provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mariaDbRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mariaDbRef")]
     pub maria_db_ref: Option<ConnectionMariaDbRef>,
     /// MaxScaleRef is a reference to the MaxScale to connect to. Either MariaDBRef or MaxScaleRef must be provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxScaleRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxScaleRef")]
     pub max_scale_ref: Option<ObjectReference>,
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -63,25 +46,13 @@ pub struct ConnectionSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SecretName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SecretTemplate to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
     pub secret_template: Option<ConnectionSecretTemplate>,
     /// ServiceName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
     /// Username to use for configuring the Connection.
     pub username: String,
@@ -94,11 +65,7 @@ pub struct ConnectionHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// RetryInterval is the intervañ used to perform health check retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
@@ -106,11 +73,7 @@ pub struct ConnectionHealthCheck {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConnectionMariaDbRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
@@ -125,11 +88,7 @@ pub struct ConnectionMariaDbRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -143,11 +102,7 @@ pub struct ConnectionMariaDbRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConnectionMaxScaleRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
@@ -162,11 +117,7 @@ pub struct ConnectionMaxScaleRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -193,11 +144,7 @@ pub struct ConnectionSecretTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// DatabaseKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseKey")]
     pub database_key: Option<String>,
     /// Format to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -212,21 +159,13 @@ pub struct ConnectionSecretTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// PasswordKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// PortKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
     /// UsernameKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
@@ -237,3 +176,4 @@ pub struct ConnectionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

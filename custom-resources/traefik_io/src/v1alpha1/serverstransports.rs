@@ -4,80 +4,43 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// ServersTransportSpec defines the desired state of a ServersTransport.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "traefik.io",
-    version = "v1alpha1",
-    kind = "ServersTransport",
-    plural = "serverstransports"
-)]
+#[kube(group = "traefik.io", version = "v1alpha1", kind = "ServersTransport", plural = "serverstransports")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ServersTransportSpec {
     /// CertificatesSecrets defines a list of secret storing client certificates for mTLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificatesSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesSecrets")]
     pub certificates_secrets: Option<Vec<String>>,
     /// DisableHTTP2 disables HTTP/2 for connections with backend servers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHTTP2")]
     pub disable_http2: Option<bool>,
     /// ForwardingTimeouts defines the timeouts for requests forwarded to the backend servers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardingTimeouts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardingTimeouts")]
     pub forwarding_timeouts: Option<ServersTransportForwardingTimeouts>,
     /// InsecureSkipVerify disables SSL certificate verification.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// MaxIdleConnsPerHost controls the maximum idle (keep-alive) to keep per-host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxIdleConnsPerHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxIdleConnsPerHost")]
     pub max_idle_conns_per_host: Option<i64>,
     /// PeerCertURI defines the peer cert URI used to match against SAN URI during the peer certificate verification.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "peerCertURI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerCertURI")]
     pub peer_cert_uri: Option<String>,
     /// RootCAsSecrets defines a list of CA secret used to validate self-signed certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootCAsSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootCAsSecrets")]
     pub root_c_as_secrets: Option<Vec<String>>,
     /// ServerName defines the server name used to contact the server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
     /// Spiffe defines the SPIFFE configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -88,39 +51,19 @@ pub struct ServersTransportSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServersTransportForwardingTimeouts {
     /// DialTimeout is the amount of time to wait until a connection to a backend server can be established.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dialTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dialTimeout")]
     pub dial_timeout: Option<IntOrString>,
     /// IdleConnTimeout is the maximum period for which an idle HTTP keep-alive connection will remain open before closing itself.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleConnTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleConnTimeout")]
     pub idle_conn_timeout: Option<IntOrString>,
     /// PingTimeout is the timeout after which the HTTP/2 connection will be closed if a response to ping is not received.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pingTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pingTimeout")]
     pub ping_timeout: Option<IntOrString>,
     /// ReadIdleTimeout is the timeout after which a health check using ping frame will be carried out if no frame is received on the HTTP/2 connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readIdleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readIdleTimeout")]
     pub read_idle_timeout: Option<IntOrString>,
     /// ResponseHeaderTimeout is the amount of time to wait for a server's response headers after fully writing the request (including its body, if any).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeaderTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaderTimeout")]
     pub response_header_timeout: Option<IntOrString>,
 }
 
@@ -131,10 +74,7 @@ pub struct ServersTransportSpiffe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ids: Option<Vec<String>>,
     /// TrustDomain defines the allowed SPIFFE trust domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomain")]
     pub trust_domain: Option<String>,
 }
+

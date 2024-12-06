@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// TestSpec defines the desired state of Test
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tests.testkube.io",
-    version = "v1",
-    kind = "Test",
-    plural = "tests"
-)]
+#[kube(group = "tests.testkube.io", version = "v1", kind = "Test", plural = "tests")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TestSpec {
     /// After steps is list of scripts which will be sequentially orchestrated
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -63,11 +58,7 @@ pub struct TestAfterExecute {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stopOnFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopOnFailure")]
     pub stop_on_failure: Option<bool>,
 }
 
@@ -95,11 +86,7 @@ pub struct TestBeforeExecute {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stopOnFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopOnFailure")]
     pub stop_on_failure: Option<bool>,
 }
 
@@ -127,14 +114,12 @@ pub struct TestStepsExecute {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stopOnFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopOnFailure")]
     pub stop_on_failure: Option<bool>,
 }
 
 /// TestStatus defines the observed state of Test
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestStatus {}
+pub struct TestStatus {
+}
+

@@ -1,9 +1,7 @@
 /*!
-This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/). Each binding is generated with [kopium](https://github.com/kube-rs/kopium), updated weekly, and released monthly.
+This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/) for the `k8s.nginx.org` group. Each binding is generated with [kopium](https://github.com/kube-rs/kopium), updated and released weekly.
 
-# k8s_nginx_org
-
-Custom resources in this crate belong to the `k8s.nginx.org` group. The following versions and custom resources are available:
+# Available Custom Resources
 
 ## k8s.nginx.org/v1
 - `GlobalConfiguration`

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// CouchbaseRoleBindingSpec defines the group of subjects i.e. users, and the
 /// role i.e. group they are a member of.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "couchbase.com",
-    version = "v2",
-    kind = "CouchbaseRoleBinding",
-    plural = "couchbaserolebindings"
-)]
+#[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseRoleBinding", plural = "couchbaserolebindings")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct CouchbaseRoleBindingSpec {
     /// CouchbaseGroup being bound to subjects.
     #[serde(rename = "roleRef")]
@@ -56,3 +51,4 @@ pub struct CouchbaseRoleBindingSubjects {
 pub enum CouchbaseRoleBindingSubjectsKind {
     CouchbaseUser,
 }
+

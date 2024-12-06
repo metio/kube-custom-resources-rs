@@ -4,42 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// MonitorSpec defines the desired state of Tigera monitor.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "Monitor",
-    plural = "monitors"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "Monitor", plural = "monitors")]
 #[kube(status = "MonitorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MonitorSpec {
     /// AlertManager is the configuration for the AlertManager.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alertManager"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertManager")]
     pub alert_manager: Option<MonitorAlertManager>,
     /// ExternalPrometheus optionally configures integration with an external Prometheus for scraping Calico metrics. When
     /// specified, the operator will render resources in the defined namespace. This option can be useful for configuring
     /// scraping from git-ops tools without the need of post-installation steps.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalPrometheus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalPrometheus")]
     pub external_prometheus: Option<MonitorExternalPrometheus>,
     /// Prometheus is the configuration for the Prometheus.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -107,11 +94,7 @@ pub struct MonitorExternalPrometheus {
     /// - Params to scrape all metrics available in Calico Enterprise.
     /// - BearerTokenSecret (If not overridden, the operator will also create corresponding RBAC that allows authz to the metrics.)
     /// - TLSConfig, containing the caFile and serverName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceMonitor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitor")]
     pub service_monitor: Option<MonitorExternalPrometheusServiceMonitor>,
 }
 
@@ -139,39 +122,21 @@ pub struct MonitorExternalPrometheusServiceMonitor {
 pub struct MonitorExternalPrometheusServiceMonitorEndpoints {
     /// Secret to mount to read bearer token for scraping targets.
     /// Recommended: when unset, the operator will create a Secret, a ClusterRole and a ClusterRoleBinding.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<MonitorExternalPrometheusServiceMonitorEndpointsBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<MonitorExternalPrometheusServiceMonitorEndpointsBearerTokenSecret>,
     /// HonorLabels chooses the metric's labels on collisions with target labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
     pub honor_labels: Option<bool>,
     /// HonorTimestamps controls whether Prometheus respects the timestamps present in scraped data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorTimestamps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorTimestamps")]
     pub honor_timestamps: Option<bool>,
     /// Interval at which metrics should be scraped.
     /// If not specified Prometheus' global scrape interval is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// MetricRelabelConfigs to apply to samples before ingestion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricRelabelings"
-    )]
-    pub metric_relabelings:
-        Option<Vec<MonitorExternalPrometheusServiceMonitorEndpointsMetricRelabelings>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
+    pub metric_relabelings: Option<Vec<MonitorExternalPrometheusServiceMonitorEndpointsMetricRelabelings>>,
     /// Optional HTTP URL parameters
     /// Default: scrape all metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -184,11 +149,7 @@ pub struct MonitorExternalPrometheusServiceMonitorEndpoints {
     pub relabelings: Option<Vec<MonitorExternalPrometheusServiceMonitorEndpointsRelabelings>>,
     /// Timeout after which the scrape is ended.
     /// If not specified, the Prometheus global scrape timeout is used unless it is less than `Interval` in which the latter is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
 }
 
@@ -241,21 +202,13 @@ pub struct MonitorExternalPrometheusServiceMonitorEndpointsMetricRelabelings {
     /// The source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
     /// Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
@@ -333,21 +286,13 @@ pub struct MonitorExternalPrometheusServiceMonitorEndpointsRelabelings {
     /// The source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
     /// Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
@@ -408,11 +353,7 @@ pub struct MonitorPrometheus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MonitorPrometheusSpec {
     /// CommonPrometheusFields are the options available to both the Prometheus server and agent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonPrometheusFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonPrometheusFields")]
     pub common_prometheus_fields: Option<MonitorPrometheusSpecCommonPrometheusFields>,
 }
 
@@ -524,3 +465,4 @@ pub struct MonitorStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

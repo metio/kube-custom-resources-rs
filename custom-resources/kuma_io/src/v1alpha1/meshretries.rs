@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the Kuma MeshRetry resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshRetry",
-    plural = "meshretries"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshRetry", plural = "meshretries")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshRetrySpec {
     /// TargetRef is a reference to the resource the policy takes an effect on.
     /// The resource could be either a real store object or virtual resource
@@ -58,19 +53,11 @@ pub struct MeshRetryTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -130,28 +117,16 @@ pub struct MeshRetryToDefaultGrpc {
     pub back_off: Option<MeshRetryToDefaultGrpcBackOff>,
     /// NumRetries is the number of attempts that will be made on failed (and
     /// retriable) requests. If not set, the default value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numRetries")]
     pub num_retries: Option<i32>,
     /// PerTryTimeout is the maximum amount of time each retry attempt can take
     /// before it times out. If not set, the global request timeout for the route
     /// will be used. Setting this value to 0 will disable the per-try timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perTryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perTryTimeout")]
     pub per_try_timeout: Option<String>,
     /// RateLimitedBackOff is a configuration of backoff which will be used when
     /// the upstream returns one of the headers configured.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rateLimitedBackOff"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitedBackOff")]
     pub rate_limited_back_off: Option<MeshRetryToDefaultGrpcRateLimitedBackOff>,
     /// RetryOn is a list of conditions which will cause a retry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOn")]
@@ -164,19 +139,11 @@ pub struct MeshRetryToDefaultGrpc {
 pub struct MeshRetryToDefaultGrpcBackOff {
     /// BaseInterval is an amount of time which should be taken between retries.
     /// Must be greater than zero. Values less than 1 ms are rounded up to 1 ms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseInterval")]
     pub base_interval: Option<String>,
     /// MaxInterval is a maximal amount of time which will be taken between retries.
     /// Default is 10 times the "BaseInterval".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInterval")]
     pub max_interval: Option<String>,
 }
 
@@ -185,21 +152,13 @@ pub struct MeshRetryToDefaultGrpcBackOff {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRetryToDefaultGrpcRateLimitedBackOff {
     /// MaxInterval is a maximal amount of time which will be taken between retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInterval")]
     pub max_interval: Option<String>,
     /// ResetHeaders specifies the list of headers (like Retry-After or X-RateLimit-Reset)
     /// to match against the response. Headers are tried in order, and matched
     /// case-insensitive. The first header to be parsed successfully is used.
     /// If no headers match the default exponential BackOff is used instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resetHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resetHeaders")]
     pub reset_headers: Option<Vec<MeshRetryToDefaultGrpcRateLimitedBackOffResetHeaders>>,
 }
 
@@ -226,64 +185,36 @@ pub struct MeshRetryToDefaultHttp {
     pub back_off: Option<MeshRetryToDefaultHttpBackOff>,
     /// HostSelection is a list of predicates that dictate how hosts should be selected
     /// when requests are retried.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostSelection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostSelection")]
     pub host_selection: Option<Vec<MeshRetryToDefaultHttpHostSelection>>,
     /// HostSelectionMaxAttempts is the maximum number of times host selection will be
     /// reattempted before giving up, at which point the host that was last selected will
     /// be routed to. If unspecified, this will default to retrying once.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostSelectionMaxAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostSelectionMaxAttempts")]
     pub host_selection_max_attempts: Option<i64>,
     /// NumRetries is the number of attempts that will be made on failed (and
     /// retriable) requests.  If not set, the default value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numRetries")]
     pub num_retries: Option<i32>,
     /// PerTryTimeout is the amount of time after which retry attempt should time out.
     /// If left unspecified, the global route timeout for the request will be used.
     /// Consequently, when using a 5xx based retry policy, a request that times out
     /// will not be retried as the total timeout budget would have been exhausted.
     /// Setting this timeout to 0 will disable it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perTryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perTryTimeout")]
     pub per_try_timeout: Option<String>,
     /// RateLimitedBackOff is a configuration of backoff which will be used
     /// when the upstream returns one of the headers configured.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rateLimitedBackOff"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitedBackOff")]
     pub rate_limited_back_off: Option<MeshRetryToDefaultHttpRateLimitedBackOff>,
     /// RetriableRequestHeaders is an HTTP headers which must be present in the request
     /// for retries to be attempted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retriableRequestHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retriableRequestHeaders")]
     pub retriable_request_headers: Option<Vec<MeshRetryToDefaultHttpRetriableRequestHeaders>>,
     /// RetriableResponseHeaders is an HTTP response headers that trigger a retry
     /// if present in the response. A retry will be triggered if any of the header
     /// matches the upstream response headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retriableResponseHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retriableResponseHeaders")]
     pub retriable_response_headers: Option<Vec<MeshRetryToDefaultHttpRetriableResponseHeaders>>,
     /// RetryOn is a list of conditions which will cause a retry. Available values are:
     /// [5XX, GatewayError, Reset, Retriable4xx, ConnectFailure, EnvoyRatelimited,
@@ -301,19 +232,11 @@ pub struct MeshRetryToDefaultHttp {
 pub struct MeshRetryToDefaultHttpBackOff {
     /// BaseInterval is an amount of time which should be taken between retries.
     /// Must be greater than zero. Values less than 1 ms are rounded up to 1 ms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseInterval")]
     pub base_interval: Option<String>,
     /// MaxInterval is a maximal amount of time which will be taken between retries.
     /// Default is 10 times the "BaseInterval".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInterval")]
     pub max_interval: Option<String>,
 }
 
@@ -327,11 +250,7 @@ pub struct MeshRetryToDefaultHttpHostSelection {
     pub tags: Option<BTreeMap<String, String>>,
     /// UpdateFrequency is how often the priority load should be updated based on previously attempted priorities.
     /// Used for OmitPreviousPriorities.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateFrequency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateFrequency")]
     pub update_frequency: Option<i32>,
 }
 
@@ -347,21 +266,13 @@ pub enum MeshRetryToDefaultHttpHostSelectionPredicate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRetryToDefaultHttpRateLimitedBackOff {
     /// MaxInterval is a maximal amount of time which will be taken between retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInterval")]
     pub max_interval: Option<String>,
     /// ResetHeaders specifies the list of headers (like Retry-After or X-RateLimit-Reset)
     /// to match against the response. Headers are tried in order, and matched
     /// case-insensitive. The first header to be parsed successfully is used.
     /// If no headers match the default exponential BackOff is used instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resetHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resetHeaders")]
     pub reset_headers: Option<Vec<MeshRetryToDefaultHttpRateLimitedBackOffResetHeaders>>,
 }
 
@@ -436,11 +347,7 @@ pub enum MeshRetryToDefaultHttpRetriableResponseHeadersType {
 pub struct MeshRetryToDefaultTcp {
     /// MaxConnectAttempt is a maximal amount of TCP connection attempts
     /// which will be made before giving up
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectAttempt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectAttempt")]
     pub max_connect_attempt: Option<i32>,
 }
 
@@ -468,19 +375,11 @@ pub struct MeshRetryToTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -502,3 +401,4 @@ pub enum MeshRetryToTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
 }
+

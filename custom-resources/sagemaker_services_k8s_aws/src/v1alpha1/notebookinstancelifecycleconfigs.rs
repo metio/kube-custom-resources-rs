@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// NotebookInstanceLifecycleConfigSpec defines the desired state of NotebookInstanceLifecycleConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sagemaker.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "NotebookInstanceLifecycleConfig",
-    plural = "notebookinstancelifecycleconfigs"
-)]
+#[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "NotebookInstanceLifecycleConfig", plural = "notebookinstancelifecycleconfigs")]
 #[kube(namespaced)]
 #[kube(status = "NotebookInstanceLifecycleConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NotebookInstanceLifecycleConfigSpec {
     /// The name of the lifecycle configuration.
     #[serde(rename = "notebookInstanceLifecycleConfigName")]
@@ -39,24 +34,24 @@ pub struct NotebookInstanceLifecycleConfigSpec {
 }
 
 /// Contains the notebook instance lifecycle configuration script.
-///
-///
+/// 
+/// 
 /// Each lifecycle configuration script has a limit of 16384 characters.
-///
-///
+/// 
+/// 
 /// The value of the $PATH environment variable that is available to both scripts
 /// is /sbin:bin:/usr/sbin:/usr/bin.
-///
-///
+/// 
+/// 
 /// View Amazon CloudWatch Logs for notebook instance lifecycle configurations
 /// in log group /aws/sagemaker/NotebookInstances in log stream [notebook-instance-name]/[LifecycleConfigHook].
-///
-///
+/// 
+/// 
 /// Lifecycle configuration scripts cannot run for longer than 5 minutes. If
 /// a script runs for longer than 5 minutes, it fails and the notebook instance
 /// is not created or started.
-///
-///
+/// 
+/// 
 /// For information about notebook instance lifestyle configurations, see Step
 /// 2.1: (Optional) Customize a Notebook Instance (https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -66,24 +61,24 @@ pub struct NotebookInstanceLifecycleConfigOnCreate {
 }
 
 /// Contains the notebook instance lifecycle configuration script.
-///
-///
+/// 
+/// 
 /// Each lifecycle configuration script has a limit of 16384 characters.
-///
-///
+/// 
+/// 
 /// The value of the $PATH environment variable that is available to both scripts
 /// is /sbin:bin:/usr/sbin:/usr/bin.
-///
-///
+/// 
+/// 
 /// View Amazon CloudWatch Logs for notebook instance lifecycle configurations
 /// in log group /aws/sagemaker/NotebookInstances in log stream [notebook-instance-name]/[LifecycleConfigHook].
-///
-///
+/// 
+/// 
 /// Lifecycle configuration scripts cannot run for longer than 5 minutes. If
 /// a script runs for longer than 5 minutes, it fails and the notebook instance
 /// is not created or started.
-///
-///
+/// 
+/// 
 /// For information about notebook instance lifestyle configurations, see Step
 /// 2.1: (Optional) Customize a Notebook Instance (https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -98,11 +93,7 @@ pub struct NotebookInstanceLifecycleConfigStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<NotebookInstanceLifecycleConfigStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -111,18 +102,10 @@ pub struct NotebookInstanceLifecycleConfigStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// A timestamp that tells when the lifecycle configuration was created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     /// A timestamp that tells when the lifecycle configuration was last modified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModifiedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
 }
 
@@ -148,3 +131,4 @@ pub struct NotebookInstanceLifecycleConfigStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

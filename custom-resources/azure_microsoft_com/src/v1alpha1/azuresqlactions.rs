@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// AzureSqlActionSpec defines the desired state of AzureSqlAction
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "azure.microsoft.com",
-    version = "v1alpha1",
-    kind = "AzureSqlAction",
-    plural = "azuresqlactions"
-)]
+#[kube(group = "azure.microsoft.com", version = "v1alpha1", kind = "AzureSqlAction", plural = "azuresqlactions")]
 #[kube(namespaced)]
 #[kube(status = "AzureSqlActionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AzureSqlActionSpec {
     #[serde(rename = "actionName")]
     pub action_name: String,
@@ -32,31 +27,15 @@ pub struct AzureSqlActionSpec {
     /// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run "make" to regenerate code after modifying this file
     #[serde(rename = "resourceGroup")]
     pub resource_group: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverAdminSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverAdminSecretName")]
     pub server_admin_secret_name: Option<String>,
     #[serde(rename = "serverName")]
     pub server_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverSecretKeyVault"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSecretKeyVault")]
     pub server_secret_key_vault: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subscriptionId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subscriptionId")]
     pub subscription_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userSecretKeyVault"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userSecretKeyVault")]
     pub user_secret_key_vault: Option<String>,
 }
 
@@ -65,39 +44,19 @@ pub struct AzureSqlActionSpec {
 pub struct AzureSqlActionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completed: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containsUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containsUpdate")]
     pub contains_update: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedProvisioning"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedProvisioning")]
     pub failed_provisioning: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flattenedSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flattenedSecrets")]
     pub flattened_secrets: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub output: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingUrl")]
     pub polling_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingUrlKind"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingUrlKind")]
     pub polling_url_kind: Option<AzureSqlActionStatusPollingUrlKind>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provisioned: Option<bool>,
@@ -105,11 +64,7 @@ pub struct AzureSqlActionStatus {
     pub provisioning: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requested: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceId")]
     pub resource_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "specHash")]
     pub spec_hash: Option<String>,
@@ -123,3 +78,4 @@ pub enum AzureSqlActionStatusPollingUrlKind {
     CreateOrUpdate,
     Delete,
 }
+

@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -21,17 +21,9 @@ pub struct MutatorPodStatusStatus {
     /// Storing the mutator UID allows us to detect drift, such as
     /// when a mutator has been recreated after its CRD was deleted
     /// out from under it, interrupting the watch
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mutatorUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutatorUID")]
     pub mutator_uid: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
@@ -46,3 +38,4 @@ pub struct MutatorPodStatusStatusErrors {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

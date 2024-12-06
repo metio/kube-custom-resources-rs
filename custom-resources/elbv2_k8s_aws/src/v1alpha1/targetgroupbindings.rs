@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// TargetGroupBindingSpec defines the desired state of TargetGroupBinding
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "elbv2.k8s.aws",
-    version = "v1alpha1",
-    kind = "TargetGroupBinding",
-    plural = "targetgroupbindings"
-)]
+#[kube(group = "elbv2.k8s.aws", version = "v1alpha1", kind = "TargetGroupBinding", plural = "targetgroupbindings")]
 #[kube(namespaced)]
 #[kube(status = "TargetGroupBindingStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TargetGroupBindingSpec {
     /// MultiClusterTargetGroup Denotes if the TargetGroup is shared among multiple clusters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiClusterTargetGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiClusterTargetGroup")]
     pub multi_cluster_target_group: Option<bool>,
     /// networking provides the networking setup for ELBV2 LoadBalancer to access targets in TargetGroup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -41,11 +32,7 @@ pub struct TargetGroupBindingSpec {
     #[serde(rename = "targetGroupARN")]
     pub target_group_arn: String,
     /// targetType is the TargetType of TargetGroup. If unspecified, it will be automatically inferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetType")]
     pub target_type: Option<TargetGroupBindingTargetType>,
 }
 
@@ -76,11 +63,7 @@ pub struct TargetGroupBindingNetworkingIngressFrom {
     pub ip_block: Option<TargetGroupBindingNetworkingIngressFromIpBlock>,
     /// SecurityGroup defines a SecurityGroup peer.
     /// If specified, none of the other fields can be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroup")]
     pub security_group: Option<TargetGroupBindingNetworkingIngressFromSecurityGroup>,
 }
 
@@ -146,10 +129,7 @@ pub enum TargetGroupBindingTargetType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupBindingStatus {
     /// The generation observed by the TargetGroupBinding controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SqlJobSpec defines the desired state of SqlJob
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.mariadb.com",
-    version = "v1alpha1",
-    kind = "SqlJob",
-    plural = "sqljobs"
-)]
+#[kube(group = "k8s.mariadb.com", version = "v1alpha1", kind = "SqlJob", plural = "sqljobs")]
 #[kube(namespaced)]
 #[kube(status = "SqlJobStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SqlJobSpec {
     /// Affinity to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33,11 +28,7 @@ pub struct SqlJobSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
     /// BackoffLimit defines the maximum number of attempts to successfully execute a SqlJob.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backoffLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
     /// Username to be used when executing the SqlJob.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -46,104 +37,56 @@ pub struct SqlJobSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
     pub depends_on: Option<Vec<SqlJobDependsOn>>,
     /// FailedJobsHistoryLimit defines the maximum number of failed Jobs to be displayed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedJobsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i32>,
     /// ImagePullSecrets is the list of pull Secrets to be used to pull the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<SqlJobImagePullSecrets>>,
     /// InheritMetadata defines the metadata to be inherited by children resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inheritMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inheritMetadata")]
     pub inherit_metadata: Option<SqlJobInheritMetadata>,
     /// MariaDBRef is a reference to a MariaDB object.
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: SqlJobMariaDbRef,
     /// NodeSelector to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// UserPasswordSecretKeyRef is a reference to the impersonated user's password to be used when executing the SqlJob.
     #[serde(rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: SqlJobPasswordSecretKeyRef,
     /// PodMetadata defines extra metadata for the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<SqlJobPodMetadata>,
     /// SecurityContext holds pod-level security attributes and common container settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<SqlJobPodSecurityContext>,
     /// PriorityClassName to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SqlJobResources>,
     /// RestartPolicy to be added to the SqlJob Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<SqlJobRestartPolicy>,
     /// Schedule defines when the SqlJob will be executed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<SqlJobSchedule>,
     /// SecurityContext holds security configuration that will be applied to a container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<SqlJobSecurityContext>,
     /// ServiceAccountName is the name of the ServiceAccount to be used by the Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Sql is the script to be executed by the SqlJob.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sql: Option<String>,
     /// SqlConfigMapKeyRef is a reference to a ConfigMap containing the Sql script.
     /// It is defaulted to a ConfigMap with the contents of the Sql field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sqlConfigMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sqlConfigMapKeyRef")]
     pub sql_config_map_key_ref: Option<SqlJobSqlConfigMapKeyRef>,
     /// SuccessfulJobsHistoryLimit defines the maximum number of successful Jobs to be displayed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successfulJobsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i32>,
     /// TimeZone defines the timezone associated with the cron expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
@@ -160,54 +103,31 @@ pub struct SqlJobSpec {
 pub struct SqlJobAffinity {
     /// AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "antiAffinityEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<SqlJobAffinityNodeAffinity>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<SqlJobAffinityPodAntiAffinity>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityNodeAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselector-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#preferredschedulingterm-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorterm-v1-core
-    pub preference:
-        SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
@@ -222,8 +142,7 @@ pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecu
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -234,8 +153,7 @@ pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecu
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -248,9 +166,7 @@ pub struct SqlJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecu
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<
-        SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms,
-    >,
+    pub node_selector_terms: Vec<SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorterm-v1-core
@@ -264,8 +180,7 @@ pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecut
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -276,8 +191,7 @@ pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecut
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -289,20 +203,10 @@ pub struct SqlJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecut
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityPodAntiAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#weightedpodaffinityterm-v1-core.
@@ -310,8 +214,7 @@ pub struct SqlJobAffinityPodAntiAffinity {
 pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podaffinityterm-v1-core.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
@@ -336,8 +239,7 @@ pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringEx
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -349,14 +251,8 @@ pub struct SqlJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringEx
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -372,8 +268,7 @@ pub struct SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExe
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SqlJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -441,56 +336,28 @@ pub struct SqlJobPodMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobPodSecurityContext {
     /// AppArmorProfile defines a pod or container's AppArmor settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<SqlJobPodSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     /// PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
     /// when volume is mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// SELinuxOptions are the labels to be applied to the container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<SqlJobPodSecurityContextSeLinuxOptions>,
     /// SeccompProfile defines a pod/container's seccomp profile settings.
     /// Only one profile source may be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<SqlJobPodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
 }
 
@@ -501,11 +368,7 @@ pub struct SqlJobPodSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -541,15 +404,11 @@ pub struct SqlJobPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -589,34 +448,18 @@ pub struct SqlJobSchedule {
 /// SecurityContext holds security configuration that will be applied to a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// Adds and removes POSIX capabilities from running containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<SqlJobSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
@@ -664,11 +507,7 @@ pub struct SqlJobTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -683,3 +522,4 @@ pub struct SqlJobStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

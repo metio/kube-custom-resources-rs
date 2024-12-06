@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.emqx.io",
-    version = "v1beta3",
-    kind = "EmqxPlugin",
-    plural = "emqxplugins"
-)]
+#[kube(group = "apps.emqx.io", version = "v1beta3", kind = "EmqxPlugin", plural = "emqxplugins")]
 #[kube(namespaced)]
 #[kube(status = "EmqxPluginStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EmqxPluginSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
@@ -35,3 +30,4 @@ pub struct EmqxPluginStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

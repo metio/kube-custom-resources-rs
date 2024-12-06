@@ -4,29 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TrainingJobSpec defines the desired state of TrainingJob.
-///
-///
+/// 
+/// 
 /// Contains information about a training job.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sagemaker.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "TrainingJob",
-    plural = "trainingjobs"
-)]
+#[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "TrainingJob", plural = "trainingjobs")]
 #[kube(namespaced)]
 #[kube(status = "TrainingJobStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TrainingJobSpec {
     /// The registry path of the Docker image that contains the training algorithm
     /// and algorithm-specific metadata, including the input mode. For more information
@@ -37,30 +32,18 @@ pub struct TrainingJobSpec {
     pub algorithm_specification: TrainingJobAlgorithmSpecification,
     /// Contains information about the output location for managed spot training
     /// checkpoint data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checkpointConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkpointConfig")]
     pub checkpoint_config: Option<TrainingJobCheckpointConfig>,
     /// Configuration information for the Amazon SageMaker Debugger hook parameters,
     /// metric and tensor collections, and storage paths. To learn more about how
     /// to configure the DebugHookConfig parameter, see Use the SageMaker and Debugger
     /// Configuration API Operations to Create, Update, and Debug Your Training Job
     /// (https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-createtrainingjob-api.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "debugHookConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugHookConfig")]
     pub debug_hook_config: Option<TrainingJobDebugHookConfig>,
     /// Configuration information for Amazon SageMaker Debugger rules for debugging
     /// output tensors.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "debugRuleConfigurations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugRuleConfigurations")]
     pub debug_rule_configurations: Option<Vec<TrainingJobDebugRuleConfigurations>>,
     /// To encrypt all communications between ML compute instances in distributed
     /// training, choose True. Encryption provides greater security for distributed
@@ -69,28 +52,20 @@ pub struct TrainingJobSpec {
     /// a deep learning algorithm in distributed training. For more information,
     /// see Protect Communications Between ML Compute Instances in a Distributed
     /// Training Job (https://docs.aws.amazon.com/sagemaker/latest/dg/train-encrypt.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableInterContainerTrafficEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInterContainerTrafficEncryption")]
     pub enable_inter_container_traffic_encryption: Option<bool>,
     /// To train models using managed spot training, choose True. Managed spot training
     /// provides a fully managed and scalable infrastructure for training machine
     /// learning models. this option is useful when training jobs can be interrupted
     /// and when there is flexibility when the training job is run.
-    ///
-    ///
+    /// 
+    /// 
     /// The complete and intermediate results of jobs are stored in an Amazon S3
     /// bucket, and can be used as a starting point to train models incrementally.
     /// Amazon SageMaker provides metrics and logs in CloudWatch. They can be used
     /// to see when managed spot training jobs are running, interrupted, resumed,
     /// or completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableManagedSpotTraining"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableManagedSpotTraining")]
     pub enable_managed_spot_training: Option<bool>,
     /// Isolates the training container. No inbound or outbound network calls can
     /// be made, except for calls between peers within a training cluster for distributed
@@ -98,87 +73,67 @@ pub struct TrainingJobSpec {
     /// to use a VPC, SageMaker downloads and uploads customer data and model artifacts
     /// through the specified VPC, but the training container does not have network
     /// access.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableNetworkIsolation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
     /// The environment variables to set in the Docker container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<BTreeMap<String, String>>,
     /// Associates a SageMaker job as a trial component with an experiment and trial.
     /// Specified when you call the following APIs:
-    ///
-    ///
+    /// 
+    /// 
     ///    * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
-    ///
-    ///
+    /// 
+    /// 
     ///    * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
-    ///
-    ///
+    /// 
+    /// 
     ///    * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "experimentConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentConfig")]
     pub experiment_config: Option<TrainingJobExperimentConfig>,
     /// Algorithm-specific parameters that influence the quality of the model. You
     /// set hyperparameters before you start the learning process. For a list of
     /// hyperparameters for each training algorithm provided by SageMaker, see Algorithms
     /// (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
-    ///
-    ///
+    /// 
+    /// 
     /// You can specify a maximum of 100 hyperparameters. Each hyperparameter is
     /// a key-value pair. Each key and value is limited to 256 characters, as specified
     /// by the Length Constraint.
-    ///
-    ///
+    /// 
+    /// 
     /// Do not include any security-sensitive information including account access
     /// IDs, secrets or tokens in any hyperparameter field. If the use of security-sensitive
     /// credentials are detected, SageMaker will reject your training job request
     /// and return an exception error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hyperParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameters")]
     pub hyper_parameters: Option<BTreeMap<String, String>>,
     /// Contains information about the infrastructure health check configuration
     /// for the training job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "infraCheckConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infraCheckConfig")]
     pub infra_check_config: Option<TrainingJobInfraCheckConfig>,
     /// An array of Channel objects. Each channel is a named input source. InputDataConfig
     /// describes the input data and its location.
-    ///
-    ///
+    /// 
+    /// 
     /// Algorithms can accept input data from one or more channels. For example,
     /// an algorithm might have two channels of input data, training_data and validation_data.
     /// The configuration for each channel provides the S3, EFS, or FSx location
     /// where the input data is stored. It also provides information about the stored
     /// data: the MIME type, compression method, and whether the data is wrapped
     /// in RecordIO format.
-    ///
-    ///
+    /// 
+    /// 
     /// Depending on the input mode that the algorithm supports, SageMaker either
     /// copies input data files from an S3 bucket to a local directory in the Docker
     /// container, or makes it available as input streams. For example, if you specify
     /// an EFS location, input data files are available as input streams. They do
     /// not need to be downloaded.
-    ///
-    ///
+    /// 
+    /// 
     /// Your input must be in the same Amazon Web Services region as your training
     /// job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inputDataConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputDataConfig")]
     pub input_data_config: Option<Vec<TrainingJobInputDataConfig>>,
     /// Specifies the path to the S3 location where you want to store model artifacts.
     /// SageMaker creates subfolders for the artifacts.
@@ -186,33 +141,21 @@ pub struct TrainingJobSpec {
     pub output_data_config: TrainingJobOutputDataConfig,
     /// Configuration information for Amazon SageMaker Debugger system monitoring,
     /// framework profiling, and storage paths.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "profilerConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilerConfig")]
     pub profiler_config: Option<TrainingJobProfilerConfig>,
     /// Configuration information for Amazon SageMaker Debugger rules for profiling
     /// system and framework metrics.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "profilerRuleConfigurations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilerRuleConfigurations")]
     pub profiler_rule_configurations: Option<Vec<TrainingJobProfilerRuleConfigurations>>,
     /// Configuration for remote debugging. To learn more about the remote debugging
     /// functionality of SageMaker, see Access a training container through Amazon
     /// Web Services Systems Manager (SSM) for remote debugging (https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteDebugConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteDebugConfig")]
     pub remote_debug_config: Option<TrainingJobRemoteDebugConfig>,
     /// The resources, including the ML compute instances and ML storage volumes,
     /// to use for model training.
-    ///
-    ///
+    /// 
+    /// 
     /// ML storage volumes store model artifacts and incremental states. Training
     /// algorithms might also use ML storage volumes for scratch space. If you want
     /// SageMaker to use the ML storage volume to store the training data, choose
@@ -221,23 +164,19 @@ pub struct TrainingJobSpec {
     #[serde(rename = "resourceConfig")]
     pub resource_config: TrainingJobResourceConfig,
     /// The number of times to retry the job when the job fails due to an InternalServerError.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryStrategy")]
     pub retry_strategy: Option<TrainingJobRetryStrategy>,
     /// The Amazon Resource Name (ARN) of an IAM role that SageMaker can assume to
     /// perform tasks on your behalf.
-    ///
-    ///
+    /// 
+    /// 
     /// During model training, SageMaker needs your permission to read input data
     /// from an S3 bucket, download a Docker image that contains training code, write
     /// model artifacts to an S3 bucket, write logs to Amazon CloudWatch Logs, and
     /// publish metrics to Amazon CloudWatch. You grant permissions for all of these
     /// tasks to an IAM role. For more information, see SageMaker Roles (https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).
-    ///
-    ///
+    /// 
+    /// 
     /// To be able to pass this role to SageMaker, the caller of this API must have
     /// the iam:PassRole permission.
     #[serde(rename = "roleARN")]
@@ -246,8 +185,8 @@ pub struct TrainingJobSpec {
     /// how long a managed Spot training job has to complete. When the job reaches
     /// the time limit, SageMaker ends the training job. Use this API to cap model
     /// training costs.
-    ///
-    ///
+    /// 
+    /// 
     /// To stop a job, SageMaker sends the algorithm the SIGTERM signal, which delays
     /// job termination for 120 seconds. Algorithms can use this 120-second window
     /// to save the model artifacts, so the results of training are not lost.
@@ -261,11 +200,7 @@ pub struct TrainingJobSpec {
     pub tags: Option<Vec<TrainingJobTags>>,
     /// Configuration of storage locations for the Amazon SageMaker Debugger TensorBoard
     /// output data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tensorBoardOutputConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tensorBoardOutputConfig")]
     pub tensor_board_output_config: Option<TrainingJobTensorBoardOutputConfig>,
     /// The name of the training job. The name must be unique within an Amazon Web
     /// Services Region in an Amazon Web Services account.
@@ -287,80 +222,60 @@ pub struct TrainingJobSpec {
 /// with Amazon SageMaker (https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobAlgorithmSpecification {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "algorithmName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmName")]
     pub algorithm_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableSageMakerMetricsTimeSeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableSageMakerMetricsTimeSeries")]
     pub enable_sage_maker_metrics_time_series: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricDefinitions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricDefinitions")]
     pub metric_definitions: Option<Vec<TrainingJobAlgorithmSpecificationMetricDefinitions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingImage")]
     pub training_image: Option<String>,
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
-    ///
-    ///
+    /// 
+    /// 
     /// Pipe mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
-    ///
-    ///
+    /// 
+    /// 
     /// File mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
-    ///
-    ///
+    /// 
+    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    ///
-    ///
+    /// 
+    /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
     /// the same. SageMaker does not split the files any further for model training.
     /// If the object sizes are skewed, training won't be optimal as the data distribution
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
     /// in the S3 bucket provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingInputMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingInputMode")]
     pub training_input_mode: Option<String>,
 }
 
@@ -396,25 +311,13 @@ pub struct TrainingJobCheckpointConfig {
 /// (https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-createtrainingjob-api.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobDebugHookConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectionConfigurations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectionConfigurations")]
     pub collection_configurations: Option<Vec<TrainingJobDebugHookConfigCollectionConfigurations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hookParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookParameters")]
     pub hook_parameters: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
     pub local_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
 
@@ -422,17 +325,9 @@ pub struct TrainingJobDebugHookConfig {
 /// collections.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobDebugHookConfigCollectionConfigurations {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectionName")]
     pub collection_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectionParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectionParameters")]
     pub collection_parameters: Option<BTreeMap<String, String>>,
 }
 
@@ -442,70 +337,38 @@ pub struct TrainingJobDebugHookConfigCollectionConfigurations {
 /// and Debug Your Training Job (https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-createtrainingjob-api.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobDebugRuleConfigurations {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
     pub local_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleConfigurationName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleConfigurationName")]
     pub rule_configuration_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleEvaluatorImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleEvaluatorImage")]
     pub rule_evaluator_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleParameters")]
     pub rule_parameters: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSizeInGB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSizeInGB")]
     pub volume_size_in_gb: Option<i64>,
 }
 
 /// Associates a SageMaker job as a trial component with an experiment and trial.
 /// Specified when you call the following APIs:
-///
-///
+/// 
+/// 
 ///    * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
-///
-///
+/// 
+/// 
 ///    * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
-///
-///
+/// 
+/// 
 ///    * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobExperimentConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "experimentName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentName")]
     pub experiment_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trialComponentDisplayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trialComponentDisplayName")]
     pub trial_component_display_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trialName")]
     pub trial_name: Option<String>,
@@ -515,94 +378,70 @@ pub struct TrainingJobExperimentConfig {
 /// for the training job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobInfraCheckConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableInfraCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInfraCheck")]
     pub enable_infra_check: Option<bool>,
 }
 
 /// A channel is a named input source that training algorithms can consume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobInputDataConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "channelName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "channelName")]
     pub channel_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     /// Describes the location of the channel data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<TrainingJobInputDataConfigDataSource>,
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
-    ///
-    ///
+    /// 
+    /// 
     /// Pipe mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
-    ///
-    ///
+    /// 
+    /// 
     /// File mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
-    ///
-    ///
+    /// 
+    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    ///
-    ///
+    /// 
+    /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
     /// the same. SageMaker does not split the files any further for model training.
     /// If the object sizes are skewed, training won't be optimal as the data distribution
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
     /// in the S3 bucket provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputMode")]
     pub input_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordWrapperType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordWrapperType")]
     pub record_wrapper_type: Option<String>,
     /// A configuration for a shuffle option for input data in a channel. If you
     /// use S3Prefix for S3DataType, the results of the S3 key prefix matches are
@@ -610,8 +449,8 @@ pub struct TrainingJobInputDataConfig {
     /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
     /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
     /// order is determined using the Seed value.
-    ///
-    ///
+    /// 
+    /// 
     /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
     /// the start of every epoch. With large datasets, this ensures that the order
     /// of the training data is different for each epoch, and it helps reduce bias
@@ -619,11 +458,7 @@ pub struct TrainingJobInputDataConfig {
     /// is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled
     /// across nodes so that the content sent to a particular node on the first epoch
     /// might be sent to a different node on the second epoch.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shuffleConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shuffleConfig")]
     pub shuffle_config: Option<TrainingJobInputDataConfigShuffleConfig>,
 }
 
@@ -631,84 +466,44 @@ pub struct TrainingJobInputDataConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobInputDataConfigDataSource {
     /// Specifies a file system data source for a channel.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemDataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemDataSource")]
     pub file_system_data_source: Option<TrainingJobInputDataConfigDataSourceFileSystemDataSource>,
     /// Describes the S3 data source.
-    ///
-    ///
+    /// 
+    /// 
     /// Your input bucket must be in the same Amazon Web Services region as your
     /// training job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataSource")]
     pub s3_data_source: Option<TrainingJobInputDataConfigDataSourceS3DataSource>,
 }
 
 /// Specifies a file system data source for a channel.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobInputDataConfigDataSourceFileSystemDataSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "directoryPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directoryPath")]
     pub directory_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemAccessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemAccessMode")]
     pub file_system_access_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
     pub file_system_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemType")]
     pub file_system_type: Option<String>,
 }
 
 /// Describes the S3 data source.
-///
-///
+/// 
+/// 
 /// Your input bucket must be in the same Amazon Web Services region as your
 /// training job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobInputDataConfigDataSourceS3DataSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attributeNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attributeNames")]
     pub attribute_names: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceGroupNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroupNames")]
     pub instance_group_names: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataDistributionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataDistributionType")]
     pub s3_data_distribution_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
     pub s3_data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -720,8 +515,8 @@ pub struct TrainingJobInputDataConfigDataSourceS3DataSource {
 /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
 /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
 /// order is determined using the Seed value.
-///
-///
+/// 
+/// 
 /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
 /// the start of every epoch. With large datasets, this ensures that the order
 /// of the training data is different for each epoch, and it helps reduce bias
@@ -739,19 +534,11 @@ pub struct TrainingJobInputDataConfigShuffleConfig {
 /// SageMaker creates subfolders for the artifacts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobOutputDataConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
 
@@ -759,66 +546,30 @@ pub struct TrainingJobOutputDataConfig {
 /// framework profiling, and storage paths.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobProfilerConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "profilingIntervalInMilliseconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilingIntervalInMilliseconds")]
     pub profiling_interval_in_milliseconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "profilingParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilingParameters")]
     pub profiling_parameters: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
 
 /// Configuration information for profiling rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobProfilerRuleConfigurations {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
     pub local_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleConfigurationName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleConfigurationName")]
     pub rule_configuration_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleEvaluatorImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleEvaluatorImage")]
     pub rule_evaluator_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleParameters")]
     pub rule_parameters: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSizeInGB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSizeInGB")]
     pub volume_size_in_gb: Option<i64>,
 }
 
@@ -827,18 +578,14 @@ pub struct TrainingJobProfilerRuleConfigurations {
 /// Web Services Systems Manager (SSM) for remote debugging (https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobRemoteDebugConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableRemoteDebug"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRemoteDebug")]
     pub enable_remote_debug: Option<bool>,
 }
 
 /// The resources, including the ML compute instances and ML storage volumes,
 /// to use for model training.
-///
-///
+/// 
+/// 
 /// ML storage volumes store model artifacts and incremental states. Training
 /// algorithms might also use ML storage volumes for scratch space. If you want
 /// SageMaker to use the ML storage volume to store the training data, choose
@@ -846,43 +593,19 @@ pub struct TrainingJobRemoteDebugConfig {
 /// training algorithms, specify an instance count greater than 1.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobResourceConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
     pub instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroups")]
     pub instance_groups: Option<Vec<TrainingJobResourceConfigInstanceGroups>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     /// Optional. Customer requested period in seconds for which the Training cluster
     /// is kept alive after the job is finished.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepAlivePeriodInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepAlivePeriodInSeconds")]
     pub keep_alive_period_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeKMSKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
     pub volume_kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSizeInGB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSizeInGB")]
     pub volume_size_in_gb: Option<i64>,
 }
 
@@ -891,34 +614,18 @@ pub struct TrainingJobResourceConfig {
 /// API, you can configure multiple instance groups .
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobResourceConfigInstanceGroups {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
     pub instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroupName")]
     pub instance_group_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
 }
 
 /// The number of times to retry the job when the job fails due to an InternalServerError.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobRetryStrategy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumRetryAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRetryAttempts")]
     pub maximum_retry_attempts: Option<i64>,
 }
 
@@ -926,44 +633,32 @@ pub struct TrainingJobRetryStrategy {
 /// how long a managed Spot training job has to complete. When the job reaches
 /// the time limit, SageMaker ends the training job. Use this API to cap model
 /// training costs.
-///
-///
+/// 
+/// 
 /// To stop a job, SageMaker sends the algorithm the SIGTERM signal, which delays
 /// job termination for 120 seconds. Algorithms can use this 120-second window
 /// to save the model artifacts, so the results of training are not lost.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobStoppingCondition {
     /// Maximum job scheduler pending time in seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPendingTimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingTimeInSeconds")]
     pub max_pending_time_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRuntimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRuntimeInSeconds")]
     pub max_runtime_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxWaitTimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWaitTimeInSeconds")]
     pub max_wait_time_in_seconds: Option<i64>,
 }
 
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
-///
-///
+/// 
+/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-///
-///
+/// 
+/// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
 /// For advice on best practices for managing Amazon Web Services resources with
@@ -983,11 +678,7 @@ pub struct TrainingJobTags {
 pub struct TrainingJobTensorBoardOutputConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
     pub local_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
 
@@ -998,11 +689,7 @@ pub struct TrainingJobTensorBoardOutputConfig {
 /// Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobVpcConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<String>>,
@@ -1014,11 +701,7 @@ pub struct TrainingJobStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<TrainingJobStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -1027,177 +710,136 @@ pub struct TrainingJobStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// A timestamp that indicates when the training job was created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     /// Evaluation status of Amazon SageMaker Debugger rules for debugging on a training
     /// job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "debugRuleEvaluationStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugRuleEvaluationStatuses")]
     pub debug_rule_evaluation_statuses: Option<Vec<TrainingJobStatusDebugRuleEvaluationStatuses>>,
     /// If the training job failed, the reason it failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// A timestamp that indicates when the status of the training job was last modified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModifiedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
     /// Information about the Amazon S3 location that is configured for storing model
     /// artifacts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelArtifacts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelArtifacts")]
     pub model_artifacts: Option<TrainingJobStatusModelArtifacts>,
     /// Evaluation status of Amazon SageMaker Debugger rules for profiling on a training
     /// job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "profilerRuleEvaluationStatuses"
-    )]
-    pub profiler_rule_evaluation_statuses:
-        Option<Vec<TrainingJobStatusProfilerRuleEvaluationStatuses>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilerRuleEvaluationStatuses")]
+    pub profiler_rule_evaluation_statuses: Option<Vec<TrainingJobStatusProfilerRuleEvaluationStatuses>>,
     /// Profiling status of a training job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "profilingStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilingStatus")]
     pub profiling_status: Option<String>,
     /// Provides detailed information about the state of the training job. For detailed
     /// information on the secondary status of the training job, see StatusMessage
     /// under SecondaryStatusTransition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SecondaryStatusTransition.html).
-    ///
-    ///
+    /// 
+    /// 
     /// SageMaker provides primary statuses and secondary statuses that apply to
     /// each of them:
-    ///
-    ///
+    /// 
+    /// 
     /// InProgress
-    ///
-    ///
+    /// 
+    /// 
     ///    * Starting - Starting the training job.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Downloading - An optional stage for algorithms that support File training
     ///    input mode. It indicates that data is being downloaded to the ML storage
     ///    volumes.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Training - Training is in progress.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Interrupted - The job stopped because the managed spot training instances
     ///    were interrupted.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Uploading - Training is complete and the model artifacts are being uploaded
     ///    to the S3 location.
-    ///
-    ///
+    /// 
+    /// 
     /// Completed
-    ///
-    ///
+    /// 
+    /// 
     ///    * Completed - The training job has completed.
-    ///
-    ///
+    /// 
+    /// 
     /// Failed
-    ///
-    ///
+    /// 
+    /// 
     ///    * Failed - The training job has failed. The reason for the failure is
     ///    returned in the FailureReason field of DescribeTrainingJobResponse.
-    ///
-    ///
+    /// 
+    /// 
     /// Stopped
-    ///
-    ///
+    /// 
+    /// 
     ///    * MaxRuntimeExceeded - The job stopped because it exceeded the maximum
     ///    allowed runtime.
-    ///
-    ///
+    /// 
+    /// 
     ///    * MaxWaitTimeExceeded - The job stopped because it exceeded the maximum
     ///    allowed wait time.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Stopped - The training job has stopped.
-    ///
-    ///
+    /// 
+    /// 
     /// Stopping
-    ///
-    ///
+    /// 
+    /// 
     ///    * Stopping - Stopping the training job.
-    ///
-    ///
+    /// 
+    /// 
     /// Valid values for SecondaryStatus are subject to change.
-    ///
-    ///
+    /// 
+    /// 
     /// We no longer support the following secondary statuses:
-    ///
-    ///
+    /// 
+    /// 
     ///    * LaunchingMLInstances
-    ///
-    ///
+    /// 
+    /// 
     ///    * PreparingTraining
-    ///
-    ///
+    /// 
+    /// 
     ///    * DownloadingTrainingImage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryStatus")]
     pub secondary_status: Option<String>,
     /// The status of the training job.
-    ///
-    ///
+    /// 
+    /// 
     /// SageMaker provides the following training job statuses:
-    ///
-    ///
+    /// 
+    /// 
     ///    * InProgress - The training is in progress.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Completed - The training job has completed.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Failed - The training job has failed. To see the reason for the failure,
     ///    see the FailureReason field in the response to a DescribeTrainingJobResponse
     ///    call.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Stopping - The training job is stopping.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Stopped - The training job has stopped.
-    ///
-    ///
+    /// 
+    /// 
     /// For more detailed information, see SecondaryStatus.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingJobStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobStatus")]
     pub training_job_status: Option<String>,
     /// The status of the warm pool associated with the training job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "warmPoolStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "warmPoolStatus")]
     pub warm_pool_status: Option<TrainingJobStatusWarmPoolStatus>,
 }
 
@@ -1227,35 +869,15 @@ pub struct TrainingJobStatusAckResourceMetadata {
 /// Information about the status of the rule evaluation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobStatusDebugRuleEvaluationStatuses {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModifiedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleConfigurationName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleConfigurationName")]
     pub rule_configuration_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleEvaluationJobARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleEvaluationJobARN")]
     pub rule_evaluation_job_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleEvaluationStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleEvaluationStatus")]
     pub rule_evaluation_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusDetails"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusDetails")]
     pub status_details: Option<String>,
 }
 
@@ -1263,46 +885,22 @@ pub struct TrainingJobStatusDebugRuleEvaluationStatuses {
 /// artifacts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobStatusModelArtifacts {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3ModelArtifacts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3ModelArtifacts")]
     pub s3_model_artifacts: Option<String>,
 }
 
 /// Information about the status of the rule evaluation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrainingJobStatusProfilerRuleEvaluationStatuses {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModifiedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleConfigurationName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleConfigurationName")]
     pub rule_configuration_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleEvaluationJobARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleEvaluationJobARN")]
     pub rule_evaluation_job_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleEvaluationStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleEvaluationStatus")]
     pub rule_evaluation_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusDetails"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusDetails")]
     pub status_details: Option<String>,
 }
 
@@ -1312,18 +910,11 @@ pub struct TrainingJobStatusWarmPoolStatus {
     /// Optional. Indicates how many seconds the resource stayed in ResourceRetained
     /// state. Populated only after resource reaches ResourceReused or ResourceReleased
     /// state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRetainedBillableTimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRetainedBillableTimeInSeconds")]
     pub resource_retained_billable_time_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reusedByJob"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reusedByJob")]
     pub reused_by_job: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

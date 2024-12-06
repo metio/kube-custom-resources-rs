@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ExecutorSpec defines the desired state of Executor
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "executor.testkube.io",
-    version = "v1",
-    kind = "Executor",
-    plural = "executors"
-)]
+#[kube(group = "executor.testkube.io", version = "v1", kind = "Executor", plural = "executors")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ExecutorSpec {
     /// executor binary arguments
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -43,18 +38,10 @@ pub struct ExecutorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// container executor default image pull secrets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<ExecutorImagePullSecrets>>,
     /// name of the template resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplateReference")]
     pub job_template_reference: Option<String>,
     /// Job template to launch executor
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -72,11 +59,7 @@ pub struct ExecutorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
     /// use data dir as working dir for executor
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useDataDirAsWorkingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDataDirAsWorkingDir")]
     pub use_data_dir_as_working_dir: Option<bool>,
 }
 
@@ -122,4 +105,6 @@ pub struct ExecutorSlaves {
 
 /// ExecutorStatus defines the observed state of Executor
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ExecutorStatus {}
+pub struct ExecutorStatus {
+}
+

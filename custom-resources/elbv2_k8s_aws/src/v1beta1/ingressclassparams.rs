@@ -5,64 +5,39 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// IngressClassParamsSpec defines the desired state of IngressClassParams
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "elbv2.k8s.aws",
-    version = "v1beta1",
-    kind = "IngressClassParams",
-    plural = "ingressclassparams"
-)]
+#[kube(group = "elbv2.k8s.aws", version = "v1beta1", kind = "IngressClassParams", plural = "ingressclassparams")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IngressClassParamsSpec {
     /// CertificateArn specifies the ARN of the certificates for all Ingresses that belong to IngressClass with this IngressClassParams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateArn"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateArn")]
     pub certificate_arn: Option<Vec<String>>,
     /// Group defines the IngressGroup for all Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<IngressClassParamsGroup>,
     /// InboundCIDRs specifies the CIDRs that are allowed to access the Ingresses that belong to IngressClass with this IngressClassParams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inboundCIDRs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inboundCIDRs")]
     pub inbound_cid_rs: Option<Vec<String>>,
     /// IPAddressType defines the ip address type for all Ingresses that belong to IngressClass with this IngressClassParams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipAddressType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressType")]
     pub ip_address_type: Option<IngressClassParamsIpAddressType>,
     /// Listeners define a list of listeners with their protocol, port and attributes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listeners: Option<Vec<IngressClassParamsListeners>>,
     /// LoadBalancerAttributes define the custom attributes to LoadBalancers for all Ingress that that belong to IngressClass with this IngressClassParams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerAttributes")]
     pub load_balancer_attributes: Option<Vec<IngressClassParamsLoadBalancerAttributes>>,
     /// NamespaceSelector restrict the namespaces of Ingresses that are allowed to specify the IngressClass with this IngressClassParams.
     /// * if absent or present but empty, it selects all namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<IngressClassParamsNamespaceSelector>,
     /// Scheme defines the scheme for all Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -99,11 +74,7 @@ pub enum IngressClassParamsIpAddressType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressClassParamsListeners {
     /// The attributes of the listener
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenerAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerAttributes")]
     pub listener_attributes: Option<Vec<IngressClassParamsListenersListenerAttributes>>,
     /// The port of the listener
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -136,20 +107,12 @@ pub struct IngressClassParamsLoadBalancerAttributes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressClassParamsNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<IngressClassParamsNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -201,3 +164,4 @@ pub struct IngressClassParamsTags {
     /// The value of the tag.
     pub value: String,
 }
+

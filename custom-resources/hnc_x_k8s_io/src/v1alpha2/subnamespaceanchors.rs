@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hnc.x-k8s.io",
-    version = "v1alpha2",
-    kind = "SubnamespaceAnchor",
-    plural = "subnamespaceanchors"
-)]
+#[kube(group = "hnc.x-k8s.io", version = "v1alpha2", kind = "SubnamespaceAnchor", plural = "subnamespaceanchors")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SubnamespaceAnchorSpec {
     /// Annotations is a list of annotations and values to apply to the current subnamespace and all of its descendants. All annotation keys must match a regex specified on the command line by --managed-namespace-annotation. All annotation keys must be managed annotations (see HNC docs) and must match a regex
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -50,12 +45,13 @@ pub struct SubnamespaceAnchorLabels {
 /// SubnamespaceAnchorStatus defines the observed state of SubnamespaceAnchor.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubnamespaceAnchorStatus {
-    /// Describes the state of the subnamespace anchor.
-    ///  Currently, the supported values are:
-    ///  - "Missing": the subnamespace has not been created yet. This should be the default state when the anchor is just created.
-    ///  - "Ok": the subnamespace exists. This is the only good state of the anchor.
-    ///  - "Conflict": a namespace of the same name already exists. The admission controller will attempt to prevent this.
+    /// Describes the state of the subnamespace anchor. 
+    ///  Currently, the supported values are: 
+    ///  - "Missing": the subnamespace has not been created yet. This should be the default state when the anchor is just created. 
+    ///  - "Ok": the subnamespace exists. This is the only good state of the anchor. 
+    ///  - "Conflict": a namespace of the same name already exists. The admission controller will attempt to prevent this. 
     ///  - "Forbidden": the anchor was created in a namespace that doesn't allow children, such as kube-system or hnc-system. The admission controller will attempt to prevent this.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ApisixTlsSpec is the specification of ApisixSSL.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apisix.apache.org",
-    version = "v2",
-    kind = "ApisixTls",
-    plural = "apisixtlses"
-)]
+#[kube(group = "apisix.apache.org", version = "v2", kind = "ApisixTls", plural = "apisixtlses")]
 #[kube(namespaced)]
 #[kube(status = "ApisixTlsStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ApisixTlsSpec {
     /// ApisixMutualTlsClientConfig describes the mutual TLS CA and verify depth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client: Option<ApisixTlsClient>,
     pub hosts: Vec<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// ApisixSecret describes the Kubernetes Secret name and namespace.
     pub secret: ApisixTlsSecret,
@@ -70,3 +61,4 @@ pub struct ApisixTlsStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

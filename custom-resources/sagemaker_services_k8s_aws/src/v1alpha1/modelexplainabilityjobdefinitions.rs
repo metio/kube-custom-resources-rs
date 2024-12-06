@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ModelExplainabilityJobDefinitionSpec defines the desired state of ModelExplainabilityJobDefinition.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sagemaker.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "ModelExplainabilityJobDefinition",
-    plural = "modelexplainabilityjobdefinitions"
-)]
+#[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "ModelExplainabilityJobDefinition", plural = "modelexplainabilityjobdefinitions")]
 #[kube(namespaced)]
 #[kube(status = "ModelExplainabilityJobDefinitionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ModelExplainabilityJobDefinitionSpec {
     /// The name of the model explainability job definition. The name must be unique
     /// within an Amazon Web Services Region in the Amazon Web Services account.
@@ -35,40 +30,25 @@ pub struct ModelExplainabilityJobDefinitionSpec {
     /// Configures the model explainability job to run a specified Docker container
     /// image.
     #[serde(rename = "modelExplainabilityAppSpecification")]
-    pub model_explainability_app_specification:
-        ModelExplainabilityJobDefinitionModelExplainabilityAppSpecification,
+    pub model_explainability_app_specification: ModelExplainabilityJobDefinitionModelExplainabilityAppSpecification,
     /// The baseline configuration for a model explainability job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelExplainabilityBaselineConfig"
-    )]
-    pub model_explainability_baseline_config:
-        Option<ModelExplainabilityJobDefinitionModelExplainabilityBaselineConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelExplainabilityBaselineConfig")]
+    pub model_explainability_baseline_config: Option<ModelExplainabilityJobDefinitionModelExplainabilityBaselineConfig>,
     /// Inputs for the model explainability job.
     #[serde(rename = "modelExplainabilityJobInput")]
     pub model_explainability_job_input: ModelExplainabilityJobDefinitionModelExplainabilityJobInput,
     /// The output configuration for monitoring jobs.
     #[serde(rename = "modelExplainabilityJobOutputConfig")]
-    pub model_explainability_job_output_config:
-        ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfig,
+    pub model_explainability_job_output_config: ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfig,
     /// Networking options for a model explainability job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkConfig")]
     pub network_config: Option<ModelExplainabilityJobDefinitionNetworkConfig>,
     /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
     /// to perform tasks on your behalf.
     #[serde(rename = "roleARN")]
     pub role_arn: String,
     /// A time limit for how long the monitoring job is allowed to run before stopping.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stoppingCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stoppingCondition")]
     pub stopping_condition: Option<ModelExplainabilityJobDefinitionStoppingCondition>,
     /// (Optional) An array of key-value pairs. For more information, see Using Cost
     /// Allocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-whatURL)
@@ -81,40 +61,20 @@ pub struct ModelExplainabilityJobDefinitionSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionJobResources {
     /// Configuration for the cluster used to run model monitoring jobs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterConfig")]
     pub cluster_config: Option<ModelExplainabilityJobDefinitionJobResourcesClusterConfig>,
 }
 
 /// Configuration for the cluster used to run model monitoring jobs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionJobResourcesClusterConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
     pub instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeKMSKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
     pub volume_kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSizeInGB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSizeInGB")]
     pub volume_size_in_gb: Option<i64>,
 }
 
@@ -133,21 +93,11 @@ pub struct ModelExplainabilityJobDefinitionModelExplainabilityAppSpecification {
 /// The baseline configuration for a model explainability job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionModelExplainabilityBaselineConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseliningJobName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseliningJobName")]
     pub baselining_job_name: Option<String>,
     /// The constraints resource for a monitoring job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "constraintsResource"
-    )]
-    pub constraints_resource: Option<
-        ModelExplainabilityJobDefinitionModelExplainabilityBaselineConfigConstraintsResource,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintsResource")]
+    pub constraints_resource: Option<ModelExplainabilityJobDefinitionModelExplainabilityBaselineConfigConstraintsResource>,
 }
 
 /// The constraints resource for a monitoring job.
@@ -161,79 +111,34 @@ pub struct ModelExplainabilityJobDefinitionModelExplainabilityBaselineConfigCons
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionModelExplainabilityJobInput {
     /// Input object for the endpoint
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointInput"
-    )]
-    pub endpoint_input:
-        Option<ModelExplainabilityJobDefinitionModelExplainabilityJobInputEndpointInput>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointInput")]
+    pub endpoint_input: Option<ModelExplainabilityJobDefinitionModelExplainabilityJobInputEndpointInput>,
 }
 
 /// Input object for the endpoint
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionModelExplainabilityJobInputEndpointInput {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endTimeOffset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTimeOffset")]
     pub end_time_offset: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointName")]
     pub endpoint_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeFeaturesAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeFeaturesAttribute")]
     pub exclude_features_attribute: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featuresAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featuresAttribute")]
     pub features_attribute: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inferenceAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferenceAttribute")]
     pub inference_attribute: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
     pub local_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "probabilityAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probabilityAttribute")]
     pub probability_attribute: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "probabilityThresholdAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probabilityThresholdAttribute")]
     pub probability_threshold_attribute: Option<f64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataDistributionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataDistributionType")]
     pub s3_data_distribution_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3InputMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3InputMode")]
     pub s3_input_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startTimeOffset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimeOffset")]
     pub start_time_offset: Option<String>,
 }
 
@@ -242,14 +147,8 @@ pub struct ModelExplainabilityJobDefinitionModelExplainabilityJobInputEndpointIn
 pub struct ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitoringOutputs"
-    )]
-    pub monitoring_outputs: Option<
-        Vec<ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfigMonitoringOutputs>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitoringOutputs")]
+    pub monitoring_outputs: Option<Vec<ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfigMonitoringOutputs>>,
 }
 
 /// The output object for a monitoring job.
@@ -258,42 +157,27 @@ pub struct ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfigMon
     /// Information about where and how you want to store the results of a monitoring
     /// job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Output")]
-    pub s3_output: Option<
-        ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfigMonitoringOutputsS3Output,
-    >,
+    pub s3_output: Option<ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfigMonitoringOutputsS3Output>,
 }
 
 /// Information about where and how you want to store the results of a monitoring
 /// job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfigMonitoringOutputsS3Output
-{
+pub struct ModelExplainabilityJobDefinitionModelExplainabilityJobOutputConfigMonitoringOutputsS3Output {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
     pub local_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3UploadMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3UploadMode")]
     pub s3_upload_mode: Option<String>,
 }
 
 /// Networking options for a model explainability job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionNetworkConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableInterContainerTrafficEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInterContainerTrafficEncryption")]
     pub enable_inter_container_traffic_encryption: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableNetworkIsolation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
     /// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
     /// hosted models, and compute resources have access to. You can control access
@@ -309,11 +193,7 @@ pub struct ModelExplainabilityJobDefinitionNetworkConfig {
 /// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionNetworkConfigVpcConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<String>>,
@@ -322,24 +202,20 @@ pub struct ModelExplainabilityJobDefinitionNetworkConfigVpcConfig {
 /// A time limit for how long the monitoring job is allowed to run before stopping.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelExplainabilityJobDefinitionStoppingCondition {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRuntimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRuntimeInSeconds")]
     pub max_runtime_in_seconds: Option<i64>,
 }
 
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
-///
-///
+/// 
+/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-///
-///
+/// 
+/// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
 /// For advice on best practices for managing Amazon Web Services resources with
@@ -359,11 +235,7 @@ pub struct ModelExplainabilityJobDefinitionStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ModelExplainabilityJobDefinitionStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -395,3 +267,4 @@ pub struct ModelExplainabilityJobDefinitionStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

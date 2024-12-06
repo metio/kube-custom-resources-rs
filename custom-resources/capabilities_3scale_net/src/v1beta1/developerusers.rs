@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DeveloperUserSpec defines the desired state of DeveloperUser
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "capabilities.3scale.net",
-    version = "v1beta1",
-    kind = "DeveloperUser",
-    plural = "developerusers"
-)]
+#[kube(group = "capabilities.3scale.net", version = "v1beta1", kind = "DeveloperUser", plural = "developerusers")]
 #[kube(namespaced)]
 #[kube(status = "DeveloperUserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DeveloperUserSpec {
     /// DeveloperAccountRef is the reference to the parent developer account
     #[serde(rename = "developerAccountRef")]
@@ -33,11 +28,7 @@ pub struct DeveloperUserSpec {
     #[serde(rename = "passwordCredentialsRef")]
     pub password_credentials_ref: DeveloperUserPasswordCredentialsRef,
     /// ProviderAccountRef references account provider credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerAccountRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerAccountRef")]
     pub provider_account_ref: Option<DeveloperUserProviderAccountRef>,
     /// Role defines the desired 3scale role. Defaults to "member"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -93,30 +84,15 @@ pub struct DeveloperUserStatus {
     /// Current state of the 3scale backend. Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "developerUserID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "developerUserID")]
     pub developer_user_id: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "developerUserState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "developerUserState")]
     pub developer_user_state: Option<String>,
     /// ObservedGeneration reflects the generation of the most recently observed Backend Spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// 3scale control plane host
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerAccountHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerAccountHost")]
     pub provider_account_host: Option<String>,
 }
+

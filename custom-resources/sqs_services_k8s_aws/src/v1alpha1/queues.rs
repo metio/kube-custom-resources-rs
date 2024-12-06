@@ -4,77 +4,44 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// QueueSpec defines the desired state of Queue.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sqs.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Queue",
-    plural = "queues"
-)]
+#[kube(group = "sqs.services.k8s.aws", version = "v1alpha1", kind = "Queue", plural = "queues")]
 #[kube(namespaced)]
 #[kube(status = "QueueStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct QueueSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentBasedDeduplication"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentBasedDeduplication")]
     pub content_based_deduplication: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "delaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "delaySeconds")]
     pub delay_seconds: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fifoQueue")]
     pub fifo_queue: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kmsDataKeyReusePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsDataKeyReusePeriodSeconds")]
     pub kms_data_key_reuse_period_seconds: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kmsMasterKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsMasterKeyID")]
     pub kms_master_key_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kmsMasterKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsMasterKeyRef")]
     pub kms_master_key_ref: Option<QueueKmsMasterKeyRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumMessageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumMessageSize")]
     pub maximum_message_size: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageRetentionPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageRetentionPeriod")]
     pub message_retention_period: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<String>,
@@ -82,69 +49,49 @@ pub struct QueueSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyRef")]
     pub policy_ref: Option<QueuePolicyRef>,
     #[serde(rename = "queueName")]
     pub queue_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "receiveMessageWaitTimeSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "receiveMessageWaitTimeSeconds")]
     pub receive_message_wait_time_seconds: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redriveAllowPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redriveAllowPolicy")]
     pub redrive_allow_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redrivePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redrivePolicy")]
     pub redrive_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sqsManagedSSEEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sqsManagedSSEEnabled")]
     pub sqs_managed_sse_enabled: Option<String>,
     /// Add cost allocation tags to the specified Amazon SQS queue. For an overview,
     /// see Tagging Your Amazon SQS Queues (https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-queue-tags.html)
     /// in the Amazon SQS Developer Guide.
-    ///
+    /// 
     /// When you use queue tags, keep the following guidelines in mind:
-    ///
+    /// 
     ///    * Adding more than 50 tags to a queue isn't recommended.
-    ///
+    /// 
     ///    * Tags don't have any semantic meaning. Amazon SQS interprets tags as
     ///    character strings.
-    ///
+    /// 
     ///    * Tags are case-sensitive.
-    ///
+    /// 
     ///    * A new tag with a key identical to that of an existing tag overwrites
     ///    the existing tag.
-    ///
+    /// 
     /// For a full list of tag restrictions, see Quotas related to queues (https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-limits.html#limits-queues)
     /// in the Amazon SQS Developer Guide.
-    ///
+    /// 
     /// To be able to tag a queue on creation, you must have the sqs:CreateQueue
     /// and sqs:TagQueue permissions.
-    ///
+    /// 
     /// Cross-account permissions don't apply to this action. For more information,
     /// see Grant cross-account permissions to a role and a username (https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-customer-managed-policy-examples.html#grant-cross-account-permissions-to-role-and-user-name)
     /// in the Amazon SQS Developer Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "visibilityTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "visibilityTimeout")]
     pub visibility_timeout: Option<String>,
 }
 
@@ -152,7 +99,7 @@ pub struct QueueSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -177,7 +124,7 @@ pub struct QueueKmsMasterKeyRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -204,11 +151,7 @@ pub struct QueueStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<QueueStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -244,3 +187,4 @@ pub struct QueueStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

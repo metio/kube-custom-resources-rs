@@ -4,45 +4,32 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// HelmChartSpec specifies the desired state of a Helm chart.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "source.toolkit.fluxcd.io",
-    version = "v1beta2",
-    kind = "HelmChart",
-    plural = "helmcharts"
-)]
+#[kube(group = "source.toolkit.fluxcd.io", version = "v1beta2", kind = "HelmChart", plural = "helmcharts")]
 #[kube(namespaced)]
 #[kube(status = "HelmChartStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct HelmChartSpec {
     /// AccessFrom specifies an Access Control List for allowing cross-namespace
     /// references to this object.
     /// NOTE: Not implemented, provisional as of https://github.com/fluxcd/flux2/pull/2092
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessFrom")]
     pub access_from: Option<HelmChartAccessFrom>,
     /// Chart is the name or path the Helm chart is available at in the
     /// SourceRef.
     pub chart: String,
     /// IgnoreMissingValuesFiles controls whether to silently ignore missing values
     /// files rather than failing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreMissingValuesFiles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValuesFiles")]
     pub ignore_missing_values_files: Option<bool>,
     /// Interval at which the HelmChart SourceRef is checked for updates.
     /// This interval is approximate and may be subject to jitter to ensure
@@ -52,11 +39,7 @@ pub struct HelmChartSpec {
     /// Valid values are ('ChartVersion', 'Revision').
     /// See the documentation of the values for an explanation on their behavior.
     /// Defaults to ChartVersion when omitted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcileStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcileStrategy")]
     pub reconcile_strategy: Option<HelmChartReconcileStrategy>,
     /// SourceRef is the reference to the Source the chart is available at.
     #[serde(rename = "sourceRef")]
@@ -69,22 +52,14 @@ pub struct HelmChartSpec {
     /// values, expected to be a relative path in the SourceRef. Deprecated in
     /// favor of ValuesFiles, for backwards compatibility the file specified here
     /// is merged before the ValuesFiles items. Ignored when omitted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "valuesFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesFile")]
     pub values_file: Option<String>,
     /// ValuesFiles is an alternative list of values files to use as the chart
     /// values (values.yaml is not included by default), expected to be a
     /// relative path in the SourceRef.
     /// Values files are merged in the order of this list with the last file
     /// overriding the first. Ignored when omitted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "valuesFiles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesFiles")]
     pub values_files: Option<Vec<String>>,
     /// Verify contains the secret name containing the trusted public keys
     /// used to verify the signature and specifies which provider to use to check
@@ -117,11 +92,7 @@ pub struct HelmChartAccessFromNamespaceSelectors {
     /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -136,11 +107,7 @@ pub enum HelmChartReconcileStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HelmChartSourceRef {
     /// APIVersion of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the referent, valid values are ('HelmRepository', 'GitRepository',
     /// 'Bucket').
@@ -168,11 +135,7 @@ pub struct HelmChartVerify {
     /// while verifying an OCI artifact which was signed using Cosign keyless
     /// signing. The artifact's identity is deemed to be verified if any of the
     /// specified matchers match against the identity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchOIDCIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOIDCIdentity")]
     pub match_oidc_identity: Option<Vec<HelmChartVerifyMatchOidcIdentity>>,
     /// Provider specifies the technology used to sign the OCI Artifact.
     pub provider: HelmChartVerifyProvider,
@@ -229,44 +192,24 @@ pub struct HelmChartStatus {
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedChartName is the last observed chart name as specified by the
     /// resolved chart reference.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedChartName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedChartName")]
     pub observed_chart_name: Option<String>,
     /// ObservedGeneration is the last observed generation of the HelmChart
     /// object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ObservedSourceArtifactRevision is the last observed Artifact.Revision
     /// of the HelmChartSpec.SourceRef.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedSourceArtifactRevision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedSourceArtifactRevision")]
     pub observed_source_artifact_revision: Option<String>,
     /// ObservedValuesFiles are the observed value files of the last successful
     /// reconciliation.
     /// It matches the chart in the last successfully reconciled artifact.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedValuesFiles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedValuesFiles")]
     pub observed_values_files: Option<Vec<String>>,
     /// URL is the dynamic fetch link for the latest Artifact.
     /// It is provided on a "best effort" basis, and using the precise
@@ -303,3 +246,4 @@ pub struct HelmChartStatusArtifact {
     /// consumption, e.g. by another controller applying the Artifact contents.
     pub url: String,
 }
+

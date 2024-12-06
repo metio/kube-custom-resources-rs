@@ -4,29 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// GrantSpec defines the desired state of Grant.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kms.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Grant",
-    plural = "grants"
-)]
+#[kube(group = "kms.services.k8s.aws", version = "v1alpha1", kind = "Grant", plural = "grants")]
 #[kube(namespaced)]
 #[kube(status = "GrantStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GrantSpec {
     /// Specifies a grant constraint.
-    ///
+    /// 
     /// KMS supports the EncryptionContextEquals and EncryptionContextSubset grant
     /// constraints. Each constraint value can include up to 8 encryption context
     /// pairs. The encryption context value in each constraint cannot exceed 384
@@ -35,12 +30,12 @@ pub struct GrantSpec {
     /// in the Key Management Service Developer Guide. For more information about
     /// encryption context, see Encryption context (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context)
     /// in the Key Management Service Developer Guide .
-    ///
+    /// 
     /// The encryption context grant constraints allow the permissions in the grant
     /// only when the encryption context in the request matches (EncryptionContextEquals)
     /// or includes (EncryptionContextSubset) the encryption context specified in
     /// this structure.
-    ///
+    /// 
     /// The encryption context grant constraints are supported only on grant operations
     /// (https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#terms-grant-operations)
     /// that include an EncryptionContext parameter, such as cryptographic operations
@@ -49,27 +44,23 @@ pub struct GrantSpec {
     /// to these operations. If a grant with a grant constraint includes the CreateGrant
     /// operation, the constraint requires that any grants created with the CreateGrant
     /// permission have an equally strict or stricter encryption context constraint.
-    ///
+    /// 
     /// You cannot use an encryption context grant constraint for cryptographic operations
     /// with asymmetric KMS keys or HMAC KMS keys. These keys don't support an encryption
     /// context.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub constraints: Option<GrantConstraints>,
     /// A list of grant tokens.
-    ///
+    /// 
     /// Use a grant token when your permission to call this operation comes from
     /// a new grant that has not yet achieved eventual consistency. For more information,
     /// see Grant token (https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token)
     /// and Using a grant token (https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#using-grant-token)
     /// in the Key Management Service Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grantTokens"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantTokens")]
     pub grant_tokens: Option<Vec<String>>,
     /// The identity that gets the permissions specified in the grant.
-    ///
+    /// 
     /// To specify the principal, use the Amazon Resource Name (ARN) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
     /// of an Amazon Web Services principal. Valid Amazon Web Services principals
     /// include Amazon Web Services accounts (root), IAM users, IAM roles, federated
@@ -81,16 +72,16 @@ pub struct GrantSpec {
     pub grantee_principal: String,
     /// Identifies the KMS key for the grant. The grant gives principals permission
     /// to use this KMS key.
-    ///
+    /// 
     /// Specify the key ID or key ARN of the KMS key. To specify a KMS key in a different
     /// Amazon Web Services account, you must use the key ARN.
-    ///
+    /// 
     /// For example:
-    ///
+    /// 
     ///    * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
-    ///
+    /// 
     ///    * Key ARN: arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab
-    ///
+    /// 
     /// To get the key ID and key ARN for a KMS key, use ListKeys or DescribeKey.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyID")]
     pub key_id: Option<String>,
@@ -98,18 +89,18 @@ pub struct GrantSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyRef")]
     pub key_ref: Option<GrantKeyRef>,
     /// A friendly name for the grant. Use this value to prevent the unintended creation
     /// of duplicate grants when retrying this request.
-    ///
+    /// 
     /// When this value is absent, all CreateGrant requests result in a new grant
     /// with a unique GrantId even if all the supplied parameters are identical.
     /// This can result in unintended duplicates when you retry the CreateGrant request.
-    ///
+    /// 
     /// When this value is present, you can retry a CreateGrant request with identical
     /// parameters; if the grant already exists, the original GrantId is returned
     /// without creating a new grant. Note that the returned grant token is unique
@@ -118,7 +109,7 @@ pub struct GrantSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// A list of operations that the grant permits.
-    ///
+    /// 
     /// This list must include only operations that are permitted in a grant. Also,
     /// the operation must be supported on the KMS key. For example, you cannot create
     /// a grant for a symmetric encryption KMS key that allows the Sign operation,
@@ -129,7 +120,7 @@ pub struct GrantSpec {
     pub operations: Vec<String>,
     /// The principal that has permission to use the RetireGrant operation to retire
     /// the grant.
-    ///
+    /// 
     /// To specify the principal, use the Amazon Resource Name (ARN) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
     /// of an Amazon Web Services principal. Valid Amazon Web Services principals
     /// include Amazon Web Services accounts (root), IAM users, federated users,
@@ -137,21 +128,17 @@ pub struct GrantSpec {
     /// a principal, see Amazon Web Services Identity and Access Management (IAM)
     /// (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-iam)
     /// in the Example ARNs section of the Amazon Web Services General Reference.
-    ///
+    /// 
     /// The grant determines the retiring principal. Other principals might have
     /// permission to retire the grant or revoke the grant. For details, see RevokeGrant
     /// and Retiring and revoking grants (https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#grant-delete)
     /// in the Key Management Service Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retiringPrincipal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retiringPrincipal")]
     pub retiring_principal: Option<String>,
 }
 
 /// Specifies a grant constraint.
-///
+/// 
 /// KMS supports the EncryptionContextEquals and EncryptionContextSubset grant
 /// constraints. Each constraint value can include up to 8 encryption context
 /// pairs. The encryption context value in each constraint cannot exceed 384
@@ -160,12 +147,12 @@ pub struct GrantSpec {
 /// in the Key Management Service Developer Guide. For more information about
 /// encryption context, see Encryption context (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context)
 /// in the Key Management Service Developer Guide .
-///
+/// 
 /// The encryption context grant constraints allow the permissions in the grant
 /// only when the encryption context in the request matches (EncryptionContextEquals)
 /// or includes (EncryptionContextSubset) the encryption context specified in
 /// this structure.
-///
+/// 
 /// The encryption context grant constraints are supported only on grant operations
 /// (https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#terms-grant-operations)
 /// that include an EncryptionContext parameter, such as cryptographic operations
@@ -174,23 +161,15 @@ pub struct GrantSpec {
 /// to these operations. If a grant with a grant constraint includes the CreateGrant
 /// operation, the constraint requires that any grants created with the CreateGrant
 /// permission have an equally strict or stricter encryption context constraint.
-///
+/// 
 /// You cannot use an encryption context grant constraint for cryptographic operations
 /// with asymmetric KMS keys or HMAC KMS keys. These keys don't support an encryption
 /// context.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrantConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionContextEquals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionContextEquals")]
     pub encryption_context_equals: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionContextSubset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionContextSubset")]
     pub encryption_context_subset: Option<BTreeMap<String, String>>,
 }
 
@@ -198,7 +177,7 @@ pub struct GrantConstraints {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -225,11 +204,7 @@ pub struct GrantStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<GrantStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -238,22 +213,18 @@ pub struct GrantStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The unique identifier for the grant.
-    ///
+    /// 
     /// You can use the GrantId in a ListGrants, RetireGrant, or RevokeGrant operation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantID")]
     pub grant_id: Option<String>,
     /// The grant token.
-    ///
+    /// 
     /// Use a grant token when your permission to call this operation comes from
     /// a new grant that has not yet achieved eventual consistency. For more information,
     /// see Grant token (https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#grant_token)
     /// and Using a grant token (https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#using-grant-token)
     /// in the Key Management Service Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grantToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantToken")]
     pub grant_token: Option<String>,
 }
 
@@ -278,3 +249,4 @@ pub struct GrantStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

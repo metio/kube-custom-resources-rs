@@ -4,109 +4,68 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// PlatformApplicationSpec defines the desired state of PlatformApplication.
-///
+/// 
 /// Platform application object.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sns.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "PlatformApplication",
-    plural = "platformapplications"
-)]
+#[kube(group = "sns.services.k8s.aws", version = "v1alpha1", kind = "PlatformApplication", plural = "platformapplications")]
 #[kube(namespaced)]
 #[kube(status = "PlatformApplicationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PlatformApplicationSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventDeliveryFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventDeliveryFailure")]
     pub event_delivery_failure: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventEndpointCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventEndpointCreated")]
     pub event_endpoint_created: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventEndpointCreatedRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventEndpointCreatedRef")]
     pub event_endpoint_created_ref: Option<PlatformApplicationEventEndpointCreatedRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventEndpointDeleted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventEndpointDeleted")]
     pub event_endpoint_deleted: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventEndpointDeletedRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventEndpointDeletedRef")]
     pub event_endpoint_deleted_ref: Option<PlatformApplicationEventEndpointDeletedRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventEndpointUpdated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventEndpointUpdated")]
     pub event_endpoint_updated: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventEndpointUpdatedRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventEndpointUpdatedRef")]
     pub event_endpoint_updated_ref: Option<PlatformApplicationEventEndpointUpdatedRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureFeedbackRoleARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureFeedbackRoleARN")]
     pub failure_feedback_role_arn: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureFeedbackRoleRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureFeedbackRoleRef")]
     pub failure_feedback_role_ref: Option<PlatformApplicationFailureFeedbackRoleRef>,
     /// Application names must be made up of only uppercase and lowercase ASCII letters,
     /// numbers, underscores, hyphens, and periods, and must be between 1 and 256
@@ -116,42 +75,22 @@ pub struct PlatformApplicationSpec {
     /// (Apple Push Notification Service), APNS_SANDBOX, and GCM (Firebase Cloud
     /// Messaging).
     pub platform: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "platformCredential"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "platformCredential")]
     pub platform_credential: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "platformPrincipal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "platformPrincipal")]
     pub platform_principal: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successFeedbackRoleARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successFeedbackRoleARN")]
     pub success_feedback_role_arn: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successFeedbackRoleRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successFeedbackRoleRef")]
     pub success_feedback_role_ref: Option<PlatformApplicationSuccessFeedbackRoleRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successFeedbackSampleRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successFeedbackSampleRate")]
     pub success_feedback_sample_rate: Option<String>,
 }
 
@@ -159,7 +98,7 @@ pub struct PlatformApplicationSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -184,7 +123,7 @@ pub struct PlatformApplicationEventEndpointCreatedRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -209,7 +148,7 @@ pub struct PlatformApplicationEventEndpointDeletedRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -234,7 +173,7 @@ pub struct PlatformApplicationEventEndpointUpdatedRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -259,7 +198,7 @@ pub struct PlatformApplicationFailureFeedbackRoleRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -286,11 +225,7 @@ pub struct PlatformApplicationStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<PlatformApplicationStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -321,3 +256,4 @@ pub struct PlatformApplicationStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

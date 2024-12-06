@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// BundlesSpec defines the desired state of Bundles.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "anywhere.eks.amazonaws.com",
-    version = "v1alpha1",
-    kind = "Bundles",
-    plural = "bundles"
-)]
+#[kube(group = "anywhere.eks.amazonaws.com", version = "v1alpha1", kind = "Bundles", plural = "bundles")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BundlesSpec {
     #[serde(rename = "cliMaxVersion")]
     pub cli_max_version: String,
@@ -43,11 +38,7 @@ pub struct BundlesVersionsBundles {
     #[serde(rename = "certManager")]
     pub cert_manager: BundlesVersionsBundlesCertManager,
     pub cilium: BundlesVersionsBundlesCilium,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudStack"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudStack")]
     pub cloud_stack: Option<BundlesVersionsBundlesCloudStack>,
     #[serde(rename = "clusterAPI")]
     pub cluster_api: BundlesVersionsBundlesClusterApi,
@@ -117,11 +108,7 @@ pub struct BundlesVersionsBundlesAwsController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -155,11 +142,7 @@ pub struct BundlesVersionsBundlesAwsKubeProxy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -217,11 +200,7 @@ pub struct BundlesVersionsBundlesBootstrapController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -255,11 +234,7 @@ pub struct BundlesVersionsBundlesBootstrapKubeProxy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -308,11 +283,7 @@ pub struct BundlesVersionsBundlesBottlerocketHostContainersAdmin {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -346,11 +317,7 @@ pub struct BundlesVersionsBundlesBottlerocketHostContainersControl {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -384,11 +351,7 @@ pub struct BundlesVersionsBundlesBottlerocketHostContainersKubeadmBootstrap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -437,11 +400,7 @@ pub struct BundlesVersionsBundlesCertManagerAcmesolver {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -475,11 +434,7 @@ pub struct BundlesVersionsBundlesCertManagerCainjector {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -513,11 +468,7 @@ pub struct BundlesVersionsBundlesCertManagerController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -552,11 +503,7 @@ pub struct BundlesVersionsBundlesCertManagerCtl {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -598,11 +545,7 @@ pub struct BundlesVersionsBundlesCertManagerStartupapicheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -636,11 +579,7 @@ pub struct BundlesVersionsBundlesCertManagerWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -685,11 +624,7 @@ pub struct BundlesVersionsBundlesCiliumCilium {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -723,11 +658,7 @@ pub struct BundlesVersionsBundlesCiliumHelmChart {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -768,11 +699,7 @@ pub struct BundlesVersionsBundlesCiliumOperator {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -819,11 +746,7 @@ pub struct BundlesVersionsBundlesCloudStackClusterApiController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -864,11 +787,7 @@ pub struct BundlesVersionsBundlesCloudStackKubeRbacProxy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -902,11 +821,7 @@ pub struct BundlesVersionsBundlesCloudStackKubeVip {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -964,11 +879,7 @@ pub struct BundlesVersionsBundlesClusterApiController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1002,11 +913,7 @@ pub struct BundlesVersionsBundlesClusterApiKubeProxy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1064,11 +971,7 @@ pub struct BundlesVersionsBundlesControlPlaneController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1102,11 +1005,7 @@ pub struct BundlesVersionsBundlesControlPlaneKubeProxy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1173,11 +1072,7 @@ pub struct BundlesVersionsBundlesDockerKubeProxy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1211,11 +1106,7 @@ pub struct BundlesVersionsBundlesDockerManager {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1278,18 +1169,10 @@ pub struct BundlesVersionsBundlesEksD {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kindNode")]
     pub kind_node: Option<BundlesVersionsBundlesEksDKindNode>,
     /// Release number of EKS-D release
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
     /// Url pointing to the EKS-D release manifest using which assets where created
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "manifestUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "manifestUrl")]
     pub manifest_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1510,11 +1393,7 @@ pub struct BundlesVersionsBundlesEksDKindNode {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1650,11 +1529,7 @@ pub struct BundlesVersionsBundlesEksaCliTools {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1688,11 +1563,7 @@ pub struct BundlesVersionsBundlesEksaClusterController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1733,11 +1604,7 @@ pub struct BundlesVersionsBundlesEksaDiagnosticCollector {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1788,11 +1655,7 @@ pub struct BundlesVersionsBundlesEtcdadmBootstrapController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1826,11 +1689,7 @@ pub struct BundlesVersionsBundlesEtcdadmBootstrapKubeProxy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1888,11 +1747,7 @@ pub struct BundlesVersionsBundlesEtcdadmControllerController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1926,11 +1781,7 @@ pub struct BundlesVersionsBundlesEtcdadmControllerKubeProxy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1985,11 +1836,7 @@ pub struct BundlesVersionsBundlesFluxHelmController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2023,11 +1870,7 @@ pub struct BundlesVersionsBundlesFluxKustomizeController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2061,11 +1904,7 @@ pub struct BundlesVersionsBundlesFluxNotificationController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2099,11 +1938,7 @@ pub struct BundlesVersionsBundlesFluxSourceController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2142,11 +1977,7 @@ pub struct BundlesVersionsBundlesHaproxyImage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2188,11 +2019,7 @@ pub struct BundlesVersionsBundlesKindnetdManifest {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundlesVersionsBundlesNutanix {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudProvider")]
     pub cloud_provider: Option<BundlesVersionsBundlesNutanixCloudProvider>,
     #[serde(rename = "clusterAPIController")]
     pub cluster_api_controller: BundlesVersionsBundlesNutanixClusterApiController,
@@ -2213,11 +2040,7 @@ pub struct BundlesVersionsBundlesNutanixCloudProvider {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2251,11 +2074,7 @@ pub struct BundlesVersionsBundlesNutanixClusterApiController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2303,11 +2122,7 @@ pub struct BundlesVersionsBundlesNutanixKubeVip {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2342,13 +2157,8 @@ pub struct BundlesVersionsBundlesNutanixMetadata {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundlesVersionsBundlesPackageController {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialProviderPackage"
-    )]
-    pub credential_provider_package:
-        Option<BundlesVersionsBundlesPackageControllerCredentialProviderPackage>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialProviderPackage")]
+    pub credential_provider_package: Option<BundlesVersionsBundlesPackageControllerCredentialProviderPackage>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmChart")]
     pub helm_chart: Option<BundlesVersionsBundlesPackageControllerHelmChart>,
     #[serde(rename = "packageController")]
@@ -2367,11 +2177,7 @@ pub struct BundlesVersionsBundlesPackageControllerCredentialProviderPackage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2405,11 +2211,7 @@ pub struct BundlesVersionsBundlesPackageControllerHelmChart {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2443,11 +2245,7 @@ pub struct BundlesVersionsBundlesPackageControllerPackageController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2481,11 +2279,7 @@ pub struct BundlesVersionsBundlesPackageControllerTokenRefresher {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2531,11 +2325,7 @@ pub struct BundlesVersionsBundlesSnowBottlerocketBootstrapSnow {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2576,11 +2366,7 @@ pub struct BundlesVersionsBundlesSnowKubeVip {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2614,11 +2400,7 @@ pub struct BundlesVersionsBundlesSnowManager {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2662,11 +2444,7 @@ pub struct BundlesVersionsBundlesTinkerbell {
     #[serde(rename = "kubeVip")]
     pub kube_vip: BundlesVersionsBundlesTinkerbellKubeVip,
     pub metadata: BundlesVersionsBundlesTinkerbellMetadata,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tinkerbellStack"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tinkerbellStack")]
     pub tinkerbell_stack: Option<BundlesVersionsBundlesTinkerbellTinkerbellStack>,
     pub version: String,
 }
@@ -2679,11 +2457,7 @@ pub struct BundlesVersionsBundlesTinkerbellClusterApiController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2731,11 +2505,7 @@ pub struct BundlesVersionsBundlesTinkerbellEnvoy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2769,11 +2539,7 @@ pub struct BundlesVersionsBundlesTinkerbellKubeVip {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2845,11 +2611,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackActionsCexec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2883,11 +2645,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackActionsImageToDisk {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2921,11 +2679,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackActionsKexec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2959,11 +2713,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackActionsOciToDisk {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2997,11 +2747,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackActionsReboot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3035,11 +2781,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackActionsWriteFile {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3073,11 +2815,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackBoots {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3111,11 +2849,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackHegel {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3159,11 +2893,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackHookBootkit {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3197,11 +2927,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackHookDocker {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3315,11 +3041,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackHookKernel {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3433,11 +3155,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackRufio {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3471,11 +3189,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackStack {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3524,11 +3238,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkNginx {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3562,11 +3272,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3600,11 +3306,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkRelay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3638,11 +3340,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkRelayInit {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3676,11 +3374,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkServer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3714,11 +3408,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkTinkWorker {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3752,11 +3442,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkerbellChart {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3790,11 +3476,7 @@ pub struct BundlesVersionsBundlesTinkerbellTinkerbellStackTinkerbellCrds {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3834,11 +3516,7 @@ pub struct BundlesVersionsBundlesUpgraderUpgrader {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3894,11 +3572,7 @@ pub struct BundlesVersionsBundlesVSphereClusterApiController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3947,11 +3621,7 @@ pub struct BundlesVersionsBundlesVSphereDriver {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3986,11 +3656,7 @@ pub struct BundlesVersionsBundlesVSphereKubeProxy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4024,11 +3690,7 @@ pub struct BundlesVersionsBundlesVSphereKubeVip {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4062,11 +3724,7 @@ pub struct BundlesVersionsBundlesVSphereManager {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4108,11 +3766,7 @@ pub struct BundlesVersionsBundlesVSphereSyncer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The SHA256 digest of the image manifest
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
     /// The asset name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4141,4 +3795,6 @@ pub enum BundlesVersionsBundlesVSphereSyncerOs {
 
 /// BundlesStatus defines the observed state of Bundles.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BundlesStatus {}
+pub struct BundlesStatus {
+}
+

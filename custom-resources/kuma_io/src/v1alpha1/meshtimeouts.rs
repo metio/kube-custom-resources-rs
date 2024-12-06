@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the Kuma MeshTimeout resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshTimeout",
-    plural = "meshtimeouts"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshTimeout", plural = "meshtimeouts")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshTimeoutSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -54,11 +49,7 @@ pub struct MeshTimeoutFrom {
 pub struct MeshTimeoutFromDefault {
     /// ConnectionTimeout specifies the amount of time proxy will wait for an TCP connection to be established.
     /// Default value is 5 seconds. Cannot be set to 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTimeout")]
     pub connection_timeout: Option<String>,
     /// Http provides configuration for HTTP specific timeouts
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -66,11 +57,7 @@ pub struct MeshTimeoutFromDefault {
     /// IdleTimeout is defined as the period in which there are no bytes sent or received on connection
     /// Setting this timeout to 0 will disable it. Be cautious when disabling it because
     /// it can lead to connection leaking. Default value is 1h.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
 }
 
@@ -80,47 +67,27 @@ pub struct MeshTimeoutFromDefaultHttp {
     /// MaxConnectionDuration is the time after which a connection will be drained and/or closed,
     /// starting from when it was first established. Setting this timeout to 0 will disable it.
     /// Disabled by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionDuration")]
     pub max_connection_duration: Option<String>,
     /// MaxStreamDuration is the maximum time that a stream’s lifetime will span.
     /// Setting this timeout to 0 will disable it. Disabled by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxStreamDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxStreamDuration")]
     pub max_stream_duration: Option<String>,
     /// RequestHeadersTimeout The amount of time that proxy will wait for the request headers to be received. The timer is
     /// activated when the first byte of the headers is received, and is disarmed when the last byte of
     /// the headers has been received. If not specified or set to 0, this timeout is disabled.
     /// Disabled by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeadersTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeadersTimeout")]
     pub request_headers_timeout: Option<String>,
     /// RequestTimeout The amount of time that proxy will wait for the entire request to be received.
     /// The timer is activated when the request is initiated, and is disarmed when the last byte of the request is sent,
     /// OR when the response is initiated. Setting this timeout to 0 will disable it.
     /// Default is 15s.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
     pub request_timeout: Option<String>,
     /// StreamIdleTimeout is the amount of time that proxy will allow a stream to exist with no activity.
     /// Setting this timeout to 0 will disable it. Default is 30m
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "streamIdleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamIdleTimeout")]
     pub stream_idle_timeout: Option<String>,
 }
 
@@ -148,19 +115,11 @@ pub struct MeshTimeoutFromTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -208,19 +167,11 @@ pub struct MeshTimeoutTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -262,11 +213,7 @@ pub struct MeshTimeoutTo {
 pub struct MeshTimeoutToDefault {
     /// ConnectionTimeout specifies the amount of time proxy will wait for an TCP connection to be established.
     /// Default value is 5 seconds. Cannot be set to 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTimeout")]
     pub connection_timeout: Option<String>,
     /// Http provides configuration for HTTP specific timeouts
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -274,11 +221,7 @@ pub struct MeshTimeoutToDefault {
     /// IdleTimeout is defined as the period in which there are no bytes sent or received on connection
     /// Setting this timeout to 0 will disable it. Be cautious when disabling it because
     /// it can lead to connection leaking. Default value is 1h.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
 }
 
@@ -288,47 +231,27 @@ pub struct MeshTimeoutToDefaultHttp {
     /// MaxConnectionDuration is the time after which a connection will be drained and/or closed,
     /// starting from when it was first established. Setting this timeout to 0 will disable it.
     /// Disabled by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionDuration")]
     pub max_connection_duration: Option<String>,
     /// MaxStreamDuration is the maximum time that a stream’s lifetime will span.
     /// Setting this timeout to 0 will disable it. Disabled by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxStreamDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxStreamDuration")]
     pub max_stream_duration: Option<String>,
     /// RequestHeadersTimeout The amount of time that proxy will wait for the request headers to be received. The timer is
     /// activated when the first byte of the headers is received, and is disarmed when the last byte of
     /// the headers has been received. If not specified or set to 0, this timeout is disabled.
     /// Disabled by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeadersTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeadersTimeout")]
     pub request_headers_timeout: Option<String>,
     /// RequestTimeout The amount of time that proxy will wait for the entire request to be received.
     /// The timer is activated when the request is initiated, and is disarmed when the last byte of the request is sent,
     /// OR when the response is initiated. Setting this timeout to 0 will disable it.
     /// Default is 15s.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
     pub request_timeout: Option<String>,
     /// StreamIdleTimeout is the amount of time that proxy will allow a stream to exist with no activity.
     /// Setting this timeout to 0 will disable it. Default is 30m
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "streamIdleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamIdleTimeout")]
     pub stream_idle_timeout: Option<String>,
 }
 
@@ -356,19 +279,11 @@ pub struct MeshTimeoutToTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -390,3 +305,4 @@ pub enum MeshTimeoutToTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
 }
+

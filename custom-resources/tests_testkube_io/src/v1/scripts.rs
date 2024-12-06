@@ -5,34 +5,25 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ScriptSpec defines the desired state of Script
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tests.testkube.io",
-    version = "v1",
-    kind = "Script",
-    plural = "scripts"
-)]
+#[kube(group = "tests.testkube.io", version = "v1", kind = "Script", plural = "scripts")]
 #[kube(namespaced)]
 #[kube(status = "ScriptStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ScriptSpec {
     /// script content as string (content depends from executor)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     /// script content type can be:  - direct content - created from file, - git repo directory checkout in case when test is some kind of project or have more than one file,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "input-type"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "input-type")]
     pub input_type: Option<String>,
     /// script execution custom name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -79,3 +70,4 @@ pub struct ScriptStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_execution: Option<String>,
 }
+

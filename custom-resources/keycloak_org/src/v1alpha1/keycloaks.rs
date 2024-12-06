@@ -4,40 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// KeycloakSpec defines the desired state of Keycloak.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "keycloak.org",
-    version = "v1alpha1",
-    kind = "Keycloak",
-    plural = "keycloaks"
-)]
+#[kube(group = "keycloak.org", version = "v1alpha1", kind = "Keycloak", plural = "keycloaks")]
 #[kube(namespaced)]
 #[kube(status = "KeycloakStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KeycloakSpec {
     /// Disables the integration with Application Monitoring Operator. When set to true, the operator doesn't create default PrometheusRule, ServiceMonitor and GrafanaDashboard objects and users will have to create them manually, if needed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "DisableDefaultServiceMonitor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DisableDefaultServiceMonitor")]
     pub disable_default_service_monitor: Option<bool>,
     /// Specify whether disabling the syncing of instances from the Keycloak CR to the statefulset replicas should be enabled or disabled. This option could be used when enabling HPA(horizontal pod autoscaler). Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableReplicasSyncing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableReplicasSyncing")]
     pub disable_replicas_syncing: Option<bool>,
     /// A list of extensions, where each one is a URL to a JAR files that will be deployed in Keycloak.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -46,65 +33,37 @@ pub struct KeycloakSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub external: Option<KeycloakExternal>,
     /// Controls external Ingress/Route settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalAccess")]
     pub external_access: Option<KeycloakExternalAccess>,
-    /// Controls external database settings. Using an external database requires providing a secret containing credentials as well as connection details. Here's an example of such secret:
-    ///      apiVersion: v1     kind: Secret     metadata:         name: keycloak-db-secret         namespace: keycloak     stringData:         POSTGRES_DATABASE: <Database Name>         POSTGRES_EXTERNAL_ADDRESS: <External Database IP or URL (resolvable by K8s)>         POSTGRES_EXTERNAL_PORT: <External Database Port>         # Strongly recommended to use <'Keycloak CR Name'-postgresql>         POSTGRES_HOST: <Database Service Name>         POSTGRES_PASSWORD: <Database Password>         # Required for AWS Backup functionality         POSTGRES_SUPERUSER: true         POSTGRES_USERNAME: <Database Username>      type: Opaque
-    ///  Both POSTGRES_EXTERNAL_ADDRESS and POSTGRES_EXTERNAL_PORT are specifically required for creating connection to the external database. The secret name is created using the following convention:       <Custom Resource Name>-db-secret
+    /// Controls external database settings. Using an external database requires providing a secret containing credentials as well as connection details. Here's an example of such secret: 
+    ///      apiVersion: v1     kind: Secret     metadata:         name: keycloak-db-secret         namespace: keycloak     stringData:         POSTGRES_DATABASE: <Database Name>         POSTGRES_EXTERNAL_ADDRESS: <External Database IP or URL (resolvable by K8s)>         POSTGRES_EXTERNAL_PORT: <External Database Port>         # Strongly recommended to use <'Keycloak CR Name'-postgresql>         POSTGRES_HOST: <Database Service Name>         POSTGRES_PASSWORD: <Database Password>         # Required for AWS Backup functionality         POSTGRES_SUPERUSER: true         POSTGRES_USERNAME: <Database Username>      type: Opaque 
+    ///  Both POSTGRES_EXTERNAL_ADDRESS and POSTGRES_EXTERNAL_PORT are specifically required for creating connection to the external database. The secret name is created using the following convention:       <Custom Resource Name>-db-secret 
     ///  For more information, please refer to the Operator documentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalDatabase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDatabase")]
     pub external_database: Option<KeycloakExternalDatabase>,
     /// Number of Keycloak instances in HA mode. Default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<i64>,
     /// Resources (Requests and Limits) and ImagePullPolicy for KeycloakDeployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keycloakDeploymentSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keycloakDeploymentSpec")]
     pub keycloak_deployment_spec: Option<KeycloakKeycloakDeploymentSpec>,
     /// Specify Migration configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub migration: Option<KeycloakMigration>,
     /// Specify PodAntiAffinity settings for Keycloak deployment in Multi AZ
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiAvailablityZones"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiAvailablityZones")]
     pub multi_availablity_zones: Option<KeycloakMultiAvailablityZones>,
     /// Specify PodDisruptionBudget configuration. This field is deprecated and will be ignored on K8s >=1.25
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podDisruptionBudget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<KeycloakPodDisruptionBudget>,
     /// Resources (Requests and Limits) and ImagePullPolicy for PostgresDeployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postgresDeploymentSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postgresDeploymentSpec")]
     pub postgres_deployment_spec: Option<KeycloakPostgresDeploymentSpec>,
     /// Profile used for controlling Operator behavior. Default is empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profile: Option<String>,
     /// Name of the StorageClass for Postgresql Persistent Volume Claim
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// When set to true, this Keycloak will be marked as unmanaged and will not be managed by this operator. It can then be used for targeting purposes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -115,11 +74,7 @@ pub struct KeycloakSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakExternal {
     /// Context root for Keycloak. If not set, the default "/auth/" is used. Must end with "/".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contextRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contextRoot")]
     pub context_root: Option<String>,
     /// If set to true, this Keycloak will be treated as an external instance. The unmanaged field also needs to be set to true if this field is true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -139,17 +94,13 @@ pub struct KeycloakExternalAccess {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// TLS Termination type for the external access. Setting this field to "reencrypt" will terminate TLS on the Ingress/Route level. Setting this field to "passthrough" will send encrypted traffic to the Pod. If unspecified, defaults to "reencrypt". Note, that this setting has no effect on Ingress as Ingress TLS settings are not reconciled by this operator. In other words, Ingress TLS configuration is the same in both cases and it is up to the user to configure TLS section of the Ingress.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsTermination"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsTermination")]
     pub tls_termination: Option<String>,
 }
 
-/// Controls external database settings. Using an external database requires providing a secret containing credentials as well as connection details. Here's an example of such secret:
-///      apiVersion: v1     kind: Secret     metadata:         name: keycloak-db-secret         namespace: keycloak     stringData:         POSTGRES_DATABASE: <Database Name>         POSTGRES_EXTERNAL_ADDRESS: <External Database IP or URL (resolvable by K8s)>         POSTGRES_EXTERNAL_PORT: <External Database Port>         # Strongly recommended to use <'Keycloak CR Name'-postgresql>         POSTGRES_HOST: <Database Service Name>         POSTGRES_PASSWORD: <Database Password>         # Required for AWS Backup functionality         POSTGRES_SUPERUSER: true         POSTGRES_USERNAME: <Database Username>      type: Opaque
-///  Both POSTGRES_EXTERNAL_ADDRESS and POSTGRES_EXTERNAL_PORT are specifically required for creating connection to the external database. The secret name is created using the following convention:       <Custom Resource Name>-db-secret
+/// Controls external database settings. Using an external database requires providing a secret containing credentials as well as connection details. Here's an example of such secret: 
+///      apiVersion: v1     kind: Secret     metadata:         name: keycloak-db-secret         namespace: keycloak     stringData:         POSTGRES_DATABASE: <Database Name>         POSTGRES_EXTERNAL_ADDRESS: <External Database IP or URL (resolvable by K8s)>         POSTGRES_EXTERNAL_PORT: <External Database Port>         # Strongly recommended to use <'Keycloak CR Name'-postgresql>         POSTGRES_HOST: <Database Service Name>         POSTGRES_PASSWORD: <Database Password>         # Required for AWS Backup functionality         POSTGRES_SUPERUSER: true         POSTGRES_USERNAME: <Database Username>      type: Opaque 
+///  Both POSTGRES_EXTERNAL_ADDRESS and POSTGRES_EXTERNAL_PORT are specifically required for creating connection to the external database. The secret name is created using the following convention:       <Custom Resource Name>-db-secret 
 ///  For more information, please refer to the Operator documentation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakExternalDatabase {
@@ -165,11 +116,7 @@ pub struct KeycloakKeycloakDeploymentSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub experimental: Option<KeycloakKeycloakDeploymentSpecExperimental>,
     /// ImagePullPolicy for the Containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<KeycloakKeycloakDeploymentSpecImagePullPolicy>,
     /// List of annotations to set in the keycloak pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -198,11 +145,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimental {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KeycloakKeycloakDeploymentSpecExperimentalEnv>>,
     /// ServiceAccountName settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Additional volume mounts
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -213,27 +156,14 @@ pub struct KeycloakKeycloakDeploymentSpecExperimental {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -269,8 +199,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityPreferr
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -282,8 +211,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityPreferr
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -314,8 +242,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityRequire
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -327,8 +254,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityRequire
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -386,8 +312,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAffinityPreferre
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -424,8 +349,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAffinityRequired
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -483,8 +407,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAntiAffinityPref
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -521,8 +444,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAntiAffinityRequ
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct KeycloakKeycloakDeploymentSpecExperimentalAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -549,30 +471,16 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakKeycloakDeploymentSpecExperimentalEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromSecretKeyRef>,
 }
 
@@ -593,11 +501,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromConfigMapKeyRef
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -608,11 +512,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -638,11 +538,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakKeycloakDeploymentSpecExperimentalVolumes {
     /// Permissions mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<KeycloakKeycloakDeploymentSpecExperimentalVolumesItems>>,
@@ -651,11 +547,7 @@ pub struct KeycloakKeycloakDeploymentSpecExperimentalVolumes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakKeycloakDeploymentSpecExperimentalVolumesItems {
     /// Allow multiple configmaps to mount to the same directory
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMaps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMaps")]
     pub config_maps: Option<Vec<String>>,
     /// Mount details
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -741,11 +633,7 @@ pub struct KeycloakPodDisruptionBudget {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakPostgresDeploymentSpec {
     /// ImagePullPolicy for the Containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<KeycloakPostgresDeploymentSpecImagePullPolicy>,
     /// Resources (Requests and Limits) for the Pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -778,11 +666,7 @@ pub struct KeycloakStatus {
     #[serde(rename = "credentialSecret")]
     pub credential_secret: String,
     /// External URL for accessing Keycloak instance from outside the cluster. Is identical to external.URL if it's specified, otherwise is computed (e.g. from Ingress).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalURL")]
     pub external_url: Option<String>,
     /// An internal URL (service name) to be used by the admin client.
     #[serde(rename = "internalURL")]
@@ -794,12 +678,9 @@ pub struct KeycloakStatus {
     /// True if all resources are in a ready state and all work is done.
     pub ready: bool,
     /// A map of all the secondary resources types and names created for this CR. e.g "Deployment": [ "DeploymentName1", "DeploymentName2" ].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryResources")]
     pub secondary_resources: Option<BTreeMap<String, String>>,
     /// Version of Keycloak or RHSSO running on the cluster.
     pub version: String,
 }
+

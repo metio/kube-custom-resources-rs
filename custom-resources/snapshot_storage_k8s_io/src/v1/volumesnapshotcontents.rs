@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// spec defines properties of a VolumeSnapshotContent created by the underlying storage system.
 /// Required.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "snapshot.storage.k8s.io",
-    version = "v1",
-    kind = "VolumeSnapshotContent",
-    plural = "volumesnapshotcontents"
-)]
+#[kube(group = "snapshot.storage.k8s.io", version = "v1", kind = "VolumeSnapshotContent", plural = "volumesnapshotcontents")]
 #[kube(status = "VolumeSnapshotContentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct VolumeSnapshotContentSpec {
     /// deletionPolicy determines whether this VolumeSnapshotContent and its physical snapshot on
     /// the underlying storage system should be deleted when its bound VolumeSnapshot is deleted.
@@ -52,22 +47,14 @@ pub struct VolumeSnapshotContentSpec {
     /// If not specified, it indicates the source volume's mode is unknown.
     /// This field is immutable.
     /// This field is an alpha field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceVolumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceVolumeMode")]
     pub source_volume_mode: Option<String>,
     /// name of the VolumeSnapshotClass from which this snapshot was (or will be)
     /// created.
     /// Note that after provisioning, the VolumeSnapshotClass may be deleted or
     /// recreated with different set of values, and as such, should not be referenced
     /// post-snapshot creation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClassName")]
     pub volume_snapshot_class_name: Option<String>,
     /// volumeSnapshotRef specifies the VolumeSnapshot object to which this
     /// VolumeSnapshotContent object is bound.
@@ -99,20 +86,12 @@ pub struct VolumeSnapshotContentSource {
     /// the underlying storage system for which a Kubernetes object representation
     /// was (or should be) created.
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotHandle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotHandle")]
     pub snapshot_handle: Option<String>,
     /// volumeHandle specifies the CSI "volume_id" of the volume from which a snapshot
     /// should be dynamically taken from.
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeHandle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeHandle")]
     pub volume_handle: Option<String>,
 }
 
@@ -127,11 +106,7 @@ pub struct VolumeSnapshotContentSource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeSnapshotContentVolumeSnapshotRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -157,11 +132,7 @@ pub struct VolumeSnapshotContentVolumeSnapshotRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -183,11 +154,7 @@ pub struct VolumeSnapshotContentStatus {
     /// The format of this field is a Unix nanoseconds time encoded as an int64.
     /// On Unix, the command `date +%s%N` returns the current time in nanoseconds
     /// since 1970-01-01 00:00:00 UTC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<i64>,
     /// error is the last observed error during snapshot creation, if any.
     /// Upon success after retry, this error field will be cleared.
@@ -201,11 +168,7 @@ pub struct VolumeSnapshotContentStatus {
     /// value returned from the CSI "ListSnapshots" gRPC call if the driver supports it,
     /// otherwise, this field will be set to "True".
     /// If not specified, it means the readiness of a snapshot is unknown.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyToUse"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyToUse")]
     pub ready_to_use: Option<bool>,
     /// restoreSize represents the complete size of the snapshot in bytes.
     /// In dynamic snapshot creation case, this field will be filled in by the
@@ -216,28 +179,16 @@ pub struct VolumeSnapshotContentStatus {
     /// When restoring a volume from this snapshot, the size of the volume MUST NOT
     /// be smaller than the restoreSize if it is specified, otherwise the restoration will fail.
     /// If not specified, it indicates that the size is unknown.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreSize")]
     pub restore_size: Option<i64>,
     /// snapshotHandle is the CSI "snapshot_id" of a snapshot on the underlying storage system.
     /// If not specified, it indicates that dynamic snapshot creation has either failed
     /// or it is still in progress.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotHandle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotHandle")]
     pub snapshot_handle: Option<String>,
     /// VolumeGroupSnapshotHandle is the CSI "group_snapshot_id" of a group snapshot
     /// on the underlying storage system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeGroupSnapshotHandle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeGroupSnapshotHandle")]
     pub volume_group_snapshot_handle: Option<String>,
 }
 
@@ -255,3 +206,4 @@ pub struct VolumeSnapshotContentStatusError {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time: Option<String>,
 }
+

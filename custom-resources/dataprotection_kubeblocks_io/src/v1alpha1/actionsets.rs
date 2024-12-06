@@ -4,37 +4,32 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// ActionSetSpec defines the desired state of ActionSet
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "dataprotection.kubeblocks.io",
-    version = "v1alpha1",
-    kind = "ActionSet",
-    plural = "actionsets"
-)]
+#[kube(group = "dataprotection.kubeblocks.io", version = "v1alpha1", kind = "ActionSet", plural = "actionsets")]
 #[kube(status = "ActionSetStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ActionSetSpec {
     /// Specifies the backup action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<ActionSetBackup>,
     /// Specifies the backup type. Supported values include:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Full` for a full backup.
     /// - `Incremental` back up data that have changed since the last backup (either full or incremental).
     /// - `Differential` back up data that has changed since the last full backup.
     /// - `Continuous` back up transaction logs continuously, such as MySQL binlog, PostgreSQL WAL, etc.
-    ///
-    ///
+    /// 
+    /// 
     /// Continuous backup is essential for implementing Point-in-Time Recovery (PITR).
     #[serde(rename = "backupType")]
     pub backup_type: String,
@@ -46,8 +41,8 @@ pub struct ActionSetSpec {
     /// reported as an event when the container starts. If a key exists in multiple
     /// sources, the value from the last source will take precedence. Any values
     /// defined by an Env with a duplicate key will take precedence.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<ActionSetEnvFrom>>,
@@ -60,18 +55,10 @@ pub struct ActionSetSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetBackup {
     /// Represents the action to be performed for backing up data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupData")]
     pub backup_data: Option<ActionSetBackupBackupData>,
     /// Represents a set of actions that should be executed after the backup process has completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postBackup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postBackup")]
     pub post_backup: Option<Vec<ActionSetBackupPostBackup>>,
     /// Represents a set of actions that should be executed before the backup process begins.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preBackup")]
@@ -95,19 +82,11 @@ pub struct ActionSetBackupBackupData {
     /// Determines whether to run the job workload on the target pod node.
     /// If the backup container needs to mount the target pod's volumes, this field
     /// should be set to true. Otherwise, the target pod's volumes will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runOnTargetPodNode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
     /// Determines if the backup progress should be synchronized and the interval
     /// for synchronization in seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncProgress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncProgress")]
     pub sync_progress: Option<ActionSetBackupBackupDataSyncProgress>,
 }
 
@@ -128,11 +107,7 @@ pub struct ActionSetBackupBackupDataSyncProgress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Defines the interval in seconds for synchronizing the backup progress.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i32>,
 }
 
@@ -185,11 +160,7 @@ pub struct ActionSetBackupPostBackupJob {
     /// Determines whether to run the job workload on the target pod node.
     /// If the backup container needs to mount the target pod's volumes, this field
     /// should be set to true. Otherwise, the target pod's volumes will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runOnTargetPodNode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
 
@@ -249,11 +220,7 @@ pub struct ActionSetBackupPreBackupJob {
     /// Determines whether to run the job workload on the target pod node.
     /// If the backup container needs to mount the target pod's volumes, this field
     /// should be set to true. Otherwise, the target pod's volumes will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runOnTargetPodNode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
 
@@ -299,11 +266,7 @@ pub struct ActionSetEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ActionSetEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -311,18 +274,10 @@ pub struct ActionSetEnvValueFrom {
     pub field_ref: Option<ActionSetEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ActionSetEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ActionSetEnvValueFromSecretKeyRef>,
 }
 
@@ -346,11 +301,7 @@ pub struct ActionSetEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -362,11 +313,7 @@ pub struct ActionSetEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -394,11 +341,7 @@ pub struct ActionSetEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ActionSetEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -438,21 +381,13 @@ pub struct ActionSetEnvFromSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ActionSetRestore {
     /// Determines if a base backup is required during restoration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseBackupRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseBackupRequired")]
     pub base_backup_required: Option<bool>,
     /// Specifies the actions that should be executed after the data has been prepared and is ready for restoration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postReady")]
     pub post_ready: Option<Vec<ActionSetRestorePostReady>>,
     /// Specifies the action required to prepare data for restoration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prepareData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prepareData")]
     pub prepare_data: Option<ActionSetRestorePrepareData>,
 }
 
@@ -505,11 +440,7 @@ pub struct ActionSetRestorePostReadyJob {
     /// Determines whether to run the job workload on the target pod node.
     /// If the backup container needs to mount the target pod's volumes, this field
     /// should be set to true. Otherwise, the target pod's volumes will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runOnTargetPodNode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
 
@@ -533,11 +464,7 @@ pub struct ActionSetRestorePrepareData {
     /// Determines whether to run the job workload on the target pod node.
     /// If the backup container needs to mount the target pod's volumes, this field
     /// should be set to true. Otherwise, the target pod's volumes will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runOnTargetPodNode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runOnTargetPodNode")]
     pub run_on_target_pod_node: Option<bool>,
 }
 
@@ -555,11 +482,7 @@ pub struct ActionSetStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// Represents the generation number that has been observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Indicates the phase of the ActionSet. This can be either 'Available' or 'Unavailable'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -572,3 +495,4 @@ pub enum ActionSetStatusPhase {
     Available,
     Unavailable,
 }
+

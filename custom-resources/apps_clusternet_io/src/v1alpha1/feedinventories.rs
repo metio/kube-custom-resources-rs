@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// FeedInventorySpec defines the desired state of FeedInventory.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.clusternet.io",
-    version = "v1alpha1",
-    kind = "FeedInventory",
-    plural = "feedinventories"
-)]
+#[kube(group = "apps.clusternet.io", version = "v1alpha1", kind = "FeedInventory", plural = "feedinventories")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FeedInventorySpec {
     pub feeds: Vec<FeedInventoryFeeds>,
 }
@@ -35,11 +30,7 @@ pub struct FeedInventoryFeeds {
     pub api_version: String,
     /// DesiredReplicas specifies the number of desired replica. This is a pointer to distinguish between explicit
     /// zero and not specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredReplicas")]
     pub desired_replicas: Option<i32>,
     /// Kind is a string value representing the REST resource this object represents.
     /// In CamelCase.
@@ -52,18 +43,10 @@ pub struct FeedInventoryFeeds {
     /// ReplicaJsonPath specifies the JSONPath for replica settings,
     /// such as `/spec/replicas` for Deployment/StatefulSet/ReplicaSet.
     /// Should not be empty when DesiredReplicas is non-nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaJsonPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaJsonPath")]
     pub replica_json_path: Option<String>,
     /// ReplicaRequirements describes the scheduling requirements for a new replica.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaRequirements")]
     pub replica_requirements: Option<FeedInventoryFeedsReplicaRequirements>,
 }
 
@@ -75,11 +58,7 @@ pub struct FeedInventoryFeedsReplicaRequirements {
     pub affinity: Option<FeedInventoryFeedsReplicaRequirementsAffinity>,
     /// NodeSelector specifies hard node constraints that must be met for a new replica to fit on a node.
     /// Selector which must match a node's labels for a new replica to be scheduled on that node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -93,25 +72,13 @@ pub struct FeedInventoryFeedsReplicaRequirements {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeedInventoryFeedsReplicaRequirementsAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<FeedInventoryFeedsReplicaRequirementsAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinity>,
 }
 
@@ -162,8 +129,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityPreferredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -181,8 +147,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityPreferredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -225,8 +190,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityRequiredDuri
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -244,8 +208,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityRequiredDuri
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -364,8 +327,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityPreferredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -399,8 +361,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityPreferredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -487,8 +448,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityRequiredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -522,8 +482,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityRequiredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -641,8 +600,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityPreferred
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -676,8 +634,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityPreferred
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -764,8 +721,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityRequiredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -799,8 +755,7 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityRequiredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -819,12 +774,12 @@ pub struct FeedInventoryFeedsReplicaRequirementsAffinityPodAntiAffinityRequiredD
 pub struct FeedInventoryFeedsReplicaRequirementsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<FeedInventoryFeedsReplicaRequirementsResourcesClaims>>,
@@ -871,14 +826,11 @@ pub struct FeedInventoryFeedsReplicaRequirementsTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
+

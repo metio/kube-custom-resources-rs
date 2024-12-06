@@ -5,25 +5,20 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DevPortalSpec defines the desired state of DevPortal
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "getambassador.io",
-    version = "v3alpha1",
-    kind = "DevPortal",
-    plural = "devportals"
-)]
+#[kube(group = "getambassador.io", version = "v3alpha1", kind = "DevPortal", plural = "devportals")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DevPortalSpec {
-    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is:
+    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is: 
     ///  ambassador_id: - "default"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ambassador_id: Option<Vec<String>>,
@@ -107,17 +102,10 @@ pub enum DevPortalSearchType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevPortalSelector {
     /// MatchLabels specifies the list of labels that must be present in Mappings for being present in this DevPortal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
     /// MatchNamespaces is a list of namespaces that will be included in this DevPortal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchNamespaces")]
     pub match_namespaces: Option<Vec<String>>,
 }
+

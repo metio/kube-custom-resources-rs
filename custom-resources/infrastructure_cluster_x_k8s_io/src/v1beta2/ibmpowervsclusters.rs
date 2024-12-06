@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// IBMPowerVSClusterSpec defines the desired state of IBMPowerVSCluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta2",
-    kind = "IBMPowerVSCluster",
-    plural = "ibmpowervsclusters"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "IBMPowerVSCluster", plural = "ibmpowervsclusters")]
 #[kube(namespaced)]
 #[kube(status = "IBMPowerVSClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMPowerVSClusterSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<IBMPowerVSClusterControlPlaneEndpoint>,
     /// cosInstance contains options to configure a supporting IBM Cloud COS bucket for this
     /// cluster - currently used for nodes requiring Ignition
@@ -40,20 +31,12 @@ pub struct IBMPowerVSClusterSpec {
     /// 1. CosInstance.Name should be set not setting will result in webhook error.
     /// 2. CosInstance.BucketName should be set not setting will result in webhook error.
     /// 3. CosInstance.BucketRegion should be set not setting will result in webhook error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cosInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosInstance")]
     pub cos_instance: Option<IBMPowerVSClusterCosInstance>,
     /// dhcpServer is contains the configuration to be used while creating a new DHCP server in PowerVS workspace.
     /// when the field is omitted, CLUSTER_NAME will be used as DHCPServer.Name and DHCP server will be created.
     /// it will automatically create network with name DHCPSERVER<DHCPServer.Name>_Private in PowerVS workspace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dhcpServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpServer")]
     pub dhcp_server: Option<IBMPowerVSClusterDhcpServer>,
     /// Ignition defined options related to the bootstrapping systems where Ignition is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -65,11 +48,7 @@ pub struct IBMPowerVSClusterSpec {
     /// when LoadBalancers[].ID is set, its expected that there exist a loadbalancer with ID or else system will give error.
     /// when LoadBalancers[].Name is set, system will first check for loadbalancer with Name, if not exist system will create new loadbalancer.
     /// For each loadbalancer a default backed pool and front listener will be configured with port 6443.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<Vec<IBMPowerVSClusterLoadBalancers>>,
     /// Network is the reference to the Network to use for this cluster.
     /// when the field is omitted, A DHCP service will be created in the Power VS workspace and its private network will be used.
@@ -84,11 +63,7 @@ pub struct IBMPowerVSClusterSpec {
     /// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
     /// 1. it is expected to set the ResourceGroup.Name, not setting will result in webhook error.
     /// ResourceGroup.ID and ResourceGroup.Regex is not yet supported and system will ignore the value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<IBMPowerVSClusterResourceGroup>,
     /// serviceInstance is the reference to the Power VS server workspace on which the server instance(VM) will be created.
     /// Power VS server workspace is a container for all Power VS instances at a specific geographic region.
@@ -101,11 +76,7 @@ pub struct IBMPowerVSClusterSpec {
     /// when ServiceInstance.Name is set, system will first check for service instance with Name in PowerVS workspace, if not exist system will create new instance.
     /// if there are more than one service instance exist with the ServiceInstance.Name in given Zone, installation fails with an error. Use ServiceInstance.ID in those situations to use the specific service instance.
     /// ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IBMPowerVSClusterServiceInstance>,
     /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.
     /// Deprecated: use ServiceInstance instead
@@ -116,11 +87,7 @@ pub struct IBMPowerVSClusterSpec {
     /// more information about TransitGateway can be found here https://www.ibm.com/products/transit-gateway.
     /// when TransitGateway.ID is set, its expected that there exist a TransitGateway with ID or else system will give error.
     /// when TransitGateway.Name is set, system will first check for TransitGateway with Name, if not exist system will create new TransitGateway.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transitGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGateway")]
     pub transit_gateway: Option<IBMPowerVSClusterTransitGateway>,
     /// vpc contains information about IBM Cloud VPC resources.
     /// when omitted system will dynamically create the VPC with name CLUSTER_NAME-vpc.
@@ -131,11 +98,7 @@ pub struct IBMPowerVSClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMPowerVSClusterVpc>,
     /// VPCSecurityGroups to attach it to the VPC resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcSecurityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcSecurityGroups")]
     pub vpc_security_groups: Option<Vec<IBMPowerVSClusterVpcSecurityGroups>>,
     /// vpcSubnets contains information about IBM Cloud VPC Subnet resources.
     /// when omitted system will create the subnets in all the zone corresponding to VPC.Region, with name CLUSTER_NAME-vpcsubnet-ZONE_NAME.
@@ -144,11 +107,7 @@ pub struct IBMPowerVSClusterSpec {
     /// when VPCSubnets[].Zone is not set, a random zone is picked from available zones of VPC.Region.
     /// when VPCSubnets[].Name is not set, system will set name as CLUSTER_NAME-vpcsubnet-INDEX.
     /// if subnet with name VPCSubnets[].Name not found, system will create new subnet in VPCSubnets[].Zone.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcSubnets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcSubnets")]
     pub vpc_subnets: Option<Vec<IBMPowerVSClusterVpcSubnets>>,
     /// zone is the name of Power VS zone where the cluster will be created
     /// possible values can be found here https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server.
@@ -179,18 +138,10 @@ pub struct IBMPowerVSClusterControlPlaneEndpoint {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterCosInstance {
     /// bucketName is IBM cloud COS bucket name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketName")]
     pub bucket_name: Option<String>,
     /// bucketRegion is IBM cloud COS bucket region
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketRegion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketRegion")]
     pub bucket_region: Option<String>,
     /// name defines name of IBM cloud COS instance to be created.
     /// when IBMPowerVSCluster.Ignition is set
@@ -251,18 +202,10 @@ pub enum IBMPowerVSClusterIgnitionVersion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterLoadBalancers {
     /// AdditionalListeners sets the additional listeners for the control plane load balancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalListeners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalListeners")]
     pub additional_listeners: Option<Vec<IBMPowerVSClusterLoadBalancersAdditionalListeners>>,
     /// backendPools defines the load balancer's backend pools.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendPools"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendPools")]
     pub backend_pools: Option<Vec<IBMPowerVSClusterLoadBalancersBackendPools>>,
     /// id of the loadbalancer
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -275,11 +218,7 @@ pub struct IBMPowerVSClusterLoadBalancers {
     pub public: Option<bool>,
     /// securityGroups defines the Security Groups to attach to the load balancer.
     /// Security Groups defined here are expected to already exist when the load balancer is reconciled (these do not get created when reconciling the load balancer).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<IBMPowerVSClusterLoadBalancersSecurityGroups>>,
     /// subnets defines the VPC Subnets to attach to the load balancer.
     /// Subnets defiens here are expected to already exist when the load balancer is reconciled (these do not get created when reconciling the load balancer).
@@ -292,11 +231,7 @@ pub struct IBMPowerVSClusterLoadBalancers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterLoadBalancersAdditionalListeners {
     /// defaultPoolName defines the name of a VPC Load Balancer Backend Pool to use for the VPC Load Balancer Listener.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultPoolName")]
     pub default_pool_name: Option<String>,
     /// Port sets the port for the additional listener.
     pub port: i64,
@@ -487,11 +422,7 @@ pub struct IBMPowerVSClusterTransitGateway {
     /// globalRouting indicates whether to set global routing true or not while creating the transit gateway.
     /// set this field to true only when PowerVS and VPC are from different regions, if they are same it's suggested to use local routing by setting the field to false.
     /// when the field is omitted,  based on PowerVS region (region associated with IBMPowerVSCluster.Spec.Zone) and VPC region(IBMPowerVSCluster.Spec.VPC.Region) system will decide whether to enable globalRouting or not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalRouting"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalRouting")]
     pub global_routing: Option<bool>,
     /// id of resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -551,11 +482,7 @@ pub struct IBMPowerVSClusterVpcSecurityGroupsRules {
     /// direction defines whether the traffic is inbound or outbound for the Security Group Rule.
     pub direction: IBMPowerVSClusterVpcSecurityGroupsRulesDirection,
     /// securityGroupID is the ID of the Security Group for the Security Group Rule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupID")]
     pub security_group_id: Option<String>,
     /// source is a VPCSecurityGroupRulePrototype which defines the source of inbound traffic for the Security Group Rule.
     /// Only used when direction is VPCSecurityGroupRuleDirectionInbound.
@@ -599,18 +526,10 @@ pub struct IBMPowerVSClusterVpcSecurityGroupsRulesDestination {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterVpcSecurityGroupsRulesDestinationPortRange {
     /// maximumPort is the inclusive upper range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumPort")]
     pub maximum_port: Option<i64>,
     /// minimumPort is the inclusive lower range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumPort")]
     pub minimum_port: Option<i64>,
 }
 
@@ -638,22 +557,14 @@ pub struct IBMPowerVSClusterVpcSecurityGroupsRulesDestinationRemotes {
     pub address: Option<String>,
     /// cidrSubnetName is the name of the VPC Subnet to retrieve the CIDR from, to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeCIDR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrSubnetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrSubnetName")]
     pub cidr_subnet_name: Option<String>,
     /// remoteType defines the type of filter to define for the remote's destination/source.
     #[serde(rename = "remoteType")]
     pub remote_type: IBMPowerVSClusterVpcSecurityGroupsRulesDestinationRemotesRemoteType,
     /// securityGroupName is the name of the VPC Security Group to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeSG
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupName")]
     pub security_group_name: Option<String>,
 }
 
@@ -707,18 +618,10 @@ pub struct IBMPowerVSClusterVpcSecurityGroupsRulesSource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterVpcSecurityGroupsRulesSourcePortRange {
     /// maximumPort is the inclusive upper range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumPort")]
     pub maximum_port: Option<i64>,
     /// minimumPort is the inclusive lower range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumPort")]
     pub minimum_port: Option<i64>,
 }
 
@@ -746,22 +649,14 @@ pub struct IBMPowerVSClusterVpcSecurityGroupsRulesSourceRemotes {
     pub address: Option<String>,
     /// cidrSubnetName is the name of the VPC Subnet to retrieve the CIDR from, to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeCIDR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrSubnetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrSubnetName")]
     pub cidr_subnet_name: Option<String>,
     /// remoteType defines the type of filter to define for the remote's destination/source.
     #[serde(rename = "remoteType")]
     pub remote_type: IBMPowerVSClusterVpcSecurityGroupsRulesSourceRemotesRemoteType,
     /// securityGroupName is the name of the VPC Security Group to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeSG
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupName")]
     pub security_group_name: Option<String>,
 }
 
@@ -799,25 +694,13 @@ pub struct IBMPowerVSClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// cosInstance is reference to IBM Cloud COS Instance resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cosInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosInstance")]
     pub cos_instance: Option<IBMPowerVSClusterStatusCosInstance>,
     /// dhcpServer is the reference to the Power VS DHCP server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dhcpServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpServer")]
     pub dhcp_server: Option<IBMPowerVSClusterStatusDhcpServer>,
     /// loadBalancers reference to IBM Cloud VPC Loadbalancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<BTreeMap<String, IBMPowerVSClusterStatusLoadBalancers>>,
     /// networkID is the reference to the Power VS network to use for this cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -825,35 +708,19 @@ pub struct IBMPowerVSClusterStatus {
     /// ready is true when the provider resource is ready.
     pub ready: bool,
     /// ResourceGroup is the reference to the Power VS resource group under which the resources will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroupID")]
     pub resource_group_id: Option<IBMPowerVSClusterStatusResourceGroupId>,
     /// serviceInstance is the reference to the Power VS service on which the server instance(VM) will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IBMPowerVSClusterStatusServiceInstance>,
     /// transitGateway is reference to IBM Cloud TransitGateway.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transitGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGateway")]
     pub transit_gateway: Option<IBMPowerVSClusterStatusTransitGateway>,
     /// vpc is reference to IBM Cloud VPC resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMPowerVSClusterStatusVpc>,
     /// vpcSecurityGroups is reference to IBM Cloud VPC security group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcSecurityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcSecurityGroups")]
     pub vpc_security_groups: Option<BTreeMap<String, IBMPowerVSClusterStatusVpcSecurityGroups>>,
     /// vpcSubnet is reference to IBM Cloud VPC subnet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcSubnet")]
@@ -864,11 +731,7 @@ pub struct IBMPowerVSClusterStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusCosInstance {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -879,11 +742,7 @@ pub struct IBMPowerVSClusterStatusCosInstance {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusDhcpServer {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -894,11 +753,7 @@ pub struct IBMPowerVSClusterStatusDhcpServer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusLoadBalancers {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// hostname is the hostname of load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -915,11 +770,7 @@ pub struct IBMPowerVSClusterStatusLoadBalancers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusNetwork {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -930,11 +781,7 @@ pub struct IBMPowerVSClusterStatusNetwork {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusResourceGroupId {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -945,11 +792,7 @@ pub struct IBMPowerVSClusterStatusResourceGroupId {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusServiceInstance {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -960,28 +803,16 @@ pub struct IBMPowerVSClusterStatusServiceInstance {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusTransitGateway {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// powerVSConnection defines the powervs connection status in transit gateway.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "powerVSConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerVSConnection")]
     pub power_vs_connection: Option<IBMPowerVSClusterStatusTransitGatewayPowerVsConnection>,
     /// vpcConnection defines the vpc connection status in transit gateway.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcConnection")]
     pub vpc_connection: Option<IBMPowerVSClusterStatusTransitGatewayVpcConnection>,
 }
 
@@ -989,11 +820,7 @@ pub struct IBMPowerVSClusterStatusTransitGateway {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusTransitGatewayPowerVsConnection {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1004,11 +831,7 @@ pub struct IBMPowerVSClusterStatusTransitGatewayPowerVsConnection {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusTransitGatewayVpcConnection {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1019,11 +842,7 @@ pub struct IBMPowerVSClusterStatusTransitGatewayVpcConnection {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusVpc {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1034,11 +853,7 @@ pub struct IBMPowerVSClusterStatusVpc {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusVpcSecurityGroups {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1052,13 +867,10 @@ pub struct IBMPowerVSClusterStatusVpcSecurityGroups {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterStatusVpcSubnet {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
+

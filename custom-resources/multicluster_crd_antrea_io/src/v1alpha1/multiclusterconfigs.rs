@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// MultiClusterConfigSpec defines the desired state of MultiClusterConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "multicluster.crd.antrea.io",
-    version = "v1alpha1",
-    kind = "MultiClusterConfig",
-    plural = "multiclusterconfigs"
-)]
+#[kube(group = "multicluster.crd.antrea.io", version = "v1alpha1", kind = "MultiClusterConfig", plural = "multiclusterconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MultiClusterConfigSpec {
     /// Foo is an example field of MultiClusterConfig. Edit multiclusterconfig_types.go to remove/update
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -29,4 +24,6 @@ pub struct MultiClusterConfigSpec {
 
 /// MultiClusterConfigStatus defines the observed state of MultiClusterConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MultiClusterConfigStatus {}
+pub struct MultiClusterConfigStatus {
+}
+

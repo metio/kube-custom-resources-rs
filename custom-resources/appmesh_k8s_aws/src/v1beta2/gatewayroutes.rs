@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// GatewayRouteSpec defines the desired state of GatewayRoute refers to https://docs.aws.amazon.com/app-mesh/latest/userguide/virtual_gateways.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appmesh.k8s.aws",
-    version = "v1beta2",
-    kind = "GatewayRoute",
-    plural = "gatewayroutes"
-)]
+#[kube(group = "appmesh.k8s.aws", version = "v1beta2", kind = "GatewayRoute", plural = "gatewayroutes")]
 #[kube(namespaced)]
 #[kube(status = "GatewayRouteStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GatewayRouteSpec {
     /// AWSName is the AppMesh GatewayRoute object's name. If unspecified or empty, it defaults to be "${name}_${namespace}" of k8s GatewayRoute
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsName")]
@@ -31,29 +26,21 @@ pub struct GatewayRouteSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcRoute")]
     pub grpc_route: Option<GatewayRouteGrpcRoute>,
     /// An object that represents the specification of an HTTP/2 gatewayRoute.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http2Route"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http2Route")]
     pub http2_route: Option<GatewayRouteHttp2Route>,
     /// An object that represents the specification of an HTTP gatewayRoute.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRoute")]
     pub http_route: Option<GatewayRouteHttpRoute>,
-    /// A reference to k8s Mesh CR that this GatewayRoute belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+    /// A reference to k8s Mesh CR that this GatewayRoute belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
     ///  Populated by the system. Read-only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshRef")]
     pub mesh_ref: Option<GatewayRouteMeshRef>,
     /// Priority for the gatewayroute. Default Priority is 1000 which is lowest priority
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,
-    /// A reference to k8s VirtualGateway CR that this GatewayRoute belongs to. The admission controller populates it using VirtualGateway's selector, and prevents users from setting this field.
+    /// A reference to k8s VirtualGateway CR that this GatewayRoute belongs to. The admission controller populates it using VirtualGateway's selector, and prevents users from setting this field. 
     ///  Populated by the system. Read-only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualGatewayRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualGatewayRef")]
     pub virtual_gateway_ref: Option<GatewayRouteVirtualGatewayRef>,
 }
 
@@ -88,13 +75,8 @@ pub struct GatewayRouteGrpcRouteActionRewrite {
 /// GatewayRouteHostnameRewrite refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_GatewayRouteHostnameRewrite.html ENABLE or DISABLE default behavior for Hostname rewrite
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayRouteGrpcRouteActionRewriteHostname {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultTargetHostname"
-    )]
-    pub default_target_hostname:
-        Option<GatewayRouteGrpcRouteActionRewriteHostnameDefaultTargetHostname>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTargetHostname")]
+    pub default_target_hostname: Option<GatewayRouteGrpcRouteActionRewriteHostnameDefaultTargetHostname>,
 }
 
 /// GatewayRouteHostnameRewrite refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_GatewayRouteHostnameRewrite.html ENABLE or DISABLE default behavior for Hostname rewrite
@@ -121,20 +103,11 @@ pub struct GatewayRouteGrpcRouteActionTarget {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayRouteGrpcRouteActionTargetVirtualService {
     /// Amazon Resource Name to AppMesh VirtualService object to associate with the gateway route virtual service target. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualServiceARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualServiceARN")]
     pub virtual_service_arn: Option<String>,
     /// Reference to Kubernetes VirtualService CR in cluster to associate with the gateway route virtual service target. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualServiceRef"
-    )]
-    pub virtual_service_ref:
-        Option<GatewayRouteGrpcRouteActionTargetVirtualServiceVirtualServiceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualServiceRef")]
+    pub virtual_service_ref: Option<GatewayRouteGrpcRouteActionTargetVirtualServiceVirtualServiceRef>,
 }
 
 /// Reference to Kubernetes VirtualService CR in cluster to associate with the gateway route virtual service target. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
@@ -160,11 +133,7 @@ pub struct GatewayRouteGrpcRouteMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// Either ServiceName or Hostname must be specified. Both are allowed as well The fully qualified domain name for the service to match from the request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -258,13 +227,8 @@ pub struct GatewayRouteHttp2RouteActionRewrite {
 /// GatewayRouteHostnameRewrite refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_GatewayRouteHostnameRewrite.html ENABLE or DISABLE default behavior for Hostname rewrite
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayRouteHttp2RouteActionRewriteHostname {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultTargetHostname"
-    )]
-    pub default_target_hostname:
-        Option<GatewayRouteHttp2RouteActionRewriteHostnameDefaultTargetHostname>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTargetHostname")]
+    pub default_target_hostname: Option<GatewayRouteHttp2RouteActionRewriteHostnameDefaultTargetHostname>,
 }
 
 /// GatewayRouteHostnameRewrite refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_GatewayRouteHostnameRewrite.html ENABLE or DISABLE default behavior for Hostname rewrite
@@ -286,11 +250,7 @@ pub struct GatewayRouteHttp2RouteActionRewritePath {
 /// GatewayRoutePrefixRewrite refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_HttpGatewayRoutePrefixRewrite.html
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayRouteHttp2RouteActionRewritePrefix {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultPrefix")]
     pub default_prefix: Option<GatewayRouteHttp2RouteActionRewritePrefixDefaultPrefix>,
     /// When DefaultPrefix is specified, Value cannot be set
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -321,20 +281,11 @@ pub struct GatewayRouteHttp2RouteActionTarget {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayRouteHttp2RouteActionTargetVirtualService {
     /// Amazon Resource Name to AppMesh VirtualService object to associate with the gateway route virtual service target. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualServiceARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualServiceARN")]
     pub virtual_service_arn: Option<String>,
     /// Reference to Kubernetes VirtualService CR in cluster to associate with the gateway route virtual service target. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualServiceRef"
-    )]
-    pub virtual_service_ref:
-        Option<GatewayRouteHttp2RouteActionTargetVirtualServiceVirtualServiceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualServiceRef")]
+    pub virtual_service_ref: Option<GatewayRouteHttp2RouteActionTargetVirtualServiceVirtualServiceRef>,
 }
 
 /// Reference to Kubernetes VirtualService CR in cluster to associate with the gateway route virtual service target. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
@@ -369,11 +320,7 @@ pub struct GatewayRouteHttp2RouteMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// Client specified query parameters to match on
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameters")]
     pub query_parameters: Option<Vec<GatewayRouteHttp2RouteMatchQueryParameters>>,
 }
 
@@ -517,13 +464,8 @@ pub struct GatewayRouteHttpRouteActionRewrite {
 /// GatewayRouteHostnameRewrite refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_GatewayRouteHostnameRewrite.html ENABLE or DISABLE default behavior for Hostname rewrite
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayRouteHttpRouteActionRewriteHostname {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultTargetHostname"
-    )]
-    pub default_target_hostname:
-        Option<GatewayRouteHttpRouteActionRewriteHostnameDefaultTargetHostname>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTargetHostname")]
+    pub default_target_hostname: Option<GatewayRouteHttpRouteActionRewriteHostnameDefaultTargetHostname>,
 }
 
 /// GatewayRouteHostnameRewrite refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_GatewayRouteHostnameRewrite.html ENABLE or DISABLE default behavior for Hostname rewrite
@@ -545,11 +487,7 @@ pub struct GatewayRouteHttpRouteActionRewritePath {
 /// GatewayRoutePrefixRewrite refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_HttpGatewayRoutePrefixRewrite.html
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayRouteHttpRouteActionRewritePrefix {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultPrefix")]
     pub default_prefix: Option<GatewayRouteHttpRouteActionRewritePrefixDefaultPrefix>,
     /// When DefaultPrefix is specified, Value cannot be set
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -580,20 +518,11 @@ pub struct GatewayRouteHttpRouteActionTarget {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayRouteHttpRouteActionTargetVirtualService {
     /// Amazon Resource Name to AppMesh VirtualService object to associate with the gateway route virtual service target. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualServiceARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualServiceARN")]
     pub virtual_service_arn: Option<String>,
     /// Reference to Kubernetes VirtualService CR in cluster to associate with the gateway route virtual service target. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualServiceRef"
-    )]
-    pub virtual_service_ref:
-        Option<GatewayRouteHttpRouteActionTargetVirtualServiceVirtualServiceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualServiceRef")]
+    pub virtual_service_ref: Option<GatewayRouteHttpRouteActionTargetVirtualServiceVirtualServiceRef>,
 }
 
 /// Reference to Kubernetes VirtualService CR in cluster to associate with the gateway route virtual service target. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
@@ -628,11 +557,7 @@ pub struct GatewayRouteHttpRouteMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// Client specified query parameters to match on
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameters")]
     pub query_parameters: Option<Vec<GatewayRouteHttpRouteMatchQueryParameters>>,
 }
 
@@ -739,7 +664,7 @@ pub struct GatewayRouteHttpRouteMatchQueryParametersMatch {
     pub exact: Option<String>,
 }
 
-/// A reference to k8s Mesh CR that this GatewayRoute belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+/// A reference to k8s Mesh CR that this GatewayRoute belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
 ///  Populated by the system. Read-only.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayRouteMeshRef {
@@ -749,7 +674,7 @@ pub struct GatewayRouteMeshRef {
     pub uid: String,
 }
 
-/// A reference to k8s VirtualGateway CR that this GatewayRoute belongs to. The admission controller populates it using VirtualGateway's selector, and prevents users from setting this field.
+/// A reference to k8s VirtualGateway CR that this GatewayRoute belongs to. The admission controller populates it using VirtualGateway's selector, and prevents users from setting this field. 
 ///  Populated by the system. Read-only.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayRouteVirtualGatewayRef {
@@ -769,17 +694,10 @@ pub struct GatewayRouteStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// GatewayRouteARN is the AppMesh GatewayRoute object's Amazon Resource Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayRouteARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayRouteARN")]
     pub gateway_route_arn: Option<String>,
     /// The generation observed by the GatewayRoute controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

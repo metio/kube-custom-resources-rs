@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// A StoreConfigSpec defines the desired state of a StoreConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "secrets.crossplane.io",
-    version = "v1alpha1",
-    kind = "StoreConfig",
-    plural = "storeconfigs"
-)]
+#[kube(group = "secrets.crossplane.io", version = "v1alpha1", kind = "StoreConfig", plural = "storeconfigs")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct StoreConfigSpec {
     /// DefaultScope used for scoping secrets for "cluster-scoped" resources.
     /// If store type is "Kubernetes", this would mean the default namespace to
@@ -138,3 +133,4 @@ pub enum StoreConfigType {
     Vault,
     Plugin,
 }
+

@@ -4,42 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// DatabaseClusterSpec defines the desired state of DatabaseCluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "everest.percona.com",
-    version = "v1alpha1",
-    kind = "DatabaseCluster",
-    plural = "databaseclusters"
-)]
+#[kube(group = "everest.percona.com", version = "v1alpha1", kind = "DatabaseCluster", plural = "databaseclusters")]
 #[kube(namespaced)]
 #[kube(status = "DatabaseClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct DatabaseClusterSpec {
     /// AllowUnsafeConfiguration field used to ensure that the user can create configurations unfit for production use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowUnsafeConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowUnsafeConfiguration")]
     pub allow_unsafe_configuration: Option<bool>,
     /// Backup is the backup specification
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<DatabaseClusterBackup>,
     /// DataSource defines a data source for bootstraping a new cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<DatabaseClusterDataSource>,
     /// Engine is the database engine specification
     pub engine: DatabaseClusterEngine,
@@ -78,20 +65,12 @@ pub struct DatabaseClusterBackup {
 pub struct DatabaseClusterBackupPitr {
     /// BackupStorageName is the name of the BackupStorage where the PITR is enabled
     /// The BackupStorage must be created in the same namespace as the DatabaseCluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupStorageName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupStorageName")]
     pub backup_storage_name: Option<String>,
     /// Enabled is a flag to enable PITR
     pub enabled: bool,
     /// UploadIntervalSec number of seconds between the binlogs uploads
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uploadIntervalSec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadIntervalSec")]
     pub upload_interval_sec: Option<i64>,
 }
 
@@ -108,11 +87,7 @@ pub struct DatabaseClusterBackupSchedules {
     /// Name is the name of the schedule
     pub name: String,
     /// RetentionCopies is the number of backup copies to retain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retentionCopies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionCopies")]
     pub retention_copies: Option<i32>,
     /// Schedule is the cron schedule
     pub schedule: String,
@@ -122,18 +97,10 @@ pub struct DatabaseClusterBackupSchedules {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterDataSource {
     /// BackupSource is the backup source to restore from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSource")]
     pub backup_source: Option<DatabaseClusterDataSourceBackupSource>,
     /// DBClusterBackupName is the name of the DB cluster backup to restore from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dbClusterBackupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbClusterBackupName")]
     pub db_cluster_backup_name: Option<String>,
     /// PITR is the point-in-time recovery configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -180,7 +147,7 @@ pub struct DatabaseClusterEngine {
     /// CRVersion is the desired version of the CR to use with the
     /// underlying operator.
     /// If unspecified, everest-operator will use the same version as the operator.
-    ///
+    /// 
     /// NOTE: Updating this property post installation may lead to a restart of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crVersion")]
     pub cr_version: Option<String>,
@@ -197,11 +164,7 @@ pub struct DatabaseClusterEngine {
     #[serde(rename = "type")]
     pub r#type: DatabaseClusterEngineType,
     /// UserSecretsName is the name of the secret containing the user secrets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userSecretsName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userSecretsName")]
     pub user_secrets_name: Option<String>,
     /// Version is the engine version
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -246,11 +209,7 @@ pub enum DatabaseClusterEngineType {
 pub struct DatabaseClusterMonitoring {
     /// MonitoringConfigName is the name of a monitoringConfig CR.
     /// The MonitoringConfig must be created in the same namespace as the DatabaseCluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitoringConfigName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitoringConfigName")]
     pub monitoring_config_name: Option<String>,
     /// Resources defines resource limitations for the monitoring.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -262,10 +221,10 @@ pub struct DatabaseClusterMonitoring {
 pub struct DatabaseClusterMonitoringResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<DatabaseClusterMonitoringResourcesClaims>>,
@@ -324,11 +283,7 @@ pub struct DatabaseClusterProxy {
 pub struct DatabaseClusterProxyExpose {
     /// IPSourceRanges is the list of IP source ranges (CIDR notation)
     /// to allow access from. If not set, there is no limitations
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipSourceRanges")]
     pub ip_source_ranges: Option<Vec<String>>,
     /// Type is the expose type, can be internal or external
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -395,11 +350,7 @@ pub struct DatabaseClusterShardingConfigServer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterStatus {
     /// ActiveStorage is the storage used in cluster (psmdb only)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeStorage")]
     pub active_storage: Option<String>,
     /// CRVersion is the observed version of the CR used with the underlying operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crVersion")]
@@ -414,11 +365,7 @@ pub struct DatabaseClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// ObservedGeneration is the most recent generation observed for this DatabaseCluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Port is the port where the cluster can be reached
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -429,11 +376,7 @@ pub struct DatabaseClusterStatus {
     /// RecommendedCRVersion is the recommended version of the CR to use.
     /// If set, the CR needs to be updated to this version before upgrading the operator.
     /// If unset, the CR is already at the recommended version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recommendedCRVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recommendedCRVersion")]
     pub recommended_cr_version: Option<String>,
     /// Size is the total number of pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -442,3 +385,4 @@ pub struct DatabaseClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

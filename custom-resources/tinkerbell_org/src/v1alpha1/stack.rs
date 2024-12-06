@@ -5,36 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec describes the desired tinkerbell stack state.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tinkerbell.org",
-    version = "v1alpha1",
-    kind = "Stack",
-    plural = "stack"
-)]
+#[kube(group = "tinkerbell.org", version = "v1alpha1", kind = "Stack", plural = "stack")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct StackSpec {
     /// DNSResolverIP is indicative of the resolver IP utilized for setting up the nginx server responsible for proxying to the Tinkerbell services and serving the Hook artifacts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsResolverIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsResolverIP")]
     pub dns_resolver_ip: Option<String>,
     /// ImagePullSecrets the secret name containing the docker auth config which should exist in the same namespace where the operator is deployed(typically tinkerbell)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Registry is the registry to use for all images. If this field is set, all tink service deployment images will be prefixed with this value. For example if the value here was set to docker.io, then smee image will be docker.io/tinkerbell/smee.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -72,11 +59,7 @@ pub struct StackServicesHegel {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<StackServicesHegelImage>,
     /// TrustedProxies comma separated allowed CIDRs subnets to be used as trusted proxies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedProxies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedProxies")]
     pub trusted_proxies: Option<Vec<String>>,
 }
 
@@ -117,37 +100,21 @@ pub struct StackServicesSmee {
     #[serde(rename = "backendConfigs")]
     pub backend_configs: StackServicesSmeeBackendConfigs,
     /// DHCPConfigs contains the DHCP server configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dhcpConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpConfigs")]
     pub dhcp_configs: Option<StackServicesSmeeDhcpConfigs>,
     /// Image specifies the image repo and tag for Smee.
     pub image: StackServicesSmeeImage,
     /// IPXEConfigs contains the iPXE configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipxeConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipxeConfigs")]
     pub ipxe_configs: Option<StackServicesSmeeIpxeConfigs>,
     /// LogLevel sets the debug level for smee.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
     /// SyslogConfigs contains the configurations of the syslog server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syslogConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syslogConfigs")]
     pub syslog_configs: Option<StackServicesSmeeSyslogConfigs>,
     /// TFTPConfigs contains the configurations of Tinkerbell TFTP server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tftpConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tftpConfigs")]
     pub tftp_configs: Option<StackServicesSmeeTftpConfigs>,
 }
 
@@ -155,18 +122,10 @@ pub struct StackServicesSmee {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StackServicesSmeeBackendConfigs {
     /// BackendFileMode contains the file backend configurations for DHCP and the HTTP iPXE script.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendFileMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendFileMode")]
     pub backend_file_mode: Option<StackServicesSmeeBackendConfigsBackendFileMode>,
     /// BackendKubeMode contains the Kubernetes backend configurations for DHCP and the HTTP iPXE script.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendKubeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendKubeMode")]
     pub backend_kube_mode: Option<StackServicesSmeeBackendConfigsBackendKubeMode>,
 }
 
@@ -182,25 +141,13 @@ pub struct StackServicesSmeeBackendConfigsBackendFileMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StackServicesSmeeBackendConfigsBackendKubeMode {
     /// ConfigFilePath specifies the Kubernetes config file location.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configFilePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFilePath")]
     pub config_file_path: Option<String>,
     /// KubeAPIURL specifies the Kubernetes API URL, used for in-cluster client construction.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeAPIURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIURL")]
     pub kube_apiurl: Option<String>,
     /// KubeNamespace specifies an optional Kubernetes namespace override to query hardware data from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeNamespace")]
     pub kube_namespace: Option<String>,
 }
 
@@ -208,25 +155,13 @@ pub struct StackServicesSmeeBackendConfigsBackendKubeMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StackServicesSmeeDhcpConfigs {
     /// IPForPacket IP address to use in DHCP packets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "IPForPacket"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "IPForPacket")]
     pub ip_for_packet: Option<String>,
     /// HTTPIPXEBinaryAddress specifies the http ipxe binary server address (IP:Port) to use in DHCP packets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpIPXEBinaryAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpIPXEBinaryAddress")]
     pub http_ipxe_binary_address: Option<String>,
     /// HTTPIPXEBinaryURI specifies the http ipxe script server URL to use in DHCP packets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpIPXEBinaryURI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpIPXEBinaryURI")]
     pub http_ipxe_binary_uri: Option<String>,
     /// IP is the local IP to listen on to serve TFTP binaries.
     pub ip: String,
@@ -236,11 +171,7 @@ pub struct StackServicesSmeeDhcpConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syslogIP")]
     pub syslog_ip: Option<String>,
     /// TFTPAddress specifies the tftp server address to use in DHCP packets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tftpAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tftpAddress")]
     pub tftp_address: Option<String>,
 }
 
@@ -259,21 +190,13 @@ pub struct StackServicesSmeeImage {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StackServicesSmeeIpxeConfigs {
     /// EnableHTTPBinary enable iPXE HTTP binary server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTPBinary"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTPBinary")]
     pub enable_http_binary: Option<bool>,
     /// EnableTLS sets if the smee should run with TLS or not.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableTLS")]
     pub enable_tls: Option<bool>,
     /// ExtraKernelArgs specifies extra set of kernel args (k=v k=v) that are appended to the kernel cmdline iPXE script.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraKernelArgs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraKernelArgs")]
     pub extra_kernel_args: Option<String>,
     /// HookURL specifies the URL where OSIE(Hook) images are located.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookURL")]
@@ -283,18 +206,10 @@ pub struct StackServicesSmeeIpxeConfigs {
     /// Port is the  local port to listen on to serve TFTP binaries.
     pub port: i64,
     /// TinkServerAddress specifies the IP:Port of the tink server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tinkServerAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tinkServerAddress")]
     pub tink_server_address: Option<String>,
     /// TrustedProxies comma separated allowed CIDRs subnets to be used as trusted proxies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedProxies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedProxies")]
     pub trusted_proxies: Option<Vec<String>>,
 }
 
@@ -314,20 +229,12 @@ pub struct StackServicesSmeeTftpConfigs {
     /// IP is the local IP to listen on to serve TFTP binaries.
     pub ip: String,
     /// IPXEScriptPatch specifies the iPXE script fragment to patch into served iPXE binaries served via TFTP or HTTP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipxeScriptPatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipxeScriptPatch")]
     pub ipxe_script_patch: Option<String>,
     /// Port is the  local port to listen on to serve TFTP binaries.
     pub port: i64,
     /// TFTPTimeout specifies the iPXE tftp binary server requests timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tftpTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tftpTimeout")]
     pub tftp_timeout: Option<i64>,
 }
 
@@ -371,3 +278,4 @@ pub struct StackServicesTinkServerImage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
 }
+

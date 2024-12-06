@@ -4,101 +4,88 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ReplicationGroupSpec defines the desired state of ReplicationGroup.
-///
-///
+/// 
+/// 
 /// Contains all of the attributes of a specific Redis replication group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "elasticache.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "ReplicationGroup",
-    plural = "replicationgroups"
-)]
+#[kube(group = "elasticache.services.k8s.aws", version = "v1alpha1", kind = "ReplicationGroup", plural = "replicationgroups")]
 #[kube(namespaced)]
 #[kube(status = "ReplicationGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ReplicationGroupSpec {
     /// A flag that enables encryption at rest when set to true.
-    ///
-    ///
+    /// 
+    /// 
     /// You cannot modify the value of AtRestEncryptionEnabled after the replication
     /// group is created. To enable encryption at rest on a replication group you
     /// must set AtRestEncryptionEnabled to true when you create the replication
     /// group.
-    ///
-    ///
+    /// 
+    /// 
     /// Required: Only available when creating a replication group in an Amazon VPC
     /// using redis version 3.2.6, 4.x or later.
-    ///
-    ///
+    /// 
+    /// 
     /// Default: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "atRestEncryptionEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "atRestEncryptionEnabled")]
     pub at_rest_encryption_enabled: Option<bool>,
     /// Reserved parameter. The password used to access a password protected server.
-    ///
-    ///
+    /// 
+    /// 
     /// AuthToken can be specified only on replication groups where TransitEncryptionEnabled
     /// is true.
-    ///
-    ///
+    /// 
+    /// 
     /// For HIPAA compliance, you must specify TransitEncryptionEnabled as true,
     /// an AuthToken, and a CacheSubnetGroup.
-    ///
-    ///
+    /// 
+    /// 
     /// Password constraints:
-    ///
-    ///
+    /// 
+    /// 
     ///    * Must be only printable ASCII characters.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Must be at least 16 characters and no more than 128 characters in length.
-    ///
-    ///
+    /// 
+    /// 
     ///    * The only permitted printable special characters are !, &, #, $, ^, <,
     ///    >, and -. Other printable special characters cannot be used in the AUTH
     ///    token.
-    ///
-    ///
+    /// 
+    /// 
     /// For more information, see AUTH password (http://redis.io/commands/AUTH) at
     /// http://redis.io/commands/AUTH.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authToken")]
     pub auth_token: Option<ReplicationGroupAuthToken>,
     /// Specifies whether a read-only replica is automatically promoted to read/write
     /// primary if the existing primary fails.
-    ///
-    ///
+    /// 
+    /// 
     /// AutomaticFailoverEnabled must be enabled for Redis (cluster mode enabled)
     /// replication groups.
-    ///
-    ///
+    /// 
+    /// 
     /// Default: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automaticFailoverEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticFailoverEnabled")]
     pub automatic_failover_enabled: Option<bool>,
     /// The compute and memory capacity of the nodes in the node group (shard).
-    ///
-    ///
+    /// 
+    /// 
     /// The following node types are supported by ElastiCache. Generally speaking,
     /// the current generation types provide more memory and computational power
     /// at lower cost when compared to their equivalent previous generation counterparts.
-    ///
-    ///
+    /// 
+    /// 
     ///    * General purpose: Current generation: M6g node types (available only
     ///    for Redis engine version 5.0.6 onward and for Memcached engine version
     ///    1.5.16 onward): cache.m6g.large, cache.m6g.xlarge, cache.m6g.2xlarge,
@@ -115,19 +102,19 @@ pub struct ReplicationGroupSpec {
     ///    clusters is not supported for these types.) T1 node types: cache.t1.micro
     ///    M1 node types: cache.m1.small, cache.m1.medium, cache.m1.large, cache.m1.xlarge
     ///    M3 node types: cache.m3.medium, cache.m3.large, cache.m3.xlarge, cache.m3.2xlarge
-    ///
-    ///
+    /// 
+    /// 
     ///    * Compute optimized: Previous generation: (not recommended. Existing clusters
     ///    are still supported but creation of new clusters is not supported for
     ///    these types.) C1 node types: cache.c1.xlarge
-    ///
-    ///
+    /// 
+    /// 
     ///    * Memory optimized with data tiering: Current generation: R6gd node types
     ///    (available only for Redis engine version 6.2 onward). cache.r6gd.xlarge,
     ///    cache.r6gd.2xlarge, cache.r6gd.4xlarge, cache.r6gd.8xlarge, cache.r6gd.12xlarge,
     ///    cache.r6gd.16xlarge
-    ///
-    ///
+    /// 
+    /// 
     ///    * Memory optimized: Current generation: R6g node types (available only
     ///    for Redis engine version 5.0.6 onward and for Memcached engine version
     ///    1.5.16 onward). cache.r6g.large, cache.r6g.xlarge, cache.r6g.2xlarge,
@@ -140,103 +127,75 @@ pub struct ReplicationGroupSpec {
     ///    but creation of new clusters is not supported for these types.) M2 node
     ///    types: cache.m2.xlarge, cache.m2.2xlarge, cache.m2.4xlarge R3 node types:
     ///    cache.r3.large, cache.r3.xlarge, cache.r3.2xlarge, cache.r3.4xlarge, cache.r3.8xlarge
-    ///
-    ///
+    /// 
+    /// 
     /// Additional node type info
-    ///
-    ///
+    /// 
+    /// 
     ///    * All current generation instance types are created in Amazon VPC by default.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Redis append-only files (AOF) are not supported for T1 or T2 instances.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Redis Multi-AZ with automatic failover is not supported on T1 instances.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Redis configuration variables appendonly and appendfsync are not supported
     ///    on Redis version 2.8.22 and later.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheNodeType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheNodeType")]
     pub cache_node_type: Option<String>,
     /// The name of the parameter group to associate with this replication group.
     /// If this argument is omitted, the default cache parameter group for the specified
     /// engine is used.
-    ///
-    ///
+    /// 
+    /// 
     /// If you are running Redis version 3.2.4 or later, only one node group (shard),
     /// and want to use a default parameter group, we recommend that you specify
     /// the parameter group by name.
-    ///
-    ///
+    /// 
+    /// 
     ///    * To create a Redis (cluster mode disabled) replication group, use CacheParameterGroupName=default.redis3.2.
-    ///
-    ///
+    /// 
+    /// 
     ///    * To create a Redis (cluster mode enabled) replication group, use CacheParameterGroupName=default.redis3.2.cluster.on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheParameterGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheParameterGroupName")]
     pub cache_parameter_group_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
-    ///
+    /// 
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheParameterGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheParameterGroupRef")]
     pub cache_parameter_group_ref: Option<ReplicationGroupCacheParameterGroupRef>,
     /// A list of cache security group names to associate with this replication group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheSecurityGroupNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheSecurityGroupNames")]
     pub cache_security_group_names: Option<Vec<String>>,
     /// The name of the cache subnet group to be used for the replication group.
-    ///
-    ///
+    /// 
+    /// 
     /// If you're going to launch your cluster in an Amazon VPC, you need to create
     /// a subnet group before you start creating a cluster. For more information,
     /// see Subnets and Subnet Groups (https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheSubnetGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheSubnetGroupName")]
     pub cache_subnet_group_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
-    ///
+    /// 
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheSubnetGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheSubnetGroupRef")]
     pub cache_subnet_group_ref: Option<ReplicationGroupCacheSubnetGroupRef>,
     /// Enables data tiering. Data tiering is only supported for replication groups
     /// using the r6gd node type. This parameter must be set to true when using r6gd
     /// nodes. For more information, see Data tiering (https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/data-tiering.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataTieringEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataTieringEnabled")]
     pub data_tiering_enabled: Option<bool>,
     /// A user-created description for the replication group.
     pub description: String,
@@ -247,77 +206,53 @@ pub struct ReplicationGroupSpec {
     /// The version number of the cache engine to be used for the clusters in this
     /// replication group. To view the supported cache engine versions, use the DescribeCacheEngineVersions
     /// operation.
-    ///
-    ///
+    /// 
+    /// 
     /// Important: You can upgrade to a newer engine version (see Selecting a Cache
     /// Engine and Version (https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement))
     /// in the ElastiCache User Guide, but you cannot downgrade to an earlier engine
     /// version. If you want to use an earlier engine version, you must delete the
     /// existing cluster or replication group and create it anew with the earlier
     /// engine version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "engineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<String>,
     /// The ID of the KMS key used to encrypt the disk in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     /// Specifies the destination, format and type of the logs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logDeliveryConfigurations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logDeliveryConfigurations")]
     pub log_delivery_configurations: Option<Vec<ReplicationGroupLogDeliveryConfigurations>>,
     /// A flag indicating if you have Multi-AZ enabled to enhance fault tolerance.
     /// For more information, see Minimizing Downtime: Multi-AZ (http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/AutoFailover.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiAZEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiAZEnabled")]
     pub multi_az_enabled: Option<bool>,
     /// A list of node group (shard) configuration options. Each node group (shard)
     /// configuration has the following members: PrimaryAvailabilityZone, ReplicaAvailabilityZones,
     /// ReplicaCount, and Slots.
-    ///
-    ///
+    /// 
+    /// 
     /// If you're creating a Redis (cluster mode disabled) or a Redis (cluster mode
     /// enabled) replication group, you can use this parameter to individually configure
     /// each node group (shard), or you can omit this parameter. However, it is required
     /// when seeding a Redis (cluster mode enabled) cluster from a S3 rdb file. You
     /// must configure each node group (shard) using this parameter because you must
     /// specify the slots for each node group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeGroupConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeGroupConfiguration")]
     pub node_group_configuration: Option<Vec<ReplicationGroupNodeGroupConfiguration>>,
     /// The Amazon Resource Name (ARN) of the Amazon Simple Notification Service
     /// (SNS) topic to which notifications are sent.
-    ///
-    ///
+    /// 
+    /// 
     /// The Amazon SNS topic owner must be the same as the cluster owner.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notificationTopicARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationTopicARN")]
     pub notification_topic_arn: Option<String>,
     /// An optional parameter that specifies the number of node groups (shards) for
     /// this Redis (cluster mode enabled) replication group. For Redis (cluster mode
     /// disabled) either omit this parameter or set it to 1.
-    ///
-    ///
+    /// 
+    /// 
     /// Default: 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numNodeGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numNodeGroups")]
     pub num_node_groups: Option<i64>,
     /// The port number on which each member of the replication group accepts connections.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -326,121 +261,97 @@ pub struct ReplicationGroupSpec {
     /// are created. The order of the Availability Zones in the list is the order
     /// in which clusters are allocated. The primary cluster is created in the first
     /// AZ in the list.
-    ///
-    ///
+    /// 
+    /// 
     /// This parameter is not used if there is more than one node group (shard).
     /// You should use NodeGroupConfiguration instead.
-    ///
-    ///
+    /// 
+    /// 
     /// If you are creating your replication group in an Amazon VPC (recommended),
     /// you can only locate clusters in Availability Zones associated with the subnets
     /// in the selected subnet group.
-    ///
-    ///
+    /// 
+    /// 
     /// The number of Availability Zones listed must equal the value of NumCacheClusters.
-    ///
-    ///
+    /// 
+    /// 
     /// Default: system chosen Availability Zones.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredCacheClusterAZs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredCacheClusterAZs")]
     pub preferred_cache_cluster_a_zs: Option<Vec<String>>,
     /// Specifies the weekly time range during which maintenance on the cluster is
     /// performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi
     /// (24H Clock UTC). The minimum maintenance window is a 60 minute period. Valid
     /// values for ddd are:
-    ///
-    ///
+    /// 
+    /// 
     /// Specifies the weekly time range during which maintenance on the cluster is
     /// performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi
     /// (24H Clock UTC). The minimum maintenance window is a 60 minute period.
-    ///
-    ///
+    /// 
+    /// 
     /// Valid values for ddd are:
-    ///
-    ///
+    /// 
+    /// 
     ///    * sun
-    ///
-    ///
+    /// 
+    /// 
     ///    * mon
-    ///
-    ///
+    /// 
+    /// 
     ///    * tue
-    ///
-    ///
+    /// 
+    /// 
     ///    * wed
-    ///
-    ///
+    /// 
+    /// 
     ///    * thu
-    ///
-    ///
+    /// 
+    /// 
     ///    * fri
-    ///
-    ///
+    /// 
+    /// 
     ///    * sat
-    ///
-    ///
+    /// 
+    /// 
     /// Example: sun:23:00-mon:01:30
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredMaintenanceWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredMaintenanceWindow")]
     pub preferred_maintenance_window: Option<String>,
     /// The identifier of the cluster that serves as the primary for this replication
     /// group. This cluster must already exist and have a status of available.
-    ///
-    ///
+    /// 
+    /// 
     /// This parameter is not required if NumCacheClusters, NumNodeGroups, or ReplicasPerNodeGroup
     /// is specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryClusterID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryClusterID")]
     pub primary_cluster_id: Option<String>,
     /// An optional parameter that specifies the number of replica nodes in each
     /// node group (shard). Valid values are 0 to 5.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasPerNodeGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasPerNodeGroup")]
     pub replicas_per_node_group: Option<i64>,
     /// The replication group identifier. This parameter is stored as a lowercase
     /// string.
-    ///
-    ///
+    /// 
+    /// 
     /// Constraints:
-    ///
-    ///
+    /// 
+    /// 
     ///    * A name must contain from 1 to 40 alphanumeric characters or hyphens.
-    ///
-    ///
+    /// 
+    /// 
     ///    * The first character must be a letter.
-    ///
-    ///
+    /// 
+    /// 
     ///    * A name cannot end with a hyphen or contain two consecutive hyphens.
     #[serde(rename = "replicationGroupID")]
     pub replication_group_id: String,
     /// One or more Amazon VPC security groups associated with this replication group.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this parameter only when you are creating a replication group in an Amazon
     /// Virtual Private Cloud (Amazon VPC).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupRefs")]
     pub security_group_refs: Option<Vec<ReplicationGroupSecurityGroupRefs>>,
     /// A list of Amazon Resource Names (ARN) that uniquely identify the Redis RDB
     /// snapshot files stored in Amazon S3. The snapshot files are used to populate
@@ -449,50 +360,34 @@ pub struct ReplicationGroupSpec {
     /// (console: shards) specified by the parameter NumNodeGroups or the number
     /// of node groups configured by NodeGroupConfiguration regardless of the number
     /// of ARNs specified here.
-    ///
-    ///
+    /// 
+    /// 
     /// Example of an Amazon S3 ARN: arn:aws:s3:::my_bucket/snapshot1.rdb
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotARNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotARNs")]
     pub snapshot_ar_ns: Option<Vec<String>>,
     /// The name of a snapshot from which to restore data into the new replication
     /// group. The snapshot status changes to restoring while the new replication
     /// group is being created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotName")]
     pub snapshot_name: Option<String>,
     /// The number of days for which ElastiCache retains automatic snapshots before
     /// deleting them. For example, if you set SnapshotRetentionLimit to 5, a snapshot
     /// that was taken today is retained for 5 days before being deleted.
-    ///
-    ///
+    /// 
+    /// 
     /// Default: 0 (i.e., automatic backups are disabled for this cluster).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotRetentionLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotRetentionLimit")]
     pub snapshot_retention_limit: Option<i64>,
     /// The daily time range (in UTC) during which ElastiCache begins taking a daily
     /// snapshot of your node group (shard).
-    ///
-    ///
+    /// 
+    /// 
     /// Example: 05:00-09:00
-    ///
-    ///
+    /// 
+    /// 
     /// If you do not specify this parameter, ElastiCache automatically chooses an
     /// appropriate time range.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotWindow")]
     pub snapshot_window: Option<String>,
     /// A list of tags to be added to this resource. Tags are comma-separated key,value
     /// pairs (e.g. Key=myKey, Value=myKeyValue. You can include multiple tags as
@@ -501,70 +396,62 @@ pub struct ReplicationGroupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<ReplicationGroupTags>>,
     /// A flag that enables in-transit encryption when set to true.
-    ///
-    ///
+    /// 
+    /// 
     /// You cannot modify the value of TransitEncryptionEnabled after the cluster
     /// is created. To enable in-transit encryption on a cluster you must set TransitEncryptionEnabled
     /// to true when you create a cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This parameter is valid only if the Engine parameter is redis, the EngineVersion
     /// parameter is 3.2.6, 4.x or later, and the cluster is being created in an
     /// Amazon VPC.
-    ///
-    ///
+    /// 
+    /// 
     /// If you enable in-transit encryption, you must also specify a value for CacheSubnetGroup.
-    ///
-    ///
+    /// 
+    /// 
     /// Required: Only available when creating a replication group in an Amazon VPC
     /// using redis version 3.2.6, 4.x or later.
-    ///
-    ///
+    /// 
+    /// 
     /// Default: false
-    ///
-    ///
+    /// 
+    /// 
     /// For HIPAA compliance, you must specify TransitEncryptionEnabled as true,
     /// an AuthToken, and a CacheSubnetGroup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transitEncryptionEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitEncryptionEnabled")]
     pub transit_encryption_enabled: Option<bool>,
     /// The user group to associate with the replication group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userGroupIDs")]
     pub user_group_i_ds: Option<Vec<String>>,
 }
 
 /// Reserved parameter. The password used to access a password protected server.
-///
-///
+/// 
+/// 
 /// AuthToken can be specified only on replication groups where TransitEncryptionEnabled
 /// is true.
-///
-///
+/// 
+/// 
 /// For HIPAA compliance, you must specify TransitEncryptionEnabled as true,
 /// an AuthToken, and a CacheSubnetGroup.
-///
-///
+/// 
+/// 
 /// Password constraints:
-///
-///
+/// 
+/// 
 ///    * Must be only printable ASCII characters.
-///
-///
+/// 
+/// 
 ///    * Must be at least 16 characters and no more than 128 characters in length.
-///
-///
+/// 
+/// 
 ///    * The only permitted printable special characters are !, &, #, $, ^, <,
 ///    >, and -. Other printable special characters cannot be used in the AUTH
 ///    token.
-///
-///
+/// 
+/// 
 /// For more information, see AUTH password (http://redis.io/commands/AUTH) at
 /// http://redis.io/commands/AUTH.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -583,8 +470,8 @@ pub struct ReplicationGroupAuthToken {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
-///
+/// 
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -607,8 +494,8 @@ pub struct ReplicationGroupCacheParameterGroupRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
-///
+/// 
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -632,17 +519,9 @@ pub struct ReplicationGroupCacheSubnetGroupRefFrom {
 pub struct ReplicationGroupLogDeliveryConfigurations {
     /// Configuration details of either a CloudWatch Logs destination or Kinesis
     /// Data Firehose destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationDetails"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationDetails")]
     pub destination_details: Option<ReplicationGroupLogDeliveryConfigurationsDestinationDetails>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationType")]
     pub destination_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -657,21 +536,11 @@ pub struct ReplicationGroupLogDeliveryConfigurations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupLogDeliveryConfigurationsDestinationDetails {
     /// The configuration details of the CloudWatch Logs destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudWatchLogsDetails"
-    )]
-    pub cloud_watch_logs_details:
-        Option<ReplicationGroupLogDeliveryConfigurationsDestinationDetailsCloudWatchLogsDetails>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudWatchLogsDetails")]
+    pub cloud_watch_logs_details: Option<ReplicationGroupLogDeliveryConfigurationsDestinationDetailsCloudWatchLogsDetails>,
     /// The configuration details of the Kinesis Data Firehose destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kinesisFirehoseDetails"
-    )]
-    pub kinesis_firehose_details:
-        Option<ReplicationGroupLogDeliveryConfigurationsDestinationDetailsKinesisFirehoseDetails>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kinesisFirehoseDetails")]
+    pub kinesis_firehose_details: Option<ReplicationGroupLogDeliveryConfigurationsDestinationDetailsKinesisFirehoseDetails>,
 }
 
 /// The configuration details of the CloudWatch Logs destination.
@@ -684,11 +553,7 @@ pub struct ReplicationGroupLogDeliveryConfigurationsDestinationDetailsCloudWatch
 /// The configuration details of the Kinesis Data Firehose destination.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupLogDeliveryConfigurationsDestinationDetailsKinesisFirehoseDetails {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deliveryStream"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deliveryStream")]
     pub delivery_stream: Option<String>,
 }
 
@@ -697,41 +562,17 @@ pub struct ReplicationGroupLogDeliveryConfigurationsDestinationDetailsKinesisFir
 /// ReplicaCount.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupNodeGroupConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeGroupID")]
     pub node_group_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryAvailabilityZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryAvailabilityZone")]
     pub primary_availability_zone: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryOutpostARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryOutpostARN")]
     pub primary_outpost_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaAvailabilityZones"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaAvailabilityZones")]
     pub replica_availability_zones: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaCount")]
     pub replica_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaOutpostARNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaOutpostARNs")]
     pub replica_outpost_ar_ns: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slots: Option<String>,
@@ -741,8 +582,8 @@ pub struct ReplicationGroupNodeGroupConfiguration {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
-///
+/// 
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -781,79 +622,47 @@ pub struct ReplicationGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ReplicationGroupStatusAckResourceMetadata>,
     /// A string list, each element of which specifies a cache node type which you
     /// can use to scale your cluster or replication group. When scaling down a Redis
     /// cluster or replication group using ModifyCacheCluster or ModifyReplicationGroup,
     /// use a value from this list for the CacheNodeType parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedScaleDownModifications"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedScaleDownModifications")]
     pub allowed_scale_down_modifications: Option<Vec<String>>,
     /// A string list, each element of which specifies a cache node type which you
     /// can use to scale your cluster or replication group.
-    ///
-    ///
+    /// 
+    /// 
     /// When scaling up a Redis cluster or replication group using ModifyCacheCluster
     /// or ModifyReplicationGroup, use a value from this list for the CacheNodeType
     /// parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedScaleUpModifications"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedScaleUpModifications")]
     pub allowed_scale_up_modifications: Option<Vec<String>>,
     /// A flag that enables using an AuthToken (password) when issuing Redis commands.
-    ///
-    ///
+    /// 
+    /// 
     /// Default: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authTokenEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authTokenEnabled")]
     pub auth_token_enabled: Option<bool>,
     /// The date the auth token was last modified
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authTokenLastModifiedDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authTokenLastModifiedDate")]
     pub auth_token_last_modified_date: Option<String>,
     /// If you are running Redis engine version 6.0 or later, set this parameter
     /// to yes if you want to opt-in to the next auto minor version upgrade campaign.
     /// This parameter is disabled for previous versions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoMinorVersionUpgrade"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMinorVersionUpgrade")]
     pub auto_minor_version_upgrade: Option<bool>,
     /// Indicates the status of automatic failover for this Redis replication group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automaticFailover"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticFailover")]
     pub automatic_failover: Option<String>,
     /// A flag indicating whether or not this replication group is cluster enabled;
     /// i.e., whether its data can be partitioned across multiple shards (API/CLI:
     /// node groups).
-    ///
-    ///
+    /// 
+    /// 
     /// Valid values: true | false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterEnabled")]
     pub cluster_enabled: Option<bool>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -863,20 +672,12 @@ pub struct ReplicationGroupStatus {
     pub conditions: Option<Vec<Condition>>,
     /// The configuration endpoint for this replication group. Use the configuration
     /// endpoint to connect to this replication group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configurationEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationEndpoint")]
     pub configuration_endpoint: Option<ReplicationGroupStatusConfigurationEndpoint>,
     /// Enables data tiering. Data tiering is only supported for replication groups
     /// using the r6gd node type. This parameter must be set to true when using r6gd
     /// nodes. For more information, see Data tiering (https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/data-tiering.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataTiering"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataTiering")]
     pub data_tiering: Option<String>,
     /// A list of events. Each element in the list contains detailed information
     /// about one event.
@@ -884,32 +685,16 @@ pub struct ReplicationGroupStatus {
     pub events: Option<Vec<ReplicationGroupStatusEvents>>,
     /// The name of the Global datastore and role of this replication group in the
     /// Global datastore.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalReplicationGroupInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReplicationGroupInfo")]
     pub global_replication_group_info: Option<ReplicationGroupStatusGlobalReplicationGroupInfo>,
     /// Returns the destination, format and type of the logs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logDeliveryConfigurations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logDeliveryConfigurations")]
     pub log_delivery_configurations: Option<Vec<ReplicationGroupStatusLogDeliveryConfigurations>>,
     /// The names of all the cache clusters that are part of this replication group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memberClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberClusters")]
     pub member_clusters: Option<Vec<String>>,
     /// The outpost ARNs of the replication group's member clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memberClustersOutpostARNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberClustersOutpostARNs")]
     pub member_clusters_outpost_ar_ns: Option<Vec<String>>,
     /// A flag indicating if you have Multi-AZ enabled to enhance fault tolerance.
     /// For more information, see Minimizing Downtime: Multi-AZ (http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/AutoFailover.html)
@@ -919,34 +704,18 @@ pub struct ReplicationGroupStatus {
     /// disabled) replication groups, this is a single-element list. For Redis (cluster
     /// mode enabled) replication groups, the list contains an entry for each node
     /// group (shard).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeGroups")]
     pub node_groups: Option<Vec<ReplicationGroupStatusNodeGroups>>,
     /// A group of settings to be applied to the replication group, either immediately
     /// or during the next maintenance window.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pendingModifiedValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingModifiedValues")]
     pub pending_modified_values: Option<ReplicationGroupStatusPendingModifiedValues>,
     /// The date and time when the cluster was created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationGroupCreateTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationGroupCreateTime")]
     pub replication_group_create_time: Option<String>,
     /// The cluster ID that is used as the daily snapshot source for the replication
     /// group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshottingClusterID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshottingClusterID")]
     pub snapshotting_cluster_id: Option<String>,
     /// The current state of this replication group - creating, available, modifying,
     /// deleting, create-failed, snapshotting.
@@ -996,17 +765,9 @@ pub struct ReplicationGroupStatusEvents {
     pub date: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceIdentifier")]
     pub source_identifier: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<String>,
 }
 
@@ -1014,17 +775,9 @@ pub struct ReplicationGroupStatusEvents {
 /// Global datastore.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupStatusGlobalReplicationGroupInfo {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalReplicationGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReplicationGroupID")]
     pub global_replication_group_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalReplicationGroupMemberRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReplicationGroupMemberRole")]
     pub global_replication_group_member_role: Option<String>,
 }
 
@@ -1033,18 +786,9 @@ pub struct ReplicationGroupStatusGlobalReplicationGroupInfo {
 pub struct ReplicationGroupStatusLogDeliveryConfigurations {
     /// Configuration details of either a CloudWatch Logs destination or Kinesis
     /// Data Firehose destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationDetails"
-    )]
-    pub destination_details:
-        Option<ReplicationGroupStatusLogDeliveryConfigurationsDestinationDetails>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationDetails")]
+    pub destination_details: Option<ReplicationGroupStatusLogDeliveryConfigurationsDestinationDetails>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationType")]
     pub destination_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
     pub log_format: Option<String>,
@@ -1061,23 +805,11 @@ pub struct ReplicationGroupStatusLogDeliveryConfigurations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupStatusLogDeliveryConfigurationsDestinationDetails {
     /// The configuration details of the CloudWatch Logs destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudWatchLogsDetails"
-    )]
-    pub cloud_watch_logs_details: Option<
-        ReplicationGroupStatusLogDeliveryConfigurationsDestinationDetailsCloudWatchLogsDetails,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudWatchLogsDetails")]
+    pub cloud_watch_logs_details: Option<ReplicationGroupStatusLogDeliveryConfigurationsDestinationDetailsCloudWatchLogsDetails>,
     /// The configuration details of the Kinesis Data Firehose destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kinesisFirehoseDetails"
-    )]
-    pub kinesis_firehose_details: Option<
-        ReplicationGroupStatusLogDeliveryConfigurationsDestinationDetailsKinesisFirehoseDetails,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kinesisFirehoseDetails")]
+    pub kinesis_firehose_details: Option<ReplicationGroupStatusLogDeliveryConfigurationsDestinationDetailsKinesisFirehoseDetails>,
 }
 
 /// The configuration details of the CloudWatch Logs destination.
@@ -1090,11 +822,7 @@ pub struct ReplicationGroupStatusLogDeliveryConfigurationsDestinationDetailsClou
 /// The configuration details of the Kinesis Data Firehose destination.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupStatusLogDeliveryConfigurationsDestinationDetailsKinesisFirehoseDetails {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deliveryStream"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deliveryStream")]
     pub delivery_stream: Option<String>,
 }
 
@@ -1103,33 +831,17 @@ pub struct ReplicationGroupStatusLogDeliveryConfigurationsDestinationDetailsKine
 /// Replica nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupStatusNodeGroups {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeGroupID")]
     pub node_group_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeGroupMembers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeGroupMembers")]
     pub node_group_members: Option<Vec<ReplicationGroupStatusNodeGroupsNodeGroupMembers>>,
     /// Represents the information required for client programs to connect to a cache
     /// node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryEndpoint")]
     pub primary_endpoint: Option<ReplicationGroupStatusNodeGroupsPrimaryEndpoint>,
     /// Represents the information required for client programs to connect to a cache
     /// node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readerEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readerEndpoint")]
     pub reader_endpoint: Option<ReplicationGroupStatusNodeGroupsReaderEndpoint>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slots: Option<String>,
@@ -1140,43 +852,19 @@ pub struct ReplicationGroupStatusNodeGroups {
 /// Represents a single node within a node group (shard).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupStatusNodeGroupsNodeGroupMembers {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheClusterID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheClusterID")]
     pub cache_cluster_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheNodeID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheNodeID")]
     pub cache_node_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentRole")]
     pub current_role: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredAvailabilityZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAvailabilityZone")]
     pub preferred_availability_zone: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredOutpostARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredOutpostARN")]
     pub preferred_outpost_arn: Option<String>,
     /// Represents the information required for client programs to connect to a cache
     /// node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readEndpoint")]
     pub read_endpoint: Option<ReplicationGroupStatusNodeGroupsNodeGroupMembersReadEndpoint>,
 }
 
@@ -1214,40 +902,19 @@ pub struct ReplicationGroupStatusNodeGroupsReaderEndpoint {
 /// or during the next maintenance window.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupStatusPendingModifiedValues {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authTokenStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authTokenStatus")]
     pub auth_token_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automaticFailoverStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticFailoverStatus")]
     pub automatic_failover_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logDeliveryConfigurations"
-    )]
-    pub log_delivery_configurations:
-        Option<Vec<ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryClusterID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logDeliveryConfigurations")]
+    pub log_delivery_configurations: Option<Vec<ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurations>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryClusterID")]
     pub primary_cluster_id: Option<String>,
     /// The status of an online resharding operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resharding: Option<ReplicationGroupStatusPendingModifiedValuesResharding>,
     /// The status of the user group update.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userGroups")]
     pub user_groups: Option<ReplicationGroupStatusPendingModifiedValuesUserGroups>,
 }
 
@@ -1256,19 +923,9 @@ pub struct ReplicationGroupStatusPendingModifiedValues {
 pub struct ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurations {
     /// Configuration details of either a CloudWatch Logs destination or Kinesis
     /// Data Firehose destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationDetails"
-    )]
-    pub destination_details: Option<
-        ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurationsDestinationDetails,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationDetails")]
+    pub destination_details: Option<ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurationsDestinationDetails>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationType")]
     pub destination_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
     pub log_format: Option<String>,
@@ -1290,21 +947,15 @@ pub struct ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurationsD
 
 /// The configuration details of the CloudWatch Logs destination.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurationsDestinationDetailsCloudWatchLogsDetails
-{
+pub struct ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurationsDestinationDetailsCloudWatchLogsDetails {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logGroup")]
     pub log_group: Option<String>,
 }
 
 /// The configuration details of the Kinesis Data Firehose destination.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurationsDestinationDetailsKinesisFirehoseDetails
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deliveryStream"
-    )]
+pub struct ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurationsDestinationDetailsKinesisFirehoseDetails {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deliveryStream")]
     pub delivery_stream: Option<String>,
 }
 
@@ -1312,38 +963,23 @@ pub struct ReplicationGroupStatusPendingModifiedValuesLogDeliveryConfigurationsD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupStatusPendingModifiedValuesResharding {
     /// Represents the progress of an online resharding operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "slotMigration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slotMigration")]
     pub slot_migration: Option<ReplicationGroupStatusPendingModifiedValuesReshardingSlotMigration>,
 }
 
 /// Represents the progress of an online resharding operation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupStatusPendingModifiedValuesReshardingSlotMigration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "progressPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "progressPercentage")]
     pub progress_percentage: Option<f64>,
 }
 
 /// The status of the user group update.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationGroupStatusPendingModifiedValuesUserGroups {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userGroupIDsToAdd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userGroupIDsToAdd")]
     pub user_group_i_ds_to_add: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userGroupIDsToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userGroupIDsToRemove")]
     pub user_group_i_ds_to_remove: Option<Vec<String>>,
 }
+

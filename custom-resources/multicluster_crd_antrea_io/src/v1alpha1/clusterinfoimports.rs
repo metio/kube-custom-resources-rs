@@ -4,44 +4,31 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "multicluster.crd.antrea.io",
-    version = "v1alpha1",
-    kind = "ClusterInfoImport",
-    plural = "clusterinfoimports"
-)]
+#[kube(group = "multicluster.crd.antrea.io", version = "v1alpha1", kind = "ClusterInfoImport", plural = "clusterinfoimports")]
 #[kube(namespaced)]
 #[kube(status = "ClusterInfoImportStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterInfoImportSpec {
     /// ClusterID of the member cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterID")]
     pub cluster_id: Option<String>,
     /// GatewayInfos has information of Gateways
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayInfos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayInfos")]
     pub gateway_infos: Option<Vec<ClusterInfoImportGatewayInfos>>,
     /// PodCIDRs is the Pod IP address CIDRs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCIDRs")]
     pub pod_cid_rs: Option<Vec<String>>,
     /// ServiceCIDR is the IP ranges used by Service ClusterIP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceCIDR")]
     pub service_cidr: Option<String>,
     /// WireGuardInfo includes information of a WireGuard tunnel.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "wireGuard")]
@@ -69,3 +56,4 @@ pub struct ClusterInfoImportStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

@@ -5,26 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// TLSContextSpec defines the desired state of TLSContext
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "getambassador.io",
-    version = "v3alpha1",
-    kind = "TLSContext",
-    plural = "tlscontexts"
-)]
+#[kube(group = "getambassador.io", version = "v3alpha1", kind = "TLSContext", plural = "tlscontexts")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TLSContextSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alpn_protocols: Option<String>,
-    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is:
+    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is: 
     ///  ambassador_id: - "default"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ambassador_id: Option<Vec<String>>,
@@ -85,3 +80,4 @@ pub enum TLSContextMinTlsVersion {
     #[serde(rename = "v1.3")]
     V13,
 }
+

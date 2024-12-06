@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// TestSuiteSpec defines the desired state of TestSuite
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tests.testkube.io",
-    version = "v3",
-    kind = "TestSuite",
-    plural = "testsuites"
-)]
+#[kube(group = "tests.testkube.io", version = "v3", kind = "TestSuite", plural = "testsuites")]
 #[kube(namespaced)]
 #[kube(status = "TestSuiteStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TestSuiteSpec {
     /// After batch steps is list of batch tests which will be sequentially orchestrated for parallel tests in each batch
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -34,11 +29,7 @@ pub struct TestSuiteSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// test suite execution request body
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRequest")]
     pub execution_request: Option<TestSuiteExecutionRequest>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repeats: Option<i64>,
@@ -54,11 +45,7 @@ pub struct TestSuiteSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteAfter {
     /// options to download artifacts from previous steps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downloadArtifacts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downloadArtifacts")]
     pub download_artifacts: Option<TestSuiteAfterDownloadArtifacts>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub execute: Option<Vec<TestSuiteAfterExecute>>,
@@ -69,25 +56,13 @@ pub struct TestSuiteAfter {
 /// options to download artifacts from previous steps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteAfterDownloadArtifacts {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allPreviousSteps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allPreviousSteps")]
     pub all_previous_steps: Option<bool>,
     /// previous step numbers starting from 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "previousStepNumbers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousStepNumbers")]
     pub previous_step_numbers: Option<Vec<i64>>,
     /// previous test names
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "previousTestNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousTestNames")]
     pub previous_test_names: Option<Vec<String>>,
 }
 
@@ -101,11 +76,7 @@ pub struct TestSuiteAfterExecute {
     /// These fields will be passed to the execution when a Test Suite is queued for execution.
     /// TestSuiteStepExecutionRequest parameters have the highest priority. They override the
     /// values coming from Test Suites, Tests, and Test Executions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRequest")]
     pub execution_request: Option<TestSuiteAfterExecuteExecutionRequest>,
     /// object name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -128,99 +99,47 @@ pub struct TestSuiteAfterExecuteExecutionRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
     /// cron job template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cronJobTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplate")]
     pub cron_job_template: Option<String>,
     /// cron job template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cronJobTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
     /// whether webhooks should be called on execution
     /// Deprecated: field is not used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableWebhooks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
     pub disable_webhooks: Option<bool>,
     /// test execution labels
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,
     /// http proxy for executor containers
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
     /// https proxy for executor containers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpsProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsProxy")]
     pub https_proxy: Option<String>,
     /// job template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplate")]
     pub job_template: Option<String>,
     /// job template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplateReference")]
     pub job_template_reference: Option<String>,
     /// negative test will fail the execution if it is a success and it will succeed if it is a failure
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "negativeTest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "negativeTest")]
     pub negative_test: Option<bool>,
     /// pvc template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvcTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcTemplate")]
     pub pvc_template: Option<String>,
     /// pvc template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvcTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcTemplateReference")]
     pub pvc_template_reference: Option<String>,
     /// RunningContext for test or test suite execution
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runningContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningContext")]
     pub running_context: Option<TestSuiteAfterExecuteExecutionRequestRunningContext>,
     /// scraper template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scraperTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scraperTemplate")]
     pub scraper_template: Option<String>,
     /// scraper template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scraperTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scraperTemplateReference")]
     pub scraper_template_reference: Option<String>,
     /// whether to start execution sync or async
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -274,32 +193,18 @@ pub struct TestSuiteAfterExecuteExecutionRequestVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteAfterExecuteExecutionRequestVariablesValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<TestSuiteAfterExecuteExecutionRequestVariablesValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<TestSuiteAfterExecuteExecutionRequestVariablesValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<TestSuiteAfterExecuteExecutionRequestVariablesValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<TestSuiteAfterExecuteExecutionRequestVariablesValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<TestSuiteAfterExecuteExecutionRequestVariablesValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<TestSuiteAfterExecuteExecutionRequestVariablesValueFromSecretKeyRef>,
 }
 
@@ -323,11 +228,7 @@ pub struct TestSuiteAfterExecuteExecutionRequestVariablesValueFromConfigMapKeyRe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteAfterExecuteExecutionRequestVariablesValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -339,11 +240,7 @@ pub struct TestSuiteAfterExecuteExecutionRequestVariablesValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteAfterExecuteExecutionRequestVariablesValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -371,11 +268,7 @@ pub struct TestSuiteAfterExecuteExecutionRequestVariablesValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteBefore {
     /// options to download artifacts from previous steps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downloadArtifacts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downloadArtifacts")]
     pub download_artifacts: Option<TestSuiteBeforeDownloadArtifacts>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub execute: Option<Vec<TestSuiteBeforeExecute>>,
@@ -386,25 +279,13 @@ pub struct TestSuiteBefore {
 /// options to download artifacts from previous steps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteBeforeDownloadArtifacts {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allPreviousSteps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allPreviousSteps")]
     pub all_previous_steps: Option<bool>,
     /// previous step numbers starting from 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "previousStepNumbers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousStepNumbers")]
     pub previous_step_numbers: Option<Vec<i64>>,
     /// previous test names
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "previousTestNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousTestNames")]
     pub previous_test_names: Option<Vec<String>>,
 }
 
@@ -418,11 +299,7 @@ pub struct TestSuiteBeforeExecute {
     /// These fields will be passed to the execution when a Test Suite is queued for execution.
     /// TestSuiteStepExecutionRequest parameters have the highest priority. They override the
     /// values coming from Test Suites, Tests, and Test Executions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRequest")]
     pub execution_request: Option<TestSuiteBeforeExecuteExecutionRequest>,
     /// object name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -445,99 +322,47 @@ pub struct TestSuiteBeforeExecuteExecutionRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
     /// cron job template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cronJobTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplate")]
     pub cron_job_template: Option<String>,
     /// cron job template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cronJobTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
     /// whether webhooks should be called on execution
     /// Deprecated: field is not used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableWebhooks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
     pub disable_webhooks: Option<bool>,
     /// test execution labels
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,
     /// http proxy for executor containers
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
     /// https proxy for executor containers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpsProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsProxy")]
     pub https_proxy: Option<String>,
     /// job template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplate")]
     pub job_template: Option<String>,
     /// job template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplateReference")]
     pub job_template_reference: Option<String>,
     /// negative test will fail the execution if it is a success and it will succeed if it is a failure
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "negativeTest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "negativeTest")]
     pub negative_test: Option<bool>,
     /// pvc template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvcTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcTemplate")]
     pub pvc_template: Option<String>,
     /// pvc template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvcTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcTemplateReference")]
     pub pvc_template_reference: Option<String>,
     /// RunningContext for test or test suite execution
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runningContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningContext")]
     pub running_context: Option<TestSuiteBeforeExecuteExecutionRequestRunningContext>,
     /// scraper template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scraperTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scraperTemplate")]
     pub scraper_template: Option<String>,
     /// scraper template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scraperTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scraperTemplateReference")]
     pub scraper_template_reference: Option<String>,
     /// whether to start execution sync or async
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -591,34 +416,19 @@ pub struct TestSuiteBeforeExecuteExecutionRequestVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteBeforeExecuteExecutionRequestVariablesValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<TestSuiteBeforeExecuteExecutionRequestVariablesValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<TestSuiteBeforeExecuteExecutionRequestVariablesValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<TestSuiteBeforeExecuteExecutionRequestVariablesValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<TestSuiteBeforeExecuteExecutionRequestVariablesValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<TestSuiteBeforeExecuteExecutionRequestVariablesValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<TestSuiteBeforeExecuteExecutionRequestVariablesValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<TestSuiteBeforeExecuteExecutionRequestVariablesValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -641,11 +451,7 @@ pub struct TestSuiteBeforeExecuteExecutionRequestVariablesValueFromConfigMapKeyR
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteBeforeExecuteExecutionRequestVariablesValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -657,11 +463,7 @@ pub struct TestSuiteBeforeExecuteExecutionRequestVariablesValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteBeforeExecuteExecutionRequestVariablesValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -689,57 +491,29 @@ pub struct TestSuiteBeforeExecuteExecutionRequestVariablesValueFromSecretKeyRef 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteExecutionRequest {
     /// cron job template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cronJobTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplate")]
     pub cron_job_template: Option<String>,
     /// name of the template resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cronJobTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
     /// whether webhooks should be called on execution
     /// Deprecated: field is not used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableWebhooks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
     pub disable_webhooks: Option<bool>,
     /// execution labels
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,
     /// http proxy for executor containers
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
     /// https proxy for executor containers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpsProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsProxy")]
     pub https_proxy: Option<String>,
     /// job template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplate")]
     pub job_template: Option<String>,
     /// name of the template resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplateReference")]
     pub job_template_reference: Option<String>,
     /// test suite labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -751,39 +525,19 @@ pub struct TestSuiteExecutionRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// pvc template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvcTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcTemplate")]
     pub pvc_template: Option<String>,
     /// name of the template resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvcTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcTemplateReference")]
     pub pvc_template_reference: Option<String>,
     /// scraper template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scraperTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scraperTemplate")]
     pub scraper_template: Option<String>,
     /// name of the template resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scraperTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scraperTemplateReference")]
     pub scraper_template_reference: Option<String>,
     /// secret uuid
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretUUID")]
     pub secret_uuid: Option<String>,
     /// whether to start execution sync or async
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -815,11 +569,7 @@ pub struct TestSuiteExecutionRequestVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteExecutionRequestVariablesValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<TestSuiteExecutionRequestVariablesValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -827,18 +577,10 @@ pub struct TestSuiteExecutionRequestVariablesValueFrom {
     pub field_ref: Option<TestSuiteExecutionRequestVariablesValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<TestSuiteExecutionRequestVariablesValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<TestSuiteExecutionRequestVariablesValueFromSecretKeyRef>,
 }
 
@@ -862,11 +604,7 @@ pub struct TestSuiteExecutionRequestVariablesValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteExecutionRequestVariablesValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -878,11 +616,7 @@ pub struct TestSuiteExecutionRequestVariablesValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteExecutionRequestVariablesValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -910,11 +644,7 @@ pub struct TestSuiteExecutionRequestVariablesValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteSteps {
     /// options to download artifacts from previous steps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downloadArtifacts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downloadArtifacts")]
     pub download_artifacts: Option<TestSuiteStepsDownloadArtifacts>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub execute: Option<Vec<TestSuiteStepsExecute>>,
@@ -925,25 +655,13 @@ pub struct TestSuiteSteps {
 /// options to download artifacts from previous steps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteStepsDownloadArtifacts {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allPreviousSteps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allPreviousSteps")]
     pub all_previous_steps: Option<bool>,
     /// previous step numbers starting from 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "previousStepNumbers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousStepNumbers")]
     pub previous_step_numbers: Option<Vec<i64>>,
     /// previous test names
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "previousTestNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousTestNames")]
     pub previous_test_names: Option<Vec<String>>,
 }
 
@@ -957,11 +675,7 @@ pub struct TestSuiteStepsExecute {
     /// These fields will be passed to the execution when a Test Suite is queued for execution.
     /// TestSuiteStepExecutionRequest parameters have the highest priority. They override the
     /// values coming from Test Suites, Tests, and Test Executions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRequest")]
     pub execution_request: Option<TestSuiteStepsExecuteExecutionRequest>,
     /// object name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -984,99 +698,47 @@ pub struct TestSuiteStepsExecuteExecutionRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
     /// cron job template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cronJobTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplate")]
     pub cron_job_template: Option<String>,
     /// cron job template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cronJobTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronJobTemplateReference")]
     pub cron_job_template_reference: Option<String>,
     /// whether webhooks should be called on execution
     /// Deprecated: field is not used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableWebhooks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
     pub disable_webhooks: Option<bool>,
     /// test execution labels
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionLabels")]
     pub execution_labels: Option<BTreeMap<String, String>>,
     /// http proxy for executor containers
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
     /// https proxy for executor containers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpsProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsProxy")]
     pub https_proxy: Option<String>,
     /// job template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplate")]
     pub job_template: Option<String>,
     /// job template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTemplateReference")]
     pub job_template_reference: Option<String>,
     /// negative test will fail the execution if it is a success and it will succeed if it is a failure
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "negativeTest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "negativeTest")]
     pub negative_test: Option<bool>,
     /// pvc template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvcTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcTemplate")]
     pub pvc_template: Option<String>,
     /// pvc template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvcTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcTemplateReference")]
     pub pvc_template_reference: Option<String>,
     /// RunningContext for test or test suite execution
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runningContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningContext")]
     pub running_context: Option<TestSuiteStepsExecuteExecutionRequestRunningContext>,
     /// scraper template extensions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scraperTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scraperTemplate")]
     pub scraper_template: Option<String>,
     /// scraper template extensions reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scraperTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scraperTemplateReference")]
     pub scraper_template_reference: Option<String>,
     /// whether to start execution sync or async
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1130,32 +792,18 @@ pub struct TestSuiteStepsExecuteExecutionRequestVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteStepsExecuteExecutionRequestVariablesValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<TestSuiteStepsExecuteExecutionRequestVariablesValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<TestSuiteStepsExecuteExecutionRequestVariablesValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<TestSuiteStepsExecuteExecutionRequestVariablesValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<TestSuiteStepsExecuteExecutionRequestVariablesValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<TestSuiteStepsExecuteExecutionRequestVariablesValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<TestSuiteStepsExecuteExecutionRequestVariablesValueFromSecretKeyRef>,
 }
 
@@ -1179,11 +827,7 @@ pub struct TestSuiteStepsExecuteExecutionRequestVariablesValueFromConfigMapKeyRe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteStepsExecuteExecutionRequestVariablesValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1195,11 +839,7 @@ pub struct TestSuiteStepsExecuteExecutionRequestVariablesValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteStepsExecuteExecutionRequestVariablesValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1227,11 +867,7 @@ pub struct TestSuiteStepsExecuteExecutionRequestVariablesValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteStatus {
     /// latest execution result
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latestExecution"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestExecution")]
     pub latest_execution: Option<TestSuiteStatusLatestExecution>,
 }
 
@@ -1250,3 +886,4 @@ pub struct TestSuiteStatusLatestExecution {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

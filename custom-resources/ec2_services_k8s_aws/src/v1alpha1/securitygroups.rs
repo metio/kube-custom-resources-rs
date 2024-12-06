@@ -4,54 +4,41 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SecurityGroupSpec defines the desired state of SecurityGroup.
-///
+/// 
 /// Describes a security group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ec2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "SecurityGroup",
-    plural = "securitygroups"
-)]
+#[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "SecurityGroup", plural = "securitygroups")]
 #[kube(namespaced)]
 #[kube(status = "SecurityGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SecurityGroupSpec {
     /// A description for the security group. This is informational only.
-    ///
+    /// 
     /// Constraints: Up to 255 characters in length
-    ///
+    /// 
     /// Constraints for EC2-Classic: ASCII characters
-    ///
+    /// 
     /// Constraints for EC2-VPC: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&;{}!$*
     pub description: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressRules")]
     pub egress_rules: Option<Vec<SecurityGroupEgressRules>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressRules")]
     pub ingress_rules: Option<Vec<SecurityGroupIngressRules>>,
     /// The name of the security group.
-    ///
+    /// 
     /// Constraints: Up to 255 characters in length. Cannot start with sg-.
-    ///
+    /// 
     /// Constraints for EC2-Classic: ASCII characters
-    ///
+    /// 
     /// Constraints for EC2-VPC: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&;{}!$*
     pub name: String,
     /// The tags. The value parameter is required, but if you don't want the tag
@@ -66,7 +53,7 @@ pub struct SecurityGroupSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcRef")]
@@ -78,33 +65,17 @@ pub struct SecurityGroupSpec {
 pub struct SecurityGroupEgressRules {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromPort")]
     pub from_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipProtocol")]
     pub ip_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipRanges")]
     pub ip_ranges: Option<Vec<SecurityGroupEgressRulesIpRanges>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv6Ranges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6Ranges")]
     pub ipv6_ranges: Option<Vec<SecurityGroupEgressRulesIpv6Ranges>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prefixListIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixListIDs")]
     pub prefix_list_i_ds: Option<Vec<SecurityGroupEgressRulesPrefixListIDs>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPort")]
     pub to_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userIDGroupPairs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userIDGroupPairs")]
     pub user_id_group_pairs: Option<Vec<SecurityGroupEgressRulesUserIdGroupPairs>>,
 }
 
@@ -131,16 +102,12 @@ pub struct SecurityGroupEgressRulesIpv6Ranges {
 pub struct SecurityGroupEgressRulesPrefixListIDs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prefixListID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixListID")]
     pub prefix_list_id: Option<String>,
 }
 
 /// Describes a security group and Amazon Web Services account ID pair.
-///
+/// 
 /// We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate
 /// from EC2-Classic to a VPC. For more information, see Migrate from EC2-Classic
 /// to a VPC (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html)
@@ -156,21 +123,13 @@ pub struct SecurityGroupEgressRulesUserIdGroupPairs {
     /// Reference field for GroupID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupRef")]
     pub group_ref: Option<SecurityGroupEgressRulesUserIdGroupPairsGroupRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "peeringStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "peeringStatus")]
     pub peering_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userID")]
     pub user_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
     pub vpc_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcPeeringConnectionID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcPeeringConnectionID")]
     pub vpc_peering_connection_id: Option<String>,
     /// Reference field for VPCID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcRef")]
@@ -220,33 +179,17 @@ pub struct SecurityGroupEgressRulesUserIdGroupPairsVpcRefFrom {
 pub struct SecurityGroupIngressRules {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromPort")]
     pub from_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipProtocol")]
     pub ip_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipRanges")]
     pub ip_ranges: Option<Vec<SecurityGroupIngressRulesIpRanges>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv6Ranges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6Ranges")]
     pub ipv6_ranges: Option<Vec<SecurityGroupIngressRulesIpv6Ranges>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prefixListIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixListIDs")]
     pub prefix_list_i_ds: Option<Vec<SecurityGroupIngressRulesPrefixListIDs>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPort")]
     pub to_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userIDGroupPairs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userIDGroupPairs")]
     pub user_id_group_pairs: Option<Vec<SecurityGroupIngressRulesUserIdGroupPairs>>,
 }
 
@@ -273,16 +216,12 @@ pub struct SecurityGroupIngressRulesIpv6Ranges {
 pub struct SecurityGroupIngressRulesPrefixListIDs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prefixListID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixListID")]
     pub prefix_list_id: Option<String>,
 }
 
 /// Describes a security group and Amazon Web Services account ID pair.
-///
+/// 
 /// We are retiring EC2-Classic on August 15, 2022. We recommend that you migrate
 /// from EC2-Classic to a VPC. For more information, see Migrate from EC2-Classic
 /// to a VPC (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html)
@@ -298,21 +237,13 @@ pub struct SecurityGroupIngressRulesUserIdGroupPairs {
     /// Reference field for GroupID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupRef")]
     pub group_ref: Option<SecurityGroupIngressRulesUserIdGroupPairsGroupRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "peeringStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "peeringStatus")]
     pub peering_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userID")]
     pub user_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
     pub vpc_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcPeeringConnectionID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcPeeringConnectionID")]
     pub vpc_peering_connection_id: Option<String>,
     /// Reference field for VPCID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcRef")]
@@ -370,7 +301,7 @@ pub struct SecurityGroupTags {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -397,11 +328,7 @@ pub struct SecurityGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<SecurityGroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -450,25 +377,13 @@ pub struct SecurityGroupStatusRules {
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromPort")]
     pub from_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipProtocol")]
     pub ip_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isEgress")]
     pub is_egress: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prefixListID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixListID")]
     pub prefix_list_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupRuleID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupRuleID")]
     pub security_group_rule_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<SecurityGroupStatusRulesTags>>,
@@ -484,3 +399,4 @@ pub struct SecurityGroupStatusRulesTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
+

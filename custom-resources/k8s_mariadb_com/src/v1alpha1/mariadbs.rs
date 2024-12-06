@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// MariaDBSpec defines the desired state of MariaDB
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.mariadb.com",
-    version = "v1alpha1",
-    kind = "MariaDB",
-    plural = "mariadbs"
-)]
+#[kube(group = "k8s.mariadb.com", version = "v1alpha1", kind = "MariaDB", plural = "mariadbs")]
 #[kube(namespaced)]
 #[kube(status = "MariaDBStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MariaDBSpec {
     /// Affinity to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33,11 +28,7 @@ pub struct MariaDBSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
     /// BootstrapFrom defines a source to bootstrap from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bootstrapFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapFrom")]
     pub bootstrap_from: Option<MariaDBBootstrapFrom>,
     /// Command to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -64,39 +55,19 @@ pub struct MariaDBSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBImagePullPolicy>,
     /// ImagePullSecrets is the list of pull Secrets to be used to pull the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<MariaDBImagePullSecrets>>,
     /// InheritMetadata defines the metadata to be inherited by children resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inheritMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inheritMetadata")]
     pub inherit_metadata: Option<MariaDBInheritMetadata>,
     /// InitContainers to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<MariaDBInitContainers>>,
     /// LivenessProbe to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<MariaDBLivenessProbe>,
     /// MaxScale is the MaxScale specification that defines the MaxScale resource to be used with the current MariaDB.
     /// When enabling this field, MaxScaleRef is automatically set.
@@ -104,11 +75,7 @@ pub struct MariaDBSpec {
     pub max_scale: Option<MariaDBMaxScale>,
     /// MaxScaleRef is a reference to a MaxScale resource to be used with the current MariaDB.
     /// Providing this field implies delegating high availability tasks such as primary failover to MaxScale.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxScaleRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxScaleRef")]
     pub max_scale_ref: Option<MariaDBMaxScaleRef>,
     /// Metrics configures metrics and how to scrape them.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -120,62 +87,30 @@ pub struct MariaDBSpec {
     /// MyCnfConfigMapKeyRef is a reference to the my.cnf config file provided via a ConfigMap.
     /// If not provided, it will be defaulted with a reference to a ConfigMap containing the MyCnf field.
     /// If the referred ConfigMap is labeled with "k8s.mariadb.com/watch", an update to the Mariadb resource will be triggered when the ConfigMap is updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "myCnfConfigMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "myCnfConfigMapKeyRef")]
     pub my_cnf_config_map_key_ref: Option<MariaDBMyCnfConfigMapKeyRef>,
     /// NodeSelector to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PasswordHashSecretKeyRef is a reference to the password hash to be used by the initial User.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password hash.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordHashSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordHashSecretKeyRef")]
     pub password_hash_secret_key_ref: Option<MariaDBPasswordHashSecretKeyRef>,
     /// PasswordPlugin is a reference to the password plugin and arguments to be used by the initial User.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordPlugin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordPlugin")]
     pub password_plugin: Option<MariaDBPasswordPlugin>,
     /// PasswordSecretKeyRef is a reference to a Secret that contains the password to be used by the initial User.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: Option<MariaDBPasswordSecretKeyRef>,
     /// PodDisruptionBudget defines the budget for replica availability.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podDisruptionBudget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<MariaDBPodDisruptionBudget>,
     /// PodMetadata defines extra metadata for the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<MariaDBPodMetadata>,
     /// SecurityContext holds pod-level security attributes and common container settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<MariaDBPodSecurityContext>,
     /// Port where the instances will be listening for connections.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -183,43 +118,23 @@ pub struct MariaDBSpec {
     /// PrimaryConnection defines a template to configure the primary Connection object.
     /// This Connection provides the initial User access to the initial Database.
     /// It will make use of the PrimaryService to route network traffic to the primary Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryConnection")]
     pub primary_connection: Option<MariaDBPrimaryConnection>,
     /// PrimaryService defines a template to configure the primary Service object.
     /// The network traffic of this Service will be routed to the primary Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryService")]
     pub primary_service: Option<MariaDBPrimaryService>,
     /// PriorityClassName to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// ReadinessProbe to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<MariaDBReadinessProbe>,
     /// Replicas indicates the number of desired instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// disables the validation check for an odd number of replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasAllowEvenNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasAllowEvenNumber")]
     pub replicas_allow_even_number: Option<bool>,
     /// Replication configures high availability via replication. This feature is still in alpha, use Galera if you are looking for a more production-ready HA.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -228,67 +143,35 @@ pub struct MariaDBSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBResources>,
     /// RootEmptyPassword indicates if the root password should be empty. Don't use this feature in production, it is only intended for development and test environments.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootEmptyPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootEmptyPassword")]
     pub root_empty_password: Option<bool>,
     /// RootPasswordSecretKeyRef is a reference to a Secret key containing the root password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootPasswordSecretKeyRef")]
     pub root_password_secret_key_ref: Option<MariaDBRootPasswordSecretKeyRef>,
     /// SecondaryConnection defines a template to configure the secondary Connection object.
     /// This Connection provides the initial User access to the initial Database.
     /// It will make use of the SecondaryService to route network traffic to the secondary Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryConnection")]
     pub secondary_connection: Option<MariaDBSecondaryConnection>,
     /// SecondaryService defines a template to configure the secondary Service object.
     /// The network traffic of this Service will be routed to the secondary Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryService")]
     pub secondary_service: Option<MariaDBSecondaryService>,
     /// SecurityContext holds security configuration that will be applied to a container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MariaDBSecurityContext>,
     /// Service defines a template to configure the general Service object.
     /// The network traffic of this Service will be routed to all Pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<MariaDBService>,
     /// ServiceAccountName is the name of the ServiceAccount to be used by the Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// ServicePorts is the list of additional named ports to be added to the Services created by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePorts")]
     pub service_ports: Option<Vec<MariaDBServicePorts>>,
     /// SidecarContainers to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sidecarContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarContainers")]
     pub sidecar_containers: Option<Vec<MariaDBSidecarContainers>>,
     /// Storage defines the storage options to be used for provisioning the PVCs mounted by MariaDB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -304,29 +187,17 @@ pub struct MariaDBSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<MariaDBTolerations>>,
     /// TopologySpreadConstraints to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<MariaDBTopologySpreadConstraints>>,
     /// UpdateStrategy defines how a MariaDB resource is updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<MariaDBUpdateStrategy>,
     /// Username is the initial username to be created by the operator once MariaDB is ready. It has all privileges on the initial database.
     /// The initial User will have ALL PRIVILEGES in the initial Database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
     /// VolumeMounts to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<MariaDBVolumeMounts>>,
     /// Volumes to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -338,54 +209,31 @@ pub struct MariaDBSpec {
 pub struct MariaDBAffinity {
     /// AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "antiAffinityEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MariaDBAffinityNodeAffinity>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MariaDBAffinityPodAntiAffinity>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBAffinityNodeAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselector-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#preferredschedulingterm-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorterm-v1-core
-    pub preference:
-        MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
@@ -400,8 +248,7 @@ pub struct MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -412,8 +259,7 @@ pub struct MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -426,9 +272,7 @@ pub struct MariaDBAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<
-        MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms,
-    >,
+    pub node_selector_terms: Vec<MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorterm-v1-core
@@ -442,8 +286,7 @@ pub struct MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -454,8 +297,7 @@ pub struct MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -467,20 +309,10 @@ pub struct MariaDBAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBAffinityPodAntiAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<MariaDBAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<MariaDBAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MariaDBAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<MariaDBAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#weightedpodaffinityterm-v1-core.
@@ -513,8 +345,7 @@ pub struct MariaDBAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct MariaDBAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -526,14 +357,8 @@ pub struct MariaDBAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        MariaDBAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<MariaDBAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -549,8 +374,7 @@ pub struct MariaDBAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct MariaDBAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -565,30 +389,18 @@ pub struct MariaDBBootstrapFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRef")]
     pub backup_ref: Option<MariaDBBootstrapFromBackupRef>,
     /// RestoreJob defines additional properties for the Job used to perform the Restore.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreJob"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreJob")]
     pub restore_job: Option<MariaDBBootstrapFromRestoreJob>,
     /// S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<MariaDBBootstrapFromS3>,
     /// StagingStorage defines the temporary storage used to keep external backups (i.e. S3) while they are being processed.
     /// It defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Restore Job is scheduled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stagingStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stagingStorage")]
     pub staging_storage: Option<MariaDBBootstrapFromStagingStorage>,
     /// TargetRecoveryTime is a RFC3339 (1970-01-01T00:00:00Z) date and time that defines the point in time recovery objective.
     /// It is used to determine the closest restoration source in time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetRecoveryTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRecoveryTime")]
     pub target_recovery_time: Option<String>,
     /// Volume is a Kubernetes Volume object that contains a backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -624,25 +436,13 @@ pub struct MariaDBBootstrapFromRestoreJob {
 pub struct MariaDBBootstrapFromRestoreJobAffinity {
     /// AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "antiAffinityEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MariaDBBootstrapFromRestoreJobAffinityNodeAffinity>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MariaDBBootstrapFromRestoreJobAffinityPodAntiAffinity>,
 }
 
@@ -675,8 +475,7 @@ pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSche
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -687,8 +486,7 @@ pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSche
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -715,8 +513,7 @@ pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSched
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -727,8 +524,7 @@ pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSched
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct MariaDBBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -776,8 +572,7 @@ pub struct MariaDBBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringS
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct MariaDBBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -806,8 +601,7 @@ pub struct MariaDBBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSc
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct MariaDBBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -857,11 +651,7 @@ pub struct MariaDBBootstrapFromS3 {
     #[serde(rename = "secretAccessKeySecretKeyRef")]
     pub secret_access_key_secret_key_ref: MariaDBBootstrapFromS3SecretAccessKeySecretKeyRef,
     /// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionTokenSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTokenSecretKeyRef")]
     pub session_token_secret_key_ref: Option<MariaDBBootstrapFromS3SessionTokenSecretKeyRef>,
     /// TLS provides the configuration required to establish TLS connections with S3.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -897,11 +687,7 @@ pub struct MariaDBBootstrapFromS3SessionTokenSecretKeyRef {
 pub struct MariaDBBootstrapFromS3Tls {
     /// CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
     /// By default, the system trust chain will be used, but you can use this field to add more CAs to the bundle.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecretKeyRef")]
     pub ca_secret_key_ref: Option<MariaDBBootstrapFromS3TlsCaSecretKeyRef>,
     /// Enabled is a flag to enable TLS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -922,11 +708,7 @@ pub struct MariaDBBootstrapFromS3TlsCaSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFromStagingStorage {
     /// PersistentVolumeClaim is a Kubernetes PVC specification.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<MariaDBBootstrapFromStagingStoragePersistentVolumeClaim>,
     /// Volume is a Kubernetes volume specification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -936,11 +718,7 @@ pub struct MariaDBBootstrapFromStagingStorage {
 /// PersistentVolumeClaim is a Kubernetes PVC specification.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFromStagingStoragePersistentVolumeClaim {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// VolumeResourceRequirements describes the storage resource requirements for a volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -950,11 +728,7 @@ pub struct MariaDBBootstrapFromStagingStoragePersistentVolumeClaim {
     /// label selector matches no objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<MariaDBBootstrapFromStagingStoragePersistentVolumeClaimSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -979,22 +753,12 @@ pub struct MariaDBBootstrapFromStagingStoragePersistentVolumeClaimResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFromStagingStoragePersistentVolumeClaimSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<MariaDBBootstrapFromStagingStoragePersistentVolumeClaimSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<MariaDBBootstrapFromStagingStoragePersistentVolumeClaimSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1028,13 +792,8 @@ pub struct MariaDBBootstrapFromStagingStorageVolume {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<MariaDBBootstrapFromStagingStorageVolumeNfs>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#persistentvolumeclaimvolumesource-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<MariaDBBootstrapFromStagingStorageVolumePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<MariaDBBootstrapFromStagingStorageVolumePersistentVolumeClaim>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#csivolumesource-v1-core.
@@ -1044,20 +803,11 @@ pub struct MariaDBBootstrapFromStagingStorageVolumeCsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<MariaDBBootstrapFromStagingStorageVolumeCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<MariaDBBootstrapFromStagingStorageVolumeCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -1109,11 +859,7 @@ pub struct MariaDBBootstrapFromVolume {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<MariaDBBootstrapFromVolumeNfs>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#persistentvolumeclaimvolumesource-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<MariaDBBootstrapFromVolumePersistentVolumeClaim>,
 }
 
@@ -1124,19 +870,11 @@ pub struct MariaDBBootstrapFromVolumeCsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<MariaDBBootstrapFromVolumeCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -1181,11 +919,7 @@ pub struct MariaDBBootstrapFromVolumePersistentVolumeClaim {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBConnection {
     /// HealthCheck to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<MariaDBConnectionHealthCheck>,
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1194,25 +928,13 @@ pub struct MariaDBConnection {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SecretName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SecretTemplate to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
     pub secret_template: Option<MariaDBConnectionSecretTemplate>,
     /// ServiceName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -1223,11 +945,7 @@ pub struct MariaDBConnectionHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// RetryInterval is the interval used to perform health check retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
@@ -1235,11 +953,7 @@ pub struct MariaDBConnectionHealthCheck {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBConnectionSecretTemplate {
     /// DatabaseKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseKey")]
     pub database_key: Option<String>,
     /// Format to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1254,21 +968,13 @@ pub struct MariaDBConnectionSecretTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBConnectionSecretTemplateMetadata>,
     /// PasswordKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// PortKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
     /// UsernameKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
@@ -1299,21 +1005,13 @@ pub struct MariaDBEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBEnvValueFrom {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#configmapkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDBEnvValueFromConfigMapKeyRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDBEnvValueFromFieldRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#secretkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDBEnvValueFromSecretKeyRef>,
 }
 
@@ -1328,11 +1026,7 @@ pub struct MariaDBEnvValueFromConfigMapKeyRef {
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
@@ -1350,11 +1044,7 @@ pub struct MariaDBEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBEnvFrom {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<MariaDBEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -1384,11 +1074,7 @@ pub struct MariaDBGalera {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agent: Option<MariaDBGaleraAgent>,
     /// AvailableWhenDonor indicates whether a donor node should be responding to queries. It defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableWhenDonor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableWhenDonor")]
     pub available_when_donor: Option<bool>,
     /// GaleraConfig defines storage options for the Galera configuration files.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1398,18 +1084,10 @@ pub struct MariaDBGalera {
     pub enabled: Option<bool>,
     /// GaleraLibPath is a path inside the MariaDB image to the wsrep provider plugin. It is defaulted if not provided.
     /// More info: https://galeracluster.com/library/documentation/mysql-wsrep-options.html#wsrep-provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "galeraLibPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "galeraLibPath")]
     pub galera_lib_path: Option<String>,
     /// InitContainer is an init container that runs in the MariaDB Pod and co-operates with mariadb-operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainer")]
     pub init_container: Option<MariaDBGaleraInitContainer>,
     /// InitJob defines a Job that co-operates with mariadb-operator by performing initialization tasks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initJob")]
@@ -1419,11 +1097,7 @@ pub struct MariaDBGalera {
     pub primary: Option<MariaDBGaleraPrimary>,
     /// ProviderOptions is map of Galera configuration parameters.
     /// More info: https://mariadb.com/kb/en/galera-cluster-system-variables/#wsrep_provider_options.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerOptions")]
     pub provider_options: Option<BTreeMap<String, String>>,
     /// GaleraRecovery is the recovery process performed by the operator whenever the Galera cluster is not healthy.
     /// More info: https://galeracluster.com/library/documentation/crash-recovery.html.
@@ -1431,11 +1105,7 @@ pub struct MariaDBGalera {
     pub recovery: Option<MariaDBGaleraRecovery>,
     /// ReplicaThreads is the number of replica threads used to apply Galera write sets in parallel.
     /// More info: https://mariadb.com/kb/en/galera-cluster-system-variables/#wsrep_slave_threads.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaThreads")]
     pub replica_threads: Option<i64>,
     /// SST is the Snapshot State Transfer used when new Pods join the cluster.
     /// More info: https://galeracluster.com/library/documentation/sst.html.
@@ -1462,62 +1132,34 @@ pub struct MariaDBGaleraAgent {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<MariaDBGaleraAgentEnvFrom>>,
     /// GracefulShutdownTimeout is the time we give to the agent container in order to gracefully terminate in-flight requests.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracefulShutdownTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Image name to be used by the MariaDB instances. The supported format is `<image>:<tag>`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBGaleraAgentImagePullPolicy>,
     /// KubernetesAuth to be used by the agent container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuth")]
     pub kubernetes_auth: Option<MariaDBGaleraAgentKubernetesAuth>,
     /// LivenessProbe to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<MariaDBGaleraAgentLivenessProbe>,
     /// Port where the agent will be listening for connections.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// ReadinessProbe to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<MariaDBGaleraAgentReadinessProbe>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBGaleraAgentResources>,
     /// SecurityContext holds security configuration that will be applied to a container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MariaDBGaleraAgentSecurityContext>,
     /// VolumeMounts to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<MariaDBGaleraAgentVolumeMounts>>,
 }
 
@@ -1528,11 +1170,7 @@ pub struct MariaDBGaleraAgentBasicAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// PasswordSecretKeyRef to be used for basic authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: Option<MariaDBGaleraAgentBasicAuthPasswordSecretKeyRef>,
     /// Username to be used for basic authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1566,21 +1204,13 @@ pub struct MariaDBGaleraAgentEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraAgentEnvValueFrom {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#configmapkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDBGaleraAgentEnvValueFromConfigMapKeyRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDBGaleraAgentEnvValueFromFieldRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#secretkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDBGaleraAgentEnvValueFromSecretKeyRef>,
 }
 
@@ -1595,11 +1225,7 @@ pub struct MariaDBGaleraAgentEnvValueFromConfigMapKeyRef {
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraAgentEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
@@ -1617,11 +1243,7 @@ pub struct MariaDBGaleraAgentEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraAgentEnvFrom {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<MariaDBGaleraAgentEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -1657,11 +1279,7 @@ pub enum MariaDBGaleraAgentImagePullPolicy {
 pub struct MariaDBGaleraAgentKubernetesAuth {
     /// AuthDelegatorRoleName is the name of the ClusterRoleBinding that is associated with the "system:auth-delegator" ClusterRole.
     /// It is necessary for creating TokenReview objects in order for the agent to validate the service account token.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authDelegatorRoleName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authDelegatorRoleName")]
     pub auth_delegator_role_name: Option<String>,
     /// Enabled is a flag to enable KubernetesAuth
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1674,38 +1292,18 @@ pub struct MariaDBGaleraAgentLivenessProbe {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDBGaleraAgentLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDBGaleraAgentLivenessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1735,38 +1333,18 @@ pub struct MariaDBGaleraAgentReadinessProbe {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDBGaleraAgentReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDBGaleraAgentReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1804,34 +1382,18 @@ pub struct MariaDBGaleraAgentResources {
 /// SecurityContext holds security configuration that will be applied to a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraAgentSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// Adds and removes POSIX capabilities from running containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<MariaDBGaleraAgentSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
@@ -1866,29 +1428,17 @@ pub struct MariaDBGaleraAgentVolumeMounts {
 pub struct MariaDBGaleraConfig {
     /// ReuseStorageVolume indicates that storage volume used by MariaDB should be reused to store the Galera configuration files.
     /// It defaults to false, which implies that a dedicated volume for the Galera configuration files is provisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reuseStorageVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reuseStorageVolume")]
     pub reuse_storage_volume: Option<bool>,
     /// VolumeClaimTemplate is a template for the PVC that will contain the Galera configuration files shared between the InitContainer, Agent and MariaDB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<MariaDBGaleraConfigVolumeClaimTemplate>,
 }
 
 /// VolumeClaimTemplate is a template for the PVC that will contain the Galera configuration files shared between the InitContainer, Agent and MariaDB.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraConfigVolumeClaimTemplate {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// Metadata to be added to the PVC metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1901,11 +1451,7 @@ pub struct MariaDBGaleraConfigVolumeClaimTemplate {
     /// label selector matches no objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<MariaDBGaleraConfigVolumeClaimTemplateSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -1941,21 +1487,12 @@ pub struct MariaDBGaleraConfigVolumeClaimTemplateResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraConfigVolumeClaimTemplateSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<MariaDBGaleraConfigVolumeClaimTemplateSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<MariaDBGaleraConfigVolumeClaimTemplateSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1994,42 +1531,22 @@ pub struct MariaDBGaleraInitContainer {
     /// Image name to be used by the MariaDB instances. The supported format is `<image>:<tag>`.
     pub image: String,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBGaleraInitContainerImagePullPolicy>,
     /// LivenessProbe to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<MariaDBGaleraInitContainerLivenessProbe>,
     /// ReadinessProbe to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<MariaDBGaleraInitContainerReadinessProbe>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBGaleraInitContainerResources>,
     /// SecurityContext holds security configuration that will be applied to a container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MariaDBGaleraInitContainerSecurityContext>,
     /// VolumeMounts to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<MariaDBGaleraInitContainerVolumeMounts>>,
 }
 
@@ -2049,21 +1566,13 @@ pub struct MariaDBGaleraInitContainerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraInitContainerEnvValueFrom {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#configmapkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDBGaleraInitContainerEnvValueFromConfigMapKeyRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDBGaleraInitContainerEnvValueFromFieldRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#secretkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDBGaleraInitContainerEnvValueFromSecretKeyRef>,
 }
 
@@ -2078,11 +1587,7 @@ pub struct MariaDBGaleraInitContainerEnvValueFromConfigMapKeyRef {
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraInitContainerEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
@@ -2100,11 +1605,7 @@ pub struct MariaDBGaleraInitContainerEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraInitContainerEnvFrom {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<MariaDBGaleraInitContainerEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -2141,38 +1642,18 @@ pub struct MariaDBGaleraInitContainerLivenessProbe {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDBGaleraInitContainerLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDBGaleraInitContainerLivenessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2202,38 +1683,18 @@ pub struct MariaDBGaleraInitContainerReadinessProbe {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDBGaleraInitContainerReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDBGaleraInitContainerReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2271,34 +1732,18 @@ pub struct MariaDBGaleraInitContainerResources {
 /// SecurityContext holds security configuration that will be applied to a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraInitContainerSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// Adds and removes POSIX capabilities from running containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<MariaDBGaleraInitContainerSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
@@ -2365,11 +1810,7 @@ pub struct MariaDBGaleraInitJobResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraPrimary {
     /// AutomaticFailover indicates whether the operator should automatically update PodIndex to perform an automatic primary failover.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automaticFailover"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticFailover")]
     pub automatic_failover: Option<bool>,
     /// PodIndex is the StatefulSet index of the primary node. The user may change this field to perform a manual switchover.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndex")]
@@ -2382,40 +1823,20 @@ pub struct MariaDBGaleraPrimary {
 pub struct MariaDBGaleraRecovery {
     /// ClusterBootstrapTimeout is the time limit for bootstrapping a cluster.
     /// Once this timeout is reached, the Galera recovery state is reset and a new cluster bootstrap will be attempted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterBootstrapTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterBootstrapTimeout")]
     pub cluster_bootstrap_timeout: Option<String>,
     /// ClusterDownscaleTimeout represents the maximum duration for downscaling the cluster's StatefulSet during the recovery process.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterDownscaleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDownscaleTimeout")]
     pub cluster_downscale_timeout: Option<String>,
     /// ClusterHealthyTimeout represents the duration at which a Galera cluster, that consistently failed health checks,
     /// is considered unhealthy, and consequently the Galera recovery process will be initiated by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterHealthyTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterHealthyTimeout")]
     pub cluster_healthy_timeout: Option<String>,
     /// ClusterMonitorInterval represents the interval used to monitor the Galera cluster health.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterMonitorInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterMonitorInterval")]
     pub cluster_monitor_interval: Option<String>,
     /// ClusterUpscaleTimeout represents the maximum duration for upscaling the cluster's StatefulSet during the recovery process.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterUpscaleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterUpscaleTimeout")]
     pub cluster_upscale_timeout: Option<String>,
     /// Enabled is a flag to enable GaleraRecovery.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2423,11 +1844,7 @@ pub struct MariaDBGaleraRecovery {
     /// ForceClusterBootstrapInPod allows you to manually initiate the bootstrap process in a specific Pod.
     /// IMPORTANT: Use this option only in exceptional circumstances. Not selecting the Pod with the highest sequence number may result in data loss.
     /// IMPORTANT: Ensure you unset this field after completing the bootstrap to allow the operator to choose the appropriate Pod to bootstrap from in an event of cluster recovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forceClusterBootstrapInPod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceClusterBootstrapInPod")]
     pub force_cluster_bootstrap_in_pod: Option<String>,
     /// Job defines a Job that co-operates with mariadb-operator by performing the Galera cluster recovery .
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2436,25 +1853,13 @@ pub struct MariaDBGaleraRecovery {
     /// If Galera consistently reports less replicas than this value for the given 'ClusterHealthyTimeout' interval, a cluster recovery is iniated.
     /// It defaults to '1' replica, and it is highly recommendeded to keep this value at '1' in most cases.
     /// If set to more than one replica, the cluster recovery process may restart the healthy replicas as well.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minClusterSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minClusterSize")]
     pub min_cluster_size: Option<IntOrString>,
     /// PodRecoveryTimeout is the time limit for recevorying the sequence of a Pod during the cluster recovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podRecoveryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podRecoveryTimeout")]
     pub pod_recovery_timeout: Option<String>,
     /// PodSyncTimeout is the time limit for a Pod to join the cluster after having performed a cluster bootstrap during the cluster recovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSyncTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSyncTimeout")]
     pub pod_sync_timeout: Option<String>,
 }
 
@@ -2465,11 +1870,7 @@ pub struct MariaDBGaleraRecoveryJob {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBGaleraRecoveryJobMetadata>,
     /// PodAffinity indicates whether the recovery Jobs should run in the same Node as the MariaDB Pods. It defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<bool>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2550,11 +1951,7 @@ pub struct MariaDBInitContainers {
     /// Image name to be used by the container. The supported format is `<image>:<tag>`.
     pub image: String,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBInitContainersImagePullPolicy>,
     /// Name to be given to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2563,11 +1960,7 @@ pub struct MariaDBInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBInitContainersResources>,
     /// VolumeMounts to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<MariaDBInitContainersVolumeMounts>>,
 }
 
@@ -2587,21 +1980,13 @@ pub struct MariaDBInitContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBInitContainersEnvValueFrom {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#configmapkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDBInitContainersEnvValueFromConfigMapKeyRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDBInitContainersEnvValueFromFieldRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#secretkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDBInitContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -2616,11 +2001,7 @@ pub struct MariaDBInitContainersEnvValueFromConfigMapKeyRef {
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBInitContainersEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
@@ -2672,38 +2053,18 @@ pub struct MariaDBLivenessProbe {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDBLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDBLivenessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2747,29 +2108,17 @@ pub struct MariaDBMaxScale {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// GuiKubernetesService define a template for a Kubernetes Service object to connect to MaxScale's GUI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "guiKubernetesService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "guiKubernetesService")]
     pub gui_kubernetes_service: Option<MariaDBMaxScaleGuiKubernetesService>,
     /// Image name to be used by the MaxScale instances. The supported format is `<image>:<tag>`.
     /// Only MariaDB official images are supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBMaxScaleImagePullPolicy>,
     /// KubernetesService defines a template for a Kubernetes Service object to connect to MaxScale.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesService")]
     pub kubernetes_service: Option<MariaDBMaxScaleKubernetesService>,
     /// Metrics configures metrics and how to scrape them.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2778,31 +2127,19 @@ pub struct MariaDBMaxScale {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<MariaDBMaxScaleMonitor>,
     /// PodDisruptionBudget defines the budget for replica availability.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podDisruptionBudget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<MariaDBMaxScalePodDisruptionBudget>,
     /// Replicas indicates the number of desired instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// RequeueInterval is used to perform requeue reconciliations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requeueInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueInterval")]
     pub requeue_interval: Option<String>,
     /// Services define how the traffic is forwarded to the MariaDB servers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<MariaDBMaxScaleServices>>,
     /// UpdateStrategy defines the update strategy for the StatefulSet object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<MariaDBMaxScaleUpdateStrategy>,
 }
 
@@ -2810,11 +2147,7 @@ pub struct MariaDBMaxScale {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleAdmin {
     /// GuiEnabled indicates whether the admin GUI should be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "guiEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "guiEnabled")]
     pub gui_enabled: Option<bool>,
     /// Port where the admin REST API and GUI will be exposed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2825,49 +2158,25 @@ pub struct MariaDBMaxScaleAdmin {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleAuth {
     /// AdminPasswordSecretKeyRef is Secret key reference to the admin password to call the admin REST API. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPasswordSecretKeyRef")]
     pub admin_password_secret_key_ref: Option<MariaDBMaxScaleAuthAdminPasswordSecretKeyRef>,
     /// AdminUsername is an admin username to call the admin REST API. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
     /// ClientMaxConnections defines the maximum number of connections that the client can establish.
     /// If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
     /// It defaults to 30 times the number of MaxScale replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientMaxConnections")]
     pub client_max_connections: Option<i32>,
     /// ClientPasswordSecretKeyRef is Secret key reference to the password to connect to MaxScale. It is defaulted if not provided.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPasswordSecretKeyRef")]
     pub client_password_secret_key_ref: Option<MariaDBMaxScaleAuthClientPasswordSecretKeyRef>,
     /// ClientUsername is the user to connect to MaxScale. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientUsername")]
     pub client_username: Option<String>,
     /// DeleteDefaultAdmin determines whether the default admin user should be deleted after the initial configuration. If not provided, it defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deleteDefaultAdmin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteDefaultAdmin")]
     pub delete_default_admin: Option<bool>,
     /// Generate  defies whether the operator should generate users and grants for MaxScale to work.
     /// It only supports MariaDBs specified via spec.mariaDbRef.
@@ -2875,90 +2184,46 @@ pub struct MariaDBMaxScaleAuth {
     pub generate: Option<bool>,
     /// MetricsPasswordSecretKeyRef is Secret key reference to the metrics password to call the admib REST API. It is defaulted if metrics are enabled.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPasswordSecretKeyRef")]
     pub metrics_password_secret_key_ref: Option<MariaDBMaxScaleAuthMetricsPasswordSecretKeyRef>,
     /// MetricsUsername is an metrics username to call the REST API. It is defaulted if metrics are enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsUsername")]
     pub metrics_username: Option<String>,
     /// MonitorMaxConnections defines the maximum number of connections that the monitor can establish.
     /// If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
     /// It defaults to 30 times the number of MaxScale replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitorMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorMaxConnections")]
     pub monitor_max_connections: Option<i32>,
     /// MonitorPasswordSecretKeyRef is Secret key reference to the password used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitorPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorPasswordSecretKeyRef")]
     pub monitor_password_secret_key_ref: Option<MariaDBMaxScaleAuthMonitorPasswordSecretKeyRef>,
     /// MonitorUsername is the user used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitorUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorUsername")]
     pub monitor_username: Option<String>,
     /// ServerMaxConnections defines the maximum number of connections that the server can establish.
     /// If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
     /// It defaults to 30 times the number of MaxScale replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverMaxConnections")]
     pub server_max_connections: Option<i32>,
     /// ServerPasswordSecretKeyRef is Secret key reference to the password used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverPasswordSecretKeyRef")]
     pub server_password_secret_key_ref: Option<MariaDBMaxScaleAuthServerPasswordSecretKeyRef>,
     /// ServerUsername is the user used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverUsername")]
     pub server_username: Option<String>,
     /// SyncMaxConnections defines the maximum number of connections that the sync can establish.
     /// If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
     /// It defaults to 30 times the number of MaxScale replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncMaxConnections")]
     pub sync_max_connections: Option<i32>,
     /// SyncPasswordSecretKeyRef is Secret key reference to the password used by MaxScale config to connect to MariaDB server. It is defaulted when HA is enabled.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncPasswordSecretKeyRef")]
     pub sync_password_secret_key_ref: Option<MariaDBMaxScaleAuthSyncPasswordSecretKeyRef>,
     /// MonitoSyncUsernamerUsername is the user used by MaxScale config sync to connect to MariaDB server. It is defaulted when HA is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncUsername")]
     pub sync_username: Option<String>,
 }
 
@@ -3045,11 +2310,7 @@ pub struct MariaDBMaxScaleConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<MariaDBMaxScaleConfigSync>,
     /// VolumeClaimTemplate provides a template to define the PVCs for storing MaxScale runtime configuration files. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<MariaDBMaxScaleConfigVolumeClaimTemplate>,
 }
 
@@ -3070,11 +2331,7 @@ pub struct MariaDBMaxScaleConfigSync {
 /// VolumeClaimTemplate provides a template to define the PVCs for storing MaxScale runtime configuration files. It is defaulted if not provided.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleConfigVolumeClaimTemplate {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// Metadata to be added to the PVC metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3087,11 +2344,7 @@ pub struct MariaDBMaxScaleConfigVolumeClaimTemplate {
     /// label selector matches no objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<MariaDBMaxScaleConfigVolumeClaimTemplateSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -3127,21 +2380,12 @@ pub struct MariaDBMaxScaleConfigVolumeClaimTemplateResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleConfigVolumeClaimTemplateSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<MariaDBMaxScaleConfigVolumeClaimTemplateSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<MariaDBMaxScaleConfigVolumeClaimTemplateSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -3166,11 +2410,7 @@ pub struct MariaDBMaxScaleConfigVolumeClaimTemplateSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleConnection {
     /// HealthCheck to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<MariaDBMaxScaleConnectionHealthCheck>,
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3179,25 +2419,13 @@ pub struct MariaDBMaxScaleConnection {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SecretName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SecretTemplate to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
     pub secret_template: Option<MariaDBMaxScaleConnectionSecretTemplate>,
     /// ServiceName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -3208,11 +2436,7 @@ pub struct MariaDBMaxScaleConnectionHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// RetryInterval is the interval used to perform health check retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
@@ -3220,11 +2444,7 @@ pub struct MariaDBMaxScaleConnectionHealthCheck {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleConnectionSecretTemplate {
     /// DatabaseKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseKey")]
     pub database_key: Option<String>,
     /// Format to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3239,21 +2459,13 @@ pub struct MariaDBMaxScaleConnectionSecretTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBMaxScaleConnectionSecretTemplateMetadata>,
     /// PasswordKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// PortKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
     /// UsernameKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
@@ -3272,42 +2484,22 @@ pub struct MariaDBMaxScaleConnectionSecretTemplateMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleGuiKubernetesService {
     /// AllocateLoadBalancerNodePorts Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// ExternalTrafficPolicy Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// LoadBalancerIP Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// LoadBalancerSourceRanges Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Metadata to be added to the Service metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBMaxScaleGuiKubernetesServiceMetadata>,
     /// SessionAffinity Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// Type is the Service type. One of `ClusterIP`, `NodePort` or `LoadBalancer`. If not defined, it defaults to `ClusterIP`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -3347,42 +2539,22 @@ pub enum MariaDBMaxScaleImagePullPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleKubernetesService {
     /// AllocateLoadBalancerNodePorts Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// ExternalTrafficPolicy Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// LoadBalancerIP Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// LoadBalancerSourceRanges Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Metadata to be added to the Service metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBMaxScaleKubernetesServiceMetadata>,
     /// SessionAffinity Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// Type is the Service type. One of `ClusterIP`, `NodePort` or `LoadBalancer`. If not defined, it defaults to `ClusterIP`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -3419,11 +2591,7 @@ pub struct MariaDBMaxScaleMetrics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exporter: Option<MariaDBMaxScaleMetricsExporter>,
     /// ServiceMonitor defines the ServiceMonior object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceMonitor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitor")]
     pub service_monitor: Option<MariaDBMaxScaleMetricsServiceMonitor>,
 }
 
@@ -3438,59 +2606,31 @@ pub struct MariaDBMaxScaleMetricsExporter {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBMaxScaleMetricsExporterImagePullPolicy>,
     /// ImagePullSecrets is the list of pull Secrets to be used to pull the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<MariaDBMaxScaleMetricsExporterImagePullSecrets>>,
     /// NodeSelector to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodMetadata defines extra metadata for the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<MariaDBMaxScaleMetricsExporterPodMetadata>,
     /// SecurityContext holds pod-level security attributes and common container settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<MariaDBMaxScaleMetricsExporterPodSecurityContext>,
     /// Port where the exporter will be listening for connections.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// PriorityClassName to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBMaxScaleMetricsExporterResources>,
     /// SecurityContext holds container-level security attributes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MariaDBMaxScaleMetricsExporterSecurityContext>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3502,25 +2642,13 @@ pub struct MariaDBMaxScaleMetricsExporter {
 pub struct MariaDBMaxScaleMetricsExporterAffinity {
     /// AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "antiAffinityEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MariaDBMaxScaleMetricsExporterAffinityNodeAffinity>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MariaDBMaxScaleMetricsExporterAffinityPodAntiAffinity>,
 }
 
@@ -3553,8 +2681,7 @@ pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSche
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -3565,8 +2692,7 @@ pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSche
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -3593,8 +2719,7 @@ pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSched
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -3605,8 +2730,7 @@ pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSched
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct MariaDBMaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -3654,8 +2778,7 @@ pub struct MariaDBMaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringS
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct MariaDBMaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -3684,8 +2807,7 @@ pub struct MariaDBMaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSc
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct MariaDBMaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -3723,56 +2845,28 @@ pub struct MariaDBMaxScaleMetricsExporterPodMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleMetricsExporterPodSecurityContext {
     /// AppArmorProfile defines a pod or container's AppArmor settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<MariaDBMaxScaleMetricsExporterPodSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     /// PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
     /// when volume is mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// SELinuxOptions are the labels to be applied to the container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<MariaDBMaxScaleMetricsExporterPodSecurityContextSeLinuxOptions>,
     /// SeccompProfile defines a pod/container's seccomp profile settings.
     /// Only one profile source may be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<MariaDBMaxScaleMetricsExporterPodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
 }
 
@@ -3783,11 +2877,7 @@ pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -3823,15 +2913,11 @@ pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3853,34 +2939,18 @@ pub struct MariaDBMaxScaleMetricsExporterResources {
 /// SecurityContext holds container-level security attributes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleMetricsExporterSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// Adds and removes POSIX capabilities from running containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<MariaDBMaxScaleMetricsExporterSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
@@ -3919,11 +2989,7 @@ pub struct MariaDBMaxScaleMetricsExporterTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -3941,18 +3007,10 @@ pub struct MariaDBMaxScaleMetricsServiceMonitor {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobLabel")]
     pub job_label: Option<String>,
     /// PrometheusRelease is the release label to add to the ServiceMonitor object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prometheusRelease"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusRelease")]
     pub prometheus_release: Option<String>,
     /// ScrapeTimeout defines the timeout for scraping metrics.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
 }
 
@@ -3960,11 +3018,7 @@ pub struct MariaDBMaxScaleMetricsServiceMonitor {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleMonitor {
     /// CooperativeMonitoring enables coordination between multiple MaxScale instances running monitors. It is defaulted when HA is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cooperativeMonitoring"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cooperativeMonitoring")]
     pub cooperative_monitoring: Option<MariaDBMaxScaleMonitorCooperativeMonitoring>,
     /// Interval used to monitor MariaDB servers. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4002,18 +3056,10 @@ pub enum MariaDBMaxScaleMonitorCooperativeMonitoring {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScalePodDisruptionBudget {
     /// MaxUnavailable defines the number of maximum unavailable Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// MinAvailable defines the number of minimum available Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
 }
 
@@ -4075,11 +3121,7 @@ pub enum MariaDBMaxScaleServicesRouter {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleUpdateStrategy {
     /// RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<MariaDBMaxScaleUpdateStrategyRollingUpdate>,
     /// Type indicates the type of the StatefulSetUpdateStrategy.
     /// Default is RollingUpdate.
@@ -4097,11 +3139,7 @@ pub struct MariaDBMaxScaleUpdateStrategyRollingUpdate {
     /// MaxUnavailableStatefulSet feature. The field applies to all pods in the range 0 to
     /// Replicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it
     /// will be counted towards MaxUnavailable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// Partition indicates the ordinal at which the StatefulSet should be partitioned
     /// for updates. During a rolling update, all pods from ordinal Replicas-1 to
@@ -4132,18 +3170,10 @@ pub struct MariaDBMetrics {
     pub exporter: Option<MariaDBMetricsExporter>,
     /// PasswordSecretKeyRef is a reference to the password of the monitoring user used by the exporter.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: Option<MariaDBMetricsPasswordSecretKeyRef>,
     /// ServiceMonitor defines the ServiceMonior object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceMonitor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitor")]
     pub service_monitor: Option<MariaDBMetricsServiceMonitor>,
     /// Username is the username of the monitoring user used by the exporter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4161,59 +3191,31 @@ pub struct MariaDBMetricsExporter {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBMetricsExporterImagePullPolicy>,
     /// ImagePullSecrets is the list of pull Secrets to be used to pull the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<MariaDBMetricsExporterImagePullSecrets>>,
     /// NodeSelector to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodMetadata defines extra metadata for the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<MariaDBMetricsExporterPodMetadata>,
     /// SecurityContext holds pod-level security attributes and common container settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<MariaDBMetricsExporterPodSecurityContext>,
     /// Port where the exporter will be listening for connections.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// PriorityClassName to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBMetricsExporterResources>,
     /// SecurityContext holds container-level security attributes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MariaDBMetricsExporterSecurityContext>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4225,25 +3227,13 @@ pub struct MariaDBMetricsExporter {
 pub struct MariaDBMetricsExporterAffinity {
     /// AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "antiAffinityEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MariaDBMetricsExporterAffinityNodeAffinity>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MariaDBMetricsExporterAffinityPodAntiAffinity>,
 }
 
@@ -4276,8 +3266,7 @@ pub struct MariaDBMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIg
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct MariaDBMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -4288,8 +3277,7 @@ pub struct MariaDBMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIg
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct MariaDBMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -4316,8 +3304,7 @@ pub struct MariaDBMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgn
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct MariaDBMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -4328,8 +3315,7 @@ pub struct MariaDBMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgn
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct MariaDBMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -4377,8 +3363,7 @@ pub struct MariaDBMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulin
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct MariaDBMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -4407,8 +3392,7 @@ pub struct MariaDBMetricsExporterAffinityPodAntiAffinityRequiredDuringScheduling
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct MariaDBMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -4446,56 +3430,28 @@ pub struct MariaDBMetricsExporterPodMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMetricsExporterPodSecurityContext {
     /// AppArmorProfile defines a pod or container's AppArmor settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<MariaDBMetricsExporterPodSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     /// PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
     /// when volume is mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// SELinuxOptions are the labels to be applied to the container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<MariaDBMetricsExporterPodSecurityContextSeLinuxOptions>,
     /// SeccompProfile defines a pod/container's seccomp profile settings.
     /// Only one profile source may be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<MariaDBMetricsExporterPodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
 }
 
@@ -4506,11 +3462,7 @@ pub struct MariaDBMetricsExporterPodSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -4546,15 +3498,11 @@ pub struct MariaDBMetricsExporterPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -4576,34 +3524,18 @@ pub struct MariaDBMetricsExporterResources {
 /// SecurityContext holds container-level security attributes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMetricsExporterSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// Adds and removes POSIX capabilities from running containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<MariaDBMetricsExporterSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
@@ -4642,11 +3574,7 @@ pub struct MariaDBMetricsExporterTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -4676,18 +3604,10 @@ pub struct MariaDBMetricsServiceMonitor {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobLabel")]
     pub job_label: Option<String>,
     /// PrometheusRelease is the release label to add to the ServiceMonitor object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prometheusRelease"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusRelease")]
     pub prometheus_release: Option<String>,
     /// ScrapeTimeout defines the timeout for scraping metrics.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
 }
 
@@ -4715,19 +3635,11 @@ pub struct MariaDBPasswordHashSecretKeyRef {
 pub struct MariaDBPasswordPlugin {
     /// PluginArgSecretKeyRef is a reference to the arguments to be provided to the authentication plugin for the User.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the authentication plugin arguments.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pluginArgSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginArgSecretKeyRef")]
     pub plugin_arg_secret_key_ref: Option<MariaDBPasswordPluginPluginArgSecretKeyRef>,
     /// PluginNameSecretKeyRef is a reference to the authentication plugin to be used by the User.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the authentication plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pluginNameSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginNameSecretKeyRef")]
     pub plugin_name_secret_key_ref: Option<MariaDBPasswordPluginPluginNameSecretKeyRef>,
 }
 
@@ -4765,18 +3677,10 @@ pub struct MariaDBPasswordSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBPodDisruptionBudget {
     /// MaxUnavailable defines the number of maximum unavailable Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// MinAvailable defines the number of minimum available Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
 }
 
@@ -4795,56 +3699,28 @@ pub struct MariaDBPodMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBPodSecurityContext {
     /// AppArmorProfile defines a pod or container's AppArmor settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<MariaDBPodSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     /// PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
     /// when volume is mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// SELinuxOptions are the labels to be applied to the container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<MariaDBPodSecurityContextSeLinuxOptions>,
     /// SeccompProfile defines a pod/container's seccomp profile settings.
     /// Only one profile source may be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<MariaDBPodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
 }
 
@@ -4855,11 +3731,7 @@ pub struct MariaDBPodSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -4895,15 +3767,11 @@ pub struct MariaDBPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -4917,11 +3785,7 @@ pub struct MariaDBPodSecurityContextSeccompProfile {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBPrimaryConnection {
     /// HealthCheck to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<MariaDBPrimaryConnectionHealthCheck>,
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4930,25 +3794,13 @@ pub struct MariaDBPrimaryConnection {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SecretName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SecretTemplate to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
     pub secret_template: Option<MariaDBPrimaryConnectionSecretTemplate>,
     /// ServiceName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -4959,11 +3811,7 @@ pub struct MariaDBPrimaryConnectionHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// RetryInterval is the interval used to perform health check retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
@@ -4971,11 +3819,7 @@ pub struct MariaDBPrimaryConnectionHealthCheck {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBPrimaryConnectionSecretTemplate {
     /// DatabaseKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseKey")]
     pub database_key: Option<String>,
     /// Format to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4990,21 +3834,13 @@ pub struct MariaDBPrimaryConnectionSecretTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBPrimaryConnectionSecretTemplateMetadata>,
     /// PasswordKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// PortKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
     /// UsernameKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
@@ -5024,42 +3860,22 @@ pub struct MariaDBPrimaryConnectionSecretTemplateMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBPrimaryService {
     /// AllocateLoadBalancerNodePorts Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// ExternalTrafficPolicy Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// LoadBalancerIP Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// LoadBalancerSourceRanges Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Metadata to be added to the Service metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBPrimaryServiceMetadata>,
     /// SessionAffinity Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// Type is the Service type. One of `ClusterIP`, `NodePort` or `LoadBalancer`. If not defined, it defaults to `ClusterIP`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -5093,38 +3909,18 @@ pub struct MariaDBReadinessProbe {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDBReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDBReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5159,11 +3955,7 @@ pub struct MariaDBReplication {
     pub primary: Option<MariaDBReplicationPrimary>,
     /// ProbesEnabled indicates to use replication specific liveness and readiness probes.
     /// This probes check that the primary can receive queries and that the replica has the replication thread running.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "probesEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probesEnabled")]
     pub probes_enabled: Option<bool>,
     /// ReplicaReplication is the replication configuration for the replica nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5171,11 +3963,7 @@ pub struct MariaDBReplication {
     /// SyncBinlog indicates whether the binary log should be synchronized to the disk after every event.
     /// It trades off performance for consistency.
     /// See: https://mariadb.com/kb/en/replication-and-binary-log-system-variables/#sync_binlog.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncBinlog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncBinlog")]
     pub sync_binlog: Option<bool>,
 }
 
@@ -5183,11 +3971,7 @@ pub struct MariaDBReplication {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBReplicationPrimary {
     /// AutomaticFailover indicates whether the operator should automatically update PodIndex to perform an automatic primary failover.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automaticFailover"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticFailover")]
     pub automatic_failover: Option<bool>,
     /// PodIndex is the StatefulSet index of the primary node. The user may change this field to perform a manual switchover.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndex")]
@@ -5198,37 +3982,21 @@ pub struct MariaDBReplicationPrimary {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBReplicationReplica {
     /// ConnectionRetries to be used when the replica connects to the primary.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionRetries")]
     pub connection_retries: Option<i64>,
     /// ConnectionTimeout to be used when the replica connects to the primary.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTimeout")]
     pub connection_timeout: Option<String>,
     /// Gtid indicates which Global Transaction ID should be used when connecting a replica to the master.
     /// See: https://mariadb.com/kb/en/gtid/#using-current_pos-vs-slave_pos.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gtid: Option<MariaDBReplicationReplicaGtid>,
     /// ReplPasswordSecretKeyRef provides a reference to the Secret to use as password for the replication user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replPasswordSecretKeyRef")]
     pub repl_password_secret_key_ref: Option<MariaDBReplicationReplicaReplPasswordSecretKeyRef>,
     /// SyncTimeout defines the timeout for a replica to be synced with the primary when performing a primary switchover.
     /// If the timeout is reached, the replica GTID will be reset and the switchover will continue.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncTimeout")]
     pub sync_timeout: Option<String>,
     /// WaitPoint defines whether the transaction should wait for ACK before committing to the storage engine.
     /// More info: https://mariadb.com/kb/en/semisynchronous-replication/#rpl_semi_sync_master_wait_point.
@@ -5289,11 +4057,7 @@ pub struct MariaDBRootPasswordSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBSecondaryConnection {
     /// HealthCheck to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<MariaDBSecondaryConnectionHealthCheck>,
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5302,25 +4066,13 @@ pub struct MariaDBSecondaryConnection {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SecretName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SecretTemplate to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
     pub secret_template: Option<MariaDBSecondaryConnectionSecretTemplate>,
     /// ServiceName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -5331,11 +4083,7 @@ pub struct MariaDBSecondaryConnectionHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// RetryInterval is the interval used to perform health check retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
@@ -5343,11 +4091,7 @@ pub struct MariaDBSecondaryConnectionHealthCheck {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBSecondaryConnectionSecretTemplate {
     /// DatabaseKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseKey")]
     pub database_key: Option<String>,
     /// Format to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5362,21 +4106,13 @@ pub struct MariaDBSecondaryConnectionSecretTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBSecondaryConnectionSecretTemplateMetadata>,
     /// PasswordKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// PortKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
     /// UsernameKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
@@ -5396,42 +4132,22 @@ pub struct MariaDBSecondaryConnectionSecretTemplateMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBSecondaryService {
     /// AllocateLoadBalancerNodePorts Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// ExternalTrafficPolicy Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// LoadBalancerIP Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// LoadBalancerSourceRanges Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Metadata to be added to the Service metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBSecondaryServiceMetadata>,
     /// SessionAffinity Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// Type is the Service type. One of `ClusterIP`, `NodePort` or `LoadBalancer`. If not defined, it defaults to `ClusterIP`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -5462,34 +4178,18 @@ pub enum MariaDBSecondaryServiceType {
 /// SecurityContext holds security configuration that will be applied to a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// Adds and removes POSIX capabilities from running containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<MariaDBSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
@@ -5511,42 +4211,22 @@ pub struct MariaDBSecurityContextCapabilities {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBService {
     /// AllocateLoadBalancerNodePorts Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// ExternalTrafficPolicy Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// LoadBalancerIP Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// LoadBalancerSourceRanges Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Metadata to be added to the Service metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBServiceMetadata>,
     /// SessionAffinity Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// Type is the Service type. One of `ClusterIP`, `NodePort` or `LoadBalancer`. If not defined, it defaults to `ClusterIP`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -5596,11 +4276,7 @@ pub struct MariaDBSidecarContainers {
     /// Image name to be used by the container. The supported format is `<image>:<tag>`.
     pub image: String,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MariaDBSidecarContainersImagePullPolicy>,
     /// Name to be given to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5609,11 +4285,7 @@ pub struct MariaDBSidecarContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBSidecarContainersResources>,
     /// VolumeMounts to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<MariaDBSidecarContainersVolumeMounts>>,
 }
 
@@ -5633,21 +4305,13 @@ pub struct MariaDBSidecarContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBSidecarContainersEnvValueFrom {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#configmapkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDBSidecarContainersEnvValueFromConfigMapKeyRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDBSidecarContainersEnvValueFromFieldRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#secretkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDBSidecarContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -5662,11 +4326,7 @@ pub struct MariaDBSidecarContainersEnvValueFromConfigMapKeyRef {
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBSidecarContainersEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
@@ -5720,48 +4380,28 @@ pub struct MariaDBStorage {
     pub ephemeral: Option<bool>,
     /// ResizeInUseVolumes indicates whether the PVCs can be resized. The 'StorageClassName' used should have 'allowVolumeExpansion' set to 'true' to allow resizing.
     /// It defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizeInUseVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizeInUseVolumes")]
     pub resize_in_use_volumes: Option<bool>,
     /// Size of the PVCs to be mounted by MariaDB. Required if not provided in 'VolumeClaimTemplate'. It superseeds the storage size specified in 'VolumeClaimTemplate'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<IntOrString>,
     /// StorageClassName to be used to provision the PVCS. It superseeds the 'StorageClassName' specified in 'VolumeClaimTemplate'.
     /// If not provided, the default 'StorageClass' configured in the cluster is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// VolumeClaimTemplate provides a template to define the PVCs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<MariaDBStorageVolumeClaimTemplate>,
     /// WaitForVolumeResize indicates whether to wait for the PVCs to be resized before marking the MariaDB object as ready. This will block other operations such as cluster recovery while the resize is in progress.
     /// It defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitForVolumeResize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForVolumeResize")]
     pub wait_for_volume_resize: Option<bool>,
 }
 
 /// VolumeClaimTemplate provides a template to define the PVCs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBStorageVolumeClaimTemplate {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// Metadata to be added to the PVC metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5774,11 +4414,7 @@ pub struct MariaDBStorageVolumeClaimTemplate {
     /// label selector matches no objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<MariaDBStorageVolumeClaimTemplateSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -5814,20 +4450,12 @@ pub struct MariaDBStorageVolumeClaimTemplateResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBStorageVolumeClaimTemplateSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<MariaDBStorageVolumeClaimTemplateSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5870,11 +4498,7 @@ pub struct MariaDBTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -5888,39 +4512,19 @@ pub struct MariaDBTopologySpreadConstraints {
     /// A label selector is a label query over a set of resources. The result of matchLabels and
     /// matchExpressions are ANDed. An empty label selector matches all objects. A null
     /// label selector matches no objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MariaDBTopologySpreadConstraintsLabelSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeInclusionPolicy defines the type of node inclusion policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeInclusionPolicy defines the type of node inclusion policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
@@ -5934,21 +4538,12 @@ pub struct MariaDBTopologySpreadConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<MariaDBTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<MariaDBTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5974,18 +4569,10 @@ pub struct MariaDBTopologySpreadConstraintsLabelSelectorMatchExpressions {
 pub struct MariaDBUpdateStrategy {
     /// AutoUpdateDataPlane indicates whether the Galera data-plane version (agent and init containers) should be automatically updated based on the operator version. It defaults to false.
     /// Updating the operator will trigger updates on all the MariaDB instances that have this flag set to true. Thus, it is recommended to progressively set this flag after having updated the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoUpdateDataPlane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoUpdateDataPlane")]
     pub auto_update_data_plane: Option<bool>,
     /// RollingUpdate defines parameters for the RollingUpdate type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<MariaDBUpdateStrategyRollingUpdate>,
     /// Type defines the type of updates. One of `ReplicasFirstPrimaryLast`, `RollingUpdate` or `OnDelete`. If not defined, it defaults to `ReplicasFirstPrimaryLast`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -6002,11 +4589,7 @@ pub struct MariaDBUpdateStrategyRollingUpdate {
     /// MaxUnavailableStatefulSet feature. The field applies to all pods in the range 0 to
     /// Replicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it
     /// will be counted towards MaxUnavailable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// Partition indicates the ordinal at which the StatefulSet should be partitioned
     /// for updates. During a rolling update, all pods from ordinal Replicas-1 to
@@ -6055,11 +4638,7 @@ pub struct MariaDBVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<MariaDBVolumesNfs>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#persistentvolumeclaimvolumesource-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<MariaDBVolumesPersistentVolumeClaim>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#secretvolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6069,11 +4648,7 @@ pub struct MariaDBVolumes {
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#configmapvolumesource-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBVolumesConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -6086,19 +4661,11 @@ pub struct MariaDBVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<MariaDBVolumesCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -6140,17 +4707,9 @@ pub struct MariaDBVolumesPersistentVolumeClaim {
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#secretvolumesource-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBVolumesSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -6161,35 +4720,19 @@ pub struct MariaDBStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// CurrentPrimary is the primary Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentPrimary"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentPrimary")]
     pub current_primary: Option<String>,
     /// CurrentPrimaryPodIndex is the primary Pod index.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentPrimaryPodIndex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentPrimaryPodIndex")]
     pub current_primary_pod_index: Option<i64>,
     /// GaleraRecovery is the Galera recovery current state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "galeraRecovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "galeraRecovery")]
     pub galera_recovery: Option<MariaDBStatusGaleraRecovery>,
     /// Replicas indicates the number of current instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// ReplicationStatus is the replication current state for each Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationStatus")]
     pub replication_status: Option<BTreeMap<String, String>>,
 }
 
@@ -6200,11 +4743,7 @@ pub struct MariaDBStatusGaleraRecovery {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bootstrap: Option<MariaDBStatusGaleraRecoveryBootstrap>,
     /// PodsRestarted that the Pods have been restarted after the cluster bootstrap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podsRestarted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podsRestarted")]
     pub pods_restarted: Option<bool>,
     /// State is a per Pod representation of the sequence recovery process.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6235,11 +4774,7 @@ pub struct MariaDBStatusGaleraRecoveryRecovered {
 /// State is a per Pod representation of the Galera state file (grastate.dat).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBStatusGaleraRecoveryState {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "safeToBootstrap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "safeToBootstrap")]
     pub safe_to_bootstrap: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub seqno: Option<i64>,
@@ -6248,3 +4783,4 @@ pub struct MariaDBStatusGaleraRecoveryState {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
+

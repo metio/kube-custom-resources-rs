@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ImagePolicySpec defines the parameters for calculating the
 /// ImagePolicy
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "image.toolkit.fluxcd.io",
-    version = "v1beta1",
-    kind = "ImagePolicy",
-    plural = "imagepolicies"
-)]
+#[kube(group = "image.toolkit.fluxcd.io", version = "v1beta1", kind = "ImagePolicy", plural = "imagepolicies")]
 #[kube(namespaced)]
 #[kube(status = "ImagePolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ImagePolicySpec {
     /// FilterTags enables filtering for only a subset of tags based on a set of
     /// rules. If no rules are provided, all the tags from the repository will be
     /// ordered and compared.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterTags")]
     pub filter_tags: Option<ImagePolicyFilterTags>,
     /// ImageRepositoryRef points at the object specifying the image
     /// being scanned
@@ -140,16 +131,9 @@ pub struct ImagePolicyStatus {
     /// LatestImage gives the first in the list of images scanned by
     /// the image repository, when filtered and ordered according to
     /// the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latestImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestImage")]
     pub latest_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

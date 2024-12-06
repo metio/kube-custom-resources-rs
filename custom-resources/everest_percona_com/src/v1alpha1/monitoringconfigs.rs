@@ -5,28 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// MonitoringConfigSpec defines the desired state of MonitoringConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "everest.percona.com",
-    version = "v1alpha1",
-    kind = "MonitoringConfig",
-    plural = "monitoringconfigs"
-)]
+#[kube(group = "everest.percona.com", version = "v1alpha1", kind = "MonitoringConfig", plural = "monitoringconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct MonitoringConfigSpec {
     /// AllowedNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedNamespaces")]
     pub allowed_namespaces: Option<Vec<String>>,
     /// CredentialsSecretName is the name of the secret with credentials.
     #[serde(rename = "credentialsSecretName")]
@@ -61,4 +52,6 @@ pub enum MonitoringConfigType {
 
 /// MonitoringConfigStatus defines the observed state of MonitoringConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MonitoringConfigStatus {}
+pub struct MonitoringConfigStatus {
+}
+

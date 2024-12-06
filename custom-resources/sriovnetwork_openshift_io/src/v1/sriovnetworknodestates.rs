@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// SriovNetworkNodeStateSpec defines the desired state of SriovNetworkNodeState
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sriovnetwork.openshift.io",
-    version = "v1",
-    kind = "SriovNetworkNodeState",
-    plural = "sriovnetworknodestates"
-)]
+#[kube(group = "sriovnetwork.openshift.io", version = "v1", kind = "SriovNetworkNodeState", plural = "sriovnetworknodestates")]
 #[kube(namespaced)]
 #[kube(status = "SriovNetworkNodeStateStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SriovNetworkNodeStateSpec {
     /// Bridges contains list of bridges
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -56,25 +51,13 @@ pub struct SriovNetworkNodeStateBridgesOvs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SriovNetworkNodeStateBridgesOvsBridge {
     /// configure datapath_type field in the Bridge table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datapathType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datapathType")]
     pub datapath_type: Option<String>,
     /// IDs to inject to external_ids field in the Bridge table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
     /// additional options to inject to other_config field in the bridge table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otherConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otherConfig")]
     pub other_config: Option<BTreeMap<String, String>>,
 }
 
@@ -96,21 +79,13 @@ pub struct SriovNetworkNodeStateBridgesOvsUplinks {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SriovNetworkNodeStateBridgesOvsUplinksInterface {
     /// external_ids field in the Interface table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
     /// options field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
     /// other_config field in the Interface table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otherConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otherConfig")]
     pub other_config: Option<BTreeMap<String, String>>,
     /// type field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -119,17 +94,9 @@ pub struct SriovNetworkNodeStateBridgesOvsUplinksInterface {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SriovNetworkNodeStateInterfaces {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eSwitchMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eSwitchMode")]
     pub e_switch_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externallyManaged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externallyManaged")]
     pub externally_managed: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "linkType")]
     pub link_type: Option<String>,
@@ -147,27 +114,15 @@ pub struct SriovNetworkNodeStateInterfaces {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SriovNetworkNodeStateInterfacesVfGroups {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceType")]
     pub device_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isRdma")]
     pub is_rdma: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mtu: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "policyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyName")]
     pub policy_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceName")]
     pub resource_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vdpaType")]
     pub vdpa_type: Option<String>,
@@ -183,17 +138,9 @@ pub struct SriovNetworkNodeStateStatus {
     pub bridges: Option<SriovNetworkNodeStateStatusBridges>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interfaces: Option<Vec<SriovNetworkNodeStateStatusInterfaces>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
     pub last_sync_error: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncStatus")]
     pub sync_status: Option<String>,
 }
 
@@ -222,25 +169,13 @@ pub struct SriovNetworkNodeStateStatusBridgesOvs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SriovNetworkNodeStateStatusBridgesOvsBridge {
     /// configure datapath_type field in the Bridge table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datapathType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datapathType")]
     pub datapath_type: Option<String>,
     /// IDs to inject to external_ids field in the Bridge table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
     /// additional options to inject to other_config field in the bridge table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otherConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otherConfig")]
     pub other_config: Option<BTreeMap<String, String>>,
 }
 
@@ -262,21 +197,13 @@ pub struct SriovNetworkNodeStateStatusBridgesOvsUplinks {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SriovNetworkNodeStateStatusBridgesOvsUplinksInterface {
     /// external_ids field in the Interface table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
     /// options field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
     /// other_config field in the Interface table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otherConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otherConfig")]
     pub other_config: Option<BTreeMap<String, String>>,
     /// type field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -291,23 +218,11 @@ pub struct SriovNetworkNodeStateStatusInterfaces {
     pub device_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub driver: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eSwitchMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eSwitchMode")]
     pub e_switch_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externallyManaged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externallyManaged")]
     pub externally_managed: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linkAdminState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linkAdminState")]
     pub link_admin_state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "linkSpeed")]
     pub link_speed: Option<String>,
@@ -351,11 +266,7 @@ pub struct SriovNetworkNodeStateStatusInterfacesVfs {
     pub name: Option<String>,
     #[serde(rename = "pciAddress")]
     pub pci_address: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "representorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "representorName")]
     pub representor_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vdpaType")]
     pub vdpa_type: Option<String>,
@@ -364,3 +275,4 @@ pub struct SriovNetworkNodeStateStatusInterfacesVfs {
     #[serde(rename = "vfID")]
     pub vf_id: i64,
 }
+

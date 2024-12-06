@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -13,27 +13,18 @@ use self::prelude::*;
 /// that Module CRs need to be verified against as well as the debug configuration of the logs
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kmm.sigs.x-k8s.io",
-    version = "v1beta2",
-    kind = "PreflightValidation",
-    plural = "preflightvalidations"
-)]
+#[kube(group = "kmm.sigs.x-k8s.io", version = "v1beta2", kind = "PreflightValidation", plural = "preflightvalidations")]
 #[kube(status = "PreflightValidationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PreflightValidationSpec {
     /// KernelVersion describes the kernel image that all Modules need to be checked against.
     #[serde(rename = "kernelVersion")]
     pub kernel_version: String,
     /// Boolean flag that determines whether images build during preflight must also
     /// be pushed to a defined repository
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pushBuiltImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pushBuiltImage")]
     pub push_built_image: Option<bool>,
 }
 
@@ -58,11 +49,7 @@ pub struct PreflightValidationStatusModules {
     /// Namespace is the namespace of the Module resource.
     pub namespace: String,
     /// StatusReason contains a string describing the status source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusReason")]
     pub status_reason: Option<String>,
     /// Current stage of the verification process:
     /// image (image existence verification), build(build process verification)
@@ -88,3 +75,4 @@ pub enum PreflightValidationStatusModulesVerificationStatus {
     True,
     False,
 }
+

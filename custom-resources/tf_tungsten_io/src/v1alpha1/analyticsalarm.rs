@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// AnalyticsAlarmSpec is the Spec for the Analytics Alarm API.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tf.tungsten.io",
-    version = "v1alpha1",
-    kind = "AnalyticsAlarm",
-    plural = "analyticsalarm"
-)]
+#[kube(group = "tf.tungsten.io", version = "v1alpha1", kind = "AnalyticsAlarm", plural = "analyticsalarm")]
 #[kube(namespaced)]
 #[kube(status = "AnalyticsAlarmStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AnalyticsAlarmSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<AnalyticsAlarmCommonConfiguration>,
     /// AnalyticsAlarmConfiguration is the Spec for the Analytics Alarm API.
     #[serde(rename = "serviceConfiguration")]
@@ -40,31 +31,19 @@ pub struct AnalyticsAlarmSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AnalyticsAlarmCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<AnalyticsAlarmCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<AnalyticsAlarmCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -78,18 +57,9 @@ pub struct AnalyticsAlarmCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<AnalyticsAlarmCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters:
-        Option<AnalyticsAlarmCommonConfigurationAuthParametersKeystoneAuthParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<AnalyticsAlarmCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -107,49 +77,25 @@ pub enum AnalyticsAlarmCommonConfigurationAuthParametersAuthMode {
 pub struct AnalyticsAlarmCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -183,11 +129,7 @@ pub struct AnalyticsAlarmCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -197,37 +139,17 @@ pub struct AnalyticsAlarmCommonConfigurationTolerations {
 /// AnalyticsAlarmConfiguration is the Spec for the Analytics Alarm API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AnalyticsAlarmServiceConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alarmgenIntrospectListenPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alarmgenIntrospectListenPort")]
     pub alarmgen_introspect_listen_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alarmgenLogFileName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alarmgenLogFileName")]
     pub alarmgen_log_file_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alarmgenPartitions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alarmgenPartitions")]
     pub alarmgen_partitions: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alarmgenRedisAggregateDbOffset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alarmgenRedisAggregateDbOffset")]
     pub alarmgen_redis_aggregate_db_offset: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<AnalyticsAlarmServiceConfigurationContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFilePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFilePath")]
     pub log_file_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLocal")]
     pub log_local: Option<String>,
@@ -249,11 +171,7 @@ pub struct AnalyticsAlarmServiceConfigurationContainers {
 pub struct AnalyticsAlarmStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configChanged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configChanged")]
     pub config_changed: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub degraded: Option<bool>,
@@ -268,3 +186,4 @@ pub struct AnalyticsAlarmStatusNodes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
 }
+

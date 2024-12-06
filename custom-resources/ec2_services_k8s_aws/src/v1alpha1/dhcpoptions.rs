@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DhcpOptionsSpec defines the desired state of DhcpOptions.
-///
+/// 
 /// Describes a set of DHCP options.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ec2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "DHCPOptions",
-    plural = "dhcpoptions"
-)]
+#[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "DHCPOptions", plural = "dhcpoptions")]
 #[kube(namespaced)]
 #[kube(status = "DHCPOptionsStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DHCPOptionsSpec {
     /// A DHCP configuration option.
     #[serde(rename = "dhcpConfigurations")]
@@ -61,7 +56,7 @@ pub struct DHCPOptionsTags {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -88,11 +83,7 @@ pub struct DHCPOptionsStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<DHCPOptionsStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -101,11 +92,7 @@ pub struct DHCPOptionsStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The ID of the set of DHCP options.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dhcpOptionsID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpOptionsID")]
     pub dhcp_options_id: Option<String>,
     /// The ID of the Amazon Web Services account that owns the DHCP options set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
@@ -133,3 +120,4 @@ pub struct DHCPOptionsStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

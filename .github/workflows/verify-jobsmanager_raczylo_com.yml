@@ -23,6 +23,10 @@ jobs:
         env:
           RUSTFLAGS: "--deny warnings"
           K8S_OPENAPI_ENABLED_VERSION: "1.31"
+      - name: Try-run Cargo Version Update
+        run: sed -i -e '0,/edition/s/^version = .*/version = "1.2.3"/' custom-resources/jobsmanager_raczylo_com/Cargo.toml
+      - name: Print modified Cargo.toml
+        run: cat custom-resources/jobsmanager_raczylo_com/Cargo.toml
       - name: Set up Rust nightly
         uses: dtolnay/rust-toolchain@nightly
       - name: Set up docs.rs environment

@@ -5,32 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "app.redislabs.com",
-    version = "v1alpha1",
-    kind = "RedisEnterpriseRemoteCluster",
-    plural = "redisenterpriseremoteclusters"
-)]
+#[kube(group = "app.redislabs.com", version = "v1alpha1", kind = "RedisEnterpriseRemoteCluster", plural = "redisenterpriseremoteclusters")]
 #[kube(namespaced)]
 #[kube(status = "RedisEnterpriseRemoteClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RedisEnterpriseRemoteClusterSpec {
     /// The URL of the cluster, will be used for the active-active database URL.
     #[serde(rename = "apiFqdnUrl")]
     pub api_fqdn_url: String,
     /// The database URL suffix, will be used for the active-active database replication endpoint and replication endpoint SNI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dbFqdnSuffix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbFqdnSuffix")]
     pub db_fqdn_suffix: Option<String>,
     /// The name of the REC that the RERC is pointing at
     #[serde(rename = "recName")]
@@ -39,11 +30,7 @@ pub struct RedisEnterpriseRemoteClusterSpec {
     #[serde(rename = "recNamespace")]
     pub rec_namespace: String,
     /// The name of the secret containing cluster credentials. Must be of the following format: "redis-enterprise-<RERC name>"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -53,20 +40,13 @@ pub struct RedisEnterpriseRemoteClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub local: Option<bool>,
     /// The most recent generation observed for this RERC. It corresponds to the RERC's generation, which is updated by the API Server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Whether the desired specification is valid.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "specStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "specStatus")]
     pub spec_status: Option<String>,
     /// The status of the remote cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

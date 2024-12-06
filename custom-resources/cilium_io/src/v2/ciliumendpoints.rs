@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -21,11 +21,7 @@ pub struct CiliumEndpointStatus {
     pub encryption: Option<CiliumEndpointStatusEncryption>,
     /// ExternalIdentifiers is a set of identifiers to identify the endpoint
     /// apart from the pod name. This includes container runtime IDs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "external-identifiers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "external-identifiers")]
     pub external_identifiers: Option<CiliumEndpointStatusExternalIdentifiers>,
     /// Health is the overall endpoint & subcomponent health.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -41,13 +37,9 @@ pub struct CiliumEndpointStatus {
     pub log: Option<Vec<CiliumEndpointStatusLog>>,
     /// NamedPorts List of named Layer 4 port and protocol pairs which will be used in Network
     /// Policy specs.
-    ///
+    /// 
     /// swagger:model NamedPorts
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "named-ports"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "named-ports")]
     pub named_ports: Option<Vec<CiliumEndpointStatusNamedPorts>>,
     /// Networking is the networking properties of the endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -82,19 +74,11 @@ pub struct CiliumEndpointStatusControllers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumEndpointStatusControllersConfiguration {
     /// Retry on error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "error-retry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "error-retry")]
     pub error_retry: Option<bool>,
     /// Base error retry back-off time
     /// Format: duration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "error-retry-base"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "error-retry-base")]
     pub error_retry_base: Option<i64>,
     /// Regular synchronization interval
     /// Format: duration
@@ -105,41 +89,17 @@ pub struct CiliumEndpointStatusControllersConfiguration {
 /// Status is the status of the controller
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumEndpointStatusControllersStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutive-failure-count"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutive-failure-count")]
     pub consecutive_failure_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failure-count"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failure-count")]
     pub failure_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "last-failure-msg"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "last-failure-msg")]
     pub last_failure_msg: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "last-failure-timestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "last-failure-timestamp")]
     pub last_failure_timestamp: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "last-success-timestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "last-success-timestamp")]
     pub last_success_timestamp: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "success-count"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "success-count")]
     pub success_count: Option<i64>,
 }
 
@@ -157,53 +117,25 @@ pub struct CiliumEndpointStatusEncryption {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumEndpointStatusExternalIdentifiers {
     /// ID assigned to this attachment by container runtime
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cni-attachment-id"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cni-attachment-id")]
     pub cni_attachment_id: Option<String>,
     /// ID assigned by container runtime (deprecated, may not be unique)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "container-id"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "container-id")]
     pub container_id: Option<String>,
     /// Name assigned to container (deprecated, may not be unique)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "container-name"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "container-name")]
     pub container_name: Option<String>,
     /// Docker endpoint ID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "docker-endpoint-id"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "docker-endpoint-id")]
     pub docker_endpoint_id: Option<String>,
     /// Docker network ID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "docker-network-id"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "docker-network-id")]
     pub docker_network_id: Option<String>,
     /// K8s namespace for this endpoint (deprecated, may not be unique)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8s-namespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8s-namespace")]
     pub k8s_namespace: Option<String>,
     /// K8s pod name for this endpoint (deprecated, may not be unique)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8s-pod-name"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8s-pod-name")]
     pub k8s_pod_name: Option<String>,
     /// K8s pod for this endpoint (deprecated, may not be unique)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pod-name")]
@@ -220,11 +152,7 @@ pub struct CiliumEndpointStatusHealth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connected: Option<bool>,
     /// overall health
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overallHealth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overallHealth")]
     pub overall_health: Option<String>,
     /// policy
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -243,7 +171,7 @@ pub struct CiliumEndpointStatusIdentity {
 }
 
 /// EndpointStatusChange Indication of a change of status
-///
+/// 
 /// swagger:model EndpointStatusChange
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumEndpointStatusLog {
@@ -263,7 +191,7 @@ pub struct CiliumEndpointStatusLog {
 }
 
 /// Port Layer 4 port / protocol pair
-///
+/// 
 /// swagger:model Port
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumEndpointStatusNamedPorts {
@@ -341,11 +269,7 @@ pub struct CiliumEndpointStatusPolicyEgressAdding {
     pub dest_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identity-labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identity-labels")]
     pub identity_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<i64>,
@@ -358,11 +282,7 @@ pub struct CiliumEndpointStatusPolicyEgressAllowed {
     pub dest_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identity-labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identity-labels")]
     pub identity_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<i64>,
@@ -375,11 +295,7 @@ pub struct CiliumEndpointStatusPolicyEgressDenied {
     pub dest_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identity-labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identity-labels")]
     pub identity_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<i64>,
@@ -392,11 +308,7 @@ pub struct CiliumEndpointStatusPolicyEgressRemoving {
     pub dest_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identity-labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identity-labels")]
     pub identity_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<i64>,
@@ -432,11 +344,7 @@ pub struct CiliumEndpointStatusPolicyIngressAdding {
     pub dest_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identity-labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identity-labels")]
     pub identity_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<i64>,
@@ -449,11 +357,7 @@ pub struct CiliumEndpointStatusPolicyIngressAllowed {
     pub dest_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identity-labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identity-labels")]
     pub identity_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<i64>,
@@ -466,11 +370,7 @@ pub struct CiliumEndpointStatusPolicyIngressDenied {
     pub dest_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identity-labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identity-labels")]
     pub identity_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<i64>,
@@ -483,11 +383,7 @@ pub struct CiliumEndpointStatusPolicyIngressRemoving {
     pub dest_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identity-labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identity-labels")]
     pub identity_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<i64>,
@@ -517,3 +413,4 @@ pub enum CiliumEndpointStatusState {
     #[serde(rename = "invalid")]
     Invalid,
 }
+

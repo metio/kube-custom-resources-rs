@@ -4,80 +4,47 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// NodeFeatureDiscoverySpec defines the desired state of NodeFeatureDiscovery
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "nfd.kubernetes.io",
-    version = "v1",
-    kind = "NodeFeatureDiscovery",
-    plural = "nodefeaturediscoveries"
-)]
+#[kube(group = "nfd.kubernetes.io", version = "v1", kind = "NodeFeatureDiscovery", plural = "nodefeaturediscoveries")]
 #[kube(namespaced)]
 #[kube(status = "NodeFeatureDiscoveryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeFeatureDiscoverySpec {
     /// EnableTaints enables the enable the experimental tainting feature This allows keeping nodes with specialized hardware away from running general workload i and instead leave them for workloads that need the specialized hardware.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableTaints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableTaints")]
     pub enable_taints: Option<bool>,
     /// ExtraLabelNs defines the list of of allowed extra label namespaces By default, only allow labels in the default `feature.node.kubernetes.io` label namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraLabelNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraLabelNs")]
     pub extra_label_ns: Option<Vec<String>>,
     /// Instance name. Used to separate annotation namespaces for multiple parallel deployments.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instance: Option<String>,
     /// LabelWhiteList defines a regular expression for filtering feature labels based on their name. Each label must match against the given reqular expression in order to be published.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelWhiteList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWhiteList")]
     pub label_white_list: Option<String>,
     /// OperandSpec describes configuration options for the operand
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operand: Option<NodeFeatureDiscoveryOperand>,
     /// PruneOnDelete defines whether the NFD-master prune should be enabled or not. If enabled, the Operator will deploy an NFD-Master prune job that will remove all NFD labels (and other NFD-managed assets such as annotations, extended resources and taints) from the cluster nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prunerOnDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prunerOnDelete")]
     pub pruner_on_delete: Option<bool>,
     /// ResourceLabels defines the list of features to be advertised as extended resources instead of labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLabels")]
     pub resource_labels: Option<Vec<String>>,
     /// Deploy the NFD-Topology-Updater NFD-Topology-Updater is a daemon responsible for examining allocated resources on a worker node to account for resources available to be allocated to new pod on a per-zone basis https://kubernetes-sigs.github.io/node-feature-discovery/master/get-started/introduction.html#nfd-topology-updater
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologyUpdater"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyUpdater")]
     pub topology_updater: Option<bool>,
     /// WorkerConfig describes configuration options for the NFD worker.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerConfig")]
     pub worker_config: Option<NodeFeatureDiscoveryWorkerConfig>,
 }
 
@@ -88,18 +55,10 @@ pub struct NodeFeatureDiscoveryOperand {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy defines Image pull policy for the NFD operand image [defaults to Always]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// ServicePort specifies the TCP port that nfd-master listens for incoming requests.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePort")]
     pub service_port: Option<i64>,
 }
 
@@ -118,3 +77,4 @@ pub struct NodeFeatureDiscoveryStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

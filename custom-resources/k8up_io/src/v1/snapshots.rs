@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// SnapshotSpec contains all information needed about a restic snapshot so it
 /// can be restored.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8up.io",
-    version = "v1",
-    kind = "Snapshot",
-    plural = "snapshots"
-)]
+#[kube(group = "k8up.io", version = "v1", kind = "Snapshot", plural = "snapshots")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SnapshotSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub date: Option<String>,
@@ -35,4 +30,6 @@ pub struct SnapshotSpec {
 
 /// SnapshotStatus defines the observed state of Snapshot
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SnapshotStatus {}
+pub struct SnapshotStatus {
+}
+

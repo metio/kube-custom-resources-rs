@@ -5,35 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "clustertemplate.openshift.io",
-    version = "v1alpha1",
-    kind = "ClusterTemplateSetup",
-    plural = "clustertemplatesetup"
-)]
+#[kube(group = "clustertemplate.openshift.io", version = "v1alpha1", kind = "ClusterTemplateSetup", plural = "clustertemplatesetup")]
 #[kube(status = "ClusterTemplateSetupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterTemplateSetupSpec {
     /// Array of ArgoCD applicationset names which are used for post installation setup of the cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterSetup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSetup")]
     pub cluster_setup: Option<Vec<String>>,
     /// Skip the registeration of the cluster to the hub cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipClusterRegistration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipClusterRegistration")]
     pub skip_cluster_registration: Option<bool>,
 }
 
@@ -41,11 +28,7 @@ pub struct ClusterTemplateSetupSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTemplateSetupStatus {
     /// Describes helm chart properties and schema for every cluster setup step
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterSetup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSetup")]
     pub cluster_setup: Option<Vec<ClusterTemplateSetupStatusClusterSetup>>,
 }
 
@@ -74,3 +57,4 @@ pub struct ClusterTemplateSetupStatusClusterSetupParams {
     /// Value of a helm chart param
     pub value: String,
 }
+

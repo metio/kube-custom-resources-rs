@@ -4,32 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// ServiceDescriptorSpec defines the desired state of ServiceDescriptor.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.kubeblocks.io",
-    version = "v1alpha1",
-    kind = "ServiceDescriptor",
-    plural = "servicedescriptors"
-)]
+#[kube(group = "apps.kubeblocks.io", version = "v1alpha1", kind = "ServiceDescriptor", plural = "servicedescriptors")]
 #[kube(namespaced)]
 #[kube(status = "ServiceDescriptorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ServiceDescriptorSpec {
     /// Specifies the authentication credentials required for accessing an external service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<ServiceDescriptorAuth>,
     /// Specifies the endpoint of the external service.
-    ///
-    ///
+    /// 
+    /// 
     /// If the service is exposed via a cluster, the endpoint will be provided in the format of `host:port`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<ServiceDescriptorEndpoint>,
@@ -43,11 +38,11 @@ pub struct ServiceDescriptorSpec {
     /// For example, "mysql", "redis", "mongodb".
     /// This field categorizes databases by their functionality, protocol and compatibility, facilitating appropriate
     /// service integration based on their unique capabilities.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is case-insensitive.
-    ///
-    ///
+    /// 
+    /// 
     /// It also supports abbreviations for some well-known databases:
     /// - "pg", "pgsql", "postgres", "postgresql": PostgreSQL service
     /// - "zk", "zookeeper": ZooKeeper service
@@ -78,23 +73,23 @@ pub struct ServiceDescriptorAuth {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthPassword {
     /// Holds a direct string or an expression that can be evaluated to a string.
-    ///
-    ///
+    /// 
+    /// 
     /// It can include variables denoted by $(VAR_NAME).
     /// These variables are expanded to the value of the environment variables defined in the container.
     /// If a variable cannot be resolved, it remains unchanged in the output.
-    ///
-    ///
+    /// 
+    /// 
     /// To escape variable expansion and retain the literal value, use double $ characters.
-    ///
-    ///
+    /// 
+    /// 
     /// For example:
-    ///
-    ///
+    /// 
+    /// 
     /// - "$(VAR_NAME)" will be expanded to the value of the environment variable VAR_NAME.
     /// - "$$(VAR_NAME)" will result in "$(VAR_NAME)" in the output, without any variable expansion.
-    ///
-    ///
+    /// 
+    /// 
     /// Default value is an empty string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -107,11 +102,7 @@ pub struct ServiceDescriptorAuthPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthPasswordValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ServiceDescriptorAuthPasswordValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -119,18 +110,10 @@ pub struct ServiceDescriptorAuthPasswordValueFrom {
     pub field_ref: Option<ServiceDescriptorAuthPasswordValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ServiceDescriptorAuthPasswordValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ServiceDescriptorAuthPasswordValueFromSecretKeyRef>,
 }
 
@@ -154,11 +137,7 @@ pub struct ServiceDescriptorAuthPasswordValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthPasswordValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -170,11 +149,7 @@ pub struct ServiceDescriptorAuthPasswordValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthPasswordValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -202,23 +177,23 @@ pub struct ServiceDescriptorAuthPasswordValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthUsername {
     /// Holds a direct string or an expression that can be evaluated to a string.
-    ///
-    ///
+    /// 
+    /// 
     /// It can include variables denoted by $(VAR_NAME).
     /// These variables are expanded to the value of the environment variables defined in the container.
     /// If a variable cannot be resolved, it remains unchanged in the output.
-    ///
-    ///
+    /// 
+    /// 
     /// To escape variable expansion and retain the literal value, use double $ characters.
-    ///
-    ///
+    /// 
+    /// 
     /// For example:
-    ///
-    ///
+    /// 
+    /// 
     /// - "$(VAR_NAME)" will be expanded to the value of the environment variable VAR_NAME.
     /// - "$$(VAR_NAME)" will result in "$(VAR_NAME)" in the output, without any variable expansion.
-    ///
-    ///
+    /// 
+    /// 
     /// Default value is an empty string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -231,11 +206,7 @@ pub struct ServiceDescriptorAuthUsername {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthUsernameValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ServiceDescriptorAuthUsernameValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -243,18 +214,10 @@ pub struct ServiceDescriptorAuthUsernameValueFrom {
     pub field_ref: Option<ServiceDescriptorAuthUsernameValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ServiceDescriptorAuthUsernameValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ServiceDescriptorAuthUsernameValueFromSecretKeyRef>,
 }
 
@@ -278,11 +241,7 @@ pub struct ServiceDescriptorAuthUsernameValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthUsernameValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -294,11 +253,7 @@ pub struct ServiceDescriptorAuthUsernameValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorAuthUsernameValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -323,29 +278,29 @@ pub struct ServiceDescriptorAuthUsernameValueFromSecretKeyRef {
 }
 
 /// Specifies the endpoint of the external service.
-///
-///
+/// 
+/// 
 /// If the service is exposed via a cluster, the endpoint will be provided in the format of `host:port`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorEndpoint {
     /// Holds a direct string or an expression that can be evaluated to a string.
-    ///
-    ///
+    /// 
+    /// 
     /// It can include variables denoted by $(VAR_NAME).
     /// These variables are expanded to the value of the environment variables defined in the container.
     /// If a variable cannot be resolved, it remains unchanged in the output.
-    ///
-    ///
+    /// 
+    /// 
     /// To escape variable expansion and retain the literal value, use double $ characters.
-    ///
-    ///
+    /// 
+    /// 
     /// For example:
-    ///
-    ///
+    /// 
+    /// 
     /// - "$(VAR_NAME)" will be expanded to the value of the environment variable VAR_NAME.
     /// - "$$(VAR_NAME)" will result in "$(VAR_NAME)" in the output, without any variable expansion.
-    ///
-    ///
+    /// 
+    /// 
     /// Default value is an empty string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -358,11 +313,7 @@ pub struct ServiceDescriptorEndpoint {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorEndpointValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ServiceDescriptorEndpointValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -370,18 +321,10 @@ pub struct ServiceDescriptorEndpointValueFrom {
     pub field_ref: Option<ServiceDescriptorEndpointValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ServiceDescriptorEndpointValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ServiceDescriptorEndpointValueFromSecretKeyRef>,
 }
 
@@ -405,11 +348,7 @@ pub struct ServiceDescriptorEndpointValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorEndpointValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -421,11 +360,7 @@ pub struct ServiceDescriptorEndpointValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorEndpointValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -453,23 +388,23 @@ pub struct ServiceDescriptorEndpointValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorHost {
     /// Holds a direct string or an expression that can be evaluated to a string.
-    ///
-    ///
+    /// 
+    /// 
     /// It can include variables denoted by $(VAR_NAME).
     /// These variables are expanded to the value of the environment variables defined in the container.
     /// If a variable cannot be resolved, it remains unchanged in the output.
-    ///
-    ///
+    /// 
+    /// 
     /// To escape variable expansion and retain the literal value, use double $ characters.
-    ///
-    ///
+    /// 
+    /// 
     /// For example:
-    ///
-    ///
+    /// 
+    /// 
     /// - "$(VAR_NAME)" will be expanded to the value of the environment variable VAR_NAME.
     /// - "$$(VAR_NAME)" will result in "$(VAR_NAME)" in the output, without any variable expansion.
-    ///
-    ///
+    /// 
+    /// 
     /// Default value is an empty string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -482,11 +417,7 @@ pub struct ServiceDescriptorHost {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorHostValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ServiceDescriptorHostValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -494,18 +425,10 @@ pub struct ServiceDescriptorHostValueFrom {
     pub field_ref: Option<ServiceDescriptorHostValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ServiceDescriptorHostValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ServiceDescriptorHostValueFromSecretKeyRef>,
 }
 
@@ -529,11 +452,7 @@ pub struct ServiceDescriptorHostValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorHostValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -545,11 +464,7 @@ pub struct ServiceDescriptorHostValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorHostValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -577,23 +492,23 @@ pub struct ServiceDescriptorHostValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorPort {
     /// Holds a direct string or an expression that can be evaluated to a string.
-    ///
-    ///
+    /// 
+    /// 
     /// It can include variables denoted by $(VAR_NAME).
     /// These variables are expanded to the value of the environment variables defined in the container.
     /// If a variable cannot be resolved, it remains unchanged in the output.
-    ///
-    ///
+    /// 
+    /// 
     /// To escape variable expansion and retain the literal value, use double $ characters.
-    ///
-    ///
+    /// 
+    /// 
     /// For example:
-    ///
-    ///
+    /// 
+    /// 
     /// - "$(VAR_NAME)" will be expanded to the value of the environment variable VAR_NAME.
     /// - "$$(VAR_NAME)" will result in "$(VAR_NAME)" in the output, without any variable expansion.
-    ///
-    ///
+    /// 
+    /// 
     /// Default value is an empty string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -606,11 +521,7 @@ pub struct ServiceDescriptorPort {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorPortValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ServiceDescriptorPortValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -618,18 +529,10 @@ pub struct ServiceDescriptorPortValueFrom {
     pub field_ref: Option<ServiceDescriptorPortValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ServiceDescriptorPortValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ServiceDescriptorPortValueFromSecretKeyRef>,
 }
 
@@ -653,11 +556,7 @@ pub struct ServiceDescriptorPortValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorPortValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -669,11 +568,7 @@ pub struct ServiceDescriptorPortValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDescriptorPortValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -704,11 +599,7 @@ pub struct ServiceDescriptorStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// Represents the generation number that has been processed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Indicates the current lifecycle phase of the ServiceDescriptor. This can be either 'Available' or 'Unavailable'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -721,3 +612,4 @@ pub enum ServiceDescriptorStatusPhase {
     Available,
     Unavailable,
 }
+

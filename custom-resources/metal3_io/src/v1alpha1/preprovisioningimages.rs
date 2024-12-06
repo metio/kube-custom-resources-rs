@@ -4,43 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// PreprovisioningImageSpec defines the desired state of PreprovisioningImage.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "metal3.io",
-    version = "v1alpha1",
-    kind = "PreprovisioningImage",
-    plural = "preprovisioningimages"
-)]
+#[kube(group = "metal3.io", version = "v1alpha1", kind = "PreprovisioningImage", plural = "preprovisioningimages")]
 #[kube(namespaced)]
 #[kube(status = "PreprovisioningImageStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PreprovisioningImageSpec {
     /// acceptFormats is a list of acceptable image formats.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "acceptFormats"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptFormats")]
     pub accept_formats: Option<Vec<String>>,
     /// architecture is the processor architecture for which to build the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub architecture: Option<String>,
     /// networkDataName is the name of a Secret in the local namespace that
     /// contains network data to build in to the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkDataName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkDataName")]
     pub network_data_name: Option<String>,
 }
 
@@ -55,11 +42,7 @@ pub struct PreprovisioningImageStatus {
     pub conditions: Option<Vec<Condition>>,
     /// extraKernelParams is a string with extra parameters to pass to the
     /// kernel when booting the image over network. Only makes sense for initrd images.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraKernelParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraKernelParams")]
     pub extra_kernel_params: Option<String>,
     /// format is the type of image that is available at the download url:
     /// either iso or initrd.
@@ -74,11 +57,7 @@ pub struct PreprovisioningImageStatus {
     pub kernel_url: Option<String>,
     /// networkData is a reference to the version of the Secret containing the
     /// network data used to build the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkData")]
     pub network_data: Option<PreprovisioningImageStatusNetworkData>,
 }
 
@@ -100,3 +79,4 @@ pub struct PreprovisioningImageStatusNetworkData {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
+

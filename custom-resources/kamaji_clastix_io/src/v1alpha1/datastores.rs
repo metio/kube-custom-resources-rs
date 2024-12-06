@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// DataStoreSpec defines the desired state of DataStore.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "kamaji.clastix.io",
-    version = "v1alpha1",
-    kind = "DataStore",
-    plural = "datastores"
-)]
+#[kube(group = "kamaji.clastix.io", version = "v1alpha1", kind = "DataStore", plural = "datastores")]
 #[kube(status = "DataStoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct DataStoreSpec {
     /// In case of authentication enabled for the given data store, specifies the username and password pair.
     /// This value is optional.
@@ -50,11 +45,7 @@ pub struct DataStoreBasicAuthPassword {
     /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
     pub secret_reference: Option<DataStoreBasicAuthPasswordSecretReference>,
 }
 
@@ -78,11 +69,7 @@ pub struct DataStoreBasicAuthUsername {
     /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
     pub secret_reference: Option<DataStoreBasicAuthUsernameSecretReference>,
 }
 
@@ -122,11 +109,7 @@ pub struct DataStoreTlsConfig {
     #[serde(rename = "certificateAuthority")]
     pub certificate_authority: DataStoreTlsConfigCertificateAuthority,
     /// Specifies the SSL/TLS key and private key pair used to connect to the data store.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<DataStoreTlsConfigClientCertificate>,
 }
 
@@ -135,11 +118,7 @@ pub struct DataStoreTlsConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataStoreTlsConfigCertificateAuthority {
     pub certificate: DataStoreTlsConfigCertificateAuthorityCertificate,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<DataStoreTlsConfigCertificateAuthorityPrivateKey>,
 }
 
@@ -149,11 +128,7 @@ pub struct DataStoreTlsConfigCertificateAuthorityCertificate {
     /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
     pub secret_reference: Option<DataStoreTlsConfigCertificateAuthorityCertificateSecretReference>,
 }
 
@@ -177,11 +152,7 @@ pub struct DataStoreTlsConfigCertificateAuthorityPrivateKey {
     /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
     pub secret_reference: Option<DataStoreTlsConfigCertificateAuthorityPrivateKeySecretReference>,
 }
 
@@ -213,11 +184,7 @@ pub struct DataStoreTlsConfigClientCertificateCertificate {
     /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
     pub secret_reference: Option<DataStoreTlsConfigClientCertificateCertificateSecretReference>,
 }
 
@@ -241,11 +208,7 @@ pub struct DataStoreTlsConfigClientCertificatePrivateKey {
     /// It has precedence over the SecretReference value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretReference")]
     pub secret_reference: Option<DataStoreTlsConfigClientCertificatePrivateKeySecretReference>,
 }
 
@@ -270,3 +233,4 @@ pub struct DataStoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usedBy")]
     pub used_by: Option<Vec<String>>,
 }
+

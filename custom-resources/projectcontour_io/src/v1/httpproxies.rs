@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// HTTPProxySpec defines the spec of the CRD.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "projectcontour.io",
-    version = "v1",
-    kind = "HTTPProxy",
-    plural = "httpproxies"
-)]
+#[kube(group = "projectcontour.io", version = "v1", kind = "HTTPProxy", plural = "httpproxies")]
 #[kube(namespaced)]
 #[kube(status = "HTTPProxyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HTTPProxySpec {
     /// Includes allow for specific routing configuration to be included from another HTTPProxy,
     /// possibly in another namespace.
@@ -33,11 +28,7 @@ pub struct HTTPProxySpec {
     /// HTTPProxy. This replaces the deprecated `kubernetes.io/ingress.class`
     /// annotation. For backwards compatibility, when that annotation is set, it
     /// is given precedence over this field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// Routes are the ingress routes. If TCPProxy is present, Routes is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -86,11 +77,7 @@ pub struct HTTPProxyIncludesConditions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// QueryParameter specifies the query parameter condition to match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameter")]
     pub query_parameter: Option<HTTPProxyIncludesConditionsQueryParameter>,
     /// Regex defines a regex match for a request.
     /// This field is not allowed in include match conditions.
@@ -110,11 +97,7 @@ pub struct HTTPProxyIncludesConditionsHeader {
     pub exact: Option<String>,
     /// IgnoreCase specifies that string matching should be case insensitive.
     /// Note that this has no effect on the Regex parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
     pub ignore_case: Option<bool>,
     /// Name is the name of the header to match against. Name is required.
     /// Header names are case insensitive.
@@ -146,11 +129,7 @@ pub struct HTTPProxyIncludesConditionsHeader {
     /// does not exist, this header value will be treated as empty. Defaults to false.
     /// Unlike the underlying Envoy implementation this is **only** supported for
     /// negative matches (e.g. NotContains, NotExact).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "treatMissingAsEmpty"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "treatMissingAsEmpty")]
     pub treat_missing_as_empty: Option<bool>,
 }
 
@@ -166,11 +145,7 @@ pub struct HTTPProxyIncludesConditionsQueryParameter {
     pub exact: Option<String>,
     /// IgnoreCase specifies that string matching should be case insensitive.
     /// Note that this has no effect on the Regex parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
     pub ignore_case: Option<bool>,
     /// Name is the name of the query parameter to match against. Name is required.
     /// Query parameter names are case insensitive.
@@ -199,11 +174,7 @@ pub struct HTTPProxyRoutes {
     /// AuthPolicy updates the authorization policy that was set
     /// on the root HTTPProxy object for client requests that
     /// match this route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authPolicy")]
     pub auth_policy: Option<HTTPProxyRoutesAuthPolicy>,
     /// Conditions are a set of rules that are applied to a Route.
     /// When applied, they are merged using AND, with one exception:
@@ -215,96 +186,48 @@ pub struct HTTPProxyRoutes {
     /// The policies for rewriting Set-Cookie header attributes. Note that
     /// rewritten cookie names must be unique in this list. Order rewrite
     /// policies are specified in does not matter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cookieRewritePolicies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cookieRewritePolicies")]
     pub cookie_rewrite_policies: Option<Vec<HTTPProxyRoutesCookieRewritePolicies>>,
     /// DirectResponsePolicy returns an arbitrary HTTP response directly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "directResponsePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directResponsePolicy")]
     pub direct_response_policy: Option<HTTPProxyRoutesDirectResponsePolicy>,
     /// Enables websocket support for the route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableWebsockets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableWebsockets")]
     pub enable_websockets: Option<bool>,
     /// The health check policy for this route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckPolicy")]
     pub health_check_policy: Option<HTTPProxyRoutesHealthCheckPolicy>,
     /// The policy to define when to handle redirects responses internally.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internalRedirectPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalRedirectPolicy")]
     pub internal_redirect_policy: Option<HTTPProxyRoutesInternalRedirectPolicy>,
     /// IPAllowFilterPolicy is a list of ipv4/6 filter rules for which matching
     /// requests should be allowed. All other requests will be denied.
     /// Only one of IPAllowFilterPolicy and IPDenyFilterPolicy can be defined.
     /// The rules defined here override any rules set on the root HTTPProxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipAllowPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAllowPolicy")]
     pub ip_allow_policy: Option<Vec<HTTPProxyRoutesIpAllowPolicy>>,
     /// IPDenyFilterPolicy is a list of ipv4/6 filter rules for which matching
     /// requests should be denied. All other requests will be allowed.
     /// Only one of IPAllowFilterPolicy and IPDenyFilterPolicy can be defined.
     /// The rules defined here override any rules set on the root HTTPProxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipDenyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipDenyPolicy")]
     pub ip_deny_policy: Option<Vec<HTTPProxyRoutesIpDenyPolicy>>,
     /// The policy for verifying JWTs for requests to this route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jwtVerificationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtVerificationPolicy")]
     pub jwt_verification_policy: Option<HTTPProxyRoutesJwtVerificationPolicy>,
     /// The load balancing policy for this route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerPolicy")]
     pub load_balancer_policy: Option<HTTPProxyRoutesLoadBalancerPolicy>,
     /// The policy for rewriting the path of the request URL
     /// after the request has been routed to a Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathRewritePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathRewritePolicy")]
     pub path_rewrite_policy: Option<HTTPProxyRoutesPathRewritePolicy>,
     /// Allow this path to respond to insecure requests over HTTP which are normally
     /// not permitted when a `virtualhost.tls` block is present.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "permitInsecure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "permitInsecure")]
     pub permit_insecure: Option<bool>,
     /// The policy for rate limiting on the route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rateLimitPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitPolicy")]
     pub rate_limit_policy: Option<HTTPProxyRoutesRateLimitPolicy>,
     /// The policy for managing request headers during proxying.
     /// You may dynamically rewrite the Host header to be forwarded
@@ -315,43 +238,23 @@ pub struct HTTPProxyRoutes {
     /// Provided header must come from trusted source.
     /// **NOTE: The header rewrite is only done while forwarding and has no bearing
     /// on the routing decision.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeadersPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeadersPolicy")]
     pub request_headers_policy: Option<HTTPProxyRoutesRequestHeadersPolicy>,
     /// RequestRedirectPolicy defines an HTTP redirection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestRedirectPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestRedirectPolicy")]
     pub request_redirect_policy: Option<HTTPProxyRoutesRequestRedirectPolicy>,
     /// The policy for managing response headers during proxying.
     /// Rewriting the 'Host' header is not supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeadersPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeadersPolicy")]
     pub response_headers_policy: Option<HTTPProxyRoutesResponseHeadersPolicy>,
     /// The retry policy for this route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<HTTPProxyRoutesRetryPolicy>,
     /// Services are the services to proxy traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<HTTPProxyRoutesServices>>,
     /// The timeout policy for this route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutPolicy")]
     pub timeout_policy: Option<HTTPProxyRoutesTimeoutPolicy>,
 }
 
@@ -388,11 +291,7 @@ pub struct HTTPProxyRoutesConditions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// QueryParameter specifies the query parameter condition to match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameter")]
     pub query_parameter: Option<HTTPProxyRoutesConditionsQueryParameter>,
     /// Regex defines a regex match for a request.
     /// This field is not allowed in include match conditions.
@@ -412,11 +311,7 @@ pub struct HTTPProxyRoutesConditionsHeader {
     pub exact: Option<String>,
     /// IgnoreCase specifies that string matching should be case insensitive.
     /// Note that this has no effect on the Regex parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
     pub ignore_case: Option<bool>,
     /// Name is the name of the header to match against. Name is required.
     /// Header names are case insensitive.
@@ -448,11 +343,7 @@ pub struct HTTPProxyRoutesConditionsHeader {
     /// does not exist, this header value will be treated as empty. Defaults to false.
     /// Unlike the underlying Envoy implementation this is **only** supported for
     /// negative matches (e.g. NotContains, NotExact).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "treatMissingAsEmpty"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "treatMissingAsEmpty")]
     pub treat_missing_as_empty: Option<bool>,
 }
 
@@ -468,11 +359,7 @@ pub struct HTTPProxyRoutesConditionsQueryParameter {
     pub exact: Option<String>,
     /// IgnoreCase specifies that string matching should be case insensitive.
     /// Note that this has no effect on the Regex parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
     pub ignore_case: Option<bool>,
     /// Name is the name of the query parameter to match against. Name is required.
     /// Query parameter names are case insensitive.
@@ -499,21 +386,13 @@ pub struct HTTPProxyRoutesConditionsQueryParameter {
 pub struct HTTPProxyRoutesCookieRewritePolicies {
     /// DomainRewrite enables rewriting the Set-Cookie Domain element.
     /// If not set, Domain will not be rewritten.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "domainRewrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainRewrite")]
     pub domain_rewrite: Option<HTTPProxyRoutesCookieRewritePoliciesDomainRewrite>,
     /// Name is the name of the cookie for which attributes will be rewritten.
     pub name: String,
     /// PathRewrite enables rewriting the Set-Cookie Path element.
     /// If not set, Path will not be rewritten.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathRewrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathRewrite")]
     pub path_rewrite: Option<HTTPProxyRoutesCookieRewritePoliciesPathRewrite>,
     /// SameSite enables rewriting the Set-Cookie SameSite element.
     /// If not set, SameSite attribute will not be rewritten.
@@ -571,18 +450,10 @@ pub struct HTTPProxyRoutesHealthCheckPolicy {
     /// semantics, i.e. for each range the start is inclusive and the end is exclusive.
     /// Must be within the range [100,600). If not specified, only a 200 response status
     /// is considered healthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expectedStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectedStatuses")]
     pub expected_statuses: Option<Vec<HTTPProxyRoutesHealthCheckPolicyExpectedStatuses>>,
     /// The number of healthy health checks required before a host is marked healthy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthyThresholdCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyThresholdCount")]
     pub healthy_threshold_count: Option<i64>,
     /// The value of the host header in the HTTP health check request.
     /// If left empty (default value), the name "contour-envoy-healthcheck"
@@ -590,27 +461,15 @@ pub struct HTTPProxyRoutesHealthCheckPolicy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// The interval (seconds) between health checks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i64>,
     /// HTTP endpoint used to perform health checks on upstream service
     pub path: String,
     /// The time to wait (seconds) for a health check response
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
     /// The number of unhealthy health checks required before a host is marked unhealthy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyThresholdCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyThresholdCount")]
     pub unhealthy_threshold_count: Option<i64>,
 }
 
@@ -630,36 +489,19 @@ pub struct HTTPProxyRoutesInternalRedirectPolicy {
     /// SafeOnly allows same scheme redirect and safe cross scheme redirect, which means if the downstream
     /// scheme is HTTPS, both HTTPS and HTTP redirect targets are allowed, but if the downstream scheme
     /// is HTTP, only HTTP redirect targets are allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowCrossSchemeRedirect"
-    )]
-    pub allow_cross_scheme_redirect:
-        Option<HTTPProxyRoutesInternalRedirectPolicyAllowCrossSchemeRedirect>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossSchemeRedirect")]
+    pub allow_cross_scheme_redirect: Option<HTTPProxyRoutesInternalRedirectPolicyAllowCrossSchemeRedirect>,
     /// If DenyRepeatedRouteRedirect is true, rejects redirect targets that are pointing to a route that has
     /// been followed by a previous redirect from the current route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "denyRepeatedRouteRedirect"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "denyRepeatedRouteRedirect")]
     pub deny_repeated_route_redirect: Option<bool>,
     /// MaxInternalRedirects An internal redirect is not handled, unless the number of previous internal
     /// redirects that a downstream request has encountered is lower than this value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxInternalRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInternalRedirects")]
     pub max_internal_redirects: Option<i32>,
     /// RedirectResponseCodes If unspecified, only 302 will be treated as internal redirect.
     /// Only 301, 302, 303, 307 and 308 are valid values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redirectResponseCodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectResponseCodes")]
     pub redirect_response_codes: Option<Vec<i64>>,
 }
 
@@ -737,11 +579,7 @@ pub struct HTTPProxyRoutesLoadBalancerPolicy {
     /// supplied list of hash policies is invalid, it will be ignored. If the
     /// list of hash policies is empty after validation, the load balancing
     /// strategy will fall back to the default `RoundRobin`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHashPolicies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHashPolicies")]
     pub request_hash_policies: Option<Vec<HTTPProxyRoutesLoadBalancerPolicyRequestHashPolicies>>,
     /// Strategy specifies the policy used to balance requests
     /// across the pool of backend pods. Valid policy names are
@@ -760,32 +598,18 @@ pub struct HTTPProxyRoutesLoadBalancerPolicyRequestHashPolicies {
     /// HashSourceIP should be set to true when request source IP hash based
     /// load balancing is desired. It must be the only hash option field set,
     /// otherwise this request hash policy object will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hashSourceIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashSourceIP")]
     pub hash_source_ip: Option<bool>,
     /// HeaderHashOptions should be set when request header hash based load
     /// balancing is desired. It must be the only hash option field set,
     /// otherwise this request hash policy object will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerHashOptions"
-    )]
-    pub header_hash_options:
-        Option<HTTPProxyRoutesLoadBalancerPolicyRequestHashPoliciesHeaderHashOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerHashOptions")]
+    pub header_hash_options: Option<HTTPProxyRoutesLoadBalancerPolicyRequestHashPoliciesHeaderHashOptions>,
     /// QueryParameterHashOptions should be set when request query parameter hash based load
     /// balancing is desired. It must be the only hash option field set,
     /// otherwise this request hash policy object will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameterHashOptions"
-    )]
-    pub query_parameter_hash_options:
-        Option<HTTPProxyRoutesLoadBalancerPolicyRequestHashPoliciesQueryParameterHashOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameterHashOptions")]
+    pub query_parameter_hash_options: Option<HTTPProxyRoutesLoadBalancerPolicyRequestHashPoliciesQueryParameterHashOptions>,
     /// Terminal is a flag that allows for short-circuiting computing of a hash
     /// for a given request. If set to true, and the request attribute specified
     /// in the attribute hash options is present, no further hash policies will
@@ -823,11 +647,7 @@ pub struct HTTPProxyRoutesLoadBalancerPolicyRequestHashPoliciesQueryParameterHas
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyRoutesPathRewritePolicy {
     /// ReplacePrefix describes how the path prefix should be replaced.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replacePrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replacePrefix")]
     pub replace_prefix: Option<Vec<HTTPProxyRoutesPathRewritePolicyReplacePrefix>>,
 }
 
@@ -893,39 +713,22 @@ pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptors {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntries {
     /// GenericKey defines a descriptor entry with a static key and value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "genericKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
     pub generic_key: Option<HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesGenericKey>,
     /// RemoteAddress defines a descriptor entry with a key of "remote_address"
     /// and a value equal to the client's IP address (from x-forwarded-for).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteAddress")]
     pub remote_address: Option<HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRemoteAddress>,
     /// RequestHeader defines a descriptor entry that's populated only if
     /// a given header is present on the request. The descriptor key is static,
     /// and the descriptor value is equal to the value of the header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeader")]
     pub request_header: Option<HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeader>,
     /// RequestHeaderValueMatch defines a descriptor entry that's populated
     /// if the request's headers match a set of 1+ match criteria. The
     /// descriptor key is "header_match", and the descriptor value is static.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaderValueMatch"
-    )]
-    pub request_header_value_match:
-        Option<HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderValueMatch>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaderValueMatch")]
+    pub request_header_value_match: Option<HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderValueMatch>,
 }
 
 /// GenericKey defines a descriptor entry with a static key and value.
@@ -942,7 +745,8 @@ pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesGenericKey {
 /// RemoteAddress defines a descriptor entry with a key of "remote_address"
 /// and a value equal to the client's IP address (from x-forwarded-for).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRemoteAddress {}
+pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRemoteAddress {
+}
 
 /// RequestHeader defines a descriptor entry that's populated only if
 /// a given header is present on the request. The descriptor key is static,
@@ -966,18 +770,12 @@ pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderVa
     /// criteria in order to generate a descriptor entry (i.e. true), or not
     /// match the match criteria in order to generate a descriptor entry (i.e. false).
     /// The default is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expectMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectMatch")]
     pub expect_match: Option<bool>,
     /// Headers is a list of 1+ match criteria to apply against the request
     /// to determine whether to populate the descriptor entry or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<
-        Vec<HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderValueMatchHeaders>,
-    >,
+    pub headers: Option<Vec<HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderValueMatchHeaders>>,
     /// Value defines the value of the descriptor entry.
     pub value: String,
 }
@@ -999,11 +797,7 @@ pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderVa
     pub exact: Option<String>,
     /// IgnoreCase specifies that string matching should be case insensitive.
     /// Note that this has no effect on the Regex parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
     pub ignore_case: Option<bool>,
     /// Name is the name of the header to match against. Name is required.
     /// Header names are case insensitive.
@@ -1035,11 +829,7 @@ pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderVa
     /// does not exist, this header value will be treated as empty. Defaults to false.
     /// Unlike the underlying Envoy implementation this is **only** supported for
     /// negative matches (e.g. NotContains, NotExact).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "treatMissingAsEmpty"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "treatMissingAsEmpty")]
     pub treat_missing_as_empty: Option<bool>,
 }
 
@@ -1057,22 +847,13 @@ pub struct HTTPProxyRoutesRateLimitPolicyLocal {
     pub requests: i32,
     /// ResponseHeadersToAdd is an optional list of response headers to
     /// set when a request is rate-limited.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeadersToAdd"
-    )]
-    pub response_headers_to_add:
-        Option<Vec<HTTPProxyRoutesRateLimitPolicyLocalResponseHeadersToAdd>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeadersToAdd")]
+    pub response_headers_to_add: Option<Vec<HTTPProxyRoutesRateLimitPolicyLocalResponseHeadersToAdd>>,
     /// ResponseStatusCode is the HTTP status code to use for responses
     /// to rate-limited requests. Codes must be in the 400-599 range
     /// (inclusive). If not specified, the Envoy default of 429 (Too
     /// Many Requests) is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseStatusCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseStatusCode")]
     pub response_status_code: Option<i32>,
     /// Unit defines the period of time within which requests
     /// over the limit will be rate limited. Valid values are
@@ -1162,11 +943,7 @@ pub struct HTTPProxyRoutesRequestRedirectPolicy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<HTTPProxyRoutesRequestRedirectPolicyScheme>,
     /// StatusCode is the HTTP status code to be used in response.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCode")]
     pub status_code: Option<i64>,
 }
 
@@ -1221,19 +998,11 @@ pub struct HTTPProxyRoutesRetryPolicy {
     pub count: Option<i64>,
     /// PerTryTimeout specifies the timeout per retry attempt.
     /// Ignored if NumRetries is not supplied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perTryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perTryTimeout")]
     pub per_try_timeout: Option<String>,
     /// RetriableStatusCodes specifies the HTTP status codes that should be retried.
     /// This field is only respected when you include `retriable-status-codes` in the `RetryOn` field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retriableStatusCodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retriableStatusCodes")]
     pub retriable_status_codes: Option<Vec<i64>>,
     /// RetryOn specifies the conditions on which to retry a request.
     /// Supported [HTTP conditions](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on):
@@ -1259,19 +1028,11 @@ pub struct HTTPProxyRoutesRetryPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyRoutesServices {
     /// The policies for rewriting Set-Cookie header attributes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cookieRewritePolicies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cookieRewritePolicies")]
     pub cookie_rewrite_policies: Option<Vec<HTTPProxyRoutesServicesCookieRewritePolicies>>,
     /// HealthPort is the port for this service healthcheck.
     /// If not specified, Port is used for service healthchecks.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthPort")]
     pub health_port: Option<i64>,
     /// If Mirror is true the Service will receive a read only mirror of the traffic for this route.
     /// If Mirror is true, then fractional mirroring can be enabled by optionally setting the Weight
@@ -1291,26 +1052,14 @@ pub struct HTTPProxyRoutesServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<HTTPProxyRoutesServicesProtocol>,
     /// The policy for managing request headers during proxying.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeadersPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeadersPolicy")]
     pub request_headers_policy: Option<HTTPProxyRoutesServicesRequestHeadersPolicy>,
     /// The policy for managing response headers during proxying.
     /// Rewriting the 'Host' header is not supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeadersPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeadersPolicy")]
     pub response_headers_policy: Option<HTTPProxyRoutesServicesResponseHeadersPolicy>,
     /// Slow start will gradually increase amount of traffic to a newly added endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "slowStartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slowStartPolicy")]
     pub slow_start_policy: Option<HTTPProxyRoutesServicesSlowStartPolicy>,
     /// UpstreamValidation defines how to verify the backend service's certificate
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1324,21 +1073,13 @@ pub struct HTTPProxyRoutesServices {
 pub struct HTTPProxyRoutesServicesCookieRewritePolicies {
     /// DomainRewrite enables rewriting the Set-Cookie Domain element.
     /// If not set, Domain will not be rewritten.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "domainRewrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainRewrite")]
     pub domain_rewrite: Option<HTTPProxyRoutesServicesCookieRewritePoliciesDomainRewrite>,
     /// Name is the name of the cookie for which attributes will be rewritten.
     pub name: String,
     /// PathRewrite enables rewriting the Set-Cookie Path element.
     /// If not set, Path will not be rewritten.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathRewrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathRewrite")]
     pub path_rewrite: Option<HTTPProxyRoutesServicesCookieRewritePoliciesPathRewrite>,
     /// SameSite enables rewriting the Set-Cookie SameSite element.
     /// If not set, SameSite attribute will not be rewritten.
@@ -1442,11 +1183,7 @@ pub struct HTTPProxyRoutesServicesSlowStartPolicy {
     /// The minimum or starting percentage of traffic to send to new endpoints.
     /// A non-zero value helps avoid a too small initial weight, which may cause endpoints in slow start mode to receive no traffic in the beginning of the slow start window.
     /// If not specified, the default is 10%.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minWeightPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minWeightPercent")]
     pub min_weight_percent: Option<i32>,
     /// The duration of slow start window.
     /// Duration is expressed in the Go [Duration format](https://godoc.org/time#ParseDuration).
@@ -1470,11 +1207,7 @@ pub struct HTTPProxyRoutesServicesValidation {
     pub subject_name: String,
     /// List of keys, of which at least one is expected to be present in the 'subjectAltName of the
     /// presented certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectNames")]
     pub subject_names: Option<Vec<String>>,
 }
 
@@ -1489,11 +1222,7 @@ pub struct HTTPProxyRoutesTimeoutPolicy {
     pub idle: Option<String>,
     /// Timeout for how long connection from the proxy to the upstream service is kept when there are no active requests.
     /// If not supplied, Envoy's default value of 1h applies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleConnection")]
     pub idle_connection: Option<String>,
     /// Timeout for receiving a response from the server after processing a request from client.
     /// If not supplied, Envoy's default value of 15s applies.
@@ -1505,11 +1234,7 @@ pub struct HTTPProxyRoutesTimeoutPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyTcpproxy {
     /// The health check policy for this tcp proxy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckPolicy")]
     pub health_check_policy: Option<HTTPProxyTcpproxyHealthCheckPolicy>,
     /// Include specifies that this tcpproxy should be delegated to another HTTPProxy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1522,11 +1247,7 @@ pub struct HTTPProxyTcpproxy {
     /// The load balancing policy for the backend services. Note that the
     /// `Cookie` and `RequestHash` load balancing strategies cannot be used
     /// here.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerPolicy")]
     pub load_balancer_policy: Option<HTTPProxyTcpproxyLoadBalancerPolicy>,
     /// Services are the services to proxy traffic
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1537,32 +1258,16 @@ pub struct HTTPProxyTcpproxy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyTcpproxyHealthCheckPolicy {
     /// The number of healthy health checks required before a host is marked healthy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthyThresholdCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyThresholdCount")]
     pub healthy_threshold_count: Option<i32>,
     /// The interval (seconds) between health checks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i64>,
     /// The time to wait (seconds) for a health check response
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
     /// The number of unhealthy health checks required before a host is marked unhealthy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyThresholdCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyThresholdCount")]
     pub unhealthy_threshold_count: Option<i32>,
 }
 
@@ -1598,11 +1303,7 @@ pub struct HTTPProxyTcpproxyLoadBalancerPolicy {
     /// supplied list of hash policies is invalid, it will be ignored. If the
     /// list of hash policies is empty after validation, the load balancing
     /// strategy will fall back to the default `RoundRobin`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHashPolicies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHashPolicies")]
     pub request_hash_policies: Option<Vec<HTTPProxyTcpproxyLoadBalancerPolicyRequestHashPolicies>>,
     /// Strategy specifies the policy used to balance requests
     /// across the pool of backend pods. Valid policy names are
@@ -1621,32 +1322,18 @@ pub struct HTTPProxyTcpproxyLoadBalancerPolicyRequestHashPolicies {
     /// HashSourceIP should be set to true when request source IP hash based
     /// load balancing is desired. It must be the only hash option field set,
     /// otherwise this request hash policy object will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hashSourceIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashSourceIP")]
     pub hash_source_ip: Option<bool>,
     /// HeaderHashOptions should be set when request header hash based load
     /// balancing is desired. It must be the only hash option field set,
     /// otherwise this request hash policy object will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerHashOptions"
-    )]
-    pub header_hash_options:
-        Option<HTTPProxyTcpproxyLoadBalancerPolicyRequestHashPoliciesHeaderHashOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerHashOptions")]
+    pub header_hash_options: Option<HTTPProxyTcpproxyLoadBalancerPolicyRequestHashPoliciesHeaderHashOptions>,
     /// QueryParameterHashOptions should be set when request query parameter hash based load
     /// balancing is desired. It must be the only hash option field set,
     /// otherwise this request hash policy object will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameterHashOptions"
-    )]
-    pub query_parameter_hash_options:
-        Option<HTTPProxyTcpproxyLoadBalancerPolicyRequestHashPoliciesQueryParameterHashOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameterHashOptions")]
+    pub query_parameter_hash_options: Option<HTTPProxyTcpproxyLoadBalancerPolicyRequestHashPoliciesQueryParameterHashOptions>,
     /// Terminal is a flag that allows for short-circuiting computing of a hash
     /// for a given request. If set to true, and the request attribute specified
     /// in the attribute hash options is present, no further hash policies will
@@ -1683,19 +1370,11 @@ pub struct HTTPProxyTcpproxyLoadBalancerPolicyRequestHashPoliciesQueryParameterH
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyTcpproxyServices {
     /// The policies for rewriting Set-Cookie header attributes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cookieRewritePolicies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cookieRewritePolicies")]
     pub cookie_rewrite_policies: Option<Vec<HTTPProxyTcpproxyServicesCookieRewritePolicies>>,
     /// HealthPort is the port for this service healthcheck.
     /// If not specified, Port is used for service healthchecks.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthPort")]
     pub health_port: Option<i64>,
     /// If Mirror is true the Service will receive a read only mirror of the traffic for this route.
     /// If Mirror is true, then fractional mirroring can be enabled by optionally setting the Weight
@@ -1715,26 +1394,14 @@ pub struct HTTPProxyTcpproxyServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<HTTPProxyTcpproxyServicesProtocol>,
     /// The policy for managing request headers during proxying.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeadersPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeadersPolicy")]
     pub request_headers_policy: Option<HTTPProxyTcpproxyServicesRequestHeadersPolicy>,
     /// The policy for managing response headers during proxying.
     /// Rewriting the 'Host' header is not supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeadersPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeadersPolicy")]
     pub response_headers_policy: Option<HTTPProxyTcpproxyServicesResponseHeadersPolicy>,
     /// Slow start will gradually increase amount of traffic to a newly added endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "slowStartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slowStartPolicy")]
     pub slow_start_policy: Option<HTTPProxyTcpproxyServicesSlowStartPolicy>,
     /// UpstreamValidation defines how to verify the backend service's certificate
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1748,21 +1415,13 @@ pub struct HTTPProxyTcpproxyServices {
 pub struct HTTPProxyTcpproxyServicesCookieRewritePolicies {
     /// DomainRewrite enables rewriting the Set-Cookie Domain element.
     /// If not set, Domain will not be rewritten.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "domainRewrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainRewrite")]
     pub domain_rewrite: Option<HTTPProxyTcpproxyServicesCookieRewritePoliciesDomainRewrite>,
     /// Name is the name of the cookie for which attributes will be rewritten.
     pub name: String,
     /// PathRewrite enables rewriting the Set-Cookie Path element.
     /// If not set, Path will not be rewritten.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathRewrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathRewrite")]
     pub path_rewrite: Option<HTTPProxyTcpproxyServicesCookieRewritePoliciesPathRewrite>,
     /// SameSite enables rewriting the Set-Cookie SameSite element.
     /// If not set, SameSite attribute will not be rewritten.
@@ -1866,11 +1525,7 @@ pub struct HTTPProxyTcpproxyServicesSlowStartPolicy {
     /// The minimum or starting percentage of traffic to send to new endpoints.
     /// A non-zero value helps avoid a too small initial weight, which may cause endpoints in slow start mode to receive no traffic in the beginning of the slow start window.
     /// If not specified, the default is 10%.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minWeightPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minWeightPercent")]
     pub min_weight_percent: Option<i32>,
     /// The duration of slow start window.
     /// Duration is expressed in the Go [Duration format](https://godoc.org/time#ParseDuration).
@@ -1894,11 +1549,7 @@ pub struct HTTPProxyTcpproxyServicesValidation {
     pub subject_name: String,
     /// List of keys, of which at least one is expected to be present in the 'subjectAltName of the
     /// presented certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectNames")]
     pub subject_names: Option<Vec<String>>,
 }
 
@@ -1915,11 +1566,7 @@ pub struct HTTPProxyVirtualhost {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<HTTPProxyVirtualhostAuthorization>,
     /// Specifies the cross-origin policy to apply to the VirtualHost.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "corsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "corsPolicy")]
     pub cors_policy: Option<HTTPProxyVirtualhostCorsPolicy>,
     /// The fully qualified domain name of the root of the ingress tree
     /// all leaves of the DAG rooted at this object relate to the fqdn.
@@ -1928,35 +1575,19 @@ pub struct HTTPProxyVirtualhost {
     /// requests should be allowed. All other requests will be denied.
     /// Only one of IPAllowFilterPolicy and IPDenyFilterPolicy can be defined.
     /// The rules defined here may be overridden in a Route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipAllowPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAllowPolicy")]
     pub ip_allow_policy: Option<Vec<HTTPProxyVirtualhostIpAllowPolicy>>,
     /// IPDenyFilterPolicy is a list of ipv4/6 filter rules for which matching
     /// requests should be denied. All other requests will be allowed.
     /// Only one of IPAllowFilterPolicy and IPDenyFilterPolicy can be defined.
     /// The rules defined here may be overridden in a Route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipDenyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipDenyPolicy")]
     pub ip_deny_policy: Option<Vec<HTTPProxyVirtualhostIpDenyPolicy>>,
     /// Providers to use for verifying JSON Web Tokens (JWTs) on the virtual host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jwtProviders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtProviders")]
     pub jwt_providers: Option<Vec<HTTPProxyVirtualhostJwtProviders>>,
     /// The policy for rate limiting on the virtual host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rateLimitPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitPolicy")]
     pub rate_limit_policy: Option<HTTPProxyVirtualhostRateLimitPolicy>,
     /// If present the fields describes TLS properties of the virtual
     /// host. The SNI names that will be matched on are described in fqdn,
@@ -1976,18 +1607,10 @@ pub struct HTTPProxyVirtualhost {
 pub struct HTTPProxyVirtualhostAuthorization {
     /// AuthPolicy sets a default authorization policy for client requests.
     /// This policy will be used unless overridden by individual routes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authPolicy")]
     pub auth_policy: Option<HTTPProxyVirtualhostAuthorizationAuthPolicy>,
     /// ExtensionServiceRef specifies the extension resource that will authorize client requests.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extensionRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extensionRef")]
     pub extension_ref: Option<HTTPProxyVirtualhostAuthorizationExtensionRef>,
     /// If FailOpen is true, the client request is forwarded to the upstream service
     /// even if the authorization server fails to respond. This field should not be
@@ -1999,18 +1622,10 @@ pub struct HTTPProxyVirtualhostAuthorization {
     /// Timeout durations are expressed in the Go [Duration format](https://godoc.org/time#ParseDuration).
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     /// The string "infinity" is also a valid input and specifies no timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseTimeout")]
     pub response_timeout: Option<String>,
     /// WithRequestBody specifies configuration for sending the client request's body to authorization server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withRequestBody"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withRequestBody")]
     pub with_request_body: Option<HTTPProxyVirtualhostAuthorizationWithRequestBody>,
 }
 
@@ -2036,11 +1651,7 @@ pub struct HTTPProxyVirtualhostAuthorizationAuthPolicy {
 pub struct HTTPProxyVirtualhostAuthorizationExtensionRef {
     /// API version of the referent.
     /// If this field is not specified, the default "projectcontour.io/v1alpha1" will be used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
@@ -2057,25 +1668,13 @@ pub struct HTTPProxyVirtualhostAuthorizationExtensionRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyVirtualhostAuthorizationWithRequestBody {
     /// If AllowPartialMessage is true, then Envoy will buffer the body until MaxRequestBytes are reached.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPartialMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPartialMessage")]
     pub allow_partial_message: Option<bool>,
     /// MaxRequestBytes sets the maximum size of message body ExtAuthz filter will hold in-memory.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestBytes")]
     pub max_request_bytes: Option<i32>,
     /// If PackAsBytes is true, the body sent to Authorization Server is in raw bytes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packAsBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packAsBytes")]
     pub pack_as_bytes: Option<bool>,
 }
 
@@ -2083,18 +1682,10 @@ pub struct HTTPProxyVirtualhostAuthorizationWithRequestBody {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyVirtualhostCorsPolicy {
     /// Specifies whether the resource allows credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowCredentials"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCredentials")]
     pub allow_credentials: Option<bool>,
     /// AllowHeaders specifies the content for the *access-control-allow-headers* header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowHeaders")]
     pub allow_headers: Option<Vec<String>>,
     /// AllowMethods specifies the content for the *access-control-allow-methods* header.
     #[serde(rename = "allowMethods")]
@@ -2109,18 +1700,10 @@ pub struct HTTPProxyVirtualhostCorsPolicy {
     pub allow_origin: Vec<String>,
     /// AllowPrivateNetwork specifies whether to allow private network requests.
     /// See https://developer.chrome.com/blog/private-network-access-preflight.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivateNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivateNetwork")]
     pub allow_private_network: Option<bool>,
     /// ExposeHeaders Specifies the content for the *access-control-expose-headers* header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposeHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeHeaders")]
     pub expose_headers: Option<Vec<String>>,
     /// MaxAge indicates for how long the results of a preflight request can be cached.
     /// MaxAge durations are expressed in the Go [Duration format](https://godoc.org/time#ParseDuration).
@@ -2189,11 +1772,7 @@ pub struct HTTPProxyVirtualhostJwtProviders {
     /// Whether the JWT should be forwarded to the backend
     /// service after successful verification. By default,
     /// the JWT is not forwarded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardJWT"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardJWT")]
     pub forward_jwt: Option<bool>,
     /// Issuer that JWTs are required to have in the "iss" field.
     /// If not provided, JWT issuers are not checked.
@@ -2211,11 +1790,7 @@ pub struct HTTPProxyVirtualhostJwtProviders {
 pub struct HTTPProxyVirtualhostJwtProvidersRemoteJwks {
     /// How long to cache the JWKS locally. If not specified,
     /// Envoy's default of 5m applies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheDuration")]
     pub cache_duration: Option<String>,
     /// The DNS IP address resolution policy for the JWKS URI.
     /// When configured as "v4", the DNS resolver will only perform a lookup
@@ -2229,11 +1804,7 @@ pub struct HTTPProxyVirtualhostJwtProvidersRemoteJwks {
     /// in the config file or ContourConfiguration applies (defaults to "auto").
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto.html#envoy-v3-api-enum-config-cluster-v3-cluster-dnslookupfamily
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsLookupFamily"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsLookupFamily")]
     pub dns_lookup_family: Option<HTTPProxyVirtualhostJwtProvidersRemoteJwksDnsLookupFamily>,
     /// How long to wait for a response from the URI.
     /// If not specified, a default of 1s applies.
@@ -2273,11 +1844,7 @@ pub struct HTTPProxyVirtualhostJwtProvidersRemoteJwksValidation {
     pub subject_name: String,
     /// List of keys, of which at least one is expected to be present in the 'subjectAltName of the
     /// presented certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectNames")]
     pub subject_names: Option<Vec<String>>,
 }
 
@@ -2324,41 +1891,22 @@ pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptors {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntries {
     /// GenericKey defines a descriptor entry with a static key and value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "genericKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
     pub generic_key: Option<HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesGenericKey>,
     /// RemoteAddress defines a descriptor entry with a key of "remote_address"
     /// and a value equal to the client's IP address (from x-forwarded-for).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteAddress"
-    )]
-    pub remote_address:
-        Option<HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRemoteAddress>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteAddress")]
+    pub remote_address: Option<HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRemoteAddress>,
     /// RequestHeader defines a descriptor entry that's populated only if
     /// a given header is present on the request. The descriptor key is static,
     /// and the descriptor value is equal to the value of the header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeader"
-    )]
-    pub request_header:
-        Option<HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHeader>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeader")]
+    pub request_header: Option<HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHeader>,
     /// RequestHeaderValueMatch defines a descriptor entry that's populated
     /// if the request's headers match a set of 1+ match criteria. The
     /// descriptor key is "header_match", and the descriptor value is static.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaderValueMatch"
-    )]
-    pub request_header_value_match:
-        Option<HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderValueMatch>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaderValueMatch")]
+    pub request_header_value_match: Option<HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderValueMatch>,
 }
 
 /// GenericKey defines a descriptor entry with a static key and value.
@@ -2375,7 +1923,8 @@ pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesGenericKey
 /// RemoteAddress defines a descriptor entry with a key of "remote_address"
 /// and a value equal to the client's IP address (from x-forwarded-for).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRemoteAddress {}
+pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRemoteAddress {
+}
 
 /// RequestHeader defines a descriptor entry that's populated only if
 /// a given header is present on the request. The descriptor key is static,
@@ -2416,8 +1965,7 @@ pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHea
 /// TreatMissingAsEmpty.
 /// IgnoreCase has no effect for Regex.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderValueMatchHeaders
-{
+pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderValueMatchHeaders {
     /// Contains specifies a substring that must be present in
     /// the header value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2427,11 +1975,7 @@ pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHea
     pub exact: Option<String>,
     /// IgnoreCase specifies that string matching should be case insensitive.
     /// Note that this has no effect on the Regex parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
     pub ignore_case: Option<bool>,
     /// Name is the name of the header to match against. Name is required.
     /// Header names are case insensitive.
@@ -2463,11 +2007,7 @@ pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHea
     /// does not exist, this header value will be treated as empty. Defaults to false.
     /// Unlike the underlying Envoy implementation this is **only** supported for
     /// negative matches (e.g. NotContains, NotExact).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "treatMissingAsEmpty"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "treatMissingAsEmpty")]
     pub treat_missing_as_empty: Option<bool>,
 }
 
@@ -2485,22 +2025,13 @@ pub struct HTTPProxyVirtualhostRateLimitPolicyLocal {
     pub requests: i32,
     /// ResponseHeadersToAdd is an optional list of response headers to
     /// set when a request is rate-limited.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeadersToAdd"
-    )]
-    pub response_headers_to_add:
-        Option<Vec<HTTPProxyVirtualhostRateLimitPolicyLocalResponseHeadersToAdd>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeadersToAdd")]
+    pub response_headers_to_add: Option<Vec<HTTPProxyVirtualhostRateLimitPolicyLocalResponseHeadersToAdd>>,
     /// ResponseStatusCode is the HTTP status code to use for responses
     /// to rate-limited requests. Codes must be in the 400-599 range
     /// (inclusive). If not specified, the Envoy default of 429 (Too
     /// Many Requests) is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseStatusCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseStatusCode")]
     pub response_status_code: Option<i32>,
     /// Unit defines the period of time within which requests
     /// over the limit will be rate limited. Valid values are
@@ -2546,37 +2077,21 @@ pub struct HTTPProxyVirtualhostTls {
     /// be only used in conjunction with an external authorization server that
     /// performs client validation as Contour will ensure client certificates
     /// are passed along.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientValidation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientValidation")]
     pub client_validation: Option<HTTPProxyVirtualhostTlsClientValidation>,
     /// EnableFallbackCertificate defines if the vhost should allow a default certificate to
     /// be applied which handles all requests which don't match the SNI defined in this vhost.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableFallbackCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFallbackCertificate")]
     pub enable_fallback_certificate: Option<bool>,
     /// MaximumProtocolVersion is the maximum TLS version this vhost should
     /// negotiate. Valid options are `1.2` and `1.3` (default). Any other value
     /// defaults to TLS 1.3.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumProtocolVersion")]
     pub maximum_protocol_version: Option<String>,
     /// MinimumProtocolVersion is the minimum TLS version this vhost should
     /// negotiate. Valid options are `1.2` (default) and `1.3`. Any other value
     /// defaults to TLS 1.2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumProtocolVersion")]
     pub minimum_protocol_version: Option<String>,
     /// Passthrough defines whether the encrypted TLS handshake will be
     /// passed through to the backing cluster. Either Passthrough or
@@ -2589,11 +2104,7 @@ pub struct HTTPProxyVirtualhostTls {
     /// for the virtual host's FQDN.
     /// The name can be optionally prefixed with namespace "namespace/name".
     /// When cross-namespace reference is used, TLSCertificateDelegation resource must exist in the namespace to grant access to the secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -2620,11 +2131,7 @@ pub struct HTTPProxyVirtualhostTlsClientValidation {
     pub ca_secret: Option<String>,
     /// If this option is set to true, only the certificate at the end of the
     /// certificate chain will be subject to validation by CRL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "crlOnlyVerifyLeafCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "crlOnlyVerifyLeafCert")]
     pub crl_only_verify_leaf_cert: Option<bool>,
     /// Name of a Kubernetes opaque secret that contains a concatenated list of PEM encoded CRLs.
     /// The secret must contain key named crl.pem.
@@ -2637,23 +2144,14 @@ pub struct HTTPProxyVirtualhostTlsClientValidation {
     pub crl_secret: Option<String>,
     /// ForwardClientCertificate adds the selected data from the passed client TLS certificate
     /// to the x-forwarded-client-cert header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardClientCertificate"
-    )]
-    pub forward_client_certificate:
-        Option<HTTPProxyVirtualhostTlsClientValidationForwardClientCertificate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardClientCertificate")]
+    pub forward_client_certificate: Option<HTTPProxyVirtualhostTlsClientValidationForwardClientCertificate>,
     /// OptionalClientCertificate when set to true will request a client certificate
     /// but allow the connection to continue if the client does not provide one.
     /// If a client certificate is sent, it will be verified according to the
     /// other properties, which includes disabling validation if
     /// SkipClientCertValidation is set. Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "optionalClientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "optionalClientCertificate")]
     pub optional_client_certificate: Option<bool>,
     /// SkipClientCertValidation disables downstream client certificate
     /// validation. Defaults to false. This field is intended to be used in
@@ -2663,11 +2161,7 @@ pub struct HTTPProxyVirtualhostTlsClientValidation {
     /// Envoy. If CACertificate is specified, client certificates are required on
     /// requests, but not verified. If external authorization is in use, they are
     /// presented to the external authorization server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipClientCertValidation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipClientCertValidation")]
     pub skip_client_cert_validation: Option<bool>,
 }
 
@@ -2706,20 +2200,12 @@ pub struct HTTPProxyStatus {
     /// namespace your condition with a label, like `controller.domain.com/ConditionName`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentStatus")]
     pub current_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// LoadBalancer contains the current status of the load balancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<HTTPProxyStatusLoadBalancer>,
 }
 
@@ -2773,3 +2259,4 @@ pub struct HTTPProxyStatusLoadBalancerIngressPorts {
     /// The supported values are: "TCP", "UDP", "SCTP"
     pub protocol: String,
 }
+

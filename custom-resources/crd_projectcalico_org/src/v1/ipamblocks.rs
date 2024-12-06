@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// IPAMBlockSpec contains the specification for an IPAMBlock resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "crd.projectcalico.org",
-    version = "v1",
-    kind = "IPAMBlock",
-    plural = "ipamblocks"
-)]
+#[kube(group = "crd.projectcalico.org", version = "v1", kind = "IPAMBlock", plural = "ipamblocks")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IPAMBlockSpec {
     /// Affinity of the block, if this block has one. If set, it will be of the form "host:<hostname>". If not set, this block is not affine to a host.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -35,18 +30,10 @@ pub struct IPAMBlockSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deleted: Option<bool>,
     /// We store a sequence number that is updated each time the block is written. Each allocation will also store the sequence number of the block at the time of its creation. When releasing an IP, passing the sequence number associated with the allocation allows us to protect against a race condition and ensure the IP hasn't been released and re-allocated since the release request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sequenceNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sequenceNumber")]
     pub sequence_number: Option<i64>,
     /// Map of allocated ordinal within the block to sequence number of the block at the time of allocation. Kubernetes does not allow numerical keys for maps, so the key is cast to a string.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sequenceNumberForAllocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sequenceNumberForAllocation")]
     pub sequence_number_for_allocation: Option<BTreeMap<String, i64>>,
     /// StrictAffinity on the IPAMBlock is deprecated and no longer used by the code. Use IPAMConfig StrictAffinity instead.
     #[serde(rename = "strictAffinity")]
@@ -62,3 +49,4 @@ pub struct IPAMBlockAttributes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secondary: Option<BTreeMap<String, String>>,
 }
+

@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// User resource definition v2 from Teleport
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "resources.teleport.dev",
-    version = "v2",
-    kind = "TeleportUser",
-    plural = "teleportusers"
-)]
+#[kube(group = "resources.teleport.dev", version = "v2", kind = "TeleportUser", plural = "teleportusers")]
 #[kube(namespaced)]
 #[kube(status = "TeleportUserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TeleportUserSpec {
     /// GithubIdentities list associated Github OAuth2 identities that let user log in using externally verified identity
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -51,11 +46,7 @@ pub struct TeleportUserGithubIdentities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connector_id: Option<String>,
     /// SAMLSingleLogoutURL is the SAML Single log-out URL to initiate SAML SLO (single log-out), if applicable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "samlSingleLogoutUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "samlSingleLogoutUrl")]
     pub saml_single_logout_url: Option<String>,
     /// Username is username supplied by external identity provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -68,11 +59,7 @@ pub struct TeleportUserOidcIdentities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connector_id: Option<String>,
     /// SAMLSingleLogoutURL is the SAML Single log-out URL to initiate SAML SLO (single log-out), if applicable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "samlSingleLogoutUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "samlSingleLogoutUrl")]
     pub saml_single_logout_url: Option<String>,
     /// Username is username supplied by external identity provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -85,11 +72,7 @@ pub struct TeleportUserSamlIdentities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connector_id: Option<String>,
     /// SAMLSingleLogoutURL is the SAML Single log-out URL to initiate SAML SLO (single log-out), if applicable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "samlSingleLogoutUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "samlSingleLogoutUrl")]
     pub saml_single_logout_url: Option<String>,
     /// Username is username supplied by external identity provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -102,10 +85,7 @@ pub struct TeleportUserStatus {
     /// Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "teleportResourceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "teleportResourceID")]
     pub teleport_resource_id: Option<i64>,
 }
+

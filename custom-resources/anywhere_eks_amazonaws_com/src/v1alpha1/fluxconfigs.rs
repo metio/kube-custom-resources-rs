@@ -5,32 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// FluxConfigSpec defines the desired state of FluxConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "anywhere.eks.amazonaws.com",
-    version = "v1alpha1",
-    kind = "FluxConfig",
-    plural = "fluxconfigs"
-)]
+#[kube(group = "anywhere.eks.amazonaws.com", version = "v1alpha1", kind = "FluxConfig", plural = "fluxconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FluxConfigSpec {
     /// Git branch. Defaults to main.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
     /// ClusterConfigPath relative to the repository root, when specified the cluster sync will be scoped to this path.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterConfigPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterConfigPath")]
     pub cluster_config_path: Option<String>,
     /// Used to specify Git provider that will be used to host the git files
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -39,11 +30,7 @@ pub struct FluxConfigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub github: Option<FluxConfigGithub>,
     /// SystemNamespace scope for this operation. Defaults to flux-system
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemNamespace")]
     pub system_namespace: Option<String>,
 }
 
@@ -54,11 +41,7 @@ pub struct FluxConfigGit {
     #[serde(rename = "repositoryUrl")]
     pub repository_url: String,
     /// SSH public key algorithm for the private key specified (rsa, ecdsa, ed25519) (default ecdsa)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sshKeyAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKeyAlgorithm")]
     pub ssh_key_algorithm: Option<String>,
 }
 
@@ -76,4 +59,6 @@ pub struct FluxConfigGithub {
 
 /// FluxConfigStatus defines the observed state of FluxConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FluxConfigStatus {}
+pub struct FluxConfigStatus {
+}
+

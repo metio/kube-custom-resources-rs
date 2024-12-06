@@ -4,34 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// EnvoyDeploymentSpec defines the desired state of EnvoyDeployment
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.marin3r.3scale.net",
-    version = "v1alpha1",
-    kind = "EnvoyDeployment",
-    plural = "envoydeployments"
-)]
+#[kube(group = "operator.marin3r.3scale.net", version = "v1alpha1", kind = "EnvoyDeployment", plural = "envoydeployments")]
 #[kube(namespaced)]
 #[kube(status = "EnvoyDeploymentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EnvoyDeploymentSpec {
     /// Configures envoy's admin access log path. Defaults to /dev/null.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminAccessLogPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminAccessLogPath")]
     pub admin_access_log_path: Option<String>,
     /// Configures envoy's admin port. Defaults to 9901.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
@@ -63,35 +54,19 @@ pub struct EnvoyDeploymentSpec {
     pub image: Option<String>,
     /// InitManager defines configuration for Envoy's init
     /// manager, which handles initialization for Envoy pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initManager"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initManager")]
     pub init_manager: Option<EnvoyDeploymentInitManager>,
     /// Liveness probe for the envoy pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<EnvoyDeploymentLivenessProbe>,
     /// Configures PodDisruptionBudget for the envoy Pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podDisruptionBudget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<EnvoyDeploymentPodDisruptionBudget>,
     /// Ports exposed by the Envoy container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<EnvoyDeploymentPorts>>,
     /// Readiness probe for the envoy pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<EnvoyDeploymentReadinessProbe>,
     /// Replicas configures the number of replicas in the Deployment. One of
     /// 'static', 'dynamic' can be set. If both are set, static has precedence.
@@ -103,11 +78,7 @@ pub struct EnvoyDeploymentSpec {
     pub resources: Option<EnvoyDeploymentResources>,
     /// ShutdownManager defines configuration for Envoy's shutdown
     /// manager, which handles graceful termination of Envoy pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shutdownManager"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shutdownManager")]
     pub shutdown_manager: Option<EnvoyDeploymentShutdownManager>,
 }
 
@@ -115,25 +86,13 @@ pub struct EnvoyDeploymentSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<EnvoyDeploymentAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<EnvoyDeploymentAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<EnvoyDeploymentAffinityPodAntiAffinity>,
 }
 
@@ -149,26 +108,15 @@ pub struct EnvoyDeploymentAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -195,8 +143,7 @@ pub struct EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -214,8 +161,7 @@ pub struct EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -258,8 +204,7 @@ pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -277,8 +222,7 @@ pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -305,14 +249,8 @@ pub struct EnvoyDeploymentAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -320,14 +258,8 @@ pub struct EnvoyDeploymentAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -409,8 +341,7 @@ pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -444,8 +375,7 @@ pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -532,8 +462,7 @@ pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -567,8 +496,7 @@ pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -594,14 +522,8 @@ pub struct EnvoyDeploymentAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -609,14 +531,8 @@ pub struct EnvoyDeploymentAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -698,8 +614,7 @@ pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -733,8 +648,7 @@ pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -821,8 +735,7 @@ pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -856,8 +769,7 @@ pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -907,21 +819,13 @@ pub struct EnvoyDeploymentPodDisruptionBudget {
     /// "selector" are unavailable after the eviction, i.e. even in absence of
     /// the evicted pod. For example, one can prevent all voluntary evictions
     /// by specifying 0. This is a mutually exclusive setting with "minAvailable".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// An eviction is allowed if at least "minAvailable" pods selected by
     /// "selector" will still be available after the eviction, i.e. even in the
     /// absence of the evicted pod.  So for example you can prevent all voluntary
     /// evictions by specifying "100%".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
 }
 
@@ -996,11 +900,7 @@ pub struct EnvoyDeploymentReplicasDynamic {
     /// alpha feature gate HPAScaleToZero is enabled and at least one Object or External
     /// metric is configured.  Scaling is active as long as at least one metric value is
     /// available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
 }
 
@@ -1036,11 +936,7 @@ pub struct EnvoyDeploymentReplicasDynamicBehaviorScaleDown {
     pub policies: Option<Vec<EnvoyDeploymentReplicasDynamicBehaviorScaleDownPolicies>>,
     /// selectPolicy is used to specify which policy should be used.
     /// If not set, the default value Max is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selectPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
     /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
     /// considered while scaling up or scaling down.
@@ -1048,11 +944,7 @@ pub struct EnvoyDeploymentReplicasDynamicBehaviorScaleDown {
     /// If not set, use the default values:
     /// - For scale up: 0 (i.e. no stabilization is done).
     /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stabilizationWindowSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
 
@@ -1084,11 +976,7 @@ pub struct EnvoyDeploymentReplicasDynamicBehaviorScaleUp {
     pub policies: Option<Vec<EnvoyDeploymentReplicasDynamicBehaviorScaleUpPolicies>>,
     /// selectPolicy is used to specify which policy should be used.
     /// If not set, the default value Max is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selectPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
     /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
     /// considered while scaling up or scaling down.
@@ -1096,11 +984,7 @@ pub struct EnvoyDeploymentReplicasDynamicBehaviorScaleUp {
     /// If not set, use the default values:
     /// - For scale up: 0 (i.e. no stabilization is done).
     /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stabilizationWindowSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
 
@@ -1129,11 +1013,7 @@ pub struct EnvoyDeploymentReplicasDynamicMetrics {
     /// built in to Kubernetes, and have special scaling options on top of those
     /// available to normal per-pod metrics using the "pods" source.
     /// This is an alpha feature and can be enabled by the HPAContainerMetrics feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerResource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResource")]
     pub container_resource: Option<EnvoyDeploymentReplicasDynamicMetricsContainerResource>,
     /// external refers to a global metric that is not associated
     /// with any Kubernetes object. It allows autoscaling based on information
@@ -1189,19 +1069,11 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsContainerResourceTarget {
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
     /// Currently only valid for Resource metric source type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the target value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
     #[serde(rename = "type")]
@@ -1242,21 +1114,12 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsExternalMetric {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsExternalMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<EnvoyDeploymentReplicasDynamicMetricsExternalMetricSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<EnvoyDeploymentReplicasDynamicMetricsExternalMetricSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1284,19 +1147,11 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsExternalTarget {
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
     /// Currently only valid for Resource metric source type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the target value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
     #[serde(rename = "type")]
@@ -1323,11 +1178,7 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsObject {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsObjectDescribedObject {
     /// apiVersion is the API version of the referent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
@@ -1353,21 +1204,12 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsObjectMetric {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsObjectMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<EnvoyDeploymentReplicasDynamicMetricsObjectMetricSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<EnvoyDeploymentReplicasDynamicMetricsObjectMetricSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1395,19 +1237,11 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsObjectTarget {
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
     /// Currently only valid for Resource metric source type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the target value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
     #[serde(rename = "type")]
@@ -1446,21 +1280,12 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsPodsMetric {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsPodsMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<EnvoyDeploymentReplicasDynamicMetricsPodsMetricSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<EnvoyDeploymentReplicasDynamicMetricsPodsMetricSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1488,19 +1313,11 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsPodsTarget {
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
     /// Currently only valid for Resource metric source type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the target value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
     #[serde(rename = "type")]
@@ -1530,19 +1347,11 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsResourceTarget {
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
     /// Currently only valid for Resource metric source type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the target value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
     #[serde(rename = "type")]
@@ -1558,12 +1367,12 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsResourceTarget {
 pub struct EnvoyDeploymentResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<EnvoyDeploymentResourcesClaims>>,
@@ -1594,11 +1403,7 @@ pub struct EnvoyDeploymentResourcesClaims {
 pub struct EnvoyDeploymentShutdownManager {
     /// The drain strategy for the graceful shutdown. It also affects
     /// drain when listeners are modified or removed via LDS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "drainStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "drainStrategy")]
     pub drain_strategy: Option<EnvoyDeploymentShutdownManagerDrainStrategy>,
     /// The time in seconds that Envoy will drain connections during shutdown.
     /// It also affects drain behaviour when listeners are modified or removed via LDS.
@@ -1608,11 +1413,7 @@ pub struct EnvoyDeploymentShutdownManager {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Configures the sutdown manager's server port. Defaults to 8090.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverPort")]
     pub server_port: Option<i32>,
 }
 
@@ -1629,18 +1430,10 @@ pub enum EnvoyDeploymentShutdownManagerDrainStrategy {
 /// EnvoyDeploymentStatus defines the observed state of EnvoyDeployment
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentName")]
     pub deployment_name: Option<String>,
     /// DeploymentStatus is the most recently observed status of the Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStatus")]
     pub deployment_status: Option<EnvoyDeploymentStatusDeploymentStatus>,
 }
 
@@ -1648,37 +1441,21 @@ pub struct EnvoyDeploymentStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentStatusDeploymentStatus {
     /// Total number of available pods (ready for at least minReadySeconds) targeted by this deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// Count of hash collisions for the Deployment. The Deployment controller uses this
     /// field as a collision avoidance mechanism when it needs to create the name for the
     /// newest ReplicaSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collisionCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
     pub collision_count: Option<i32>,
     /// Represents the latest available observations of a deployment's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The generation observed by the deployment controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// readyReplicas is the number of pods targeted by this Deployment with a Ready Condition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this deployment (their labels match the selector).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1686,17 +1463,10 @@ pub struct EnvoyDeploymentStatusDeploymentStatus {
     /// Total number of unavailable pods targeted by this deployment. This is the total number of
     /// pods that are still required for the deployment to have 100% available capacity. They may
     /// either be pods that are running but not yet available or pods that still have not been created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unavailableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this deployment that have the desired template spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
 }
+

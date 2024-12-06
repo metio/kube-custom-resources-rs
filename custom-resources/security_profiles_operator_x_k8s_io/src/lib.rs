@@ -1,9 +1,7 @@
 /*!
-This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/). Each binding is generated with [kopium](https://github.com/kube-rs/kopium), updated weekly, and released monthly.
+This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/) for the `security-profiles-operator.x-k8s.io` group. Each binding is generated with [kopium](https://github.com/kube-rs/kopium), updated and released weekly.
 
-# security_profiles_operator_x_k8s_io
-
-Custom resources in this crate belong to the `security-profiles-operator.x-k8s.io` group. The following versions and custom resources are available:
+# Available Custom Resources
 
 ## security-profiles-operator.x-k8s.io/v1alpha1
 - `AppArmorProfile`

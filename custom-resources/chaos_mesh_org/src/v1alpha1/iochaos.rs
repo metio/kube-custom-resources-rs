@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// IOChaosSpec defines the desired state of IOChaos
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "IOChaos",
-    plural = "iochaos"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "IOChaos", plural = "iochaos")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct IOChaosSpec {
     /// Action defines the specific pod chaos action. Supported action: latency / fault / attrOverride / mistake
     pub action: IOChaosAction,
@@ -28,11 +23,7 @@ pub struct IOChaosSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attr: Option<IOChaosAttr>,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Delay defines the value of I/O chaos action delay. A delay string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -58,11 +49,7 @@ pub struct IOChaosSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<i64>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: IOChaosSelector,
@@ -151,11 +138,7 @@ pub struct IOChaosMistake {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
     /// There will be [1, MaxOccurrences] segments of wrong data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxOccurrences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxOccurrences")]
     pub max_occurrences: Option<i64>,
 }
 
@@ -187,52 +170,28 @@ pub enum IOChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IOChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<IOChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -277,17 +236,9 @@ pub struct IOChaosStatusConditions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IOChaosStatusExperiment {
     /// Records are used to track the running status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerRecords")]
     pub container_records: Option<Vec<IOChaosStatusExperimentContainerRecords>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredPhase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredPhase")]
     pub desired_phase: Option<IOChaosStatusExperimentDesiredPhase>,
 }
 
@@ -328,3 +279,4 @@ pub enum IOChaosStatusExperimentDesiredPhase {
     Run,
     Stop,
 }
+

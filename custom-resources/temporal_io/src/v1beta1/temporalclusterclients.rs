@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// TemporalClusterClientSpec defines the desired state of ClusterClient.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "temporal.io",
-    version = "v1beta1",
-    kind = "TemporalClusterClient",
-    plural = "temporalclusterclients"
-)]
+#[kube(group = "temporal.io", version = "v1beta1", kind = "TemporalClusterClient", plural = "temporalclusterclients")]
 #[kube(namespaced)]
 #[kube(status = "TemporalClusterClientStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TemporalClusterClientSpec {
     /// Reference to the temporal cluster the client will get access to.
     #[serde(rename = "clusterRef")]
@@ -62,3 +57,4 @@ pub struct TemporalClusterClientStatusSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

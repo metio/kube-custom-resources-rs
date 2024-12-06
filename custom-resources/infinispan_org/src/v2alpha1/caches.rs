@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// CacheSpec defines the desired state of Cache
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infinispan.org",
-    version = "v2alpha1",
-    kind = "Cache",
-    plural = "caches"
-)]
+#[kube(group = "infinispan.org", version = "v2alpha1", kind = "Cache", plural = "caches")]
 #[kube(namespaced)]
 #[kube(status = "CacheStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CacheSpec {
     /// Deprecated. This no longer has any effect. The operator's admin credentials are now used to perform cache operations
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminAuth")]
@@ -36,11 +31,7 @@ pub struct CacheSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
     /// Name of the template to be used to create this cache
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateName")]
     pub template_name: Option<String>,
     /// How updates to Cache CR template should be reconciled on the Infinispan server
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -54,11 +45,7 @@ pub struct CacheAdminAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<CacheAdminAuthPassword>,
     /// The secret that contains user credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// Secret and key containing the admin username for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -119,11 +106,7 @@ pub struct CacheStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<CacheStatusConditions>>,
     /// Deprecated. This is no longer set. Service name that exposes the cache inside the cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -139,3 +122,4 @@ pub struct CacheStatusConditions {
     #[serde(rename = "type")]
     pub r#type: String,
 }
+

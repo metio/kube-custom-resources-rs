@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Configuration spec.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "chainsaw.kyverno.io",
-    version = "v1alpha1",
-    kind = "Configuration",
-    plural = "configurations"
-)]
+#[kube(group = "chainsaw.kyverno.io", version = "v1alpha1", kind = "Configuration", plural = "configurations")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ConfigurationSpec {
     /// Catch defines what the tests steps will execute when an error happens.
     /// This will be combined with catch handlers defined at the test and step levels.
@@ -33,46 +28,26 @@ pub struct ConfigurationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compiler: Option<ConfigurationCompiler>,
     /// DelayBeforeCleanup adds a delay between the time a test ends and the time cleanup starts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "delayBeforeCleanup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "delayBeforeCleanup")]
     pub delay_before_cleanup: Option<String>,
     /// DeletionPropagationPolicy decides if a deletion will propagate to the dependents of
     /// the object, and how the garbage collector will handle the propagation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPropagationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPropagationPolicy")]
     pub deletion_propagation_policy: Option<ConfigurationDeletionPropagationPolicy>,
     /// ExcludeTestRegex is used to exclude tests based on a regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeTestRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeTestRegex")]
     pub exclude_test_regex: Option<String>,
     /// FailFast determines whether the test should stop upon encountering the first failure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failFast")]
     pub fail_fast: Option<bool>,
     /// ForceTerminationGracePeriod forces the termination grace period on pods, statefulsets, daemonsets and deployments.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forceTerminationGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceTerminationGracePeriod")]
     pub force_termination_grace_period: Option<String>,
     /// FullName makes use of the full test case folder path instead of the folder name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fullName")]
     pub full_name: Option<bool>,
     /// IncludeTestRegex is used to include tests based on a regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeTestRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeTestRegex")]
     pub include_test_regex: Option<String>,
     /// Namespace defines the namespace to use for tests.
     /// If not specified, every test will execute in a random ephemeral namespace
@@ -80,57 +55,29 @@ pub struct ConfigurationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// NamespaceTemplate defines a template to create the test namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceTemplate")]
     pub namespace_template: Option<serde_json::Value>,
     /// NamespaceTemplateCompiler defines the default compiler to use when evaluating expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceTemplateCompiler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceTemplateCompiler")]
     pub namespace_template_compiler: Option<ConfigurationNamespaceTemplateCompiler>,
     /// The maximum number of tests to run at once.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallel: Option<i64>,
     /// RepeatCount indicates how many times the tests should be executed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "repeatCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repeatCount")]
     pub repeat_count: Option<i64>,
     /// ReportFormat determines test report format (JSON|XML|JUNIT-TEST|JUNIT-STEP|JUNIT-OPERATION|nil) nil == no report.
     /// maps to report.Type, however we don't want generated.deepcopy to have reference to it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reportFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportFormat")]
     pub report_format: Option<ConfigurationReportFormat>,
     /// ReportName defines the name of report to create. It defaults to "chainsaw-report".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reportName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportName")]
     pub report_name: Option<String>,
     /// ReportPath defines the path.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reportPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportPath")]
     pub report_path: Option<String>,
     /// If set, do not delete the resources after running the tests (implies SkipClusterDelete).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipDelete")]
     pub skip_delete: Option<bool>,
     /// Template determines whether resources should be considered for templating.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -209,11 +156,7 @@ pub struct ConfigurationCatchCommand {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<ConfigurationCatchCommandOutputs>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -324,11 +267,7 @@ pub struct ConfigurationCatchDelete {
     /// DeletionPropagationPolicy decides if a deletion will propagate to the dependents of
     /// the object, and how the garbage collector will handle the propagation.
     /// Overrides the deletion propagation policy set in the Configuration, the Test and the TestStep.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPropagationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPropagationPolicy")]
     pub deletion_propagation_policy: Option<ConfigurationCatchDeleteDeletionPropagationPolicy>,
     /// Expect defines a list of matched checks to validate the operation outcome.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -449,11 +388,7 @@ pub struct ConfigurationCatchDescribe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
     /// Show Events indicates whether to include related events.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "showEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "showEvents")]
     pub show_events: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -624,11 +559,7 @@ pub struct ConfigurationCatchScript {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<ConfigurationCatchScriptOutputs>>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLogOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
     /// Timeout for the operation. Overrides the global timeout set in the Configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -796,7 +727,8 @@ pub struct ConfigurationCatchWaitForCondition {
 
 /// Deletion specifies parameters for waiting on a resource's deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigurationCatchWaitForDeletion {}
+pub struct ConfigurationCatchWaitForDeletion {
+}
 
 /// JsonPath specifies the json path condition to wait for.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -882,3 +814,4 @@ pub struct ConfigurationTimeouts {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<String>,
 }
+

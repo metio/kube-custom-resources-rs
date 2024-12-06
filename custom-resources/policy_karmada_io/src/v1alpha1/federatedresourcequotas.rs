@@ -4,37 +4,28 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Spec defines the desired quota.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "policy.karmada.io",
-    version = "v1alpha1",
-    kind = "FederatedResourceQuota",
-    plural = "federatedresourcequotas"
-)]
+#[kube(group = "policy.karmada.io", version = "v1alpha1", kind = "FederatedResourceQuota", plural = "federatedresourcequotas")]
 #[kube(namespaced)]
 #[kube(status = "FederatedResourceQuotaStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FederatedResourceQuotaSpec {
     /// Overall is the set of desired hard limits for each named resource.
     pub overall: BTreeMap<String, IntOrString>,
     /// StaticAssignments represents the subset of desired hard limits for each cluster.
     /// Note: for clusters not present in this list, Karmada will set an empty ResourceQuota to them, which means these
     /// clusters will have no quotas in the referencing namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticAssignments"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticAssignments")]
     pub static_assignments: Option<Vec<FederatedResourceQuotaStaticAssignments>>,
 }
 
@@ -52,21 +43,13 @@ pub struct FederatedResourceQuotaStaticAssignments {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedResourceQuotaStatus {
     /// AggregatedStatus is the observed quota usage of each cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aggregatedStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aggregatedStatus")]
     pub aggregated_status: Option<Vec<FederatedResourceQuotaStatusAggregatedStatus>>,
     /// Overall is the set of enforced hard limits for each named resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overall: Option<BTreeMap<String, IntOrString>>,
     /// OverallUsed is the current observed total usage of the resource in the namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overallUsed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overallUsed")]
     pub overall_used: Option<BTreeMap<String, IntOrString>>,
 }
 
@@ -84,3 +67,4 @@ pub struct FederatedResourceQuotaStatusAggregatedStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub used: Option<BTreeMap<String, IntOrString>>,
 }
+

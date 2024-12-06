@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec defines the Provider specifications.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "externaldata.gatekeeper.sh",
-    version = "v1beta1",
-    kind = "Provider",
-    plural = "providers"
-)]
+#[kube(group = "externaldata.gatekeeper.sh", version = "v1beta1", kind = "Provider", plural = "providers")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ProviderSpec {
     /// CABundle is a base64-encoded string that contains the TLS CA bundle in PEM format.
     /// It is used to verify the signature of the provider's certificate.
@@ -32,3 +27,4 @@ pub struct ProviderSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
+

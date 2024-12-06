@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "api.clever-cloud.com",
-    version = "v1",
-    kind = "ConfigProvider",
-    plural = "configproviders"
-)]
+#[kube(group = "api.clever-cloud.com", version = "v1", kind = "ConfigProvider", plural = "configproviders")]
 #[kube(namespaced)]
 #[kube(status = "ConfigProviderStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ConfigProviderSpec {
     pub organisation: String,
     pub variables: BTreeMap<String, String>,
@@ -32,3 +27,4 @@ pub struct ConfigProviderStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addon: Option<String>,
 }
+

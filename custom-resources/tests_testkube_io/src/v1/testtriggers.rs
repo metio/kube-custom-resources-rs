@@ -5,38 +5,25 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// TestTriggerSpec defines the desired state of TestTrigger
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "tests.testkube.io",
-    version = "v1",
-    kind = "TestTrigger",
-    plural = "testtriggers"
-)]
+#[kube(group = "tests.testkube.io", version = "v1", kind = "TestTrigger", plural = "testtriggers")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct TestTriggerSpec {
     /// Action represents what needs to be executed for selected Execution
     pub action: TestTriggerAction,
     /// ConcurrencyPolicy defines concurrency policy for selected Execution
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "concurrencyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrencyPolicy")]
     pub concurrency_policy: Option<TestTriggerConcurrencyPolicy>,
     /// What resource conditions should be matched
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conditionSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conditionSpec")]
     pub condition_spec: Option<TestTriggerConditionSpec>,
     /// Delay is a duration string which specifies how long should the test be delayed after a trigger is matched
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -242,11 +229,7 @@ pub enum TestTriggerResource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestTriggerResourceSelector {
     /// LabelSelector is used to identify a group of Kubernetes Objects based on their metadata labels
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestTriggerResourceSelectorLabelSelector>,
     /// Name selector is used to identify a Kubernetes Object based on the metadata name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -263,20 +246,12 @@ pub struct TestTriggerResourceSelector {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestTriggerResourceSelectorLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TestTriggerResourceSelectorLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -301,11 +276,7 @@ pub struct TestTriggerResourceSelectorLabelSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestTriggerTestSelector {
     /// LabelSelector is used to identify a group of Kubernetes Objects based on their metadata labels
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<TestTriggerTestSelectorLabelSelector>,
     /// Name selector is used to identify a Kubernetes Object based on the metadata name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -322,20 +293,12 @@ pub struct TestTriggerTestSelector {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestTriggerTestSelectorLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TestTriggerTestSelectorLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -358,4 +321,6 @@ pub struct TestTriggerTestSelectorLabelSelectorMatchExpressions {
 
 /// TestTriggerStatus defines the observed state of TestTrigger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestTriggerStatus {}
+pub struct TestTriggerStatus {
+}
+

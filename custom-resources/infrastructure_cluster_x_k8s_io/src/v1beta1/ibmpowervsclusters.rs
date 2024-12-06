@@ -5,30 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// IBMPowerVSClusterSpec defines the desired state of IBMPowerVSCluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "IBMPowerVSCluster",
-    plural = "ibmpowervsclusters"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta1", kind = "IBMPowerVSCluster", plural = "ibmpowervsclusters")]
 #[kube(namespaced)]
 #[kube(status = "IBMPowerVSClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMPowerVSClusterSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<IBMPowerVSClusterControlPlaneEndpoint>,
     /// Network is the reference to the Network to use for this cluster.
     pub network: IBMPowerVSClusterNetwork,
@@ -68,3 +59,4 @@ pub struct IBMPowerVSClusterStatus {
     /// Important: Run "make" to regenerate code after modifying this file
     pub ready: bool,
 }
+

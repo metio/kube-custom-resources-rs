@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// FieldExportSpec defines the desired state of the FieldExport.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "services.k8s.aws",
-    version = "v1alpha1",
-    kind = "FieldExport",
-    plural = "fieldexports"
-)]
+#[kube(group = "services.k8s.aws", version = "v1alpha1", kind = "FieldExport", plural = "fieldexports")]
 #[kube(namespaced)]
 #[kube(status = "FieldExportStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct FieldExportSpec {
     /// ResourceFieldSelector provides the values necessary to identify an individual
     /// field on an individual K8s resource.
@@ -85,3 +80,4 @@ pub struct FieldExportStatus {
     /// recoverable states of the field CR
     pub conditions: Vec<Condition>,
 }
+

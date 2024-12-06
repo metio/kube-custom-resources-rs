@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -15,3 +15,4 @@ pub struct SettingStatus {
     /// The setting is applied.
     pub applied: bool,
 }
+

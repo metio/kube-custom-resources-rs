@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ResourceSpec is the information to identify the trigger resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kyverno.io",
-    version = "v2",
-    kind = "UpdateRequest",
-    plural = "updaterequests"
-)]
+#[kube(group = "kyverno.io", version = "v2", kind = "UpdateRequest", plural = "updaterequests")]
 #[kube(namespaced)]
 #[kube(status = "UpdateRequestStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct UpdateRequestSpec {
     /// Context represents admission request context.
     /// It is used upon admission review only and is shared across rules within the same UR.
@@ -34,11 +29,7 @@ pub struct UpdateRequestSpec {
     /// Specifies the name of the policy.
     pub policy: String,
     /// Type represents request type for background processing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestType")]
     pub request_type: Option<UpdateRequestRequestType>,
     /// ResourceSpec is the information to identify the trigger resource.
     pub resource: UpdateRequestResource,
@@ -46,11 +37,7 @@ pub struct UpdateRequestSpec {
     pub rule: String,
     /// RuleContext is the associate context to apply rules.
     /// optional
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ruleContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleContext")]
     pub rule_context: Option<Vec<UpdateRequestRuleContext>>,
     /// Synchronize represents the sync behavior of the corresponding rule
     /// Optional. Defaults to "false" if not specified.
@@ -64,11 +51,7 @@ pub struct UpdateRequestSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestContext {
     /// AdmissionRequestInfoObject stores the admission request and operation details
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "admissionRequestInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionRequestInfo")]
     pub admission_request_info: Option<UpdateRequestContextAdmissionRequestInfo>,
     /// RequestInfo contains permission info carried in an admission request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userInfo")]
@@ -79,11 +62,7 @@ pub struct UpdateRequestContext {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestContextAdmissionRequestInfo {
     /// AdmissionRequest describes the admission.Attributes for the admission request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "admissionRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionRequest")]
     pub admission_request: Option<UpdateRequestContextAdmissionRequestInfoAdmissionRequest>,
     /// Operation is the type of resource operation being checked for admission control
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -124,54 +103,37 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequest {
     pub options: Option<BTreeMap<String, serde_json::Value>>,
     /// RequestKind is the fully-qualified type of the original API request (for example, v1.Pod or autoscaling.v1.Scale).
     /// If this is specified and differs from the value in "kind", an equivalent match and conversion was performed.
-    ///
+    /// 
     /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
     /// `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]` and `matchPolicy: Equivalent`,
     /// an API request to apps/v1beta1 deployments would be converted and sent to the webhook
     /// with `kind: {group:"apps", version:"v1", kind:"Deployment"}` (matching the rule the webhook registered for),
     /// and `requestKind: {group:"apps", version:"v1beta1", kind:"Deployment"}` (indicating the kind of the original API request).
-    ///
+    /// 
     /// See documentation for the "matchPolicy" field in the webhook configuration type for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestKind"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestKind")]
     pub request_kind: Option<UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestKind>,
     /// RequestResource is the fully-qualified resource of the original API request (for example, v1.pods).
     /// If this is specified and differs from the value in "resource", an equivalent match and conversion was performed.
-    ///
+    /// 
     /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
     /// `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]` and `matchPolicy: Equivalent`,
     /// an API request to apps/v1beta1 deployments would be converted and sent to the webhook
     /// with `resource: {group:"apps", version:"v1", resource:"deployments"}` (matching the resource the webhook registered for),
     /// and `requestResource: {group:"apps", version:"v1beta1", resource:"deployments"}` (indicating the resource of the original API request).
-    ///
+    /// 
     /// See documentation for the "matchPolicy" field in the webhook configuration type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestResource"
-    )]
-    pub request_resource:
-        Option<UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestResource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestResource")]
+    pub request_resource: Option<UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestResource>,
     /// RequestSubResource is the name of the subresource of the original API request, if any (for example, "status" or "scale")
     /// If this is specified and differs from the value in "subResource", an equivalent match and conversion was performed.
     /// See documentation for the "matchPolicy" field in the webhook configuration type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestSubResource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestSubResource")]
     pub request_sub_resource: Option<String>,
     /// Resource is the fully-qualified resource being requested (for example, v1.pods)
     pub resource: UpdateRequestContextAdmissionRequestInfoAdmissionRequestResource,
     /// SubResource is the subresource being requested, if any (for example, "status" or "scale")
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subResource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subResource")]
     pub sub_resource: Option<String>,
     /// UID is an identifier for the individual request/response. It allows us to distinguish instances of requests which are
     /// otherwise identical (parallel requests, requests when earlier requests did not modify etc)
@@ -193,13 +155,13 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestKind {
 
 /// RequestKind is the fully-qualified type of the original API request (for example, v1.Pod or autoscaling.v1.Scale).
 /// If this is specified and differs from the value in "kind", an equivalent match and conversion was performed.
-///
+/// 
 /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
 /// `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]` and `matchPolicy: Equivalent`,
 /// an API request to apps/v1beta1 deployments would be converted and sent to the webhook
 /// with `kind: {group:"apps", version:"v1", kind:"Deployment"}` (matching the rule the webhook registered for),
 /// and `requestKind: {group:"apps", version:"v1beta1", kind:"Deployment"}` (indicating the kind of the original API request).
-///
+/// 
 /// See documentation for the "matchPolicy" field in the webhook configuration type for more details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestKind {
@@ -210,13 +172,13 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestKind {
 
 /// RequestResource is the fully-qualified resource of the original API request (for example, v1.pods).
 /// If this is specified and differs from the value in "resource", an equivalent match and conversion was performed.
-///
+/// 
 /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
 /// `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]` and `matchPolicy: Equivalent`,
 /// an API request to apps/v1beta1 deployments would be converted and sent to the webhook
 /// with `resource: {group:"apps", version:"v1", resource:"deployments"}` (matching the resource the webhook registered for),
 /// and `requestResource: {group:"apps", version:"v1beta1", resource:"deployments"}` (indicating the resource of the original API request).
-///
+/// 
 /// See documentation for the "matchPolicy" field in the webhook configuration type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestResource {
@@ -256,11 +218,7 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestUserInfo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestContextUserInfo {
     /// ClusterRoles is a list of possible clusterRoles send the request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
     /// Roles is a list of possible role send the request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -302,11 +260,7 @@ pub enum UpdateRequestRequestType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestResource {
     /// APIVersion specifies resource apiVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind specifies resource kind.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -341,11 +295,7 @@ pub struct UpdateRequestRuleContext {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestRuleContextTrigger {
     /// APIVersion specifies resource apiVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind specifies resource kind.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -366,20 +316,12 @@ pub struct UpdateRequestRuleContextTrigger {
 pub struct UpdateRequestStatus {
     /// This will track the resources that are updated by the generate Policy.
     /// Will be used during clean up resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generatedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatedResources")]
     pub generated_resources: Option<Vec<UpdateRequestStatusGeneratedResources>>,
     /// Specifies request status message.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryCount")]
     pub retry_count: Option<i64>,
     /// State represents state of the update request.
     pub state: String,
@@ -388,11 +330,7 @@ pub struct UpdateRequestStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestStatusGeneratedResources {
     /// APIVersion specifies resource apiVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind specifies resource kind.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -407,3 +345,4 @@ pub struct UpdateRequestStatusGeneratedResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
+

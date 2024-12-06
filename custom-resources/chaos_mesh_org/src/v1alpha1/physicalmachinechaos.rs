@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec defines the behavior of a physical machine chaos experiment
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "PhysicalMachineChaos",
-    plural = "physicalmachinechaos"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "PhysicalMachineChaos", plural = "physicalmachinechaos")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct PhysicalMachineChaosSpec {
     /// the subAction, generate automatically
     pub action: PhysicalMachineChaosAction,
@@ -31,239 +26,95 @@ pub struct PhysicalMachineChaosSpec {
     pub clock: Option<PhysicalMachineChaosClock>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disk-fill")]
     pub disk_fill: Option<PhysicalMachineChaosDiskFill>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disk-read-payload"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disk-read-payload")]
     pub disk_read_payload: Option<PhysicalMachineChaosDiskReadPayload>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disk-write-payload"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disk-write-payload")]
     pub disk_write_payload: Option<PhysicalMachineChaosDiskWritePayload>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-append"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-append")]
     pub file_append: Option<PhysicalMachineChaosFileAppend>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-create"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-create")]
     pub file_create: Option<PhysicalMachineChaosFileCreate>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-delete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-delete")]
     pub file_delete: Option<PhysicalMachineChaosFileDelete>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-modify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-modify")]
     pub file_modify: Option<PhysicalMachineChaosFileModify>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-rename"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-rename")]
     pub file_rename: Option<PhysicalMachineChaosFileRename>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-replace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-replace")]
     pub file_replace: Option<PhysicalMachineChaosFileReplace>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-abort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-abort")]
     pub http_abort: Option<PhysicalMachineChaosHttpAbort>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-config"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-config")]
     pub http_config: Option<PhysicalMachineChaosHttpConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-delay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-delay")]
     pub http_delay: Option<PhysicalMachineChaosHttpDelay>,
     /// used for HTTP request, now only support GET
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-request"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-request")]
     pub http_request: Option<PhysicalMachineChaosHttpRequest>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-exception"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-exception")]
     pub jvm_exception: Option<PhysicalMachineChaosJvmException>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-gc")]
     pub jvm_gc: Option<PhysicalMachineChaosJvmGc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-latency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-latency")]
     pub jvm_latency: Option<PhysicalMachineChaosJvmLatency>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-mysql")]
     pub jvm_mysql: Option<PhysicalMachineChaosJvmMysql>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-return"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-return")]
     pub jvm_return: Option<PhysicalMachineChaosJvmReturn>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-rule-data"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-rule-data")]
     pub jvm_rule_data: Option<PhysicalMachineChaosJvmRuleData>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-stress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-stress")]
     pub jvm_stress: Option<PhysicalMachineChaosJvmStress>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafka-fill"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafka-fill")]
     pub kafka_fill: Option<PhysicalMachineChaosKafkaFill>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafka-flood"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafka-flood")]
     pub kafka_flood: Option<PhysicalMachineChaosKafkaFlood>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafka-io")]
     pub kafka_io: Option<PhysicalMachineChaosKafkaIo>,
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: PhysicalMachineChaosMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-bandwidth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-bandwidth")]
     pub network_bandwidth: Option<PhysicalMachineChaosNetworkBandwidth>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-corrupt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-corrupt")]
     pub network_corrupt: Option<PhysicalMachineChaosNetworkCorrupt>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-delay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-delay")]
     pub network_delay: Option<PhysicalMachineChaosNetworkDelay>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-dns"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-dns")]
     pub network_dns: Option<PhysicalMachineChaosNetworkDns>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-down"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-down")]
     pub network_down: Option<PhysicalMachineChaosNetworkDown>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-duplicate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-duplicate")]
     pub network_duplicate: Option<PhysicalMachineChaosNetworkDuplicate>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-flood"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-flood")]
     pub network_flood: Option<PhysicalMachineChaosNetworkFlood>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-loss"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-loss")]
     pub network_loss: Option<PhysicalMachineChaosNetworkLoss>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-partition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-partition")]
     pub network_partition: Option<PhysicalMachineChaosNetworkPartition>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub process: Option<PhysicalMachineChaosProcess>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-cacheLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-cacheLimit")]
     pub redis_cache_limit: Option<PhysicalMachineChaosRedisCacheLimit>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-expiration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-expiration")]
     pub redis_expiration: Option<PhysicalMachineChaosRedisExpiration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-penetration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-penetration")]
     pub redis_penetration: Option<PhysicalMachineChaosRedisPenetration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-restart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-restart")]
     pub redis_restart: Option<PhysicalMachineChaosRedisRestart>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-stop"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-stop")]
     pub redis_stop: Option<PhysicalMachineChaosRedisStop>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select physical machines that are used to inject chaos action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<PhysicalMachineChaosSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stress-cpu"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stress-cpu")]
     pub stress_cpu: Option<PhysicalMachineChaosStressCpu>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stress-mem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stress-mem")]
     pub stress_mem: Option<PhysicalMachineChaosStressMem>,
     /// the experiment ID
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -363,32 +214,20 @@ pub enum PhysicalMachineChaosAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosClock {
     /// the identifier of the particular clock on which to act. More clock description in linux kernel can be found in man page of clock_getres, clock_gettime, clock_settime. Muti clock ids should be split with ","
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clock-ids-slice"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clock-ids-slice")]
     pub clock_ids_slice: Option<String>,
     /// the pid of target program.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pid: Option<i64>,
     /// specifies the length of time offset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "time-offset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "time-offset")]
     pub time_offset: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosDiskFill {
     /// fill disk by fallocate
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fill-by-fallocate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fill-by-fallocate")]
     pub fill_by_fallocate: Option<bool>,
     /// specifies the location to fill data in. if path not provided, payload will read/write from/into a temp file, temp file will be deleted after writing
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -404,11 +243,7 @@ pub struct PhysicalMachineChaosDiskReadPayload {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// specifies the number of process work on writing, default 1, only 1-255 is valid value
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "payload-process-num"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "payload-process-num")]
     pub payload_process_num: Option<i64>,
     /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000, K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -421,11 +256,7 @@ pub struct PhysicalMachineChaosDiskWritePayload {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// specifies the number of process work on writing, default 1, only 1-255 is valid value
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "payload-process-num"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "payload-process-num")]
     pub payload_process_num: Option<i64>,
     /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000, K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -481,22 +312,14 @@ pub struct PhysicalMachineChaosFileRename {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dest-file")]
     pub dest_file: Option<String>,
     /// SourceFile is the name need to be renamed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-file"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-file")]
     pub source_file: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosFileReplace {
     /// DestStr is the destination string of the file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dest-string"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dest-string")]
     pub dest_string: Option<String>,
     /// FileName is the name of the file to be created, modified, deleted, renamed, or appended.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-name")]
@@ -505,11 +328,7 @@ pub struct PhysicalMachineChaosFileReplace {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub line: Option<i64>,
     /// OriginStr is the origin string of the file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "origin-string"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "origin-string")]
     pub origin_string: Option<String>,
 }
 
@@ -569,11 +388,7 @@ pub struct PhysicalMachineChaosHttpRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
     /// Enable connection pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enable-conn-pool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enable-conn-pool")]
     pub enable_conn_pool: Option<bool>,
     /// Request to send"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -640,11 +455,7 @@ pub struct PhysicalMachineChaosJvmMysql {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency: Option<i64>,
     /// the version of mysql-connector-java, only support 5.X.X(set to "5") and 8.X.X(set to "8") now
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mysqlConnectorVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlConnectorVersion")]
     pub mysql_connector_version: Option<String>,
     /// the pid of Java process which needs to attach
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -717,11 +528,7 @@ pub struct PhysicalMachineChaosKafkaFill {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// The size of each message
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageSize")]
     pub message_size: Option<i64>,
     /// The password of kafka client
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -730,11 +537,7 @@ pub struct PhysicalMachineChaosKafkaFill {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// The command to reload kafka config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reloadCommand"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadCommand")]
     pub reload_command: Option<String>,
     /// The topic to attack
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -750,11 +553,7 @@ pub struct PhysicalMachineChaosKafkaFlood {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// The size of each message
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageSize")]
     pub message_size: Option<i64>,
     /// The password of kafka client
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -776,25 +575,13 @@ pub struct PhysicalMachineChaosKafkaFlood {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosKafkaIo {
     /// The path of server config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFile")]
     pub config_file: Option<String>,
     /// Make kafka cluster non-readable
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonReadable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonReadable")]
     pub non_readable: Option<bool>,
     /// Make kafka cluster non-writable
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonWritable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonWritable")]
     pub non_writable: Option<bool>,
     /// The topic to attack
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -823,11 +610,7 @@ pub struct PhysicalMachineChaosNetworkBandwidth {
     pub device: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     pub limit: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -846,49 +629,29 @@ pub struct PhysicalMachineChaosNetworkCorrupt {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// percentage of packets to corrupt (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosNetworkDelay {
     /// only the packet which match the tcp flag can be accepted, others will be dropped. only set when the IPProtocol is tcp, used for partition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accept-tcp-flags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accept-tcp-flags")]
     pub accept_tcp_flags: Option<String>,
     /// correlation is percentage (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -897,28 +660,16 @@ pub struct PhysicalMachineChaosNetworkDelay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// jitter time, time units: ns, us (or µs), ms, s, m, h.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -927,32 +678,20 @@ pub struct PhysicalMachineChaosNetworkDelay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosNetworkDns {
     /// map this host to specified IP
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dns-domain-name"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dns-domain-name")]
     pub dns_domain_name: Option<String>,
     /// map specified host to this IP address
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dns-ip")]
     pub dns_ip: Option<String>,
     /// update the DNS server in /etc/resolv.conf with this value
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dns-server"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dns-server")]
     pub dns_server: Option<String>,
 }
 
@@ -975,38 +714,22 @@ pub struct PhysicalMachineChaosNetworkDuplicate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// percentage of packets to duplicate (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
@@ -1015,11 +738,7 @@ pub struct PhysicalMachineChaosNetworkFlood {
     /// The number of seconds to run the iperf test
     pub duration: String,
     /// Generate traffic to this IP address
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// The number of iperf parallel client threads to run
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1040,49 +759,29 @@ pub struct PhysicalMachineChaosNetworkLoss {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// percentage of packets to loss (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosNetworkPartition {
     /// only the packet which match the tcp flag can be accepted, others will be dropped. only set when the IPProtocol is tcp, used for partition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accept-tcp-flags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accept-tcp-flags")]
     pub accept_tcp_flags: Option<String>,
     /// the network interface to impact
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1094,18 +793,10 @@ pub struct PhysicalMachineChaosNetworkPartition {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
 }
 
@@ -1115,11 +806,7 @@ pub struct PhysicalMachineChaosProcess {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub process: Option<String>,
     /// the command to be run when recovering experiment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recoverCmd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoverCmd")]
     pub recover_cmd: Option<String>,
     /// the signal number to send
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1170,11 +857,7 @@ pub struct PhysicalMachineChaosRedisPenetration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// The number of requests to be sent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestNum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestNum")]
     pub request_num: Option<i64>,
 }
 
@@ -1187,11 +870,7 @@ pub struct PhysicalMachineChaosRedisRestart {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conf: Option<String>,
     /// The control flag determines whether to flush config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushConfig")]
     pub flush_config: Option<bool>,
     /// The password of Redis server
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1210,11 +889,7 @@ pub struct PhysicalMachineChaosRedisStop {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conf: Option<String>,
     /// The control flag determines whether to flush config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushConfig")]
     pub flush_config: Option<bool>,
     /// The password of Redis server
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1228,42 +903,22 @@ pub struct PhysicalMachineChaosRedisStop {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<PhysicalMachineChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// PhysicalMachines is a map of string keys and a set values that used to select physical machines. The key defines the namespace which physical machine belong, and each value is a set of physical machine names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "physicalMachines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "physicalMachines")]
     pub physical_machines: Option<BTreeMap<String, String>>,
 }
 
@@ -1308,11 +963,7 @@ pub struct PhysicalMachineChaosUserDefined {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attackCmd")]
     pub attack_cmd: Option<String>,
     /// The command to be executed when recover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recoverCmd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoverCmd")]
     pub recover_cmd: Option<String>,
 }
 
@@ -1346,17 +997,9 @@ pub struct PhysicalMachineChaosStatusConditions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosStatusExperiment {
     /// Records are used to track the running status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerRecords")]
     pub container_records: Option<Vec<PhysicalMachineChaosStatusExperimentContainerRecords>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredPhase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredPhase")]
     pub desired_phase: Option<PhysicalMachineChaosStatusExperimentDesiredPhase>,
 }
 
@@ -1397,3 +1040,4 @@ pub enum PhysicalMachineChaosStatusExperimentDesiredPhase {
     Run,
     Stop,
 }
+

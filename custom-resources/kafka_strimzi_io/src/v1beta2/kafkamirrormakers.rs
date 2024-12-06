@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// The specification of Kafka MirrorMaker.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kafka.strimzi.io",
-    version = "v1beta2",
-    kind = "KafkaMirrorMaker",
-    plural = "kafkamirrormakers"
-)]
+#[kube(group = "kafka.strimzi.io", version = "v1beta2", kind = "KafkaMirrorMaker", plural = "kafkamirrormakers")]
 #[kube(namespaced)]
 #[kube(status = "KafkaMirrorMakerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KafkaMirrorMakerSpec {
     /// Configuration of source cluster.
     pub consumer: KafkaMirrorMakerConsumer,
@@ -35,37 +30,21 @@ pub struct KafkaMirrorMakerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub include: Option<String>,
     /// JVM Options for pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvmOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<KafkaMirrorMakerJvmOptions>,
     /// Pod liveness checking.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<KafkaMirrorMakerLivenessProbe>,
     /// Logging configuration for MirrorMaker.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaMirrorMakerLogging>,
     /// Metrics configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsConfig")]
     pub metrics_config: Option<KafkaMirrorMakerMetricsConfig>,
     /// Configuration of target cluster.
     pub producer: KafkaMirrorMakerProducer,
     /// Pod readiness checking.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaMirrorMakerReadinessProbe>,
     /// The number of pods in the `Deployment`.
     pub replicas: i64,
@@ -102,18 +81,10 @@ pub struct KafkaMirrorMakerConsumer {
     #[serde(rename = "groupId")]
     pub group_id: String,
     /// Specifies the number of consumer stream threads to create.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numStreams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numStreams")]
     pub num_streams: Option<i64>,
     /// Specifies the offset auto-commit interval in ms. Default value is 60000.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "offsetCommitInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offsetCommitInterval")]
     pub offset_commit_interval: Option<i64>,
     /// TLS configuration for connecting MirrorMaker to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -124,161 +95,76 @@ pub struct KafkaMirrorMakerConsumer {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaMirrorMakerConsumerAuthentication {
     /// Link to Kubernetes Secret containing the access token which was obtained from the authorization server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<KafkaMirrorMakerConsumerAuthenticationAccessToken>,
     /// Configure whether access token should be treated as JWT. This should be set to `false` if the authorization server returns opaque tokens. Defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTokenIsJwt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenIsJwt")]
     pub access_token_is_jwt: Option<bool>,
     /// Path to the token file containing an access token to be used for authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTokenLocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenLocation")]
     pub access_token_location: Option<String>,
     /// OAuth audience to use when authenticating against the authorization server. Some authorization servers require the audience to be explicitly set. The possible values depend on how the authorization server is configured. By default, `audience` is not specified when performing the token endpoint request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
     /// Reference to the `Secret` which holds the certificate and private key pair.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateAndKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAndKey")]
     pub certificate_and_key: Option<KafkaMirrorMakerConsumerAuthenticationCertificateAndKey>,
     /// Link to Kubernetes secret containing the client assertion which was manually configured for the client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientAssertion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertion")]
     pub client_assertion: Option<KafkaMirrorMakerConsumerAuthenticationClientAssertion>,
     /// Path to the file containing the client assertion to be used for authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientAssertionLocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionLocation")]
     pub client_assertion_location: Option<String>,
     /// The client assertion type. If not set, and either `clientAssertion` or `clientAssertionLocation` is configured, this value defaults to `urn:ietf:params:oauth:client-assertion-type:jwt-bearer`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientAssertionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionType")]
     pub client_assertion_type: Option<String>,
     /// OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
     pub client_id: Option<String>,
     /// Link to Kubernetes Secret containing the OAuth client secret which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<KafkaMirrorMakerConsumerAuthenticationClientSecret>,
     /// The connect timeout in seconds when connecting to authorization server. If not set, the effective connect timeout is 60 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutSeconds")]
     pub connect_timeout_seconds: Option<i64>,
     /// Enable or disable TLS hostname verification. Default value is `false`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableTlsHostnameVerification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTlsHostnameVerification")]
     pub disable_tls_hostname_verification: Option<bool>,
     /// Enable or disable OAuth metrics. Default value is `false`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableMetrics"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,
     /// The maximum number of retries to attempt if an initial HTTP request fails. If not set, the default is to not attempt any retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetries")]
     pub http_retries: Option<i64>,
     /// The pause to take before retrying a failed HTTP request. If not set, the default is to not pause at all but to immediately repeat a request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpRetryPauseMs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetryPauseMs")]
     pub http_retry_pause_ms: Option<i64>,
     /// Whether the Accept header should be set in requests to the authorization servers. The default value is `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeAcceptHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeAcceptHeader")]
     pub include_accept_header: Option<bool>,
     /// Set or limit time-to-live of the access tokens to the specified number of seconds. This should be set if the authorization server returns opaque tokens.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTokenExpirySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTokenExpirySeconds")]
     pub max_token_expiry_seconds: Option<i64>,
     /// Reference to the `Secret` which holds the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecret")]
     pub password_secret: Option<KafkaMirrorMakerConsumerAuthenticationPasswordSecret>,
     /// The read timeout in seconds when connecting to authorization server. If not set, the effective read timeout is 60 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeoutSeconds")]
     pub read_timeout_seconds: Option<i64>,
     /// Link to Kubernetes Secret containing the refresh token which can be used to obtain access token from the authorization server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshToken")]
     pub refresh_token: Option<KafkaMirrorMakerConsumerAuthenticationRefreshToken>,
     /// SASL extensions parameters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "saslExtensions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslExtensions")]
     pub sasl_extensions: Option<BTreeMap<String, String>>,
     /// OAuth scope to use when authenticating against the authorization server. Some authorization servers require this to be set. The possible values depend on how authorization server is configured. By default `scope` is not specified when doing the token endpoint request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
     /// Trusted certificates for TLS connection to the OAuth server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsTrustedCertificates"
-    )]
-    pub tls_trusted_certificates:
-        Option<Vec<KafkaMirrorMakerConsumerAuthenticationTlsTrustedCertificates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsTrustedCertificates")]
+    pub tls_trusted_certificates: Option<Vec<KafkaMirrorMakerConsumerAuthenticationTlsTrustedCertificates>>,
     /// Authorization server token endpoint URI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenEndpointUri"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
     pub token_endpoint_uri: Option<String>,
     /// Authentication type. Currently the supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, and 'oauth'. `scram-sha-256` and `scram-sha-512` types use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 Authentication, respectively. `plain` type uses SASL PLAIN Authentication. `oauth` type uses SASL OAUTHBEARER Authentication. The `tls` type uses TLS Client Authentication. The `tls` type is supported only over TLS connections.
     #[serde(rename = "type")]
@@ -382,11 +268,7 @@ pub enum KafkaMirrorMakerConsumerAuthenticationType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerConsumerTls {
     /// Trusted certificates for TLS connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedCertificates")]
     pub trusted_certificates: Option<Vec<KafkaMirrorMakerConsumerTlsTrustedCertificates>>,
 }
 
@@ -416,18 +298,10 @@ pub struct KafkaMirrorMakerJvmOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xmx")]
     pub xmx: Option<String>,
     /// Specifies whether the Garbage Collection logging is enabled. The default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcLoggingEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcLoggingEnabled")]
     pub gc_logging_enabled: Option<bool>,
     /// A map of additional system properties which will be passed using the `-D` option to the JVM.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "javaSystemProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "javaSystemProperties")]
     pub java_system_properties: Option<Vec<KafkaMirrorMakerJvmOptionsJavaSystemProperties>>,
 }
 
@@ -445,39 +319,19 @@ pub struct KafkaMirrorMakerJvmOptionsJavaSystemProperties {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerLivenessProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
     /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
     /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
     /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
@@ -490,7 +344,7 @@ pub struct KafkaMirrorMakerLogging {
     /// Logging type, must be either 'inline' or 'external'.
     #[serde(rename = "type")]
     pub r#type: KafkaMirrorMakerLoggingType,
-    /// `ConfigMap` entry where the logging configuration is stored.
+    /// `ConfigMap` entry where the logging configuration is stored. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaMirrorMakerLoggingValueFrom>,
 }
@@ -504,15 +358,11 @@ pub enum KafkaMirrorMakerLoggingType {
     External,
 }
 
-/// `ConfigMap` entry where the logging configuration is stored.
+/// `ConfigMap` entry where the logging configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerLoggingValueFrom {
     /// Reference to the key in the ConfigMap containing the configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaMirrorMakerLoggingValueFromConfigMapKeyRef>,
 }
 
@@ -533,7 +383,7 @@ pub struct KafkaMirrorMakerMetricsConfig {
     /// Metrics type. Only 'jmxPrometheusExporter' supported currently.
     #[serde(rename = "type")]
     pub r#type: KafkaMirrorMakerMetricsConfigType,
-    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
+    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
     #[serde(rename = "valueFrom")]
     pub value_from: KafkaMirrorMakerMetricsConfigValueFrom,
 }
@@ -545,15 +395,11 @@ pub enum KafkaMirrorMakerMetricsConfigType {
     JmxPrometheusExporter,
 }
 
-/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
+/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerMetricsConfigValueFrom {
     /// Reference to the key in the ConfigMap containing the configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaMirrorMakerMetricsConfigValueFromConfigMapKeyRef>,
 }
 
@@ -572,11 +418,7 @@ pub struct KafkaMirrorMakerMetricsConfigValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerProducer {
     /// Flag to set the MirrorMaker to exit on a failed send. Default value is `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "abortOnSendFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "abortOnSendFailure")]
     pub abort_on_send_failure: Option<bool>,
     /// Authentication configuration for connecting to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -596,161 +438,76 @@ pub struct KafkaMirrorMakerProducer {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaMirrorMakerProducerAuthentication {
     /// Link to Kubernetes Secret containing the access token which was obtained from the authorization server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<KafkaMirrorMakerProducerAuthenticationAccessToken>,
     /// Configure whether access token should be treated as JWT. This should be set to `false` if the authorization server returns opaque tokens. Defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTokenIsJwt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenIsJwt")]
     pub access_token_is_jwt: Option<bool>,
     /// Path to the token file containing an access token to be used for authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTokenLocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenLocation")]
     pub access_token_location: Option<String>,
     /// OAuth audience to use when authenticating against the authorization server. Some authorization servers require the audience to be explicitly set. The possible values depend on how the authorization server is configured. By default, `audience` is not specified when performing the token endpoint request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
     /// Reference to the `Secret` which holds the certificate and private key pair.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateAndKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAndKey")]
     pub certificate_and_key: Option<KafkaMirrorMakerProducerAuthenticationCertificateAndKey>,
     /// Link to Kubernetes secret containing the client assertion which was manually configured for the client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientAssertion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertion")]
     pub client_assertion: Option<KafkaMirrorMakerProducerAuthenticationClientAssertion>,
     /// Path to the file containing the client assertion to be used for authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientAssertionLocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionLocation")]
     pub client_assertion_location: Option<String>,
     /// The client assertion type. If not set, and either `clientAssertion` or `clientAssertionLocation` is configured, this value defaults to `urn:ietf:params:oauth:client-assertion-type:jwt-bearer`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientAssertionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionType")]
     pub client_assertion_type: Option<String>,
     /// OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
     pub client_id: Option<String>,
     /// Link to Kubernetes Secret containing the OAuth client secret which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<KafkaMirrorMakerProducerAuthenticationClientSecret>,
     /// The connect timeout in seconds when connecting to authorization server. If not set, the effective connect timeout is 60 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutSeconds")]
     pub connect_timeout_seconds: Option<i64>,
     /// Enable or disable TLS hostname verification. Default value is `false`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableTlsHostnameVerification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTlsHostnameVerification")]
     pub disable_tls_hostname_verification: Option<bool>,
     /// Enable or disable OAuth metrics. Default value is `false`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableMetrics"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,
     /// The maximum number of retries to attempt if an initial HTTP request fails. If not set, the default is to not attempt any retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetries")]
     pub http_retries: Option<i64>,
     /// The pause to take before retrying a failed HTTP request. If not set, the default is to not pause at all but to immediately repeat a request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpRetryPauseMs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetryPauseMs")]
     pub http_retry_pause_ms: Option<i64>,
     /// Whether the Accept header should be set in requests to the authorization servers. The default value is `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeAcceptHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeAcceptHeader")]
     pub include_accept_header: Option<bool>,
     /// Set or limit time-to-live of the access tokens to the specified number of seconds. This should be set if the authorization server returns opaque tokens.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTokenExpirySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTokenExpirySeconds")]
     pub max_token_expiry_seconds: Option<i64>,
     /// Reference to the `Secret` which holds the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecret")]
     pub password_secret: Option<KafkaMirrorMakerProducerAuthenticationPasswordSecret>,
     /// The read timeout in seconds when connecting to authorization server. If not set, the effective read timeout is 60 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeoutSeconds")]
     pub read_timeout_seconds: Option<i64>,
     /// Link to Kubernetes Secret containing the refresh token which can be used to obtain access token from the authorization server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshToken")]
     pub refresh_token: Option<KafkaMirrorMakerProducerAuthenticationRefreshToken>,
     /// SASL extensions parameters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "saslExtensions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslExtensions")]
     pub sasl_extensions: Option<BTreeMap<String, String>>,
     /// OAuth scope to use when authenticating against the authorization server. Some authorization servers require this to be set. The possible values depend on how authorization server is configured. By default `scope` is not specified when doing the token endpoint request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
     /// Trusted certificates for TLS connection to the OAuth server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsTrustedCertificates"
-    )]
-    pub tls_trusted_certificates:
-        Option<Vec<KafkaMirrorMakerProducerAuthenticationTlsTrustedCertificates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsTrustedCertificates")]
+    pub tls_trusted_certificates: Option<Vec<KafkaMirrorMakerProducerAuthenticationTlsTrustedCertificates>>,
     /// Authorization server token endpoint URI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenEndpointUri"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
     pub token_endpoint_uri: Option<String>,
     /// Authentication type. Currently the supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, and 'oauth'. `scram-sha-256` and `scram-sha-512` types use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 Authentication, respectively. `plain` type uses SASL PLAIN Authentication. `oauth` type uses SASL OAUTHBEARER Authentication. The `tls` type uses TLS Client Authentication. The `tls` type is supported only over TLS connections.
     #[serde(rename = "type")]
@@ -854,11 +611,7 @@ pub enum KafkaMirrorMakerProducerAuthenticationType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerProducerTls {
     /// Trusted certificates for TLS connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedCertificates")]
     pub trusted_certificates: Option<Vec<KafkaMirrorMakerProducerTlsTrustedCertificates>>,
 }
 
@@ -879,39 +632,19 @@ pub struct KafkaMirrorMakerProducerTlsTrustedCertificates {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerReadinessProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
     /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
     /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
     /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
@@ -939,28 +672,16 @@ pub struct KafkaMirrorMakerTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<KafkaMirrorMakerTemplateDeployment>,
     /// Template for Kafka MirrorMaker container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirrorMakerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirrorMakerContainer")]
     pub mirror_maker_container: Option<KafkaMirrorMakerTemplateMirrorMakerContainer>,
     /// Template for Kafka MirrorMaker `Pods`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<KafkaMirrorMakerTemplatePod>,
     /// Template for Kafka MirrorMaker `PodDisruptionBudget`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podDisruptionBudget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<KafkaMirrorMakerTemplatePodDisruptionBudget>,
     /// Template for the Kafka MirrorMaker service account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KafkaMirrorMakerTemplateServiceAccount>,
 }
 
@@ -968,11 +689,7 @@ pub struct KafkaMirrorMakerTemplate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplateDeployment {
     /// Pod replacement strategy for deployment configuration changes. Valid values are `RollingUpdate` and `Recreate`. Defaults to `RollingUpdate`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
     pub deployment_strategy: Option<KafkaMirrorMakerTemplateDeploymentDeploymentStrategy>,
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1004,18 +721,10 @@ pub struct KafkaMirrorMakerTemplateMirrorMakerContainer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaMirrorMakerTemplateMirrorMakerContainerEnv>>,
     /// Security context for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContext>,
     /// Additional volume mounts which should be applied to the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaMirrorMakerTemplateMirrorMakerContainerVolumeMounts>>,
 }
 
@@ -1036,21 +745,11 @@ pub struct KafkaMirrorMakerTemplateMirrorMakerContainerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFrom {
     /// Reference to a key in a config map.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFromConfigMapKeyRef>,
     /// Reference to a key in a secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFromSecretKeyRef>,
 }
 
 /// Reference to a key in a config map.
@@ -1078,76 +777,35 @@ pub struct KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFromSecretKeyRef 
 /// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile:
-        Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextAppArmorProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextCapabilities>,
+    pub capabilities: Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextAppArmorProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1175,11 +833,7 @@ pub struct KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextSeLinuxOpt
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1187,29 +841,13 @@ pub struct KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextSeccompPro
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1217,29 +855,17 @@ pub struct KafkaMirrorMakerTemplateMirrorMakerContainerSecurityContextWindowsOpt
 pub struct KafkaMirrorMakerTemplateMirrorMakerContainerVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -1250,75 +876,38 @@ pub struct KafkaMirrorMakerTemplatePod {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaMirrorMakerTemplatePodAffinity>,
     /// Indicates whether information about services should be injected into Pod's environment variables.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableServiceLinks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
     /// The pod's HostAliases. HostAliases is an optional list of hosts and IPs that will be injected into the Pod's hosts file if specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaMirrorMakerTemplatePodHostAliases>>,
     /// List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaMirrorMakerTemplatePodImagePullSecrets>>,
     /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaMirrorMakerTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    /// The name of the priority class used to assign priority to the pods. 
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// Configures pod-level security attributes and common container settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaMirrorMakerTemplatePodSecurityContext>,
     /// The grace period is the duration in seconds after the processes running in the pod are sent a termination signal, and the time when the processes are forcibly halted with a kill signal. Set this value to longer than the expected cleanup time for your process. Value must be a non-negative integer. A zero value indicates delete immediately. You might need to increase the grace period for very large Kafka clusters, so that the Kafka brokers have enough time to transfer their work to another broker before they are terminated. Defaults to 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tmpDirSizeLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tmpDirSizeLimit")]
     pub tmp_dir_size_limit: Option<String>,
     /// The pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<KafkaMirrorMakerTemplatePodTolerations>>,
     /// The pod's topology spread constraints.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<KafkaMirrorMakerTemplatePodTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<KafkaMirrorMakerTemplatePodTopologySpreadConstraints>>,
     /// Additional volumes that can be mounted to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<KafkaMirrorMakerTemplatePodVolumes>>,
@@ -1327,23 +916,11 @@ pub struct KafkaMirrorMakerTemplatePod {
 /// The pod's affinity rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<KafkaMirrorMakerTemplatePodAffinityNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<KafkaMirrorMakerTemplatePodAffinityPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<KafkaMirrorMakerTemplatePodAffinityPodAntiAffinity>,
 }
 
@@ -1372,8 +949,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityPreferredDuringSchedul
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1383,8 +959,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityPreferredDuringSchedul
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1408,8 +983,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityRequiredDuringScheduli
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1419,8 +993,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityRequiredDuringScheduli
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1470,8 +1043,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityPreferredDuringScheduli
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1489,8 +1061,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityPreferredDuringScheduli
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1524,8 +1095,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityRequiredDuringSchedulin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1543,8 +1113,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityRequiredDuringSchedulin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1594,8 +1163,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityPreferredDuringSche
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1613,8 +1181,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityPreferredDuringSche
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1648,8 +1215,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityRequiredDuringSched
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1667,8 +1233,7 @@ pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityRequiredDuringSched
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct KafkaMirrorMakerTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1705,69 +1270,33 @@ pub struct KafkaMirrorMakerTemplatePodMetadata {
 /// Configures pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<KafkaMirrorMakerTemplatePodSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KafkaMirrorMakerTemplatePodSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KafkaMirrorMakerTemplatePodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KafkaMirrorMakerTemplatePodSecurityContextSysctls>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<KafkaMirrorMakerTemplatePodSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodSecurityContextAppArmorProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1787,11 +1316,7 @@ pub struct KafkaMirrorMakerTemplatePodSecurityContextSeLinuxOptions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1807,29 +1332,13 @@ pub struct KafkaMirrorMakerTemplatePodSecurityContextSysctls {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1841,11 +1350,7 @@ pub struct KafkaMirrorMakerTemplatePodTolerations {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -1853,67 +1358,29 @@ pub struct KafkaMirrorMakerTemplatePodTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodTopologySpreadConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<KafkaMirrorMakerTemplatePodTopologySpreadConstraintsLabelSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSkew")]
     pub max_skew: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologyKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyKey")]
     pub topology_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "whenUnsatisfiable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenUnsatisfiable")]
     pub when_unsatisfiable: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodTopologySpreadConstraintsLabelSelector {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<KafkaMirrorMakerTemplatePodTopologySpreadConstraintsLabelSelectorMatchExpressions>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KafkaMirrorMakerTemplatePodTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1939,11 +1406,7 @@ pub struct KafkaMirrorMakerTemplatePodVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// PersistentVolumeClaim object to use to populate the volume.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaMirrorMakerTemplatePodVolumesPersistentVolumeClaim>,
     /// Secret to use populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1953,11 +1416,7 @@ pub struct KafkaMirrorMakerTemplatePodVolumes {
 /// ConfigMap to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodVolumesConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<KafkaMirrorMakerTemplatePodVolumesConfigMapItems>>,
@@ -2006,21 +1465,13 @@ pub struct KafkaMirrorMakerTemplatePodVolumesPersistentVolumeClaim {
 /// Secret to use populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodVolumesSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<KafkaMirrorMakerTemplatePodVolumesSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -2038,11 +1489,7 @@ pub struct KafkaMirrorMakerTemplatePodVolumesSecretItems {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMakerTemplatePodDisruptionBudget {
     /// Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<i64>,
     /// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2103,20 +1550,13 @@ pub struct KafkaMirrorMakerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Label selector for pods providing this resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<String>,
     /// The generation of the CRD that was last reconciled by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// The current number of pods being used to provide this resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
 }
+

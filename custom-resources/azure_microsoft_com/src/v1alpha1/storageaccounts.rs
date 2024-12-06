@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -19,78 +19,45 @@ pub struct StorageAccountAdditionalResources {
 /// StorageAccountOutput is the object that contains the output from creating a Storage Account object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StorageAccountOutput {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionString1"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionString1")]
     pub connection_string1: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionString2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionString2")]
     pub connection_string2: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key1: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key2: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageAccountName")]
     pub storage_account_name: Option<String>,
 }
 
 /// StorageAccountSpec defines the desired state of Storage
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "azure.microsoft.com",
-    version = "v1alpha1",
-    kind = "StorageAccount",
-    plural = "storageaccounts"
-)]
+#[kube(group = "azure.microsoft.com", version = "v1alpha1", kind = "StorageAccount", plural = "storageaccounts")]
 #[kube(namespaced)]
 #[kube(status = "StorageAccountStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct StorageAccountSpec {
     /// StorageAccountAccessTier enumerates the values for access tier. Only one of the following access tiers may be specified. If none of the following access tiers is specified, the default one is Hot.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTier")]
     pub access_tier: Option<StorageAccountAccessTier>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataLakeEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataLakeEnabled")]
     pub data_lake_enabled: Option<bool>,
     /// StorageAccountKind enumerates the values for kind. Only one of the following kinds may be specified. If none of the following kinds is specified, the default one is StorageV2.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<StorageAccountKind>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkRule"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkRule")]
     pub network_rule: Option<StorageAccountNetworkRule>,
     #[serde(rename = "resourceGroup")]
     pub resource_group: String,
     /// StorageAccountSku the SKU of the storage account.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sku: Option<StorageAccountSku>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportsHttpsTrafficOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportsHttpsTrafficOnly")]
     pub supports_https_traffic_only: Option<bool>,
 }
 
@@ -117,32 +84,20 @@ pub struct StorageAccountNetworkRule {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bypass: Option<String>,
     /// DefaultAction - Specifies the default action of allow or deny when no other rules match. Possible values include: 'DefaultActionAllow', 'DefaultActionDeny'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultAction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultAction")]
     pub default_action: Option<String>,
     /// IPRules - Sets the IP ACL rules
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipRules")]
     pub ip_rules: Option<Vec<StorageAccountNetworkRuleIpRules>>,
     /// VirtualNetworkRules - Sets the virtual network rules
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNetworkRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNetworkRules")]
     pub virtual_network_rules: Option<Vec<StorageAccountNetworkRuleVirtualNetworkRules>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StorageAccountNetworkRuleIpRules {
     /// IPAddressOrRange - Specifies the IP or IP range in CIDR format. Only IPV4 address is allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipAddressOrRange"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressOrRange")]
     pub ip_address_or_range: Option<String>,
 }
 
@@ -187,39 +142,19 @@ pub enum StorageAccountSkuName {
 pub struct StorageAccountStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completed: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containsUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containsUpdate")]
     pub contains_update: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedProvisioning"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedProvisioning")]
     pub failed_provisioning: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flattenedSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flattenedSecrets")]
     pub flattened_secrets: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub output: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingUrl")]
     pub polling_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingUrlKind"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingUrlKind")]
     pub polling_url_kind: Option<StorageAccountStatusPollingUrlKind>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provisioned: Option<bool>,
@@ -227,11 +162,7 @@ pub struct StorageAccountStatus {
     pub provisioning: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requested: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceId")]
     pub resource_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "specHash")]
     pub spec_hash: Option<String>,
@@ -245,3 +176,4 @@ pub enum StorageAccountStatusPollingUrlKind {
     CreateOrUpdate,
     Delete,
 }
+

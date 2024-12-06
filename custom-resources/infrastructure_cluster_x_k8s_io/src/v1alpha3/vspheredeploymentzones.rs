@@ -4,38 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VSphereDeploymentZoneSpec defines the desired state of VSphereDeploymentZone
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1alpha3",
-    kind = "VSphereDeploymentZone",
-    plural = "vspheredeploymentzones"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1alpha3", kind = "VSphereDeploymentZone", plural = "vspheredeploymentzones")]
 #[kube(status = "VSphereDeploymentZoneStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VSphereDeploymentZoneSpec {
     /// ControlPlane determines if this failure domain is suitable for use by control plane machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
     /// failureDomain is the name of the VSphereFailureDomain used for this VSphereDeploymentZone
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// PlacementConstraint encapsulates the placement constraints
     /// used within this deployment zone.
@@ -56,11 +43,7 @@ pub struct VSphereDeploymentZonePlacementConstraint {
     pub folder: Option<String>,
     /// ResourcePool is the name or inventory path of the resource pool in which
     /// the virtual machine is created/located.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourcePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePool")]
     pub resource_pool: Option<String>,
 }
 
@@ -74,3 +57,4 @@ pub struct VSphereDeploymentZoneStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
 }
+

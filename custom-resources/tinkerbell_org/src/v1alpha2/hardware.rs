@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tinkerbell.org",
-    version = "v1alpha2",
-    kind = "Hardware",
-    plural = "hardware"
-)]
+#[kube(group = "tinkerbell.org", version = "v1alpha2", kind = "Hardware", plural = "hardware")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HardwareSpec {
     /// BMCRef references a Rufio Machine object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bmcRef")]
@@ -34,28 +29,16 @@ pub struct HardwareSpec {
     pub ipxe: Option<HardwareIpxe>,
     /// KernelParams passed to the kernel when launching the OSIE. Parameters are joined with a
     /// space.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kernelParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelParams")]
     pub kernel_params: Option<Vec<String>>,
     /// NetworkInterfaces defines the desired DHCP and netboot configuration for a network interface.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkInterfaces")]
     pub network_interfaces: Option<BTreeMap<String, HardwareNetworkInterfaces>>,
     /// OSIE describes the Operating System Installation Environment to be netbooted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub osie: Option<HardwareOsie>,
     /// StorageDevices is a list of storage devices that will be available in the OSIE.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageDevices")]
     pub storage_devices: Option<Vec<String>>,
 }
 
@@ -102,19 +85,11 @@ pub struct HardwareNetworkInterfaces {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dhcp: Option<HardwareNetworkInterfacesDhcp>,
     /// DisableDHCP disables DHCP for this interface. Implies DisableNetboot.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableDhcp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDhcp")]
     pub disable_dhcp: Option<bool>,
     /// DisableNetboot disables netbooting for this interface. The interface will still receive
     /// network information specified by DHCP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableNetboot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableNetboot")]
     pub disable_netboot: Option<bool>,
 }
 
@@ -132,11 +107,7 @@ pub struct HardwareNetworkInterfacesDhcp {
     pub ip: Option<String>,
     /// LeaseTimeSeconds to serve. 24h default. Maximum equates to max uint32 as defined by RFC 2132
     /// § 9.2 (https://www.rfc-editor.org/rfc/rfc2132.html#section-9.2).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "leaseTimeSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "leaseTimeSeconds")]
     pub lease_time_seconds: Option<i64>,
     /// Nameservers to serve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -163,3 +134,4 @@ pub struct HardwareOsie {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

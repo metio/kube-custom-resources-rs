@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -13,41 +13,24 @@ use self::prelude::*;
 /// configured, including when backups are performed, how long they are retained
 /// for, and where they are backed up to.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "couchbase.com",
-    version = "v2",
-    kind = "CouchbaseBackup",
-    plural = "couchbasebackups"
-)]
+#[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseBackup", plural = "couchbasebackups")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CouchbaseBackupSpec {
     /// AutoScaling allows the volume size to be dynamically increased.
     /// When specified, the backup volume will start with an initial size
     /// as defined by `spec.size`, and increase as required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoScaling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoScaling")]
     pub auto_scaling: Option<CouchbaseBackupAutoScaling>,
     /// Number of times a backup job should try to execute.
     /// Once it hits the BackoffLimit it will not run until the next scheduled job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backoffLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
     /// Number of hours to hold backups for, everything older will be deleted.  More info:
     /// https://golang.org/pkg/time/#ParseDuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupRetention"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRetention")]
     pub backup_retention: Option<String>,
     /// Data allows control over what key-value/document data is included in the
     /// backup.  By default, all data is included.  Modifications
@@ -56,27 +39,15 @@ pub struct CouchbaseBackupSpec {
     pub data: Option<CouchbaseBackupData>,
     /// DefaultRecoveryMethod specifies how cbbackupmgr should
     /// recover from broken backup/restore attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultRecoveryMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRecoveryMethod")]
     pub default_recovery_method: Option<CouchbaseBackupDefaultRecoveryMethod>,
     /// EphemeralVolume sets backup to use an ephemeral volume instead
     /// of a persistent volume. This is used when backing up to a remote
     /// cloud provider, where a persistent volume is not needed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeralVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralVolume")]
     pub ephemeral_volume: Option<bool>,
     /// Amount of failed jobs to keep.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedJobsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i32>,
     /// Full is the schedule on when to take full backups.
     /// Used in Full/Incremental and FullOnly backup strategies.
@@ -88,18 +59,10 @@ pub struct CouchbaseBackupSpec {
     pub incremental: Option<CouchbaseBackupIncremental>,
     /// Number of hours to hold script logs for, everything older will be deleted.  More info:
     /// https://golang.org/pkg/time/#ParseDuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logRetention"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logRetention")]
     pub log_retention: Option<String>,
     /// ObjectStore allows for backing up to a remote cloud storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectStore")]
     pub object_store: Option<CouchbaseBackupObjectStore>,
     /// DEPRECATED - by spec.objectStore.uri
     /// Name of S3 bucket to backup to. If non-empty this overrides local backup.
@@ -116,11 +79,7 @@ pub struct CouchbaseBackupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
     /// Name of StorageClass to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// Strategy defines how to perform backups.  `full_only` will only perform full
     /// backups, and you must define a schedule in the `spec.full` field.  `full_incremental`
@@ -135,21 +94,13 @@ pub struct CouchbaseBackupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<CouchbaseBackupStrategy>,
     /// Amount of successful jobs to keep.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successfulJobsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i32>,
     /// How many threads to use during the backup.  This field defaults to 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub threads: Option<i64>,
     /// Amount of time to elapse before a completed job is deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ttlSecondsAfterFinished"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
     pub ttl_seconds_after_finished: Option<i32>,
 }
 
@@ -161,11 +112,7 @@ pub struct CouchbaseBackupAutoScaling {
     /// IncrementPercent controls how much the volume is increased each time the
     /// threshold is exceeded, upto a maximum as defined by the limit.
     /// This field defaults to 20 if not specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "incrementPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementPercent")]
     pub increment_percent: Option<i64>,
     /// Limit imposes a hard limit on the size we can autoscale to.  When not
     /// specified no bounds are imposed. More info:
@@ -178,11 +125,7 @@ pub struct CouchbaseBackupAutoScaling {
     /// For example, if the volume is 100Gi, and the threshold 20%, then a resize
     /// will be triggered when the used capacity exceeds 80Gi, and free space is
     /// less than 20Gi.  This field defaults to 20 if not specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "thresholdPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "thresholdPercent")]
     pub threshold_percent: Option<i64>,
 }
 
@@ -281,11 +224,7 @@ pub struct CouchbaseBackupObjectStoreEndpoint {
     pub url: Option<String>,
     /// UseVirtualPath will force the AWS SDK to use the new virtual style paths
     /// which are often required by S3 compatible object stores.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useVirtualPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useVirtualPath")]
     pub use_virtual_path: Option<bool>,
 }
 
@@ -300,35 +239,19 @@ pub struct CouchbaseBackupServices {
     pub analytics: Option<bool>,
     /// BucketConfig enables the backup of bucket configuration.
     /// This field defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketConfig")]
     pub bucket_config: Option<bool>,
     /// BucketQuery enables the backup of query metadata for all buckets.
     /// This field defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketQuery")]
     pub bucket_query: Option<bool>,
     /// ClusterAnalytics enables the backup of cluster-wide analytics data, for example synonyms.
     /// This field defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterAnalytics"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAnalytics")]
     pub cluster_analytics: Option<bool>,
     /// ClusterQuery enables the backup of cluster level query metadata.
     /// This field defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterQuery")]
     pub cluster_query: Option<bool>,
     /// Data enables the backup of key-value data/documents for all buckets.
     /// This can be further refined with the couchbasebackups.spec.data configuration.
@@ -341,19 +264,11 @@ pub struct CouchbaseBackupServices {
     pub eventing: Option<bool>,
     /// FTSAliases enables the backup of full-text search alias definitions.
     /// This field defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ftsAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ftsAliases")]
     pub fts_aliases: Option<bool>,
     /// FTSIndexes enables the backup of full-text search index definitions for all buckets.
     /// This field defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ftsIndexes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ftsIndexes")]
     pub fts_indexes: Option<bool>,
     /// GSIndexes enables the backup of global secondary index definitions for all buckets.
     /// This field defaults to `true`.
@@ -398,11 +313,7 @@ pub struct CouchbaseBackupStatus {
     pub backups: Option<Vec<CouchbaseBackupStatusBackups>>,
     /// CapacityUsed tells us how much of the PVC we are using. More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "capacityUsed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityUsed")]
     pub capacity_used: Option<String>,
     /// DEPRECATED - field may no longer be populated.
     /// Cronjob tells us which Cronjob the job belongs to.
@@ -419,21 +330,13 @@ pub struct CouchbaseBackupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub job: Option<String>,
     /// LastFailure tells us the time the last failed backup failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastFailure")]
     pub last_failure: Option<String>,
     /// LastRun tells us the time the last backup job started.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastRun")]
     pub last_run: Option<String>,
     /// LastSuccess gives us the time the last successful backup finished.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSuccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSuccess")]
     pub last_success: Option<String>,
     /// DEPRECATED - field may no longer be populated.
     /// Output reports useful information from the backup_script.
@@ -461,3 +364,4 @@ pub struct CouchbaseBackupStatusBackups {
     /// Name of the repository.
     pub name: String,
 }
+

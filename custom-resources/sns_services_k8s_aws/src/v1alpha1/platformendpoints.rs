@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// PlatformEndpointSpec defines the desired state of PlatformEndpoint.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sns.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "PlatformEndpoint",
-    plural = "platformendpoints"
-)]
+#[kube(group = "sns.services.k8s.aws", version = "v1alpha1", kind = "PlatformEndpoint", plural = "platformendpoints")]
 #[kube(namespaced)]
 #[kube(status = "PlatformEndpointStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PlatformEndpointSpec {
     /// Arbitrary user data to associate with the endpoint. Amazon SNS does not use
     /// this data. The data must be in UTF-8 format and less than 2KB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customUserData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customUserData")]
     pub custom_user_data: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<String>,
@@ -53,11 +44,7 @@ pub struct PlatformEndpointStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<PlatformEndpointStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -66,11 +53,7 @@ pub struct PlatformEndpointStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// EndpointArn returned from CreateEndpoint action.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointARN")]
     pub endpoint_arn: Option<String>,
 }
 
@@ -95,3 +78,4 @@ pub struct PlatformEndpointStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

@@ -4,50 +4,33 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "Tenant",
-    plural = "tenants"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "Tenant", plural = "tenants")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TenantSpec {
     /// ControlPlaneReplicas defines how many replicas of the control plane core components will be deployed
     /// in the Tenant's namespace. Defaults to the controlPlaneReplicas in Installation CR
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReplicas")]
     pub control_plane_replicas: Option<i32>,
     /// DashboardsJob configures the Dashboards job
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dashboardsJob"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dashboardsJob")]
     pub dashboards_job: Option<TenantDashboardsJob>,
     /// Elastic configures per-tenant ElasticSearch and Kibana parameters.
     /// This field is required for clusters using external ES.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub elastic: Option<TenantElastic>,
     /// ESKubeControllerDeployment configures the ESKubeController Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "esKubeControllerDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "esKubeControllerDeployment")]
     pub es_kube_controller_deployment: Option<TenantEsKubeControllerDeployment>,
     /// ID is the unique identifier for this tenant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -55,11 +38,7 @@ pub struct TenantSpec {
     /// Indices defines the how to store a tenant's data
     pub indices: Vec<TenantIndices>,
     /// LinseedDeployment configures the linseed Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linseedDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linseedDeployment")]
     pub linseed_deployment: Option<TenantLinseedDeployment>,
     /// Name is a human readable name for this tenant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -197,11 +176,7 @@ pub struct TenantEsKubeControllerDeploymentSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the calico-kube-controllers Deployment.
     /// If omitted, the calico-kube-controllers Deployment will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the calico-kube-controllers Deployment pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -258,11 +233,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpec {
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-kube-controllers Deployment will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-kube-controllers Deployment nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the calico-kube-controllers pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the calico-kube-controllers Deployment.
@@ -279,27 +250,14 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -349,8 +307,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityP
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -368,8 +325,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityP
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -412,8 +368,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityR
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -431,8 +386,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityR
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -551,8 +505,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityPr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -586,8 +539,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityPr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -674,8 +626,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityRe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -709,8 +660,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityRe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -828,8 +778,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -863,8 +812,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -951,8 +899,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -986,8 +933,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1036,8 +982,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecContainersResources {
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<TenantEsKubeControllerDeploymentSpecTemplateSpecContainersResourcesClaims>>,
+    pub claims: Option<Vec<TenantEsKubeControllerDeploymentSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1081,11 +1026,7 @@ pub struct TenantEsKubeControllerDeploymentSpecTemplateSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1163,11 +1104,7 @@ pub struct TenantLinseedDeploymentSpecTemplateSpec {
     /// InitContainers is a list of linseed init containers.
     /// If specified, this overrides the specified linseed Deployment init containers.
     /// If omitted, the linseed Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<TenantLinseedDeploymentSpecTemplateSpecInitContainers>>,
 }
 
@@ -1280,4 +1217,6 @@ pub struct TenantLinseedDeploymentSpecTemplateSpecInitContainersResourcesClaims 
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantStatus {}
+pub struct TenantStatus {
+}
+

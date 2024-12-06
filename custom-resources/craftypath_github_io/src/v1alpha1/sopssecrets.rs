@@ -5,34 +5,25 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// SopsSecretSpec defines the desired state of SopsSecret.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "craftypath.github.io",
-    version = "v1alpha1",
-    kind = "SopsSecret",
-    plural = "sopssecrets"
-)]
+#[kube(group = "craftypath.github.io", version = "v1alpha1", kind = "SopsSecret", plural = "sopssecrets")]
 #[kube(namespaced)]
 #[kube(status = "SopsSecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SopsSecretSpec {
     /// Metadata allows adding labels and annotations to generated Secrets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<SopsSecretMetadata>,
     /// StringData allows specifying Sops-encrypted secret data in string form.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stringData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stringData")]
     pub string_data: Option<BTreeMap<String, String>>,
     /// Type specifies the type of the secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -53,14 +44,11 @@ pub struct SopsSecretMetadata {
 /// SopsSecretStatus defines the observed state of SopsSecret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SopsSecretStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

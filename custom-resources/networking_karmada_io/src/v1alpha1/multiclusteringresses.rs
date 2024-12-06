@@ -5,33 +5,24 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec is the desired state of the MultiClusterIngress.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "networking.karmada.io",
-    version = "v1alpha1",
-    kind = "MultiClusterIngress",
-    plural = "multiclusteringresses"
-)]
+#[kube(group = "networking.karmada.io", version = "v1alpha1", kind = "MultiClusterIngress", plural = "multiclusteringresses")]
 #[kube(namespaced)]
 #[kube(status = "MultiClusterIngressStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MultiClusterIngressSpec {
     /// defaultBackend is the backend that should handle requests that don't
     /// match any rule. If Rules are not specified, DefaultBackend must be specified.
     /// If DefaultBackend is not set, the handling of requests that do not match any
     /// of the rules will be up to the Ingress controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultBackend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultBackend")]
     pub default_backend: Option<MultiClusterIngressDefaultBackend>,
     /// ingressClassName is the name of an IngressClass cluster resource. Ingress
     /// controller implementations use this field to know whether they should be
@@ -43,11 +34,7 @@ pub struct MultiClusterIngressSpec {
     /// created Ingress resources should prefer using the field. However, even
     /// though the annotation is officially deprecated, for backwards compatibility
     /// reasons, ingress controllers should still honor that annotation if present.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// rules is a list of host rules used to configure the Ingress. If unspecified,
     /// or no rule matches, all traffic is sent to the default backend.
@@ -141,8 +128,8 @@ pub struct MultiClusterIngressRules {
     /// Incoming requests are matched against the host before the
     /// IngressRuleValue. If the host is unspecified, the Ingress routes all
     /// traffic based on the specified IngressRuleValue.
-    ///
-    ///
+    /// 
+    /// 
     /// host can be "precise" which is a domain name without the terminating dot of
     /// a network host (e.g. "foo.bar.com") or "wildcard", which is a domain name
     /// prefixed with a single wildcard label (e.g. "*.foo.com").
@@ -279,11 +266,7 @@ pub struct MultiClusterIngressTls {
     /// hostname alone. If the SNI host in a listener conflicts with the "Host"
     /// header field used by an IngressRule, the SNI host is used for termination
     /// and value of the "Host" header is used for routing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -291,29 +274,17 @@ pub struct MultiClusterIngressTls {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MultiClusterIngressStatus {
     /// loadBalancer contains the current status of the load-balancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<MultiClusterIngressStatusLoadBalancer>,
     /// ServiceLocations records the locations of MulticlusterIngress's backend
     /// Service resources. It will be set by the system controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceLocations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceLocations")]
     pub service_locations: Option<Vec<MultiClusterIngressStatusServiceLocations>>,
     /// TrafficBlockClusters records the cluster name list that needs to perform traffic block.
     /// When the cloud provider implements its multicluster-cloud-provider and refreshes
     /// the service backend address to the LoadBalancer Service, it needs to filter out
     /// the backend addresses in these clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trafficBlockClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficBlockClusters")]
     pub traffic_block_clusters: Option<Vec<String>>,
 }
 
@@ -369,3 +340,4 @@ pub struct MultiClusterIngressStatusServiceLocations {
     /// the same namespace as the MultiClusterService object.
     pub name: String,
 }
+

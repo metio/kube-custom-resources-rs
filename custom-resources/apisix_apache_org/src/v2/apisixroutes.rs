@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apisix.apache.org",
-    version = "v2",
-    kind = "ApisixRoute",
-    plural = "apisixroutes"
-)]
+#[kube(group = "apisix.apache.org", version = "v2", kind = "ApisixRoute", plural = "apisixroutes")]
 #[kube(namespaced)]
 #[kube(status = "ApisixRouteStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ApisixRouteSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<Vec<ApisixRouteHttp>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stream: Option<Vec<ApisixRouteStream>>,
@@ -122,23 +113,11 @@ pub enum ApisixRouteHttpAuthenticationType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApisixRouteHttpBackends {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolveGranularity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolveGranularity")]
     pub resolve_granularity: Option<ApisixRouteHttpBackendsResolveGranularity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePort")]
     pub service_port: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subset: Option<String>,
@@ -165,11 +144,7 @@ pub struct ApisixRouteHttpMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub methods: Option<Vec<String>>,
     pub paths: Vec<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteAddrs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteAddrs")]
     pub remote_addrs: Option<Vec<String>>,
 }
 
@@ -261,11 +236,7 @@ pub struct ApisixRouteStream {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApisixRouteStreamBackend {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolveGranularity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolveGranularity")]
     pub resolve_granularity: Option<ApisixRouteStreamBackendResolveGranularity>,
     #[serde(rename = "serviceName")]
     pub service_name: String,
@@ -321,11 +292,7 @@ pub struct ApisixRouteStatus {
 pub struct ApisixRouteStatusConditions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
@@ -334,3 +301,4 @@ pub struct ApisixRouteStatusConditions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

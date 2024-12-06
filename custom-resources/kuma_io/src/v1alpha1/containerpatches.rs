@@ -5,32 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ContainerPatchSpec specifies the options available for a ContainerPatch
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "ContainerPatch",
-    plural = "containerpatches"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "ContainerPatch", plural = "containerpatches")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ContainerPatchSpec {
     /// InitPatch specifies jsonpatch to apply to an init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initPatch")]
     pub init_patch: Option<Vec<ContainerPatchInitPatch>>,
     /// SidecarPatch specifies jsonpatch to apply to a sidecar container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sidecarPatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarPatch")]
     pub sidecar_patch: Option<Vec<ContainerPatchSidecarPatch>>,
 }
 
@@ -95,3 +86,4 @@ pub enum ContainerPatchSidecarPatchOp {
     #[serde(rename = "copy")]
     Copy,
 }
+

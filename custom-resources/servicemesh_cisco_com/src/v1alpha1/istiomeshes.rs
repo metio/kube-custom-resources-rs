@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "servicemesh.cisco.com",
-    version = "v1alpha1",
-    kind = "IstioMesh",
-    plural = "istiomeshes"
-)]
+#[kube(group = "servicemesh.cisco.com", version = "v1alpha1", kind = "IstioMesh", plural = "istiomeshes")]
 #[kube(namespaced)]
 #[kube(status = "IstioMeshStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IstioMeshSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<IstioMeshConfig>,
@@ -29,245 +24,89 @@ pub struct IstioMeshSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogEncoding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogEncoding")]
     pub access_log_encoding: Option<IstioMeshConfigAccessLogEncoding>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogFile")]
     pub access_log_file: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogFormat")]
     pub access_log_format: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<IstioMeshConfigCa>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<Vec<IstioMeshConfigCaCertificates>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<Vec<IstioMeshConfigCertificates>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configSources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSources")]
     pub config_sources: Option<Vec<IstioMeshConfigConfigSources>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultConfig")]
     pub default_config: Option<IstioMeshConfigDefaultConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultDestinationRuleExportTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultDestinationRuleExportTo")]
     pub default_destination_rule_export_to: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultHttpRetryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultHttpRetryPolicy")]
     pub default_http_retry_policy: Option<IstioMeshConfigDefaultHttpRetryPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultProviders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultProviders")]
     pub default_providers: Option<IstioMeshConfigDefaultProviders>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultServiceExportTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultServiceExportTo")]
     pub default_service_export_to: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultVirtualServiceExportTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultVirtualServiceExportTo")]
     pub default_virtual_service_export_to: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableEnvoyListenerLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableEnvoyListenerLog")]
     pub disable_envoy_listener_log: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discoverySelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoverySelectors")]
     pub discovery_selectors: Option<Vec<IstioMeshConfigDiscoverySelectors>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsRefreshRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsRefreshRate")]
     pub dns_refresh_rate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableAutoMtls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableAutoMtls")]
     pub enable_auto_mtls: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableEnvoyAccessLogService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableEnvoyAccessLogService")]
     pub enable_envoy_access_log_service: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enablePrometheusMerge"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enablePrometheusMerge")]
     pub enable_prometheus_merge: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableTracing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableTracing")]
     pub enable_tracing: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extensionProviders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extensionProviders")]
     pub extension_providers: Option<Vec<IstioMeshConfigExtensionProviders>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "h2UpgradePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "h2UpgradePolicy")]
     pub h2_upgrade_policy: Option<IstioMeshConfigH2UpgradePolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inboundClusterStatName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inboundClusterStatName")]
     pub inbound_cluster_stat_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClass")]
     pub ingress_class: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressControllerMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressControllerMode")]
     pub ingress_controller_mode: Option<IstioMeshConfigIngressControllerMode>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressSelector")]
     pub ingress_selector: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressService")]
     pub ingress_service: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localityLbSetting"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localityLbSetting")]
     pub locality_lb_setting: Option<IstioMeshConfigLocalityLbSetting>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshMTLS")]
     pub mesh_mtls: Option<IstioMeshConfigMeshMtls>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outboundClusterStatName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outboundClusterStatName")]
     pub outbound_cluster_stat_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outboundTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outboundTrafficPolicy")]
     pub outbound_traffic_policy: Option<IstioMeshConfigOutboundTrafficPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathNormalization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathNormalization")]
     pub path_normalization: Option<IstioMeshConfigPathNormalization>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolDetectionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolDetectionTimeout")]
     pub protocol_detection_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyHttpPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyHttpPort")]
     pub proxy_http_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyListenPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyListenPort")]
     pub proxy_listen_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootNamespace")]
     pub root_namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceSettings")]
     pub service_settings: Option<Vec<IstioMeshConfigServiceSettings>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<IstioMeshConfigTcpKeepalive>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomain")]
     pub trust_domain: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustDomainAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomainAliases")]
     pub trust_domain_aliases: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyCertificateAtClient"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyCertificateAtClient")]
     pub verify_certificate_at_client: Option<bool>,
 }
 
@@ -283,66 +122,30 @@ pub enum IstioMeshConfigAccessLogEncoding {
 pub struct IstioMeshConfigCa {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "istiodSide"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "istiodSide")]
     pub istiod_side: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
     pub request_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<IstioMeshConfigCaTlsSettings>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IstioMeshConfigCaTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: IstioMeshConfigCaTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -360,25 +163,13 @@ pub enum IstioMeshConfigCaTlsSettingsMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigCaCertificates {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSigners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSigners")]
     pub cert_signers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pem: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spiffeBundleUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spiffeBundleUrl")]
     pub spiffe_bundle_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomains")]
     pub trust_domains: Option<Vec<String>>,
 }
 
@@ -386,11 +177,7 @@ pub struct IstioMeshConfigCaCertificates {
 pub struct IstioMeshConfigCertificates {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsNames")]
     pub dns_names: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -398,60 +185,28 @@ pub struct IstioMeshConfigCertificates {
 pub struct IstioMeshConfigConfigSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subscribedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subscribedResources")]
     pub subscribed_resources: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<IstioMeshConfigConfigSourcesTlsSettings>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IstioMeshConfigConfigSourcesTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: IstioMeshConfigConfigSourcesTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -469,195 +224,75 @@ pub enum IstioMeshConfigConfigSourcesTlsSettingsMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDefaultConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZone")]
     pub availability_zone: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "binaryPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "binaryPath")]
     pub binary_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificatesPem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificatesPem")]
     pub ca_certificates_pem: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub concurrency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configPath")]
     pub config_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneAuthPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneAuthPolicy")]
     pub control_plane_auth_policy: Option<IstioMeshConfigDefaultConfigControlPlaneAuthPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customConfigFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customConfigFile")]
     pub custom_config_file: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discoveryAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryAddress")]
     pub discovery_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discoveryRefreshDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryRefreshDelay")]
     pub discovery_refresh_delay: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "drainDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "drainDuration")]
     pub drain_duration: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyAccessLogService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyAccessLogService")]
     pub envoy_access_log_service: Option<IstioMeshConfigDefaultConfigEnvoyAccessLogService>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyMetricsService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyMetricsService")]
     pub envoy_metrics_service: Option<IstioMeshConfigDefaultConfigEnvoyMetricsService>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyMetricsServiceAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyMetricsServiceAddress")]
     pub envoy_metrics_service_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraStatTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraStatTags")]
     pub extra_stat_tags: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayTopology"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayTopology")]
     pub gateway_topology: Option<IstioMeshConfigDefaultConfigGatewayTopology>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "holdApplicationUntilProxyStarts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "holdApplicationUntilProxyStarts")]
     pub hold_application_until_proxy_starts: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<IstioMeshConfigDefaultConfigImage>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "interceptionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interceptionMode")]
     pub interception_mode: Option<IstioMeshConfigDefaultConfigInterceptionMode>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshId")]
     pub mesh_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKeyProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyProvider")]
     pub private_key_provider: Option<IstioMeshConfigDefaultConfigPrivateKeyProvider>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyAdminPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyAdminPort")]
     pub proxy_admin_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyBootstrapTemplatePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyBootstrapTemplatePath")]
     pub proxy_bootstrap_template_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyMetadata")]
     pub proxy_metadata: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyStatsMatcher"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyStatsMatcher")]
     pub proxy_stats_matcher: Option<IstioMeshConfigDefaultConfigProxyStatsMatcher>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<IstioMeshConfigDefaultConfigReadinessProbe>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeValues")]
     pub runtime_values: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sds: Option<IstioMeshConfigDefaultConfigSds>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceCluster")]
     pub service_cluster: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statNameLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statNameLength")]
     pub stat_name_length: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statsdUdpAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statsdUdpAddress")]
     pub statsd_udp_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusPort")]
     pub status_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationDrainDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationDrainDuration")]
     pub termination_drain_duration: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<IstioMeshConfigDefaultConfigTracing>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tracingServiceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingServiceName")]
     pub tracing_service_name: Option<IstioMeshConfigDefaultConfigTracingServiceName>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "zipkinAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zipkinAddress")]
     pub zipkin_address: Option<String>,
 }
 
@@ -675,17 +310,9 @@ pub enum IstioMeshConfigDefaultConfigControlPlaneAuthPolicy {
 pub struct IstioMeshConfigDefaultConfigEnvoyAccessLogService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<IstioMeshConfigDefaultConfigEnvoyAccessLogServiceTcpKeepalive>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<IstioMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettings>,
 }
 
@@ -701,44 +328,20 @@ pub struct IstioMeshConfigDefaultConfigEnvoyAccessLogServiceTcpKeepalive {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IstioMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: IstioMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -758,17 +361,9 @@ pub enum IstioMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettingsMode {
 pub struct IstioMeshConfigDefaultConfigEnvoyMetricsService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<IstioMeshConfigDefaultConfigEnvoyMetricsServiceTcpKeepalive>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<IstioMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettings>,
 }
 
@@ -784,44 +379,20 @@ pub struct IstioMeshConfigDefaultConfigEnvoyMetricsServiceTcpKeepalive {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IstioMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: IstioMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -839,18 +410,9 @@ pub enum IstioMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettingsMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDefaultConfigGatewayTopology {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardClientCertDetails"
-    )]
-    pub forward_client_cert_details:
-        Option<IstioMeshConfigDefaultConfigGatewayTopologyForwardClientCertDetails>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numTrustedProxies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardClientCertDetails")]
+    pub forward_client_cert_details: Option<IstioMeshConfigDefaultConfigGatewayTopologyForwardClientCertDetails>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numTrustedProxies")]
     pub num_trusted_proxies: Option<i64>,
 }
 
@@ -908,23 +470,11 @@ pub struct IstioMeshConfigDefaultConfigPrivateKeyProviderQat {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDefaultConfigProxyStatsMatcher {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inclusionPrefixes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inclusionPrefixes")]
     pub inclusion_prefixes: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inclusionRegexps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inclusionRegexps")]
     pub inclusion_regexps: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inclusionSuffixes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inclusionSuffixes")]
     pub inclusion_suffixes: Option<Vec<String>>,
 }
 
@@ -932,39 +482,19 @@ pub struct IstioMeshConfigDefaultConfigProxyStatsMatcher {
 pub struct IstioMeshConfigDefaultConfigReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<IstioMeshConfigDefaultConfigReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<IstioMeshConfigDefaultConfigReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<IstioMeshConfigDefaultConfigReadinessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -978,11 +508,7 @@ pub struct IstioMeshConfigDefaultConfigReadinessProbeExec {
 pub struct IstioMeshConfigDefaultConfigReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<IstioMeshConfigDefaultConfigReadinessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -1010,47 +536,27 @@ pub struct IstioMeshConfigDefaultConfigReadinessProbeTcpSocket {
 pub struct IstioMeshConfigDefaultConfigSds {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sSaJwtPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sSaJwtPath")]
     pub k8s_sa_jwt_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDefaultConfigTracing {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTags")]
     pub custom_tags: Option<BTreeMap<String, IstioMeshConfigDefaultConfigTracingCustomTags>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datadog: Option<IstioMeshConfigDefaultConfigTracingDatadog>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lightstep: Option<IstioMeshConfigDefaultConfigTracingLightstep>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPathTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPathTagLength")]
     pub max_path_tag_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openCensusAgent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openCensusAgent")]
     pub open_census_agent: Option<IstioMeshConfigDefaultConfigTracingOpenCensusAgent>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stackdriver: Option<IstioMeshConfigDefaultConfigTracingStackdriver>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<IstioMeshConfigDefaultConfigTracingTlsSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zipkin: Option<IstioMeshConfigDefaultConfigTracingZipkin>,
@@ -1068,11 +574,7 @@ pub struct IstioMeshConfigDefaultConfigTracingCustomTags {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDefaultConfigTracingCustomTagsEnvironment {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1080,11 +582,7 @@ pub struct IstioMeshConfigDefaultConfigTracingCustomTagsEnvironment {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDefaultConfigTracingCustomTagsHeader {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1104,11 +602,7 @@ pub struct IstioMeshConfigDefaultConfigTracingDatadog {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDefaultConfigTracingLightstep {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
@@ -1126,66 +620,30 @@ pub struct IstioMeshConfigDefaultConfigTracingOpenCensusAgent {
 pub struct IstioMeshConfigDefaultConfigTracingStackdriver {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAnnotations")]
     pub max_number_of_annotations: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAttributes")]
     pub max_number_of_attributes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfMessageEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfMessageEvents")]
     pub max_number_of_message_events: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IstioMeshConfigDefaultConfigTracingTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: IstioMeshConfigDefaultConfigTracingTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -1220,29 +678,17 @@ pub enum IstioMeshConfigDefaultConfigTracingServiceName {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDefaultHttpRetryPolicy {
     pub attempts: i32,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perTryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perTryTimeout")]
     pub per_try_timeout: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOn")]
     pub retry_on: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryRemoteLocalities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryRemoteLocalities")]
     pub retry_remote_localities: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDefaultProviders {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogging"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogging")]
     pub access_logging: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<Vec<String>>,
@@ -1252,17 +698,9 @@ pub struct IstioMeshConfigDefaultProviders {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDiscoverySelectors {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<IstioMeshConfigDiscoverySelectorsMatchExpressions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1280,41 +718,17 @@ pub struct IstioMeshConfigDiscoverySelectorsMatchExpressions {
 pub struct IstioMeshConfigExtensionProviders {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datadog: Option<IstioMeshConfigExtensionProvidersDatadog>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyExtAuthzGrpc"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyExtAuthzGrpc")]
     pub envoy_ext_authz_grpc: Option<IstioMeshConfigExtensionProvidersEnvoyExtAuthzGrpc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyExtAuthzHttp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyExtAuthzHttp")]
     pub envoy_ext_authz_http: Option<IstioMeshConfigExtensionProvidersEnvoyExtAuthzHttp>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyFileAccessLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyFileAccessLog")]
     pub envoy_file_access_log: Option<IstioMeshConfigExtensionProvidersEnvoyFileAccessLog>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyHttpAls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyHttpAls")]
     pub envoy_http_als: Option<IstioMeshConfigExtensionProvidersEnvoyHttpAls>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyOtelAls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyOtelAls")]
     pub envoy_otel_als: Option<IstioMeshConfigExtensionProvidersEnvoyOtelAls>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyTcpAls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyTcpAls")]
     pub envoy_tcp_als: Option<IstioMeshConfigExtensionProvidersEnvoyTcpAls>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lightstep: Option<IstioMeshConfigExtensionProvidersLightstep>,
@@ -1336,11 +750,7 @@ pub struct IstioMeshConfigExtensionProviders {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigExtensionProvidersDatadog {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -1352,22 +762,13 @@ pub struct IstioMeshConfigExtensionProvidersDatadog {
 pub struct IstioMeshConfigExtensionProvidersEnvoyExtAuthzGrpc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOpen")]
     pub fail_open: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeRequestBodyInCheck"
-    )]
-    pub include_request_body_in_check:
-        Option<IstioMeshConfigExtensionProvidersEnvoyExtAuthzGrpcIncludeRequestBodyInCheck>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeRequestBodyInCheck")]
+    pub include_request_body_in_check: Option<IstioMeshConfigExtensionProvidersEnvoyExtAuthzGrpcIncludeRequestBodyInCheck>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusOnError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusOnError")]
     pub status_on_error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
@@ -1375,23 +776,11 @@ pub struct IstioMeshConfigExtensionProvidersEnvoyExtAuthzGrpc {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigExtensionProvidersEnvoyExtAuthzGrpcIncludeRequestBodyInCheck {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPartialMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPartialMessage")]
     pub allow_partial_message: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestBytes")]
     pub max_request_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packAsBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packAsBytes")]
     pub pack_as_bytes: Option<bool>,
 }
 
@@ -1399,64 +788,27 @@ pub struct IstioMeshConfigExtensionProvidersEnvoyExtAuthzGrpcIncludeRequestBodyI
 pub struct IstioMeshConfigExtensionProvidersEnvoyExtAuthzHttp {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOpen")]
     pub fail_open: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headersToDownstreamOnAllow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headersToDownstreamOnAllow")]
     pub headers_to_downstream_on_allow: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headersToDownstreamOnDeny"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headersToDownstreamOnDeny")]
     pub headers_to_downstream_on_deny: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headersToUpstreamOnAllow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headersToUpstreamOnAllow")]
     pub headers_to_upstream_on_allow: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeAdditionalHeadersInCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeAdditionalHeadersInCheck")]
     pub include_additional_headers_in_check: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeHeadersInCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeHeadersInCheck")]
     pub include_headers_in_check: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeRequestBodyInCheck"
-    )]
-    pub include_request_body_in_check:
-        Option<IstioMeshConfigExtensionProvidersEnvoyExtAuthzHttpIncludeRequestBodyInCheck>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeRequestHeadersInCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeRequestBodyInCheck")]
+    pub include_request_body_in_check: Option<IstioMeshConfigExtensionProvidersEnvoyExtAuthzHttpIncludeRequestBodyInCheck>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeRequestHeadersInCheck")]
     pub include_request_headers_in_check: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathPrefix")]
     pub path_prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusOnError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusOnError")]
     pub status_on_error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
@@ -1464,23 +816,11 @@ pub struct IstioMeshConfigExtensionProvidersEnvoyExtAuthzHttp {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigExtensionProvidersEnvoyExtAuthzHttpIncludeRequestBodyInCheck {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPartialMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPartialMessage")]
     pub allow_partial_message: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestBytes")]
     pub max_request_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packAsBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packAsBytes")]
     pub pack_as_bytes: Option<bool>,
 }
 
@@ -1501,33 +841,18 @@ pub struct IstioMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormat {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormatLabels {}
+pub struct IstioMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormatLabels {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigExtensionProvidersEnvoyHttpAls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalRequestHeadersToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalRequestHeadersToLog")]
     pub additional_request_headers_to_log: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalResponseHeadersToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalResponseHeadersToLog")]
     pub additional_response_headers_to_log: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalResponseTrailersToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalResponseTrailersToLog")]
     pub additional_response_trailers_to_log: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterStateObjectsToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterStateObjectsToLog")]
     pub filter_state_objects_to_log: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logName")]
     pub log_name: Option<String>,
@@ -1558,15 +883,12 @@ pub struct IstioMeshConfigExtensionProvidersEnvoyOtelAlsLogFormat {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioMeshConfigExtensionProvidersEnvoyOtelAlsLogFormatLabels {}
+pub struct IstioMeshConfigExtensionProvidersEnvoyOtelAlsLogFormatLabels {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigExtensionProvidersEnvoyTcpAls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterStateObjectsToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterStateObjectsToLog")]
     pub filter_state_objects_to_log: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logName")]
     pub log_name: Option<String>,
@@ -1578,17 +900,9 @@ pub struct IstioMeshConfigExtensionProvidersEnvoyTcpAls {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigExtensionProvidersLightstep {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -1600,11 +914,7 @@ pub struct IstioMeshConfigExtensionProvidersLightstep {
 pub struct IstioMeshConfigExtensionProvidersOpencensus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -1614,11 +924,7 @@ pub struct IstioMeshConfigExtensionProvidersOpencensus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigExtensionProvidersOpentelemetry {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -1627,15 +933,12 @@ pub struct IstioMeshConfigExtensionProvidersOpentelemetry {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioMeshConfigExtensionProvidersPrometheus {}
+pub struct IstioMeshConfigExtensionProvidersPrometheus {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigExtensionProvidersSkywalking {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -1649,29 +952,13 @@ pub struct IstioMeshConfigExtensionProvidersStackdriver {
     pub debug: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<IstioMeshConfigExtensionProvidersStackdriverLogging>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAnnotations")]
     pub max_number_of_annotations: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAttributes")]
     pub max_number_of_attributes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfMessageEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfMessageEvents")]
     pub max_number_of_message_events: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
 }
 
@@ -1683,11 +970,7 @@ pub struct IstioMeshConfigExtensionProvidersStackdriverLogging {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigExtensionProvidersZipkin {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -1723,11 +1006,7 @@ pub struct IstioMeshConfigLocalityLbSetting {
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failover: Option<Vec<IstioMeshConfigLocalityLbSettingFailover>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failoverPriority"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failoverPriority")]
     pub failover_priority: Option<Vec<String>>,
 }
 
@@ -1749,11 +1028,7 @@ pub struct IstioMeshConfigLocalityLbSettingFailover {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigMeshMtls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProtocolVersion")]
     pub min_protocol_version: Option<IstioMeshConfigMeshMtlsMinProtocolVersion>,
 }
 
@@ -1811,11 +1086,7 @@ pub struct IstioMeshConfigServiceSettings {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigServiceSettingsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterLocal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterLocal")]
     pub cluster_local: Option<bool>,
 }
 
@@ -1831,11 +1102,7 @@ pub struct IstioMeshConfigTcpKeepalive {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMessage")]
     pub error_message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<IstioMeshStatusStatus>,
@@ -1850,3 +1117,4 @@ pub enum IstioMeshStatusStatus {
     Available,
     Unmanaged,
 }
+

@@ -4,88 +4,47 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "inference.kubedl.io",
-    version = "v1alpha1",
-    kind = "ElasticBatchJob",
-    plural = "elasticbatchjobs"
-)]
+#[kube(group = "inference.kubedl.io", version = "v1alpha1", kind = "ElasticBatchJob", plural = "elasticbatchjobs")]
 #[kube(namespaced)]
 #[kube(status = "ElasticBatchJobStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ElasticBatchJobSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backoffLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanPodPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanPodPolicy")]
     pub clean_pod_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cronPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronPolicy")]
     pub cron_policy: Option<ElasticBatchJobCronPolicy>,
     #[serde(rename = "elasticBatchReplicaSpecs")]
     pub elastic_batch_replica_specs: BTreeMap<String, ElasticBatchJobElasticBatchReplicaSpecs>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ElasticBatchJobSchedulingPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successPolicy")]
     pub success_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ttlSecondsAfterFinished"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
     pub ttl_seconds_after_finished: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobCronPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "concurrencyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrencyPolicy")]
     pub concurrency_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deadline: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "historyLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "historyLimit")]
     pub history_limit: Option<i32>,
     pub schedule: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -96,17 +55,9 @@ pub struct ElasticBatchJobCronPolicy {
 pub struct ElasticBatchJobElasticBatchReplicaSpecs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spotReplicaSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spotReplicaSpec")]
     pub spot_replica_spec: Option<ElasticBatchJobElasticBatchReplicaSpecsSpotReplicaSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplate>,
@@ -116,17 +67,9 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecs {
 pub struct ElasticBatchJobElasticBatchReplicaSpecsSpotReplicaSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spotReplicaNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spotReplicaNumber")]
     pub spot_replica_number: Option<i32>,
 }
 
@@ -154,194 +97,85 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateMetadata {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     pub containers: Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainers>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecDnsConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableServiceLinks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeralContainers"
-    )]
-    pub ephemeral_containers:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralContainers")]
+    pub ephemeral_containers: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecHostAliases>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIPC")]
     pub host_ipc: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPID")]
     pub host_pid: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
-    pub image_pull_secrets:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecImagePullSecrets>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecImagePullSecrets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainers>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overhead: Option<BTreeMap<String, IntOrString>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
     pub preemption_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessGates"
-    )]
-    pub readiness_gates:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecReadinessGates>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
+    pub readiness_gates: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecReadinessGates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setHostnameAsFQDN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subdomain: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTolerations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTopologySpreadConstraints>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumes>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAffinity>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -367,8 +201,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -376,8 +209,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -399,8 +231,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -408,8 +239,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -452,8 +282,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinit
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -469,8 +298,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinit
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -498,8 +326,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinit
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -515,8 +342,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinit
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -559,8 +385,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAff
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -576,8 +401,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAff
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -605,8 +429,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAff
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -622,8 +445,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAff
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -642,84 +464,38 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainers {
     pub env_from: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecycle>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbe>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersPorts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersVolumeDevices>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersVolumeMounts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -729,44 +505,23 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnv {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFrom>,
+    pub value_from: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromResourceFieldRef,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromSecretKeyRef,
-    >,
+    pub field_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromConfigMapKeyRef
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromConfigMapKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -776,24 +531,15 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValue
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -811,18 +557,12 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvValue
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvFromSecretRef>,
+    pub secret_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvFromSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -844,26 +584,19 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersEnvFromS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecycle {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStart>,
+    pub post_start: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStop>,
+    pub pre_stop: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStop>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStart {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStartExec>,
+    pub exec: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStartHttpGet,
-    >,
+    pub http_get: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStartHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStartTcpSocket,
-    >,
+    pub tcp_socket: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStartTcpSocket>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -886,15 +619,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecycl
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStartHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStartTcpSocket
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -903,16 +634,11 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecycl
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStop {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStopExec>,
+    pub exec: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStopHttpGet,
-    >,
+    pub http_get: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStopHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStopTcpSocket,
-    >,
+    pub tcp_socket: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStopTcpSocket>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -935,8 +661,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecycl
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -951,49 +676,22 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLifecycl
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1017,8 +715,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLiveness
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersLivenessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -1047,50 +744,22 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersPorts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbeTcpSocket,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1114,8 +783,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadines
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersReadinessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -1137,69 +805,32 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersResource
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextCapabilities,
-    >,
+    pub capabilities: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextSeLinuxOptions,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextSeccompProfile,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextCapabilities
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextCapabilities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1207,8 +838,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurity
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextSeLinuxOptions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextSeLinuxOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1220,44 +850,22 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurity
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextSeccompProfile
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextSeccompProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextWindowsOptions
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurityContextWindowsOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1265,47 +873,21 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersSecurity
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1329,8 +911,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupP
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupProbeHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersStartupProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -1353,22 +934,14 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersVolumeDe
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecContainersVolumeMounts {
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -1399,101 +972,43 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
-    pub env_from:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvFrom>>,
+    pub env_from: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lifecycle:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecycle>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLivenessProbe>,
+    pub lifecycle: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecycle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLivenessProbe>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ports:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersPorts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersReadinessProbe,
-    >,
+    pub ports: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersPorts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersSecurityContext,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbe>,
+    pub resources: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetContainerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetContainerName")]
     pub target_container_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices: Option<
-        Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersVolumeDevices>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts: Option<
-        Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersVolumeMounts>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -1503,8 +1018,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvValueFrom>,
+    pub value_from: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1520,8 +1034,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvValueFromConfigMapKeyRef
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvValueFromConfigMapKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1530,26 +1043,16 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvValueFromFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvValueFromFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvValueFromResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -1557,8 +1060,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvValueFromSecretKeyRef
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvValueFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1568,25 +1070,16 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvFromConfigMapRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvFromSecretRef,
-    >,
+    pub secret_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvFromSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvFromConfigMapRef
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersEnvFromConfigMapRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1604,13 +1097,9 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecycle {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePostStart,
-    >,
+    pub post_start: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePreStop,
-    >,
+    pub pre_stop: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePreStop>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1624,8 +1113,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePostStartExec
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePostStartExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1644,15 +1132,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -1669,8 +1155,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePreStopExec
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePreStopExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1689,15 +1174,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -1745,15 +1228,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLivenessProbeTcpSocket
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -1796,8 +1277,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersReadinessProbeExec
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersReadinessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -1816,15 +1296,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersReadinessProbeTcpSocket
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -1865,8 +1343,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersSecurityContextCapabilities
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersSecurityContextCapabilities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1874,8 +1351,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersSecurityContextSeLinuxOptions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersSecurityContextSeLinuxOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1887,96 +1363,44 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersSecurityContextSeccompProfile
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersSecurityContextSeccompProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersSecurityContextWindowsOptions
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersSecurityContextWindowsOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbeExec,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbeHttpGet,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbeTcpSocket,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2000,15 +1424,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbeHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbeTcpSocket
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersStartupProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -2025,22 +1447,14 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainer
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecEphemeralContainersVolumeMounts {
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -2067,90 +1481,41 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
-    pub env_from:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvFrom>>,
+    pub env_from: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lifecycle:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecycle>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbe>,
+    pub lifecycle: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecycle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbe>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersPorts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbe>,
+    pub resources: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersVolumeDevices>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersVolumeMounts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -2160,8 +1525,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnv 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvValueFrom>,
+    pub value_from: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2177,8 +1541,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvV
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvValueFromConfigMapKeyRef
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvValueFromConfigMapKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2188,24 +1551,15 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvV
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvValueFromResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -2213,8 +1567,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvV
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvValueFromSecretKeyRef
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvValueFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2224,19 +1577,12 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvV
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvFromConfigMapRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvFromSecretRef>,
+    pub secret_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvFromSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2258,11 +1604,9 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersEnvF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecycle {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePostStart>,
+    pub post_start: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStop>,
+    pub pre_stop: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStop>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2295,15 +1639,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLife
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePostStartHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePostStartTcpSocket
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -2312,17 +1654,11 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLife
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStop {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStopExec,
-    >,
+    pub exec: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStopHttpGet,
-    >,
+    pub http_get: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStopHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStopTcpSocket,
-    >,
+    pub tcp_socket: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStopTcpSocket>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2345,15 +1681,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLife
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStopTcpSocket
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLifecyclePreStopTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -2362,51 +1696,22 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLife
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbeHttpGet,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbeTcpSocket,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2430,8 +1735,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLive
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersLivenessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -2460,51 +1764,22 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersPort
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbeHttpGet,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbeTcpSocket,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2528,15 +1803,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersRead
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbeTcpSocket
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -2577,8 +1850,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecurityContextCapabilities
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecurityContextCapabilities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2586,8 +1858,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecurityContextSeLinuxOptions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecurityContextSeLinuxOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2599,95 +1870,44 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecurityContextSeccompProfile
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecurityContextSeccompProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecurityContextWindowsOptions
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersSecurityContextWindowsOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbeHttpGet,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbeTcpSocket,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2711,8 +1931,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStar
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbeHttpGetHttpHeaders
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersStartupProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -2735,22 +1954,14 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersVolu
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecInitContainersVolumeMounts {
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -2764,56 +1975,24 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecReadinessGates {
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sysctls:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextSysctls>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextWindowsOptions>,
+    pub sysctls: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextSysctls>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2830,11 +2009,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextSeL
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -2848,29 +2023,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextSys
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -2882,11 +2041,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTolerations {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -2894,14 +2049,8 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTopologySpreadConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTopologySpreadConstraintsLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTopologySpreadConstraintsLabelSelector>,
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
     #[serde(rename = "topologyKey")]
@@ -2919,8 +2068,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTopologySpreadCons
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2929,13 +2077,8 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecTopologySpreadCons
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesAwsElasticBlockStore>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesAzureDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
@@ -2948,11 +2091,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumes {
     pub config_map: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCsi>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEmptyDir>,
@@ -2960,21 +2099,12 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumes {
     pub ephemeral: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeral>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesFc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesFlexVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesFlocker>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesGcePersistentDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesGitRepo>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2986,27 +2116,12 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumes {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesNfs>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesPersistentVolumeClaim>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesPhotonPersistentDisk>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesPortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesPersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesPhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesPortworxVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3019,13 +2134,8 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumes {
     pub secret: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesStorageos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
-    pub vsphere_volume:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesVsphereVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesVsphereVolume>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3042,11 +2152,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesAwsElasticB
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesAzureDisk {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     #[serde(rename = "diskName")]
     pub disk_name: String,
@@ -3077,15 +2183,10 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCephfs {
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCephfsSecretRef>,
+    pub secret_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCephfsSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
@@ -3103,8 +2204,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCinder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCinderSecretRef>,
+    pub secret_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCinderSecretRef>,
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
@@ -3117,15 +2217,10 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCinderSecre
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesConfigMapItems>>,
+    pub items: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesConfigMapItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3145,20 +2240,11 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCsi {
     pub driver: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -3170,55 +2256,34 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesCsiNodePubl
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApiItems>>,
+    pub items: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApiItems>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApiItems {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApiItemsFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     pub path: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApiItemsFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -3235,14 +2300,8 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEmptyDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeral {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template: Option<
-        ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplate,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplate>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3253,8 +2312,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVo
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateMetadata
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3288,8 +2346,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVo
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     pub kind: String,
@@ -3297,8 +2354,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVo
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     pub kind: String,
@@ -3306,8 +2362,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVo
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3323,8 +2378,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVo
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3339,11 +2393,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesFc {
     pub lun: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
@@ -3359,8 +2409,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesFlexVolume 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesFlexVolumeSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3371,17 +2420,9 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesFlexVolumeS
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesFlocker {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -3423,32 +2464,16 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesHostPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesIscsi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     pub iqn: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     pub lun: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3456,8 +2481,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesIscsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesIscsiSecretRef>,
+    pub secret_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesIscsiSecretRef>,
     #[serde(rename = "targetPortal")]
     pub target_portal: String,
 }
@@ -3504,15 +2528,10 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesPortworxVol
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources:
-        Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSources>>,
+    pub sources: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSources>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3538,8 +2557,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSo
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesConfigMapItems
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesConfigMapItems {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
@@ -3564,26 +2582,16 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSo
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -3593,9 +2601,7 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSo
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3611,15 +2617,10 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSo
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesServiceAccountToken
-{
+pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     pub path: String,
 }
@@ -3667,40 +2668,20 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesScaleIo {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     pub gateway: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(rename = "secretRef")]
     pub secret_ref: ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesScaleIoSecretRef,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     pub system: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -3712,21 +2693,13 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesScaleIoSecr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -3745,19 +2718,10 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesStorageos {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesStorageosSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    pub secret_ref: Option<ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesStorageosSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -3771,17 +2735,9 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesStorageosSe
 pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     #[serde(rename = "volumePath")]
     pub volume_path: String,
@@ -3789,19 +2745,11 @@ pub struct ElasticBatchJobElasticBatchReplicaSpecsTemplateSpecVolumesVsphereVolu
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobSchedulingPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queue: Option<String>,
@@ -3809,31 +2757,15 @@ pub struct ElasticBatchJobSchedulingPolicy {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticBatchJobStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheBackendName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheBackendName")]
     pub cache_backend_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTime")]
     pub completion_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastReconcileTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastReconcileTime")]
     pub last_reconcile_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelVersionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelVersionName")]
     pub model_version_name: Option<String>,
     #[serde(rename = "replicaStatuses")]
     pub replica_statuses: BTreeMap<String, ElasticBatchJobStatusReplicaStatuses>,
@@ -3852,3 +2784,4 @@ pub struct ElasticBatchJobStatusReplicaStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub succeeded: Option<i32>,
 }
+

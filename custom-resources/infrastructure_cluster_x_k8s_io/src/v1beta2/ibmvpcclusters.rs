@@ -4,41 +4,28 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// IBMVPCClusterSpec defines the desired state of IBMVPCCluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta2",
-    kind = "IBMVPCCluster",
-    plural = "ibmvpcclusters"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "IBMVPCCluster", plural = "ibmvpcclusters")]
 #[kube(namespaced)]
 #[kube(status = "IBMVPCClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMVPCClusterSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<IBMVPCClusterControlPlaneEndpoint>,
     /// ControlPlaneLoadBalancer is optional configuration for customizing control plane behavior.
     /// Use this for legacy support, use Network.LoadBalancers for the extended VPC support.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneLoadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneLoadBalancer")]
     pub control_plane_load_balancer: Option<IBMVPCClusterControlPlaneLoadBalancer>,
     /// image represents the Image details used for the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -73,18 +60,10 @@ pub struct IBMVPCClusterControlPlaneEndpoint {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterControlPlaneLoadBalancer {
     /// AdditionalListeners sets the additional listeners for the control plane load balancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalListeners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalListeners")]
     pub additional_listeners: Option<Vec<IBMVPCClusterControlPlaneLoadBalancerAdditionalListeners>>,
     /// backendPools defines the load balancer's backend pools.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendPools"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendPools")]
     pub backend_pools: Option<Vec<IBMVPCClusterControlPlaneLoadBalancerBackendPools>>,
     /// id of the loadbalancer
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -97,11 +76,7 @@ pub struct IBMVPCClusterControlPlaneLoadBalancer {
     pub public: Option<bool>,
     /// securityGroups defines the Security Groups to attach to the load balancer.
     /// Security Groups defined here are expected to already exist when the load balancer is reconciled (these do not get created when reconciling the load balancer).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<IBMVPCClusterControlPlaneLoadBalancerSecurityGroups>>,
     /// subnets defines the VPC Subnets to attach to the load balancer.
     /// Subnets defiens here are expected to already exist when the load balancer is reconciled (these do not get created when reconciling the load balancer).
@@ -114,11 +89,7 @@ pub struct IBMVPCClusterControlPlaneLoadBalancer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterControlPlaneLoadBalancerAdditionalListeners {
     /// defaultPoolName defines the name of a VPC Load Balancer Backend Pool to use for the VPC Load Balancer Listener.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultPoolName")]
     pub default_pool_name: Option<String>,
     /// Port sets the port for the additional listener.
     pub port: i64,
@@ -241,18 +212,10 @@ pub struct IBMVPCClusterImage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosBucket")]
     pub cos_bucket: Option<String>,
     /// cosBucketRegion is the COS region the bucket is in.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cosBucketRegion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosBucketRegion")]
     pub cos_bucket_region: Option<String>,
     /// cosInstance is the name of the IBM Cloud COS Instance containing the source of the image, if necessary.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cosInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosInstance")]
     pub cos_instance: Option<String>,
     /// cosObject is the name of a IBM Cloud COS Object used as the source of the image, if necessary.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosObject")]
@@ -264,18 +227,10 @@ pub struct IBMVPCClusterImage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// operatingSystem is the Custom Image's Operating System name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatingSystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatingSystem")]
     pub operating_system: Option<String>,
     /// resourceGroup is the Resource Group to create the Custom Image in.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<IBMVPCClusterImageResourceGroup>,
 }
 
@@ -293,43 +248,23 @@ pub struct IBMVPCClusterImageResourceGroup {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterNetwork {
     /// controlPlaneSubnets is a set of Subnet's which define the Control Plane subnets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneSubnets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneSubnets")]
     pub control_plane_subnets: Option<Vec<IBMVPCClusterNetworkControlPlaneSubnets>>,
     /// loadBalancers is a set of VPC Load Balancer definitions to use for the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<Vec<IBMVPCClusterNetworkLoadBalancers>>,
     /// resourceGroup is the Resource Group containing all of the newtork resources.
     /// This can be different than the Resource Group containing the remaining cluster resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<IBMVPCClusterNetworkResourceGroup>,
     /// securityGroups is a set of VPCSecurityGroup's which define the VPC Security Groups that manage traffic within and out of the VPC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<IBMVPCClusterNetworkSecurityGroups>>,
     /// vpc defines the IBM Cloud VPC for extended VPC Infrastructure support.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMVPCClusterNetworkVpc>,
     /// workerSubnets is a set of Subnet's which define the Worker subnets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerSubnets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerSubnets")]
     pub worker_subnets: Option<Vec<IBMVPCClusterNetworkWorkerSubnets>>,
 }
 
@@ -350,18 +285,10 @@ pub struct IBMVPCClusterNetworkControlPlaneSubnets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterNetworkLoadBalancers {
     /// AdditionalListeners sets the additional listeners for the control plane load balancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalListeners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalListeners")]
     pub additional_listeners: Option<Vec<IBMVPCClusterNetworkLoadBalancersAdditionalListeners>>,
     /// backendPools defines the load balancer's backend pools.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendPools"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendPools")]
     pub backend_pools: Option<Vec<IBMVPCClusterNetworkLoadBalancersBackendPools>>,
     /// id of the loadbalancer
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -374,11 +301,7 @@ pub struct IBMVPCClusterNetworkLoadBalancers {
     pub public: Option<bool>,
     /// securityGroups defines the Security Groups to attach to the load balancer.
     /// Security Groups defined here are expected to already exist when the load balancer is reconciled (these do not get created when reconciling the load balancer).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<IBMVPCClusterNetworkLoadBalancersSecurityGroups>>,
     /// subnets defines the VPC Subnets to attach to the load balancer.
     /// Subnets defiens here are expected to already exist when the load balancer is reconciled (these do not get created when reconciling the load balancer).
@@ -391,11 +314,7 @@ pub struct IBMVPCClusterNetworkLoadBalancers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterNetworkLoadBalancersAdditionalListeners {
     /// defaultPoolName defines the name of a VPC Load Balancer Backend Pool to use for the VPC Load Balancer Listener.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultPoolName")]
     pub default_pool_name: Option<String>,
     /// Port sets the port for the additional listener.
     pub port: i64,
@@ -551,11 +470,7 @@ pub struct IBMVPCClusterNetworkSecurityGroupsRules {
     /// direction defines whether the traffic is inbound or outbound for the Security Group Rule.
     pub direction: IBMVPCClusterNetworkSecurityGroupsRulesDirection,
     /// securityGroupID is the ID of the Security Group for the Security Group Rule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupID")]
     pub security_group_id: Option<String>,
     /// source is a VPCSecurityGroupRulePrototype which defines the source of inbound traffic for the Security Group Rule.
     /// Only used when direction is VPCSecurityGroupRuleDirectionInbound.
@@ -599,18 +514,10 @@ pub struct IBMVPCClusterNetworkSecurityGroupsRulesDestination {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterNetworkSecurityGroupsRulesDestinationPortRange {
     /// maximumPort is the inclusive upper range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumPort")]
     pub maximum_port: Option<i64>,
     /// minimumPort is the inclusive lower range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumPort")]
     pub minimum_port: Option<i64>,
 }
 
@@ -638,22 +545,14 @@ pub struct IBMVPCClusterNetworkSecurityGroupsRulesDestinationRemotes {
     pub address: Option<String>,
     /// cidrSubnetName is the name of the VPC Subnet to retrieve the CIDR from, to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeCIDR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrSubnetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrSubnetName")]
     pub cidr_subnet_name: Option<String>,
     /// remoteType defines the type of filter to define for the remote's destination/source.
     #[serde(rename = "remoteType")]
     pub remote_type: IBMVPCClusterNetworkSecurityGroupsRulesDestinationRemotesRemoteType,
     /// securityGroupName is the name of the VPC Security Group to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeSG
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupName")]
     pub security_group_name: Option<String>,
 }
 
@@ -707,18 +606,10 @@ pub struct IBMVPCClusterNetworkSecurityGroupsRulesSource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterNetworkSecurityGroupsRulesSourcePortRange {
     /// maximumPort is the inclusive upper range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumPort")]
     pub maximum_port: Option<i64>,
     /// minimumPort is the inclusive lower range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumPort")]
     pub minimum_port: Option<i64>,
 }
 
@@ -746,22 +637,14 @@ pub struct IBMVPCClusterNetworkSecurityGroupsRulesSourceRemotes {
     pub address: Option<String>,
     /// cidrSubnetName is the name of the VPC Subnet to retrieve the CIDR from, to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeCIDR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrSubnetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrSubnetName")]
     pub cidr_subnet_name: Option<String>,
     /// remoteType defines the type of filter to define for the remote's destination/source.
     #[serde(rename = "remoteType")]
     pub remote_type: IBMVPCClusterNetworkSecurityGroupsRulesSourceRemotesRemoteType,
     /// securityGroupName is the name of the VPC Security Group to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeSG
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupName")]
     pub security_group_name: Option<String>,
 }
 
@@ -810,11 +693,7 @@ pub struct IBMVPCClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ControlPlaneLoadBalancerState is the status of the load balancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneLoadBalancerState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneLoadBalancerState")]
     pub control_plane_load_balancer_state: Option<String>,
     /// image is the status of the VPC Custom Image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -826,11 +705,7 @@ pub struct IBMVPCClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
     /// resourceGroup is the status of the cluster's Resource Group for extended VPC Infrastructure support.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<IBMVPCClusterStatusResourceGroup>,
     /// Subnet describes a subnet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -840,11 +715,7 @@ pub struct IBMVPCClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMVPCClusterStatusVpc>,
     /// VPCEndpoint describes a VPCEndpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcEndpoint")]
     pub vpc_endpoint: Option<IBMVPCClusterStatusVpcEndpoint>,
 }
 
@@ -865,55 +736,30 @@ pub struct IBMVPCClusterStatusImage {
 pub struct IBMVPCClusterStatusNetwork {
     /// controlPlaneSubnets references the VPC Subnets for the cluster's Control Plane.
     /// The map simplifies lookups.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneSubnets"
-    )]
-    pub control_plane_subnets:
-        Option<BTreeMap<String, IBMVPCClusterStatusNetworkControlPlaneSubnets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneSubnets")]
+    pub control_plane_subnets: Option<BTreeMap<String, IBMVPCClusterStatusNetworkControlPlaneSubnets>>,
     /// loadBalancers references the VPC Load Balancer's for the cluster.
     /// The map simplifies lookups.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<BTreeMap<String, IBMVPCClusterStatusNetworkLoadBalancers>>,
     /// publicGateways references the VPC Public Gateways for the cluster.
     /// The map simplifies lookups.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publicGateways"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicGateways")]
     pub public_gateways: Option<BTreeMap<String, IBMVPCClusterStatusNetworkPublicGateways>>,
     /// resourceGroup references the Resource Group for Network resources for the cluster.
     /// This can be the same or unique from the cluster's Resource Group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<IBMVPCClusterStatusNetworkResourceGroup>,
     /// securityGroups references the VPC Security Groups for the cluster.
     /// The map simplifies lookups.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<BTreeMap<String, IBMVPCClusterStatusNetworkSecurityGroups>>,
     /// vpc references the status of the IBM Cloud VPC as part of the extended VPC Infrastructure support.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMVPCClusterStatusNetworkVpc>,
     /// workerSubnets references the VPC Subnets for the cluster's Data Plane.
     /// The map simplifies lookups.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerSubnets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerSubnets")]
     pub worker_subnets: Option<BTreeMap<String, IBMVPCClusterStatusNetworkWorkerSubnets>>,
 }
 
@@ -937,11 +783,7 @@ pub struct IBMVPCClusterStatusNetworkControlPlaneSubnets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCClusterStatusNetworkLoadBalancers {
     /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCreated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
     pub controller_created: Option<bool>,
     /// hostname is the hostname of load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1062,16 +904,9 @@ pub struct IBMVPCClusterStatusVpc {
 pub struct IBMVPCClusterStatusVpcEndpoint {
     pub address: String,
     /// Deprecated: This field has no function and is going to be removed in the next release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "floatingIPID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "floatingIPID")]
     pub floating_ipid: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIPID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIPID")]
     pub load_balancer_ipid: Option<String>,
 }
+

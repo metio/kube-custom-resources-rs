@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "secscan.quay.redhat.com",
-    version = "v1alpha1",
-    kind = "ImageManifestVuln",
-    plural = "imagemanifestvulns"
-)]
+#[kube(group = "secscan.quay.redhat.com", version = "v1alpha1", kind = "ImageManifestVuln", plural = "imagemanifestvulns")]
 #[kube(namespaced)]
 #[kube(status = "ImageManifestVulnStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ImageManifestVulnSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<ImageManifestVulnFeatures>>,
@@ -29,11 +24,7 @@ pub struct ImageManifestVulnSpec {
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manifest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceName")]
     pub namespace_name: Option<String>,
 }
 
@@ -41,11 +32,7 @@ pub struct ImageManifestVulnSpec {
 pub struct ImageManifestVulnFeatures {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceName")]
     pub namespace_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -67,11 +54,7 @@ pub struct ImageManifestVulnFeaturesVulnerabilities {
     pub metadata: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceName")]
     pub namespace_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub severity: Option<String>,
@@ -79,62 +62,27 @@ pub struct ImageManifestVulnFeaturesVulnerabilities {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ImageManifestVulnStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "affectedPods"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "affectedPods")]
     pub affected_pods: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "criticalCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "criticalCount")]
     pub critical_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defcon1Count"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defcon1Count")]
     pub defcon1_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fixableCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fixableCount")]
     pub fixable_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "highCount")]
     pub high_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "highestSeverity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestSeverity")]
     pub highest_severity: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lowCount")]
     pub low_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mediumCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mediumCount")]
     pub medium_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "negligibleCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "negligibleCount")]
     pub negligible_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unknownCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unknownCount")]
     pub unknown_count: Option<i64>,
 }
+

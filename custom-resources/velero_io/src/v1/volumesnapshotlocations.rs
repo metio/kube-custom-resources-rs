@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VolumeSnapshotLocationSpec defines the specification for a Velero VolumeSnapshotLocation.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "velero.io",
-    version = "v1",
-    kind = "VolumeSnapshotLocation",
-    plural = "volumesnapshotlocations"
-)]
+#[kube(group = "velero.io", version = "v1", kind = "VolumeSnapshotLocation", plural = "volumesnapshotlocations")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VolumeSnapshotLocationSpec {
     /// Config is for provider-specific configuration fields.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -66,3 +61,4 @@ pub enum VolumeSnapshotLocationStatusPhase {
     Available,
     Unavailable,
 }
+

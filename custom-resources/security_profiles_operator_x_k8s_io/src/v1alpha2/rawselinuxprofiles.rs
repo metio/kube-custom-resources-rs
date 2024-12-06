@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// RawSelinuxProfileSpec defines the desired state of RawSelinuxProfile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "security-profiles-operator.x-k8s.io",
-    version = "v1alpha2",
-    kind = "RawSelinuxProfile",
-    plural = "rawselinuxprofiles"
-)]
+#[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha2", kind = "RawSelinuxProfile", plural = "rawselinuxprofiles")]
 #[kube(namespaced)]
 #[kube(status = "RawSelinuxProfileStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RawSelinuxProfileSpec {
     /// Whether the profile is disabled and should be skipped during reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -34,11 +29,7 @@ pub struct RawSelinuxProfileSpec {
 /// SelinuxProfileStatus defines the observed state of SelinuxProfile.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RawSelinuxProfileStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeWorkloads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeWorkloads")]
     pub active_workloads: Option<Vec<String>>,
     /// Conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -53,3 +44,4 @@ pub struct RawSelinuxProfileStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usage: Option<String>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// AzureVirtualMachineSpec defines the desired state of AzureVirtualMachine
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "azure.microsoft.com",
-    version = "v1alpha1",
-    kind = "AzureVirtualMachine",
-    plural = "azurevirtualmachines"
-)]
+#[kube(group = "azure.microsoft.com", version = "v1alpha1", kind = "AzureVirtualMachine", plural = "azurevirtualmachines")]
 #[kube(namespaced)]
 #[kube(status = "AzureVirtualMachineStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AzureVirtualMachineSpec {
     #[serde(rename = "adminUserName")]
     pub admin_user_name: String,
@@ -35,11 +30,7 @@ pub struct AzureVirtualMachineSpec {
     pub platform_image_urn: String,
     #[serde(rename = "resourceGroup")]
     pub resource_group: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sshPublicKeyData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshPublicKeyData")]
     pub ssh_public_key_data: Option<String>,
     #[serde(rename = "vmSize")]
     pub vm_size: String,
@@ -50,39 +41,19 @@ pub struct AzureVirtualMachineSpec {
 pub struct AzureVirtualMachineStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completed: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containsUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containsUpdate")]
     pub contains_update: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedProvisioning"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedProvisioning")]
     pub failed_provisioning: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flattenedSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flattenedSecrets")]
     pub flattened_secrets: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub output: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingUrl")]
     pub polling_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingUrlKind"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingUrlKind")]
     pub polling_url_kind: Option<AzureVirtualMachineStatusPollingUrlKind>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provisioned: Option<bool>,
@@ -90,11 +61,7 @@ pub struct AzureVirtualMachineStatus {
     pub provisioning: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requested: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceId")]
     pub resource_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "specHash")]
     pub spec_hash: Option<String>,
@@ -108,3 +75,4 @@ pub enum AzureVirtualMachineStatusPollingUrlKind {
     CreateOrUpdate,
     Delete,
 }
+

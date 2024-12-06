@@ -4,70 +4,49 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// KogitoBuildSpec defines the desired state of KogitoBuild.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "app.kiegroup.org",
-    version = "v1beta1",
-    kind = "KogitoBuild",
-    plural = "kogitobuilds"
-)]
+#[kube(group = "app.kiegroup.org", version = "v1beta1", kind = "KogitoBuild", plural = "kogitobuilds")]
 #[kube(namespaced)]
 #[kube(status = "KogitoBuildStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct KogitoBuildSpec {
-    /// Artifact contains override information for building the Maven artifact (used for Local Source builds).
+    /// Artifact contains override information for building the Maven artifact (used for Local Source builds). 
     ///  You might want to override this information when building from decisions, rules or process files. In this scenario the Kogito Images will generate a new Java project for you underneath. This information will be used to generate this project.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub artifact: Option<KogitoBuildArtifact>,
-    /// Image used to build the Kogito Service from source (Local and Remote).
-    ///  If not defined the operator will use image provided by the Kogito Team based on the "Runtime" field.
-    ///  Example: "quay.io/kiegroup/kogito-jvm-builder:latest".
+    /// Image used to build the Kogito Service from source (Local and Remote). 
+    ///  If not defined the operator will use image provided by the Kogito Team based on the "Runtime" field. 
+    ///  Example: "quay.io/kiegroup/kogito-jvm-builder:latest". 
     ///  On OpenShift an ImageStream will be created in the current namespace pointing to the given image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "buildImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildImage")]
     pub build_image: Option<String>,
     /// DisableIncremental indicates that source to image builds should NOT be incremental. Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableIncremental"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableIncremental")]
     pub disable_incremental: Option<bool>,
     /// If set to true will print the logs for downloading/uploading of maven dependencies. Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableMavenDownloadOutput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMavenDownloadOutput")]
     pub enable_maven_download_output: Option<bool>,
     /// Environment variables used during build time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KogitoBuildEnv>>,
-    /// Information about the git repository where the Kogito Service source code resides.
+    /// Information about the git repository where the Kogito Service source code resides. 
     ///  Ignored for binary builds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitSource")]
     pub git_source: Option<KogitoBuildGitSource>,
     /// Maven Mirror URL to be used during source-to-image builds (Local and Remote) to considerably increase build speed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mavenMirrorURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mavenMirrorURL")]
     pub maven_mirror_url: Option<String>,
-    /// Native indicates if the Kogito Service built should be compiled to run on native mode when Runtime is Quarkus (Source to Image build only).
+    /// Native indicates if the Kogito Service built should be compiled to run on native mode when Runtime is Quarkus (Source to Image build only). 
     ///  For more information, see https://www.graalvm.org/docs/reference-manual/aot-compilation/.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub native: Option<bool>,
@@ -77,30 +56,22 @@ pub struct KogitoBuildSpec {
     /// Which runtime Kogito service base image to use when building the Kogito service. If "BuildImage" is set, this value is ignored by the operator. Default value: quarkus.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub runtime: Option<KogitoBuildRuntime>,
-    /// Image used as the base image for the final Kogito service. This image only has the required packages to run the application.
-    ///  For example: quarkus based services will have only JVM installed, native services only the packages required by the OS.
-    ///  If not defined the operator will use image provided by the Kogito Team based on the "Runtime" field.
-    ///  Example: "quay.io/kiegroup/kogito-jvm-builder:latest".
+    /// Image used as the base image for the final Kogito service. This image only has the required packages to run the application. 
+    ///  For example: quarkus based services will have only JVM installed, native services only the packages required by the OS. 
+    ///  If not defined the operator will use image provided by the Kogito Team based on the "Runtime" field. 
+    ///  Example: "quay.io/kiegroup/kogito-jvm-builder:latest". 
     ///  On OpenShift an ImageStream will be created in the current namespace pointing to the given image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeImage")]
     pub runtime_image: Option<String>,
-    /// Set this field targeting the desired KogitoRuntime when this KogitoBuild instance has a different name than the KogitoRuntime.
-    ///  By default this KogitoBuild instance will generate a final image named after its own name (.metadata.name).
-    ///  On OpenShift, an ImageStream will be created causing a redeployment on any KogitoRuntime with the same name. On Kubernetes, the final image will be pushed to the KogitoRuntime deployment.
+    /// Set this field targeting the desired KogitoRuntime when this KogitoBuild instance has a different name than the KogitoRuntime. 
+    ///  By default this KogitoBuild instance will generate a final image named after its own name (.metadata.name). 
+    ///  On OpenShift, an ImageStream will be created causing a redeployment on any KogitoRuntime with the same name. On Kubernetes, the final image will be pushed to the KogitoRuntime deployment. 
     ///  If you have multiple KogitoBuild instances (let's say BinaryBuildType and Remote Source), you might need that both target the same KogitoRuntime. Both KogitoBuilds will update the same ImageStream or generate a final image to the same KogitoRuntime deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetKogitoRuntime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetKogitoRuntime")]
     pub target_kogito_runtime: Option<String>,
-    /// Sets the type of build that this instance will handle:
-    ///  Binary - takes an uploaded binary file already compiled and creates a Kogito service image from it.
-    ///  RemoteSource - pulls the source code from a Git repository, builds the binary and then the final Kogito service image.
+    /// Sets the type of build that this instance will handle: 
+    ///  Binary - takes an uploaded binary file already compiled and creates a Kogito service image from it. 
+    ///  RemoteSource - pulls the source code from a Git repository, builds the binary and then the final Kogito service image. 
     ///  LocalSource - takes an uploaded resource file such as DRL (rules), DMN (decision) or BPMN (process), builds the binary and the final Kogito service image.
     #[serde(rename = "type")]
     pub r#type: KogitoBuildType,
@@ -109,16 +80,12 @@ pub struct KogitoBuildSpec {
     pub web_hooks: Option<Vec<KogitoBuildWebHooks>>,
 }
 
-/// Artifact contains override information for building the Maven artifact (used for Local Source builds).
+/// Artifact contains override information for building the Maven artifact (used for Local Source builds). 
 ///  You might want to override this information when building from decisions, rules or process files. In this scenario the Kogito Images will generate a new Java project for you underneath. This information will be used to generate this project.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoBuildArtifact {
     /// Indicates the unique base name of the primary artifact being generated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "artifactId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "artifactId")]
     pub artifact_id: Option<String>,
     /// Indicates the unique identifier of the organization or group that created the project.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupId")]
@@ -145,28 +112,16 @@ pub struct KogitoBuildEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoBuildEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KogitoBuildEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<KogitoBuildEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<KogitoBuildEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KogitoBuildEnvValueFromSecretKeyRef>,
 }
 
@@ -187,11 +142,7 @@ pub struct KogitoBuildEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoBuildEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -202,11 +153,7 @@ pub struct KogitoBuildEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoBuildEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -228,16 +175,12 @@ pub struct KogitoBuildEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Information about the git repository where the Kogito Service source code resides.
+/// Information about the git repository where the Kogito Service source code resides. 
 ///  Ignored for binary builds.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoBuildGitSource {
     /// Context/subdirectory where the code is located, relative to the repo root.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contextDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contextDir")]
     pub context_dir: Option<String>,
     /// Branch to use in the Git repository.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -299,11 +242,7 @@ pub struct KogitoBuildStatus {
     pub builds: KogitoBuildStatusBuilds,
     /// History of conditions for the resource
     pub conditions: Vec<Condition>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latestBuild"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestBuild")]
     pub latest_build: Option<String>,
 }
 
@@ -332,3 +271,4 @@ pub struct KogitoBuildStatusBuilds {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub running: Option<Vec<String>>,
 }
+

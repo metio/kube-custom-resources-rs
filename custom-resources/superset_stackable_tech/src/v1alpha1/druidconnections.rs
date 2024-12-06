@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// The DruidConnection resource can be used to automatically deploy a Druid datasource in Superset. Learn more about it in the [Superset operator usage guide](https://docs.stackable.tech/home/nightly/superset/usage-guide/connecting-druid).
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "superset.stackable.tech",
-    version = "v1alpha1",
-    kind = "DruidConnection",
-    plural = "druidconnections"
-)]
+#[kube(group = "superset.stackable.tech", version = "v1alpha1", kind = "DruidConnection", plural = "druidconnections")]
 #[kube(namespaced)]
 #[kube(status = "DruidConnectionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DruidConnectionSpec {
     /// The Druid to connect.
     pub druid: DruidConnectionDruid,
@@ -64,3 +59,4 @@ pub enum DruidConnectionStatusCondition {
     Ready,
     Failed,
 }
+

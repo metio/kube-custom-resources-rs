@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TransitGatewaySpec defines the desired state of TransitGateway.
-///
+/// 
 /// Describes a transit gateway.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ec2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "TransitGateway",
-    plural = "transitgateways"
-)]
+#[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "TransitGateway", plural = "transitgateways")]
 #[kube(namespaced)]
 #[kube(status = "TransitGatewayStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TransitGatewaySpec {
     /// A description of the transit gateway.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,53 +37,21 @@ pub struct TransitGatewaySpec {
 /// The transit gateway options.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransitGatewayOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "amazonSideASN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "amazonSideASN")]
     pub amazon_side_asn: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoAcceptSharedAttachments"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoAcceptSharedAttachments")]
     pub auto_accept_shared_attachments: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultRouteTableAssociation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRouteTableAssociation")]
     pub default_route_table_association: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultRouteTablePropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRouteTablePropagation")]
     pub default_route_table_propagation: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsSupport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsSupport")]
     pub dns_support: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multicastSupport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multicastSupport")]
     pub multicast_support: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transitGatewayCIDRBlocks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGatewayCIDRBlocks")]
     pub transit_gateway_cidr_blocks: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpnECMPSupport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpnECMPSupport")]
     pub vpn_ecmp_support: Option<String>,
 }
 
@@ -107,11 +70,7 @@ pub struct TransitGatewayStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<TransitGatewayStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -120,11 +79,7 @@ pub struct TransitGatewayStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The creation time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     /// The ID of the Amazon Web Services account that owns the transit gateway.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
@@ -133,11 +88,7 @@ pub struct TransitGatewayStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
     /// The ID of the transit gateway.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transitGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGatewayID")]
     pub transit_gateway_id: Option<String>,
 }
 
@@ -162,3 +113,4 @@ pub struct TransitGatewayStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

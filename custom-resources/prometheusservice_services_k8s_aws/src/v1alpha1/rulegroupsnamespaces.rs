@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// RuleGroupsNamespaceSpec defines the desired state of RuleGroupsNamespace.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "prometheusservice.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "RuleGroupsNamespace",
-    plural = "rulegroupsnamespaces"
-)]
+#[kube(group = "prometheusservice.services.k8s.aws", version = "v1alpha1", kind = "RuleGroupsNamespace", plural = "rulegroupsnamespaces")]
 #[kube(namespaced)]
 #[kube(status = "RuleGroupsNamespaceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RuleGroupsNamespaceSpec {
     pub configuration: String,
     /// The rule groups namespace name.
@@ -32,24 +27,16 @@ pub struct RuleGroupsNamespaceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
     /// The ID of the workspace in which to create the rule group namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workspaceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceID")]
     pub workspace_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workspaceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceRef")]
     pub workspace_ref: Option<RuleGroupsNamespaceWorkspaceRef>,
 }
 
@@ -57,7 +44,7 @@ pub struct RuleGroupsNamespaceSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -84,11 +71,7 @@ pub struct RuleGroupsNamespaceStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<RuleGroupsNamespaceStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -127,16 +110,9 @@ pub struct RuleGroupsNamespaceStatusAckResourceMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuleGroupsNamespaceStatusStatus {
     /// State of a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCode")]
     pub status_code: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusReason")]
     pub status_reason: Option<String>,
 }
+

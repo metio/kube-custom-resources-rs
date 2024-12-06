@@ -4,37 +4,28 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TempoMonolithicSpec defines the desired state of TempoMonolithic.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tempo.grafana.com",
-    version = "v1alpha1",
-    kind = "TempoMonolithic",
-    plural = "tempomonolithics"
-)]
+#[kube(group = "tempo.grafana.com", version = "v1alpha1", kind = "TempoMonolithic", plural = "tempomonolithics")]
 #[kube(namespaced)]
 #[kube(status = "TempoMonolithicStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TempoMonolithicSpec {
     /// Affinity defines the Affinity rules for scheduling pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<TempoMonolithicAffinity>,
     /// ExtraConfig defines any extra (overlay) configuration of components.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraConfig")]
     pub extra_config: Option<TempoMonolithicExtraConfig>,
     /// Ingestion defines the trace ingestion configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -50,11 +41,7 @@ pub struct TempoMonolithicSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub multitenancy: Option<TempoMonolithicMultitenancy>,
     /// NodeSelector defines which labels are required by a node to schedule the pod onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Observability defines the observability configuration of the Tempo deployment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -63,11 +50,7 @@ pub struct TempoMonolithicSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TempoMonolithicResources>,
     /// ServiceAccount defines the Service Account to use for all Tempo components.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// Storage defines the storage configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -86,25 +69,13 @@ pub struct TempoMonolithicSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoMonolithicAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<TempoMonolithicAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<TempoMonolithicAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<TempoMonolithicAffinityPodAntiAffinity>,
 }
 
@@ -120,26 +91,15 @@ pub struct TempoMonolithicAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<TempoMonolithicAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<TempoMonolithicAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<TempoMonolithicAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<TempoMonolithicAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -166,8 +126,7 @@ pub struct TempoMonolithicAffinityNodeAffinityPreferredDuringSchedulingIgnoredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct TempoMonolithicAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -185,8 +144,7 @@ pub struct TempoMonolithicAffinityNodeAffinityPreferredDuringSchedulingIgnoredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct TempoMonolithicAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -229,8 +187,7 @@ pub struct TempoMonolithicAffinityNodeAffinityRequiredDuringSchedulingIgnoredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct TempoMonolithicAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -248,8 +205,7 @@ pub struct TempoMonolithicAffinityNodeAffinityRequiredDuringSchedulingIgnoredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct TempoMonolithicAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -276,14 +232,8 @@ pub struct TempoMonolithicAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<TempoMonolithicAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<TempoMonolithicAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -291,14 +241,8 @@ pub struct TempoMonolithicAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<TempoMonolithicAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<TempoMonolithicAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -380,8 +324,7 @@ pub struct TempoMonolithicAffinityPodAffinityPreferredDuringSchedulingIgnoredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct TempoMonolithicAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -415,8 +358,7 @@ pub struct TempoMonolithicAffinityPodAffinityPreferredDuringSchedulingIgnoredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct TempoMonolithicAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -503,8 +445,7 @@ pub struct TempoMonolithicAffinityPodAffinityRequiredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct TempoMonolithicAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -538,8 +479,7 @@ pub struct TempoMonolithicAffinityPodAffinityRequiredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct TempoMonolithicAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -565,14 +505,8 @@ pub struct TempoMonolithicAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<TempoMonolithicAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<TempoMonolithicAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -580,14 +514,8 @@ pub struct TempoMonolithicAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<TempoMonolithicAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<TempoMonolithicAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -669,8 +597,7 @@ pub struct TempoMonolithicAffinityPodAntiAffinityPreferredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct TempoMonolithicAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -704,8 +631,7 @@ pub struct TempoMonolithicAffinityPodAntiAffinityPreferredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct TempoMonolithicAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -792,8 +718,7 @@ pub struct TempoMonolithicAffinityPodAntiAffinityRequiredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct TempoMonolithicAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -827,8 +752,7 @@ pub struct TempoMonolithicAffinityPodAntiAffinityRequiredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TempoMonolithicAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct TempoMonolithicAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -876,8 +800,8 @@ pub struct TempoMonolithicIngestionOtlpGrpc {
     /// Default: enabled.
     pub enabled: bool,
     /// TLS defines the TLS configuration for OTLP/gRPC ingestion.
-    ///
-    ///
+    /// 
+    /// 
     /// On OpenShift when operator config `servingCertsService`  and TLS is enabled  but no `certName` and `caName`
     /// are provided it will use OpenShift serving certificate service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -885,8 +809,8 @@ pub struct TempoMonolithicIngestionOtlpGrpc {
 }
 
 /// TLS defines the TLS configuration for OTLP/gRPC ingestion.
-///
-///
+/// 
+/// 
 /// On OpenShift when operator config `servingCertsService`  and TLS is enabled  but no `certName` and `caName`
 /// are provided it will use OpenShift serving certificate service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -903,11 +827,7 @@ pub struct TempoMonolithicIngestionOtlpGrpcTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// MinVersion defines the minimum acceptable TLS version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<String>,
 }
 
@@ -918,8 +838,8 @@ pub struct TempoMonolithicIngestionOtlpHttp {
     /// Default: enabled.
     pub enabled: bool,
     /// TLS defines the TLS configuration for OTLP/HTTP ingestion.
-    ///
-    ///
+    /// 
+    /// 
     /// On OpenShift when operator config `servingCertsService`  and TLS is enabled  but no `certName` and `caName`
     /// are provided it will use OpenShift serving certificate service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -927,8 +847,8 @@ pub struct TempoMonolithicIngestionOtlpHttp {
 }
 
 /// TLS defines the TLS configuration for OTLP/HTTP ingestion.
-///
-///
+/// 
+/// 
 /// On OpenShift when operator config `servingCertsService`  and TLS is enabled  but no `certName` and `caName`
 /// are provided it will use OpenShift serving certificate service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -945,11 +865,7 @@ pub struct TempoMonolithicIngestionOtlpHttpTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// MinVersion defines the minimum acceptable TLS version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<String>,
 }
 
@@ -969,11 +885,7 @@ pub struct TempoMonolithicJaegerui {
     /// See also Tempo's extraConfig:
     /// querier.max_concurrent_queries (20 default)
     /// query_frontend.max_outstanding_per_tenant: (2000 default). Increase if the query-frontend returns 429
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "findTracesConcurrentRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "findTracesConcurrentRequests")]
     pub find_traces_concurrent_requests: Option<i64>,
     /// Ingress defines the Ingress configuration for the Jaeger UI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -985,11 +897,7 @@ pub struct TempoMonolithicJaegerui {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<TempoMonolithicJaegeruiRoute>,
     /// ServicesQueryDuration defines how long the services will be available in the services list
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicesQueryDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicesQueryDuration")]
     pub services_query_duration: Option<String>,
 }
 
@@ -1015,12 +923,12 @@ pub struct TempoMonolithicJaegeruiAuthentication {
 pub struct TempoMonolithicJaegeruiAuthenticationResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoMonolithicJaegeruiAuthenticationResourcesClaims>>,
@@ -1058,11 +966,7 @@ pub struct TempoMonolithicJaegeruiIngress {
     pub host: Option<String>,
     /// IngressClassName defines the name of an IngressClass cluster resource.
     /// Defines which ingress controller serves this ingress resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
 }
 
@@ -1071,12 +975,12 @@ pub struct TempoMonolithicJaegeruiIngress {
 pub struct TempoMonolithicJaegeruiResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoMonolithicJaegeruiResourcesClaims>>,
@@ -1177,31 +1081,19 @@ pub struct TempoMonolithicMultitenancyAuthentication {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoMonolithicMultitenancyAuthenticationOidc {
     /// Group claim field from ID Token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupClaim")]
     pub group_claim: Option<String>,
     /// IssuerURL defines the URL for issuer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerURL")]
     pub issuer_url: Option<String>,
     /// RedirectURL defines the URL for redirect.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redirectURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectURL")]
     pub redirect_url: Option<String>,
     /// Secret defines the spec for the clientID, clientSecret and issuerCAPath for tenant's authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<TempoMonolithicMultitenancyAuthenticationOidcSecret>,
     /// User claim field from ID Token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameClaim")]
     pub username_claim: Option<String>,
 }
 
@@ -1217,11 +1109,7 @@ pub struct TempoMonolithicMultitenancyAuthenticationOidcSecret {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoMonolithicMultitenancyAuthorization {
     /// RoleBindings defines configuration to bind a set of roles to a set of subjects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleBindings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleBindings")]
     pub role_bindings: Option<Vec<TempoMonolithicMultitenancyAuthorizationRoleBindings>>,
     /// Roles defines a set of permissions to interact with a tenant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1277,12 +1165,12 @@ pub enum TempoMonolithicMultitenancyMode {
 pub struct TempoMonolithicMultitenancyResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoMonolithicMultitenancyResourcesClaims>>,
@@ -1322,11 +1210,7 @@ pub struct TempoMonolithicObservability {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoMonolithicObservabilityGrafana {
     /// DataSource defines the Grafana data source configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<TempoMonolithicObservabilityGrafanaDataSource>,
 }
 
@@ -1336,11 +1220,7 @@ pub struct TempoMonolithicObservabilityGrafanaDataSource {
     /// Enabled defines if a Grafana data source should be created for this Tempo deployment.
     pub enabled: bool,
     /// InstanceSelector defines the Grafana instance where the data source should be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceSelector")]
     pub instance_selector: Option<TempoMonolithicObservabilityGrafanaDataSourceInstanceSelector>,
 }
 
@@ -1348,21 +1228,12 @@ pub struct TempoMonolithicObservabilityGrafanaDataSource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoMonolithicObservabilityGrafanaDataSourceInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<TempoMonolithicObservabilityGrafanaDataSourceInstanceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TempoMonolithicObservabilityGrafanaDataSourceInstanceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1387,18 +1258,10 @@ pub struct TempoMonolithicObservabilityGrafanaDataSourceInstanceSelectorMatchExp
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoMonolithicObservabilityMetrics {
     /// ServiceMonitors defines the PrometheusRule configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prometheusRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusRules")]
     pub prometheus_rules: Option<TempoMonolithicObservabilityMetricsPrometheusRules>,
     /// ServiceMonitors defines the ServiceMonitor configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceMonitors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitors")]
     pub service_monitors: Option<TempoMonolithicObservabilityMetricsServiceMonitors>,
 }
 
@@ -1421,12 +1284,12 @@ pub struct TempoMonolithicObservabilityMetricsServiceMonitors {
 pub struct TempoMonolithicResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoMonolithicResourcesClaims>>,
@@ -1539,11 +1402,7 @@ pub struct TempoMonolithicStorageTracesS3Tls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// MinVersion defines the minimum acceptable TLS version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<String>,
 }
 
@@ -1569,11 +1428,7 @@ pub struct TempoMonolithicTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1591,18 +1446,10 @@ pub struct TempoMonolithicStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Version of the Tempo Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorVersion")]
     pub operator_version: Option<String>,
     /// Version of the managed Tempo instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tempoVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tempoVersion")]
     pub tempo_version: Option<String>,
 }
 
@@ -1613,3 +1460,4 @@ pub struct TempoMonolithicStatusComponents {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tempo: Option<BTreeMap<String, String>>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec defines the behavior of a pod chaos experiment
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "PodNetworkChaos",
-    plural = "podnetworkchaos"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "PodNetworkChaos", plural = "podnetworkchaos")]
 #[kube(namespaced)]
 #[kube(status = "PodNetworkChaosStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PodNetworkChaosSpec {
     /// The ipset on the pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -38,11 +33,7 @@ pub struct PodNetworkChaosSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodNetworkChaosIpsets {
     /// The contents of ipset. Only available when IPSetType is NetPortIPSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrAndPorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrAndPorts")]
     pub cidr_and_ports: Option<Vec<PodNetworkChaosIpsetsCidrAndPorts>>,
     /// The contents of ipset. Only available when IPSetType is NetIPSet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -188,16 +179,9 @@ pub struct PodNetworkChaosTcsRate {
 /// Most recently observed status of the chaos experiment about pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodNetworkChaosStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedMessage")]
     pub failed_message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

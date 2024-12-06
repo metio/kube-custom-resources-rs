@@ -24,10 +24,9 @@ jobs:
           RUSTFLAGS: "--deny warnings"
           K8S_OPENAPI_ENABLED_VERSION: "{{k8s_openapi_kubernetes_version}}"
       - name: Try-run Cargo Version Update
-        if: steps.commits.outputs.count > 0
-        run: sed -i -e '0,/edition/s/^version = .*/version = "${{ steps.release.outputs.version }}"/' kube-custom-resources-rs/Cargo.toml
+        run: sed -i -e '0,/edition/s/^version = .*/version = "1.2.3"/' custom-resources/{{group_name_snake_case}}/Cargo.toml
       - name: Print modified Cargo.toml
-        run: cat kube-custom-resources-rs/Cargo.toml
+        run: cat custom-resources/{{group_name_snake_case}}/Cargo.toml
       - name: Set up Rust nightly
         uses: dtolnay/rust-toolchain@nightly
       - name: Set up docs.rs environment

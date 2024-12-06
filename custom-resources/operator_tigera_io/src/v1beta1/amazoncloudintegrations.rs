@@ -5,23 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// AmazonCloudIntegrationSpec defines the desired state of AmazonCloudIntegration
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1beta1",
-    kind = "AmazonCloudIntegration",
-    plural = "amazoncloudintegrations"
-)]
+#[kube(group = "operator.tigera.io", version = "v1beta1", kind = "AmazonCloudIntegration", plural = "amazoncloudintegrations")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct AmazonCloudIntegrationSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct AmazonCloudIntegrationSpec {
+}
 
 /// AmazonCloudIntegrationStatus defines the observed state of AmazonCloudIntegration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AmazonCloudIntegrationStatus {}
+pub struct AmazonCloudIntegrationStatus {
+}
+

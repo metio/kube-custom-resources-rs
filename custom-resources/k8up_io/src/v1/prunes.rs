@@ -4,11 +4,11 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -19,31 +19,23 @@ use self::prelude::*;
 #[kube(namespaced)]
 #[kube(status = "PruneStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PruneSpec {
     /// ActiveDeadlineSeconds specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it.
     /// Value must be positive integer if given.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// Backend contains the restic repo where the job should backup to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backend: Option<PruneBackend>,
     /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.
     /// KeepJobs is used property is not specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedJobsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i64>,
     /// KeepJobs amount of jobs to keep for later analysis.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
@@ -51,18 +43,10 @@ pub struct PruneSpec {
     /// It takes precedence over the Resources or PodSecurityContext field.
     /// It does not allow changing the image or the command of the resulting pod.
     /// This is for advanced use-cases only. Please only set this if you know what you're doing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podConfigRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podConfigRef")]
     pub pod_config_ref: Option<PrunePodConfigRef>,
     /// PodSecurityContext describes the security context with which this action shall be executed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<PrunePodSecurityContext>,
     /// Resources describes the compute resource requirements (cpu, memory, etc.)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -72,11 +56,7 @@ pub struct PruneSpec {
     pub retention: Option<PruneRetention>,
     /// SuccessfulJobsHistoryLimit amount of successful jobs to keep for later analysis.
     /// KeepJobs is used property is not specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successfulJobsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i64>,
     /// Volumes List of volumes that can be mounted by containers belonging to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -98,11 +78,7 @@ pub struct PruneBackend {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub local: Option<PruneBackendLocal>,
     /// RepoPasswordSecretRef references a secret key to look up the restic repository password
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "repoPasswordSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repoPasswordSecretRef")]
     pub repo_password_secret_ref: Option<PruneBackendRepoPasswordSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rest: Option<PruneBackendRest>,
@@ -110,35 +86,19 @@ pub struct PruneBackend {
     pub s3: Option<PruneBackendS3>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub swift: Option<PruneBackendSwift>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsOptions")]
     pub tls_options: Option<PruneBackendTlsOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<PruneBackendVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PruneBackendAzure {
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accountKeySecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountKeySecretRef")]
     pub account_key_secret_ref: Option<PruneBackendAzureAccountKeySecretRef>,
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accountNameSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountNameSecretRef")]
     pub account_name_secret_ref: Option<PruneBackendAzureAccountNameSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
@@ -179,18 +139,10 @@ pub struct PruneBackendAzureAccountNameSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PruneBackendB2 {
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accountIDSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountIDSecretRef")]
     pub account_id_secret_ref: Option<PruneBackendB2AccountIdSecretRef>,
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accountKeySecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountKeySecretRef")]
     pub account_key_secret_ref: Option<PruneBackendB2AccountKeySecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
@@ -232,11 +184,7 @@ pub struct PruneBackendB2AccountKeySecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PruneBackendEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<PruneBackendEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -275,20 +223,12 @@ pub struct PruneBackendEnvFromSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PruneBackendGcs {
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTokenSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenSecretRef")]
     pub access_token_secret_ref: Option<PruneBackendGcsAccessTokenSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectIDSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectIDSecretRef")]
     pub project_id_secret_ref: Option<PruneBackendGcsProjectIdSecretRef>,
 }
 
@@ -346,20 +286,12 @@ pub struct PruneBackendRepoPasswordSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PruneBackendRest {
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecretReg"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretReg")]
     pub password_secret_reg: Option<PruneBackendRestPasswordSecretReg>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userSecretRef")]
     pub user_secret_ref: Option<PruneBackendRestUserSecretRef>,
 }
 
@@ -396,22 +328,14 @@ pub struct PruneBackendRestUserSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PruneBackendS3 {
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyIDSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyIDSecretRef")]
     pub access_key_id_secret_ref: Option<PruneBackendS3AccessKeyIdSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKeySecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKeySecretRef")]
     pub secret_access_key_secret_ref: Option<PruneBackendS3SecretAccessKeySecretRef>,
 }
 
@@ -457,11 +381,7 @@ pub struct PruneBackendSwift {
 pub struct PruneBackendTlsOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKey")]
     pub client_key: Option<String>,
@@ -478,11 +398,7 @@ pub struct PruneBackendVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -498,11 +414,7 @@ pub struct PruneBackendVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -525,13 +437,13 @@ pub struct PrunePodSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -543,11 +455,7 @@ pub struct PrunePodSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -555,11 +463,7 @@ pub struct PrunePodSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -567,11 +471,7 @@ pub struct PrunePodSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -587,19 +487,11 @@ pub struct PrunePodSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PrunePodSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PrunePodSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -608,11 +500,7 @@ pub struct PrunePodSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -623,11 +511,7 @@ pub struct PrunePodSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PrunePodSecurityContextWindowsOptions>,
 }
 
@@ -661,16 +545,12 @@ pub struct PrunePodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -696,38 +576,22 @@ pub struct PrunePodSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -736,12 +600,12 @@ pub struct PrunePodSecurityContextWindowsOptions {
 pub struct PruneResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PruneResourcesClaims>>,
@@ -774,33 +638,17 @@ pub struct PruneRetention {
     pub hostnames: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepDaily")]
     pub keep_daily: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepHourly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepHourly")]
     pub keep_hourly: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepLast")]
     pub keep_last: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepMonthly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepMonthly")]
     pub keep_monthly: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepTags")]
     pub keep_tags: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepWeekly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepWeekly")]
     pub keep_weekly: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepYearly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepYearly")]
     pub keep_yearly: Option<i64>,
     /// Tags is a filter on what tags the policy should be applied
     /// DO NOT CONFUSE THIS WITH KeepTags OR YOU'LL have a bad time
@@ -820,11 +668,7 @@ pub struct PruneVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<PruneVolumesPersistentVolumeClaim>,
     /// secret represents a secret that should populate this volume.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
@@ -842,11 +686,7 @@ pub struct PruneVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -913,11 +753,7 @@ pub struct PruneVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -933,11 +769,7 @@ pub struct PruneVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -977,3 +809,4 @@ pub struct PruneStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub started: Option<bool>,
 }
+

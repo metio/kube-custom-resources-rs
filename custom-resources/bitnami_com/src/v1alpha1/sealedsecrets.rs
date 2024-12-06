@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SealedSecretSpec is the specification of a SealedSecret.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "bitnami.com",
-    version = "v1alpha1",
-    kind = "SealedSecret",
-    plural = "sealedsecrets"
-)]
+#[kube(group = "bitnami.com", version = "v1alpha1", kind = "SealedSecret", plural = "sealedsecrets")]
 #[kube(namespaced)]
 #[kube(status = "SealedSecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SealedSecretSpec {
     /// Data is deprecated and will be removed eventually. Use per-value EncryptedData instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -81,10 +76,7 @@ pub struct SealedSecretStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration reflects the generation most recently observed by the sealed-secrets controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

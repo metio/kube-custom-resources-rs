@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// DeleteBackupRequestSpec is the specification for which backups to delete.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "velero.io",
-    version = "v1",
-    kind = "DeleteBackupRequest",
-    plural = "deletebackuprequests"
-)]
+#[kube(group = "velero.io", version = "v1", kind = "DeleteBackupRequest", plural = "deletebackuprequests")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DeleteBackupRequestSpec {
     #[serde(rename = "backupName")]
     pub backup_name: String,
@@ -44,3 +39,4 @@ pub enum DeleteBackupRequestStatusPhase {
     InProgress,
     Processed,
 }
+

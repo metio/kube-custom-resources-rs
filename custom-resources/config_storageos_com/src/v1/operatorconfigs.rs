@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -14,20 +14,12 @@ use self::prelude::*;
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OperatorConfigController {
     /// CacheSyncTimeout refers to the time limit set to wait for syncing caches. Defaults to 2 minutes if not set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheSyncTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheSyncTimeout")]
     pub cache_sync_timeout: Option<i64>,
-    /// GroupKindConcurrency is a map from a Kind to the number of concurrent reconciliation allowed for that controller.
-    ///  When a controller is registered within this manager using the builder utilities, users have to specify the type the controller reconciles in the For(...) call. If the object's kind passed matches one of the keys in this map, the concurrency for that controller is set to the number specified.
+    /// GroupKindConcurrency is a map from a Kind to the number of concurrent reconciliation allowed for that controller. 
+    ///  When a controller is registered within this manager using the builder utilities, users have to specify the type the controller reconciles in the For(...) call. If the object's kind passed matches one of the keys in this map, the concurrency for that controller is set to the number specified. 
     ///  The key is expected to be consistent in form with GroupKind.String(), e.g. ReplicaSet in apps group (regardless of version) would be `ReplicaSet.apps`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupKindConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupKindConcurrency")]
     pub group_kind_concurrency: Option<BTreeMap<String, i64>>,
 }
 
@@ -35,25 +27,13 @@ pub struct OperatorConfigController {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OperatorConfigHealth {
     /// HealthProbeBindAddress is the TCP address that the controller should bind to for serving health probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthProbeBindAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthProbeBindAddress")]
     pub health_probe_bind_address: Option<String>,
     /// LivenessEndpointName, defaults to "healthz"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessEndpointName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessEndpointName")]
     pub liveness_endpoint_name: Option<String>,
     /// ReadinessEndpointName, defaults to "readyz"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessEndpointName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessEndpointName")]
     pub readiness_endpoint_name: Option<String>,
 }
 
@@ -87,11 +67,7 @@ pub struct OperatorConfigLeaderElection {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OperatorConfigMetrics {
     /// BindAddress is the TCP address that the controller should bind to for serving prometheus metrics. It can be set to "0" to disable the metrics serving.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bindAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindAddress")]
     pub bind_address: Option<String>,
 }
 
@@ -108,3 +84,4 @@ pub struct OperatorConfigWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
 }
+

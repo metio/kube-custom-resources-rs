@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// RestoreSpec defines the desired state of restore
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.mariadb.com",
-    version = "v1alpha1",
-    kind = "Restore",
-    plural = "restores"
-)]
+#[kube(group = "k8s.mariadb.com", version = "v1alpha1", kind = "Restore", plural = "restores")]
 #[kube(namespaced)]
 #[kube(status = "RestoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RestoreSpec {
     /// Affinity to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33,11 +28,7 @@ pub struct RestoreSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
     /// BackoffLimit defines the maximum number of attempts to successfully perform a Backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backoffLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
     /// BackupRef is a reference to a Backup object. It has priority over S3 and Volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRef")]
@@ -47,18 +38,10 @@ pub struct RestoreSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<String>,
     /// ImagePullSecrets is the list of pull Secrets to be used to pull the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<RestoreImagePullSecrets>>,
     /// InheritMetadata defines the metadata to be inherited by children resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inheritMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inheritMetadata")]
     pub inherit_metadata: Option<RestoreInheritMetadata>,
     /// LogLevel to be used n the Backup Job. It defaults to 'info'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -67,75 +50,39 @@ pub struct RestoreSpec {
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: RestoreMariaDbRef,
     /// NodeSelector to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodMetadata defines extra metadata for the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<RestorePodMetadata>,
     /// SecurityContext holds pod-level security attributes and common container settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<RestorePodSecurityContext>,
     /// PriorityClassName to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RestoreResources>,
     /// RestartPolicy to be added to the Backup Job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<RestoreRestartPolicy>,
     /// S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<RestoreS3>,
     /// SecurityContext holds security configuration that will be applied to a container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RestoreSecurityContext>,
     /// ServiceAccountName is the name of the ServiceAccount to be used by the Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// StagingStorage defines the temporary storage used to keep external backups (i.e. S3) while they are being processed.
     /// It defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Restore Job is scheduled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stagingStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stagingStorage")]
     pub staging_storage: Option<RestoreStagingStorage>,
     /// TargetRecoveryTime is a RFC3339 (1970-01-01T00:00:00Z) date and time that defines the point in time recovery objective.
     /// It is used to determine the closest restoration source in time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetRecoveryTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRecoveryTime")]
     pub target_recovery_time: Option<String>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -150,54 +97,31 @@ pub struct RestoreSpec {
 pub struct RestoreAffinity {
     /// AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "antiAffinityEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<RestoreAffinityNodeAffinity>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<RestoreAffinityPodAntiAffinity>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreAffinityNodeAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselector-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#preferredschedulingterm-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorterm-v1-core
-    pub preference:
-        RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
@@ -212,8 +136,7 @@ pub struct RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -224,8 +147,7 @@ pub struct RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -238,9 +160,7 @@ pub struct RestoreAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<
-        RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms,
-    >,
+    pub node_selector_terms: Vec<RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorterm-v1-core
@@ -254,8 +174,7 @@ pub struct RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -266,8 +185,7 @@ pub struct RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -279,20 +197,10 @@ pub struct RestoreAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreAffinityPodAntiAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<RestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<RestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#weightedpodaffinityterm-v1-core.
@@ -325,8 +233,7 @@ pub struct RestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct RestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -338,14 +245,8 @@ pub struct RestoreAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -361,8 +262,7 @@ pub struct RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct RestoreAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -422,56 +322,28 @@ pub struct RestorePodMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestorePodSecurityContext {
     /// AppArmorProfile defines a pod or container's AppArmor settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<RestorePodSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     /// PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
     /// when volume is mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// SELinuxOptions are the labels to be applied to the container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<RestorePodSecurityContextSeLinuxOptions>,
     /// SeccompProfile defines a pod/container's seccomp profile settings.
     /// Only one profile source may be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<RestorePodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
 }
 
@@ -482,11 +354,7 @@ pub struct RestorePodSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -522,15 +390,11 @@ pub struct RestorePodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -577,11 +441,7 @@ pub struct RestoreS3 {
     #[serde(rename = "secretAccessKeySecretKeyRef")]
     pub secret_access_key_secret_key_ref: RestoreS3SecretAccessKeySecretKeyRef,
     /// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionTokenSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTokenSecretKeyRef")]
     pub session_token_secret_key_ref: Option<RestoreS3SessionTokenSecretKeyRef>,
     /// TLS provides the configuration required to establish TLS connections with S3.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -617,11 +477,7 @@ pub struct RestoreS3SessionTokenSecretKeyRef {
 pub struct RestoreS3Tls {
     /// CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.
     /// By default, the system trust chain will be used, but you can use this field to add more CAs to the bundle.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecretKeyRef")]
     pub ca_secret_key_ref: Option<RestoreS3TlsCaSecretKeyRef>,
     /// Enabled is a flag to enable TLS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -640,34 +496,18 @@ pub struct RestoreS3TlsCaSecretKeyRef {
 /// SecurityContext holds security configuration that will be applied to a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// Adds and removes POSIX capabilities from running containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<RestoreSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
@@ -689,11 +529,7 @@ pub struct RestoreSecurityContextCapabilities {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreStagingStorage {
     /// PersistentVolumeClaim is a Kubernetes PVC specification.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<RestoreStagingStoragePersistentVolumeClaim>,
     /// Volume is a Kubernetes volume specification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -703,11 +539,7 @@ pub struct RestoreStagingStorage {
 /// PersistentVolumeClaim is a Kubernetes PVC specification.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreStagingStoragePersistentVolumeClaim {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// VolumeResourceRequirements describes the storage resource requirements for a volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -717,11 +549,7 @@ pub struct RestoreStagingStoragePersistentVolumeClaim {
     /// label selector matches no objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<RestoreStagingStoragePersistentVolumeClaimSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -746,21 +574,12 @@ pub struct RestoreStagingStoragePersistentVolumeClaimResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreStagingStoragePersistentVolumeClaimSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<RestoreStagingStoragePersistentVolumeClaimSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<RestoreStagingStoragePersistentVolumeClaimSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -794,11 +613,7 @@ pub struct RestoreStagingStorageVolume {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<RestoreStagingStorageVolumeNfs>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#persistentvolumeclaimvolumesource-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<RestoreStagingStorageVolumePersistentVolumeClaim>,
 }
 
@@ -809,19 +624,11 @@ pub struct RestoreStagingStorageVolumeCsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<RestoreStagingStorageVolumeCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -882,11 +689,7 @@ pub struct RestoreTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -907,11 +710,7 @@ pub struct RestoreVolume {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<RestoreVolumeNfs>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#persistentvolumeclaimvolumesource-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<RestoreVolumePersistentVolumeClaim>,
 }
 
@@ -922,19 +721,11 @@ pub struct RestoreVolumeCsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<RestoreVolumeCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -980,3 +771,4 @@ pub struct RestoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

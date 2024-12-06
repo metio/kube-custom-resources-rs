@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec defines the desired state of HealthCheckPolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "networking.gke.io",
-    version = "v1",
-    kind = "HealthCheckPolicy",
-    plural = "healthcheckpolicies"
-)]
+#[kube(group = "networking.gke.io", version = "v1", kind = "HealthCheckPolicy", plural = "healthcheckpolicies")]
 #[kube(namespaced)]
 #[kube(status = "HealthCheckPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HealthCheckPolicySpec {
     /// Default defines default policy configuration for the targeted resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -36,38 +31,22 @@ pub struct HealthCheckPolicySpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HealthCheckPolicyDefault {
     /// How often (in seconds) to send a health check. If not specified, a default value of 5 seconds will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checkIntervalSec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkIntervalSec")]
     pub check_interval_sec: Option<i64>,
     /// Specifies the type of the healthCheck, either TCP, HTTP, HTTPS, HTTP2 or GRPC. Exactly one of the protocol-specific health check field must be specified, which must match type field. Config contains per protocol (i.e. HTTP, HTTPS, HTTP2, TCP, GRPC) configuration. If not specified, health check type defaults to HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<HealthCheckPolicyDefaultConfig>,
     /// A so-far unhealthy instance will be marked healthy after this many consecutive successes. If not specified, a default value of 2 will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthyThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyThreshold")]
     pub healthy_threshold: Option<i64>,
     /// LogConfig configures logging on this health check.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logConfig")]
     pub log_config: Option<HealthCheckPolicyDefaultLogConfig>,
     /// How long (in seconds) to wait before claiming failure. If not specified, a default value of 5 seconds will be used. It is invalid for timeoutSec to have greater value than checkIntervalSec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSec")]
     pub timeout_sec: Option<i64>,
     /// A so-far healthy instance will be marked unhealthy after this many consecutive failures. If not specified, a default value of 2 will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyThreshold")]
     pub unhealthy_threshold: Option<i64>,
 }
 
@@ -75,39 +54,19 @@ pub struct HealthCheckPolicyDefault {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HealthCheckPolicyDefaultConfig {
     /// GRPC is the health check configuration of type GRPC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grpcHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcHealthCheck")]
     pub grpc_health_check: Option<HealthCheckPolicyDefaultConfigGrpcHealthCheck>,
     /// HTTP2 is the health check configuration of type HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http2HealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http2HealthCheck")]
     pub http2_health_check: Option<HealthCheckPolicyDefaultConfigHttp2HealthCheck>,
     /// HTTP is the health check configuration of type HTTP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHealthCheck")]
     pub http_health_check: Option<HealthCheckPolicyDefaultConfigHttpHealthCheck>,
     /// HTTPS is the health check configuration of type HTTPS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpsHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsHealthCheck")]
     pub https_health_check: Option<HealthCheckPolicyDefaultConfigHttpsHealthCheck>,
     /// TCP is the health check configuration of type TCP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpHealthCheck")]
     pub tcp_health_check: Option<HealthCheckPolicyDefaultConfigTcpHealthCheck>,
     /// Specifies the type of the healthCheck, either TCP, HTTP, HTTPS, HTTP2 or GRPC. Exactly one of the protocol-specific health check field must be specified, which must match type field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -118,11 +77,7 @@ pub struct HealthCheckPolicyDefaultConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HealthCheckPolicyDefaultConfigGrpcHealthCheck {
     /// The gRPC service name for the health check. This field is optional. The value of grpcServiceName has the following meanings by convention: - Empty serviceName means the overall status of all services at the backend. - Non-empty serviceName means the health of that gRPC service, as defined by   the owner of the service. The grpcServiceName can only be ASCII.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grpcServiceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcServiceName")]
     pub grpc_service_name: Option<String>,
     /// The TCP port number for the health check request. Valid values are 1 through 65535.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -130,14 +85,10 @@ pub struct HealthCheckPolicyDefaultConfigGrpcHealthCheck {
     /// Port name as defined in InstanceGroup#NamedPort#name. If both port and portName are defined, port takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
     pub port_name: Option<String>,
-    /// Specifies how port is selected for health checking, can be one of following values:
-    ///  USE_FIXED_PORT: The port number in port is used for health checking. USE_NAMED_PORT: The portName is used for health checking. USE_SERVING_PORT: For NetworkEndpointGroup, the port specified for each network endpoint is used for health checking. For other backends, the port or named port specified in the Backend Service is used for health checking.
+    /// Specifies how port is selected for health checking, can be one of following values: 
+    ///  USE_FIXED_PORT: The port number in port is used for health checking. USE_NAMED_PORT: The portName is used for health checking. USE_SERVING_PORT: For NetworkEndpointGroup, the port specified for each network endpoint is used for health checking. For other backends, the port or named port specified in the Backend Service is used for health checking. 
     ///  If not specified, Protocol health check follows behavior specified in port and portName fields. If neither Port nor PortName is specified, this defaults to USE_SERVING_PORT.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portSpecification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portSpecification")]
     pub port_specification: Option<HealthCheckPolicyDefaultConfigGrpcHealthCheckPortSpecification>,
 }
 
@@ -164,28 +115,16 @@ pub struct HealthCheckPolicyDefaultConfigHttp2HealthCheck {
     /// Port name as defined in InstanceGroup#NamedPort#name. If both port and portName are defined, port takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
     pub port_name: Option<String>,
-    /// Specifies how port is selected for health checking, can be one of following values:
-    ///  USE_FIXED_PORT: The port number in port is used for health checking. USE_NAMED_PORT: The portName is used for health checking. USE_SERVING_PORT: For NetworkEndpointGroup, the port specified for each network endpoint is used for health checking. For other backends, the port or named port specified in the Backend Service is used for health checking.
+    /// Specifies how port is selected for health checking, can be one of following values: 
+    ///  USE_FIXED_PORT: The port number in port is used for health checking. USE_NAMED_PORT: The portName is used for health checking. USE_SERVING_PORT: For NetworkEndpointGroup, the port specified for each network endpoint is used for health checking. For other backends, the port or named port specified in the Backend Service is used for health checking. 
     ///  If not specified, Protocol health check follows behavior specified in port and portName fields. If neither Port nor PortName is specified, this defaults to USE_SERVING_PORT.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portSpecification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portSpecification")]
     pub port_specification: Option<HealthCheckPolicyDefaultConfigHttp2HealthCheckPortSpecification>,
     /// Specifies the type of proxy header to append before sending data to the backend, either NONE or PROXY_V1. If not specified, this defaults to NONE.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyHeader")]
     pub proxy_header: Option<HealthCheckPolicyDefaultConfigHttp2HealthCheckProxyHeader>,
     /// The request path of the HTTP health check request. If not specified or left empty, a default value of "/" is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestPath")]
     pub request_path: Option<String>,
     /// The string to match anywhere in the first 1024 bytes of the response body. If not specified or left empty, the status code determines health. The response data can only be ASCII.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -224,28 +163,16 @@ pub struct HealthCheckPolicyDefaultConfigHttpHealthCheck {
     /// Port name as defined in InstanceGroup#NamedPort#name. If both port and portName are defined, port takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
     pub port_name: Option<String>,
-    /// Specifies how port is selected for health checking, can be one of following values:
-    ///  USE_FIXED_PORT: The port number in port is used for health checking. USE_NAMED_PORT: The portName is used for health checking. USE_SERVING_PORT: For NetworkEndpointGroup, the port specified for each network endpoint is used for health checking. For other backends, the port or named port specified in the Backend Service is used for health checking.
+    /// Specifies how port is selected for health checking, can be one of following values: 
+    ///  USE_FIXED_PORT: The port number in port is used for health checking. USE_NAMED_PORT: The portName is used for health checking. USE_SERVING_PORT: For NetworkEndpointGroup, the port specified for each network endpoint is used for health checking. For other backends, the port or named port specified in the Backend Service is used for health checking. 
     ///  If not specified, Protocol health check follows behavior specified in port and portName fields. If neither Port nor PortName is specified, this defaults to USE_SERVING_PORT.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portSpecification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portSpecification")]
     pub port_specification: Option<HealthCheckPolicyDefaultConfigHttpHealthCheckPortSpecification>,
     /// Specifies the type of proxy header to append before sending data to the backend, either NONE or PROXY_V1. If not specified, this defaults to NONE.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyHeader")]
     pub proxy_header: Option<HealthCheckPolicyDefaultConfigHttpHealthCheckProxyHeader>,
     /// The request path of the HTTP health check request. If not specified or left empty, a default value of "/" is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestPath")]
     pub request_path: Option<String>,
     /// The string to match anywhere in the first 1024 bytes of the response body. If not specified or left empty, the status code determines health. The response data can only be ASCII.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -284,28 +211,16 @@ pub struct HealthCheckPolicyDefaultConfigHttpsHealthCheck {
     /// Port name as defined in InstanceGroup#NamedPort#name. If both port and portName are defined, port takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
     pub port_name: Option<String>,
-    /// Specifies how port is selected for health checking, can be one of following values:
-    ///  USE_FIXED_PORT: The port number in port is used for health checking. USE_NAMED_PORT: The portName is used for health checking. USE_SERVING_PORT: For NetworkEndpointGroup, the port specified for each network endpoint is used for health checking. For other backends, the port or named port specified in the Backend Service is used for health checking.
+    /// Specifies how port is selected for health checking, can be one of following values: 
+    ///  USE_FIXED_PORT: The port number in port is used for health checking. USE_NAMED_PORT: The portName is used for health checking. USE_SERVING_PORT: For NetworkEndpointGroup, the port specified for each network endpoint is used for health checking. For other backends, the port or named port specified in the Backend Service is used for health checking. 
     ///  If not specified, Protocol health check follows behavior specified in port and portName fields. If neither Port nor PortName is specified, this defaults to USE_SERVING_PORT.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portSpecification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portSpecification")]
     pub port_specification: Option<HealthCheckPolicyDefaultConfigHttpsHealthCheckPortSpecification>,
     /// Specifies the type of proxy header to append before sending data to the backend, either NONE or PROXY_V1. If not specified, this defaults to NONE.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyHeader")]
     pub proxy_header: Option<HealthCheckPolicyDefaultConfigHttpsHealthCheckProxyHeader>,
     /// The request path of the HTTP health check request. If not specified or left empty, a default value of "/" is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestPath")]
     pub request_path: Option<String>,
     /// The string to match anywhere in the first 1024 bytes of the response body. If not specified or left empty, the status code determines health. The response data can only be ASCII.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -341,21 +256,13 @@ pub struct HealthCheckPolicyDefaultConfigTcpHealthCheck {
     /// Port name as defined in InstanceGroup#NamedPort#name. If both port and portName are defined, port takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
     pub port_name: Option<String>,
-    /// Specifies how port is selected for health checking, can be one of following values:
-    ///  USE_FIXED_PORT: The port number in port is used for health checking. USE_NAMED_PORT: The portName is used for health checking. USE_SERVING_PORT: For NetworkEndpointGroup, the port specified for each network endpoint is used for health checking. For other backends, the port or named port specified in the Backend Service is used for health checking.
+    /// Specifies how port is selected for health checking, can be one of following values: 
+    ///  USE_FIXED_PORT: The port number in port is used for health checking. USE_NAMED_PORT: The portName is used for health checking. USE_SERVING_PORT: For NetworkEndpointGroup, the port specified for each network endpoint is used for health checking. For other backends, the port or named port specified in the Backend Service is used for health checking. 
     ///  If not specified, Protocol health check follows behavior specified in port and portName fields. If neither Port nor PortName is specified, this defaults to USE_SERVING_PORT.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portSpecification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portSpecification")]
     pub port_specification: Option<HealthCheckPolicyDefaultConfigTcpHealthCheckPortSpecification>,
     /// Specifies the type of proxy header to append before sending data to the backend, either NONE or PROXY_V1. If not specified, this defaults to NONE.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyHeader")]
     pub proxy_header: Option<HealthCheckPolicyDefaultConfigTcpHealthCheckProxyHeader>,
     /// The application data to send once the TCP connection has been established. If not specified, this defaults to empty. If both request and response are empty, the connection establishment alone will indicate health. The request data can only be ASCII.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -429,3 +336,4 @@ pub struct HealthCheckPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

@@ -4,60 +4,39 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// RepositorySpec defines the desired state of Repository.
-///
+/// 
 /// An object representing a repository.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ecr.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Repository",
-    plural = "repositories"
-)]
+#[kube(group = "ecr.services.k8s.aws", version = "v1alpha1", kind = "Repository", plural = "repositories")]
 #[kube(namespaced)]
 #[kube(status = "RepositoryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RepositorySpec {
     /// The encryption configuration for the repository. This determines how the
     /// contents of your repository are encrypted at rest.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionConfiguration")]
     pub encryption_configuration: Option<RepositoryEncryptionConfiguration>,
     /// The image scanning configuration for the repository. This determines whether
     /// images are scanned for known vulnerabilities after being pushed to the repository.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageScanningConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageScanningConfiguration")]
     pub image_scanning_configuration: Option<RepositoryImageScanningConfiguration>,
     /// The tag mutability setting for the repository. If this parameter is omitted,
     /// the default setting of MUTABLE will be used which will allow image tags to
     /// be overwritten. If IMMUTABLE is specified, all image tags within the repository
     /// will be immutable which will prevent them from being overwritten.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageTagMutability"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTagMutability")]
     pub image_tag_mutability: Option<String>,
     /// The JSON repository policy text to apply to the repository.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecyclePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecyclePolicy")]
     pub lifecycle_policy: Option<String>,
     /// The name to use for the repository. The repository name may be specified
     /// on its own (such as nginx-web-app) or it can be prepended with a namespace
@@ -71,11 +50,7 @@ pub struct RepositorySpec {
     /// The Amazon Web Services account ID associated with the registry to create
     /// the repository. If you do not specify a registry, the default registry is
     /// assumed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registryID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryID")]
     pub registry_id: Option<String>,
     /// The metadata that you apply to the repository to help you categorize and
     /// organize them. Each tag consists of a key and an optional value, both of
@@ -89,11 +64,7 @@ pub struct RepositorySpec {
 /// contents of your repository are encrypted at rest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RepositoryEncryptionConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionType")]
     pub encryption_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKey")]
     pub kms_key: Option<String>,
@@ -103,11 +74,7 @@ pub struct RepositoryEncryptionConfiguration {
 /// images are scanned for known vulnerabilities after being pushed to the repository.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RepositoryImageScanningConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scanOnPush"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scanOnPush")]
     pub scan_on_push: Option<bool>,
 }
 
@@ -129,11 +96,7 @@ pub struct RepositoryStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<RepositoryStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -146,11 +109,7 @@ pub struct RepositoryStatus {
     pub created_at: Option<String>,
     /// The URI for the repository. You can use this URI for container image push
     /// and pull operations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "repositoryURI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryURI")]
     pub repository_uri: Option<String>,
 }
 
@@ -175,3 +134,4 @@ pub struct RepositoryStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

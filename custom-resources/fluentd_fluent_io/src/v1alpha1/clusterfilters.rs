@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ClusterFilterSpec defines the desired state of ClusterFilter
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "fluentd.fluent.io",
-    version = "v1alpha1",
-    kind = "ClusterFilter",
-    plural = "clusterfilters"
-)]
+#[kube(group = "fluentd.fluent.io", version = "v1alpha1", kind = "ClusterFilter", plural = "clusterfilters")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterFilterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<ClusterFilterFilters>>,
@@ -29,11 +24,7 @@ pub struct ClusterFilterSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFilterFilters {
     /// Custom plugin type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customPlugin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPlugin")]
     pub custom_plugin: Option<ClusterFilterFiltersCustomPlugin>,
     /// The filter_grep filter plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -45,11 +36,7 @@ pub struct ClusterFilterFilters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parser: Option<ClusterFilterFiltersParser>,
     /// The filter_record_transformer filter plugin
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordTransformer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordTransformer")]
     pub record_transformer: Option<ClusterFilterFiltersRecordTransformer>,
     /// The filter_stdout filter plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -159,25 +146,13 @@ pub struct ClusterFilterFiltersGrepRegexp {
 pub struct ClusterFilterFiltersParser {
     /// Emits invalid record to @ERROR label. Invalid cases are: key does not exist;the format is not matched;an unexpected error.
     /// If you want to ignore these errors, set false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitInvalidRecordToError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitInvalidRecordToError")]
     pub emit_invalid_record_to_error: Option<bool>,
     /// Stores the parsed values as a hash value in a field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hashValueField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashValueField")]
     pub hash_value_field: Option<String>,
     /// Stores the parsed values with the specified key name prefix.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "injectKeyPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "injectKeyPrefix")]
     pub inject_key_prefix: Option<String>,
     /// Specifies the field name in the record to parse. Required parameter.
     /// i.e: If set keyName to log, {"key":"value","log":"{\"time\":1622473200,\"user\":1}"} => {"user":1}
@@ -186,34 +161,18 @@ pub struct ClusterFilterFiltersParser {
     /// Parse defines various parameters for the parse plugin
     pub parse: ClusterFilterFiltersParserParse,
     /// Removes key_name field when parsing is succeeded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removeKeyNameField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeKeyNameField")]
     pub remove_key_name_field: Option<bool>,
     /// If true, invalid string is replaced with safe characters and re-parse it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replaceInvalidSequence"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceInvalidSequence")]
     pub replace_invalid_sequence: Option<bool>,
     /// Keeps the original key-value pair in the parsed result. Default is false.
     /// i.e: If set keyName to log, reverseData to true,
     /// {"key":"value","log":"{\"user\":1,\"num\":2}"} => {"key":"value","log":"{\"user\":1,\"num\":2}","user":1,"num":2}
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reserveData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reserveData")]
     pub reserve_data: Option<bool>,
     /// Keeps the original event time in the parsed result. Default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reserveTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reserveTime")]
     pub reserve_time: Option<bool>,
 }
 
@@ -221,18 +180,10 @@ pub struct ClusterFilterFiltersParser {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterFilterFiltersParserParse {
     /// Path to the file that includes custom grok patterns.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customPatternPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPatternPath")]
     pub custom_pattern_path: Option<String>,
     /// If true, use Fluent::Eventnow(current time) as a timestamp when time_key is specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "estimateCurrentEvent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "estimateCurrentEvent")]
     pub estimate_current_event: Option<bool>,
     /// Specifies the regular expression for matching logs. Regular expression also supports i and m suffix.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -241,35 +192,19 @@ pub struct ClusterFilterFiltersParserParse {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grok: Option<Vec<ClusterFilterFiltersParserParseGrok>>,
     /// The key has grok failure reason.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grokFailureKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grokFailureKey")]
     pub grok_failure_key: Option<String>,
     /// The pattern of grok.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grokPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grokPattern")]
     pub grok_pattern: Option<String>,
     /// Specify grok pattern series set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grokPatternSeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grokPatternSeries")]
     pub grok_pattern_series: Option<String>,
     /// The @id parameter specifies a unique name for the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// If true, keep time field in th record.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepTimeKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepTimeKey")]
     pub keep_time_key: Option<bool>,
     /// If true, uses local time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -278,25 +213,13 @@ pub struct ClusterFilterFiltersParserParse {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
     /// The regexp to match beginning of multiline. This is only for "multiline_grok".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiLineStartRegexp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiLineStartRegexp")]
     pub multi_line_start_regexp: Option<String>,
     /// Process value according to the specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Uses the specified time format as a fallback in the specified order. You can parse undetermined time format by using time_format_fallbacks. This options is enabled when time_type is mixed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormatFallbacks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormatFallbacks")]
     pub time_format_fallbacks: Option<String>,
     /// Specify time field for event time. If the event doesn't have this field, current time is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
@@ -324,11 +247,7 @@ pub struct ClusterFilterFiltersParserParse {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFilterFiltersParserParseGrok {
     /// If true, keep time field in the record.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepTimeKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepTimeKey")]
     pub keep_time_key: Option<bool>,
     /// The name of this grok section.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -337,11 +256,7 @@ pub struct ClusterFilterFiltersParserParseGrok {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
     /// Process value using specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Specify time field for event time. If the event doesn't have this field, current time is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
@@ -400,19 +315,11 @@ pub enum ClusterFilterFiltersParserParseType {
 pub struct ClusterFilterFiltersRecordTransformer {
     /// Automatically casts the field types. Default is false.
     /// This option is effective only for field values comprised of a single placeholder.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoTypecast"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoTypecast")]
     pub auto_typecast: Option<bool>,
     /// When set to true, the full Ruby syntax is enabled in the ${...} expression. The default value is false.
     /// i.e: jsonized_record ${record.to_json}
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableRuby"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRuby")]
     pub enable_ruby: Option<bool>,
     /// A list of keys to keep. Only relevant if renew_record is set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepKeys")]
@@ -420,25 +327,13 @@ pub struct ClusterFilterFiltersRecordTransformer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub records: Option<Vec<ClusterFilterFiltersRecordTransformerRecords>>,
     /// A list of keys to delete. Supports nested field via record_accessor syntax since v1.1.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removeKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeKeys")]
     pub remove_keys: Option<String>,
     /// By default, the record transformer filter mutates the incoming data. However, if this parameter is set to true, it modifies a new empty hash instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "renewRecord"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "renewRecord")]
     pub renew_record: Option<bool>,
     /// renew_time_key foo overwrites the time of events with a value of the record field foo if exists. The value of foo must be a Unix timestamp.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "renewTimeKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "renewTimeKey")]
     pub renew_time_key: Option<String>,
 }
 
@@ -485,25 +380,13 @@ pub struct ClusterFilterFiltersStdoutFormat {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputTag")]
     pub output_tag: Option<bool>,
     /// Output time field if true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputTime")]
     pub output_time: Option<bool>,
     /// Process value according to the specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Uses the specified time format as a fallback in the specified order. You can parse undetermined time format by using time_format_fallbacks. This options is enabled when time_type is mixed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormatFallbacks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormatFallbacks")]
     pub time_format_fallbacks: Option<String>,
     /// parses/formats value according to this type, default is string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeType")]
@@ -567,11 +450,7 @@ pub struct ClusterFilterFiltersStdoutInject {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// The field name to inject hostname
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostnameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameKey")]
     pub hostname_key: Option<String>,
     /// Time section
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -583,11 +462,7 @@ pub struct ClusterFilterFiltersStdoutInject {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
     pub time_key: Option<String>,
     /// The field name to inject worker_id
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerIdKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerIdKey")]
     pub worker_id_key: Option<String>,
 }
 
@@ -598,18 +473,10 @@ pub struct ClusterFilterFiltersStdoutInjectInline {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub localtime: Option<bool>,
     /// Process value according to the specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Uses the specified time format as a fallback in the specified order. You can parse undetermined time format by using time_format_fallbacks. This options is enabled when time_type is mixed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormatFallbacks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormatFallbacks")]
     pub time_format_fallbacks: Option<String>,
     /// parses/formats value according to this type, default is string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeType")]
@@ -637,4 +504,6 @@ pub enum ClusterFilterFiltersStdoutInjectInlineTimeType {
 
 /// ClusterFilterStatus defines the observed state of ClusterFilter
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterFilterStatus {}
+pub struct ClusterFilterStatus {
+}
+

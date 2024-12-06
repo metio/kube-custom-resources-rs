@@ -4,88 +4,51 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "servicemesh.cisco.com",
-    version = "v1alpha1",
-    kind = "PeerIstioControlPlane",
-    plural = "peeristiocontrolplanes"
-)]
+#[kube(group = "servicemesh.cisco.com", version = "v1alpha1", kind = "PeerIstioControlPlane", plural = "peeristiocontrolplanes")]
 #[kube(namespaced)]
 #[kube(status = "PeerIstioControlPlaneStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct PeerIstioControlPlaneSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caAddress")]
     pub ca_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
     pub ca_provider: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterID")]
     pub cluster_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerImageConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerImageConfiguration")]
     pub container_image_configuration: Option<PeerIstioControlPlaneContainerImageConfiguration>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpProxyEnvs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxyEnvs")]
     pub http_proxy_envs: Option<PeerIstioControlPlaneHttpProxyEnvs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub istiod: Option<PeerIstioControlPlaneIstiod>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtPolicy")]
     pub jwt_policy: Option<PeerIstioControlPlaneJwtPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sResourceOverlays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sResourceOverlays")]
     pub k8s_resource_overlays: Option<Vec<PeerIstioControlPlaneK8sResourceOverlays>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<PeerIstioControlPlaneLogging>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "meshConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshConfig")]
     pub mesh_config: Option<PeerIstioControlPlaneMeshConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "meshExpansion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshExpansion")]
     pub mesh_expansion: Option<PeerIstioControlPlaneMeshExpansion>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshID")]
     pub mesh_id: Option<String>,
     pub mode: PeerIstioControlPlaneMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountMtlsCerts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountMtlsCerts")]
     pub mount_mtls_certs: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkName")]
     pub network_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<PeerIstioControlPlaneProxy>,
@@ -95,26 +58,14 @@ pub struct PeerIstioControlPlaneSpec {
     pub proxy_wasm: Option<PeerIstioControlPlaneProxyWasm>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sds: Option<PeerIstioControlPlaneSds>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sidecarInjector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarInjector")]
     pub sidecar_injector: Option<PeerIstioControlPlaneSidecarInjector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "telemetryV2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "telemetryV2")]
     pub telemetry_v2: Option<PeerIstioControlPlaneTelemetryV2>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracer: Option<PeerIstioControlPlaneTracer>,
     pub version: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "watchOneNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "watchOneNamespace")]
     pub watch_one_namespace: Option<bool>,
 }
 
@@ -122,19 +73,10 @@ pub struct PeerIstioControlPlaneSpec {
 pub struct PeerIstioControlPlaneContainerImageConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hub: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<PeerIstioControlPlaneContainerImageConfigurationImagePullPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
-    pub image_pull_secrets:
-        Option<Vec<PeerIstioControlPlaneContainerImageConfigurationImagePullSecrets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<PeerIstioControlPlaneContainerImageConfigurationImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
 }
@@ -156,11 +98,7 @@ pub struct PeerIstioControlPlaneContainerImageConfigurationImagePullSecrets {
 pub struct PeerIstioControlPlaneHttpProxyEnvs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpsProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsProxy")]
     pub https_proxy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -168,51 +106,23 @@ pub struct PeerIstioControlPlaneHttpProxyEnvs {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiod {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certProvider")]
     pub cert_provider: Option<PeerIstioControlPlaneIstiodCertProvider>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<PeerIstioControlPlaneIstiodDeployment>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableAnalysis"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableAnalysis")]
     pub enable_analysis: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableProtocolSniffingInbound"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableProtocolSniffingInbound")]
     pub enable_protocol_sniffing_inbound: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableProtocolSniffingOutbound"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableProtocolSniffingOutbound")]
     pub enable_protocol_sniffing_outbound: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableStatus")]
     pub enable_status: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIstiod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIstiod")]
     pub external_istiod: Option<PeerIstioControlPlaneIstiodExternalIstiod>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spiffe: Option<PeerIstioControlPlaneIstiodSpiffe>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "traceSampling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "traceSampling")]
     pub trace_sampling: Option<f64>,
 }
 
@@ -228,96 +138,43 @@ pub enum PeerIstioControlPlaneIstiodCertProvider {
 pub struct PeerIstioControlPlaneIstiodDeployment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<PeerIstioControlPlaneIstiodDeploymentAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
     pub deployment_strategy: Option<PeerIstioControlPlaneIstiodDeploymentDeploymentStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<PeerIstioControlPlaneIstiodDeploymentEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<PeerIstioControlPlaneIstiodDeploymentImagePullSecrets>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PeerIstioControlPlaneIstiodDeploymentLivenessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<PeerIstioControlPlaneIstiodDeploymentMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podDisruptionBudget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<PeerIstioControlPlaneIstiodDeploymentPodDisruptionBudget>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<PeerIstioControlPlaneIstiodDeploymentPodMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<PeerIstioControlPlaneIstiodDeploymentPodSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PeerIstioControlPlaneIstiodDeploymentReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<PeerIstioControlPlaneIstiodDeploymentReplicas>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PeerIstioControlPlaneIstiodDeploymentResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<PeerIstioControlPlaneIstiodDeploymentSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<PeerIstioControlPlaneIstiodDeploymentTolerations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<PeerIstioControlPlaneIstiodDeploymentTopologySpreadConstraints>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<PeerIstioControlPlaneIstiodDeploymentTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<PeerIstioControlPlaneIstiodDeploymentVolumeMounts>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<PeerIstioControlPlaneIstiodDeploymentVolumes>>,
@@ -325,23 +182,11 @@ pub struct PeerIstioControlPlaneIstiodDeployment {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinity>,
 }
 
@@ -370,8 +215,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityPreferredDur
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -381,8 +225,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityPreferredDur
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -406,8 +249,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityRequiredDuri
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -417,8 +259,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityRequiredDuri
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -464,8 +305,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityPreferredDuri
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -483,8 +323,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityPreferredDuri
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -514,8 +353,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityRequiredDurin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -533,8 +371,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityRequiredDurin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -580,8 +417,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityPreferred
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -599,8 +435,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityPreferred
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -630,8 +465,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityRequiredD
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -649,8 +483,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityRequiredD
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -661,13 +494,8 @@ pub struct PeerIstioControlPlaneIstiodDeploymentAffinityPodAntiAffinityRequiredD
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentDeploymentStrategy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
-    pub rolling_update:
-        Option<PeerIstioControlPlaneIstiodDeploymentDeploymentStrategyRollingUpdate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<PeerIstioControlPlaneIstiodDeploymentDeploymentStrategyRollingUpdate>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -676,11 +504,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentDeploymentStrategy {
 pub struct PeerIstioControlPlaneIstiodDeploymentDeploymentStrategyRollingUpdate {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
     pub max_surge: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -696,27 +520,13 @@ pub struct PeerIstioControlPlaneIstiodDeploymentEnv {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentEnvValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<PeerIstioControlPlaneIstiodDeploymentEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<PeerIstioControlPlaneIstiodDeploymentEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<PeerIstioControlPlaneIstiodDeploymentEnvValueFromFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<PeerIstioControlPlaneIstiodDeploymentEnvValueFromResourceFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<PeerIstioControlPlaneIstiodDeploymentEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PeerIstioControlPlaneIstiodDeploymentEnvValueFromSecretKeyRef>,
 }
 
@@ -724,14 +534,8 @@ pub struct PeerIstioControlPlaneIstiodDeploymentEnvValueFrom {
 pub struct PeerIstioControlPlaneIstiodDeploymentEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localObjectReference"
-    )]
-    pub local_object_reference: Option<
-        PeerIstioControlPlaneIstiodDeploymentEnvValueFromConfigMapKeyRefLocalObjectReference,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localObjectReference")]
+    pub local_object_reference: Option<PeerIstioControlPlaneIstiodDeploymentEnvValueFromConfigMapKeyRefLocalObjectReference>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -744,11 +548,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentEnvValueFromConfigMapKeyRefLocal
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
@@ -756,11 +556,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentEnvValueFromFieldRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentEnvValueFromResourceFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -772,13 +568,8 @@ pub struct PeerIstioControlPlaneIstiodDeploymentEnvValueFromResourceFieldRef {
 pub struct PeerIstioControlPlaneIstiodDeploymentEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localObjectReference"
-    )]
-    pub local_object_reference:
-        Option<PeerIstioControlPlaneIstiodDeploymentEnvValueFromSecretKeyRefLocalObjectReference>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localObjectReference")]
+    pub local_object_reference: Option<PeerIstioControlPlaneIstiodDeploymentEnvValueFromSecretKeyRefLocalObjectReference>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -799,47 +590,23 @@ pub struct PeerIstioControlPlaneIstiodDeploymentImagePullSecrets {
 pub struct PeerIstioControlPlaneIstiodDeploymentLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PeerIstioControlPlaneIstiodDeploymentLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PeerIstioControlPlaneIstiodDeploymentLivenessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PeerIstioControlPlaneIstiodDeploymentLivenessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PeerIstioControlPlaneIstiodDeploymentLivenessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -861,13 +628,8 @@ pub struct PeerIstioControlPlaneIstiodDeploymentLivenessProbeGrpc {
 pub struct PeerIstioControlPlaneIstiodDeploymentLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<PeerIstioControlPlaneIstiodDeploymentLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PeerIstioControlPlaneIstiodDeploymentLivenessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -902,17 +664,9 @@ pub struct PeerIstioControlPlaneIstiodDeploymentMetadata {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentPodDisruptionBudget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
 }
 
@@ -928,55 +682,24 @@ pub struct PeerIstioControlPlaneIstiodDeploymentPodMetadata {
 pub struct PeerIstioControlPlaneIstiodDeploymentPodSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<PeerIstioControlPlaneIstiodDeploymentPodSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<PeerIstioControlPlaneIstiodDeploymentPodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PeerIstioControlPlaneIstiodDeploymentPodSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<PeerIstioControlPlaneIstiodDeploymentPodSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<PeerIstioControlPlaneIstiodDeploymentPodSecurityContextSysctls>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<PeerIstioControlPlaneIstiodDeploymentPodSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<PeerIstioControlPlaneIstiodDeploymentPodSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -993,11 +716,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentPodSecurityContextSeLinuxOptions
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentPodSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1013,29 +732,13 @@ pub struct PeerIstioControlPlaneIstiodDeploymentPodSecurityContextSysctls {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentPodSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1043,47 +746,23 @@ pub struct PeerIstioControlPlaneIstiodDeploymentPodSecurityContextWindowsOptions
 pub struct PeerIstioControlPlaneIstiodDeploymentReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PeerIstioControlPlaneIstiodDeploymentReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PeerIstioControlPlaneIstiodDeploymentReadinessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PeerIstioControlPlaneIstiodDeploymentReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PeerIstioControlPlaneIstiodDeploymentReadinessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1105,13 +784,8 @@ pub struct PeerIstioControlPlaneIstiodDeploymentReadinessProbeGrpc {
 pub struct PeerIstioControlPlaneIstiodDeploymentReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<PeerIstioControlPlaneIstiodDeploymentReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PeerIstioControlPlaneIstiodDeploymentReadinessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1144,11 +818,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentReplicas {
     pub max: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetCPUUtilizationPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCPUUtilizationPercentage")]
     pub target_cpu_utilization_percentage: Option<i64>,
 }
 
@@ -1162,11 +832,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<PeerIstioControlPlaneIstiodDeploymentSecurityContextCapabilities>,
@@ -1174,44 +840,19 @@ pub struct PeerIstioControlPlaneIstiodDeploymentSecurityContext {
     pub privileged: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<PeerIstioControlPlaneIstiodDeploymentSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PeerIstioControlPlaneIstiodDeploymentSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PeerIstioControlPlaneIstiodDeploymentSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PeerIstioControlPlaneIstiodDeploymentSecurityContextWindowsOptions>,
 }
 
@@ -1237,11 +878,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentSecurityContextSeLinuxOptions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1249,29 +886,13 @@ pub struct PeerIstioControlPlaneIstiodDeploymentSecurityContextSeccompProfile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1283,11 +904,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentTolerations {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -1295,26 +912,13 @@ pub struct PeerIstioControlPlaneIstiodDeploymentTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentTopologySpreadConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<PeerIstioControlPlaneIstiodDeploymentTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PeerIstioControlPlaneIstiodDeploymentTopologySpreadConstraintsLabelSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSkew")]
     pub max_skew: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologyKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyKey")]
     pub topology_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "whenUnsatisfiable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenUnsatisfiable")]
     pub when_unsatisfiable: Option<String>,
 }
 
@@ -1327,8 +931,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentTopologySpreadConstraintsLabelSe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentTopologySpreadConstraintsLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1341,11 +944,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentTopologySpreadConstraintsLabelSe
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1353,11 +952,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumeMounts {
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -1365,23 +960,14 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumeMounts {
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSource>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceAwsElasticBlockStore>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceAzureDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
@@ -1394,11 +980,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSource {
     pub config_map: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceCsi>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEmptyDir>,
@@ -1406,21 +988,12 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSource {
     pub ephemeral: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeral>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceFc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceFlexVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceFlocker>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceGcePersistentDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceGitRepo>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1431,27 +1004,12 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSource {
     pub iscsi: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceIscsi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceNfs>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourcePersistentVolumeClaim>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourcePhotonPersistentDisk>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourcePortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourcePhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourcePortworxVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1464,13 +1022,8 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSource {
     pub secret: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceStorageos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
-    pub vsphere_volume:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceVsphereVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceVsphereVolume>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1487,11 +1040,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceAwsElasticBlo
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceAzureDisk {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskName")]
     pub disk_name: Option<String>,
@@ -1509,11 +1058,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceAzureDisk {
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceAzureFile {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareName")]
     pub share_name: Option<String>,
@@ -1527,11 +1072,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceCephfs {
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceCephfsSecretRef>,
@@ -1565,22 +1106,12 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceCinderSecretR
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceConfigMapItems>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localObjectReference"
-    )]
-    pub local_object_reference: Option<
-        PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceConfigMapLocalObjectReference,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localObjectReference")]
+    pub local_object_reference: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceConfigMapLocalObjectReference>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -1607,20 +1138,11 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceCsi {
     pub driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -1632,56 +1154,35 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceCsiNodePublis
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApiItems>>,
+    pub items: Option<Vec<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApiItems>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApiItems {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApiItemsFieldRef>,
+    pub field_ref: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApiItemsFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApiItemsResourceFieldRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApiItemsFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -1699,14 +1200,8 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEmptyDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeral {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template: Option<
-        PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplate,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplate>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1754,8 +1249,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataCreationTimestamp
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataCreationTimestamp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1763,8 +1257,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataDeletionTimestamp
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataDeletionTimestamp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1790,15 +1283,13 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsFieldsV1
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsFieldsV1 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "Raw")]
     pub raw: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsTime
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsTime {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1806,19 +1297,10 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataOwnerReferences
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataOwnerReferences {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockOwnerDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockOwnerDeletion")]
     pub block_owner_deletion: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller: Option<bool>,
@@ -1851,8 +1333,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1862,8 +1343,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1881,15 +1361,13 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesLimits
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub string: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesRequests
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub string: Option<String>,
 }
@@ -1903,8 +1381,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1921,11 +1398,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceFc {
     pub lun: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
@@ -1942,8 +1415,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceFlexVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceFlexVolumeSecretRef>,
+    pub secret_ref: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceFlexVolumeSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1954,17 +1426,9 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceFlexVolumeSec
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceFlocker {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -2010,33 +1474,17 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceHostPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceIscsi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iqn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
@@ -2046,11 +1494,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceIscsi {
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceIscsiSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPortal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortal")]
     pub target_portal: Option<String>,
 }
 
@@ -2098,40 +1542,22 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourcePortworxVolum
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources:
-        Option<Vec<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSources>>,
+    pub sources: Option<Vec<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSources>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesConfigMap>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesDownwardApi>,
+    pub config_map: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesConfigMap>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesSecret>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token: Option<
-        PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesServiceAccountToken,
-    >,
+    pub secret: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2155,8 +1581,7 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSour
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesConfigMapLocalObjectReference
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesConfigMapLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2180,26 +1605,16 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSour
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -2228,22 +1643,16 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSour
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesSecretLocalObjectReference
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesSecretLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesServiceAccountToken
-{
+pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2297,42 +1706,21 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceScaleIo {
     pub fs_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceScaleIoSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceScaleIoSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub system: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -2344,21 +1732,13 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceScaleIoSecret
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -2379,19 +1759,10 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceStorageos {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceStorageosSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceStorageosSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -2405,23 +1776,11 @@ pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceStorageosSecr
 pub struct PeerIstioControlPlaneIstiodDeploymentVolumesVolumeSourceVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumePath")]
     pub volume_path: Option<String>,
 }
 
@@ -2433,11 +1792,7 @@ pub struct PeerIstioControlPlaneIstiodExternalIstiod {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneIstiodSpiffe {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorEndpoints")]
     pub operator_endpoints: Option<PeerIstioControlPlaneIstiodSpiffeOperatorEndpoints>,
 }
 
@@ -2457,11 +1812,7 @@ pub enum PeerIstioControlPlaneJwtPolicy {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneK8sResourceOverlays {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupVersionKind"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupVersionKind")]
     pub group_version_kind: Option<PeerIstioControlPlaneK8sResourceOverlaysGroupVersionKind>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectKey")]
     pub object_key: Option<PeerIstioControlPlaneK8sResourceOverlaysObjectKey>,
@@ -2489,11 +1840,7 @@ pub struct PeerIstioControlPlaneK8sResourceOverlaysObjectKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneK8sResourceOverlaysPatches {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parseValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parseValue")]
     pub parse_value: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2521,245 +1868,89 @@ pub struct PeerIstioControlPlaneLogging {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogEncoding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogEncoding")]
     pub access_log_encoding: Option<PeerIstioControlPlaneMeshConfigAccessLogEncoding>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogFile")]
     pub access_log_file: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogFormat")]
     pub access_log_format: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<PeerIstioControlPlaneMeshConfigCa>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<Vec<PeerIstioControlPlaneMeshConfigCaCertificates>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<Vec<PeerIstioControlPlaneMeshConfigCertificates>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configSources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSources")]
     pub config_sources: Option<Vec<PeerIstioControlPlaneMeshConfigConfigSources>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultConfig")]
     pub default_config: Option<PeerIstioControlPlaneMeshConfigDefaultConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultDestinationRuleExportTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultDestinationRuleExportTo")]
     pub default_destination_rule_export_to: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultHttpRetryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultHttpRetryPolicy")]
     pub default_http_retry_policy: Option<PeerIstioControlPlaneMeshConfigDefaultHttpRetryPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultProviders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultProviders")]
     pub default_providers: Option<PeerIstioControlPlaneMeshConfigDefaultProviders>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultServiceExportTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultServiceExportTo")]
     pub default_service_export_to: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultVirtualServiceExportTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultVirtualServiceExportTo")]
     pub default_virtual_service_export_to: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableEnvoyListenerLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableEnvoyListenerLog")]
     pub disable_envoy_listener_log: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discoverySelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoverySelectors")]
     pub discovery_selectors: Option<Vec<PeerIstioControlPlaneMeshConfigDiscoverySelectors>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsRefreshRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsRefreshRate")]
     pub dns_refresh_rate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableAutoMtls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableAutoMtls")]
     pub enable_auto_mtls: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableEnvoyAccessLogService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableEnvoyAccessLogService")]
     pub enable_envoy_access_log_service: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enablePrometheusMerge"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enablePrometheusMerge")]
     pub enable_prometheus_merge: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableTracing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableTracing")]
     pub enable_tracing: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extensionProviders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extensionProviders")]
     pub extension_providers: Option<Vec<PeerIstioControlPlaneMeshConfigExtensionProviders>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "h2UpgradePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "h2UpgradePolicy")]
     pub h2_upgrade_policy: Option<PeerIstioControlPlaneMeshConfigH2UpgradePolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inboundClusterStatName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inboundClusterStatName")]
     pub inbound_cluster_stat_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClass")]
     pub ingress_class: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressControllerMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressControllerMode")]
     pub ingress_controller_mode: Option<PeerIstioControlPlaneMeshConfigIngressControllerMode>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressSelector")]
     pub ingress_selector: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressService")]
     pub ingress_service: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localityLbSetting"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localityLbSetting")]
     pub locality_lb_setting: Option<PeerIstioControlPlaneMeshConfigLocalityLbSetting>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshMTLS")]
     pub mesh_mtls: Option<PeerIstioControlPlaneMeshConfigMeshMtls>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outboundClusterStatName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outboundClusterStatName")]
     pub outbound_cluster_stat_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outboundTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outboundTrafficPolicy")]
     pub outbound_traffic_policy: Option<PeerIstioControlPlaneMeshConfigOutboundTrafficPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathNormalization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathNormalization")]
     pub path_normalization: Option<PeerIstioControlPlaneMeshConfigPathNormalization>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolDetectionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolDetectionTimeout")]
     pub protocol_detection_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyHttpPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyHttpPort")]
     pub proxy_http_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyListenPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyListenPort")]
     pub proxy_listen_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootNamespace")]
     pub root_namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceSettings")]
     pub service_settings: Option<Vec<PeerIstioControlPlaneMeshConfigServiceSettings>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<PeerIstioControlPlaneMeshConfigTcpKeepalive>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomain")]
     pub trust_domain: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustDomainAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomainAliases")]
     pub trust_domain_aliases: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyCertificateAtClient"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyCertificateAtClient")]
     pub verify_certificate_at_client: Option<bool>,
 }
 
@@ -2775,66 +1966,30 @@ pub enum PeerIstioControlPlaneMeshConfigAccessLogEncoding {
 pub struct PeerIstioControlPlaneMeshConfigCa {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "istiodSide"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "istiodSide")]
     pub istiod_side: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
     pub request_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<PeerIstioControlPlaneMeshConfigCaTlsSettings>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigCaTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: PeerIstioControlPlaneMeshConfigCaTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -2852,25 +2007,13 @@ pub enum PeerIstioControlPlaneMeshConfigCaTlsSettingsMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigCaCertificates {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSigners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSigners")]
     pub cert_signers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pem: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spiffeBundleUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spiffeBundleUrl")]
     pub spiffe_bundle_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomains")]
     pub trust_domains: Option<Vec<String>>,
 }
 
@@ -2878,11 +2021,7 @@ pub struct PeerIstioControlPlaneMeshConfigCaCertificates {
 pub struct PeerIstioControlPlaneMeshConfigCertificates {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsNames")]
     pub dns_names: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -2890,60 +2029,28 @@ pub struct PeerIstioControlPlaneMeshConfigCertificates {
 pub struct PeerIstioControlPlaneMeshConfigConfigSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subscribedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subscribedResources")]
     pub subscribed_resources: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<PeerIstioControlPlaneMeshConfigConfigSourcesTlsSettings>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigConfigSourcesTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: PeerIstioControlPlaneMeshConfigConfigSourcesTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -2961,200 +2068,75 @@ pub enum PeerIstioControlPlaneMeshConfigConfigSourcesTlsSettingsMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZone")]
     pub availability_zone: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "binaryPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "binaryPath")]
     pub binary_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificatesPem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificatesPem")]
     pub ca_certificates_pem: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub concurrency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configPath")]
     pub config_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneAuthPolicy"
-    )]
-    pub control_plane_auth_policy:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigControlPlaneAuthPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customConfigFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneAuthPolicy")]
+    pub control_plane_auth_policy: Option<PeerIstioControlPlaneMeshConfigDefaultConfigControlPlaneAuthPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customConfigFile")]
     pub custom_config_file: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discoveryAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryAddress")]
     pub discovery_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discoveryRefreshDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryRefreshDelay")]
     pub discovery_refresh_delay: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "drainDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "drainDuration")]
     pub drain_duration: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyAccessLogService"
-    )]
-    pub envoy_access_log_service:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogService>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyMetricsService"
-    )]
-    pub envoy_metrics_service:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsService>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyMetricsServiceAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyAccessLogService")]
+    pub envoy_access_log_service: Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogService>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyMetricsService")]
+    pub envoy_metrics_service: Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsService>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyMetricsServiceAddress")]
     pub envoy_metrics_service_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraStatTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraStatTags")]
     pub extra_stat_tags: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayTopology"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayTopology")]
     pub gateway_topology: Option<PeerIstioControlPlaneMeshConfigDefaultConfigGatewayTopology>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "holdApplicationUntilProxyStarts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "holdApplicationUntilProxyStarts")]
     pub hold_application_until_proxy_starts: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<PeerIstioControlPlaneMeshConfigDefaultConfigImage>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "interceptionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interceptionMode")]
     pub interception_mode: Option<PeerIstioControlPlaneMeshConfigDefaultConfigInterceptionMode>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshId")]
     pub mesh_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKeyProvider"
-    )]
-    pub private_key_provider:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigPrivateKeyProvider>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyAdminPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyProvider")]
+    pub private_key_provider: Option<PeerIstioControlPlaneMeshConfigDefaultConfigPrivateKeyProvider>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyAdminPort")]
     pub proxy_admin_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyBootstrapTemplatePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyBootstrapTemplatePath")]
     pub proxy_bootstrap_template_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyMetadata")]
     pub proxy_metadata: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyStatsMatcher"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyStatsMatcher")]
     pub proxy_stats_matcher: Option<PeerIstioControlPlaneMeshConfigDefaultConfigProxyStatsMatcher>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PeerIstioControlPlaneMeshConfigDefaultConfigReadinessProbe>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeValues")]
     pub runtime_values: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sds: Option<PeerIstioControlPlaneMeshConfigDefaultConfigSds>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceCluster")]
     pub service_cluster: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statNameLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statNameLength")]
     pub stat_name_length: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statsdUdpAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statsdUdpAddress")]
     pub statsd_udp_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusPort")]
     pub status_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationDrainDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationDrainDuration")]
     pub termination_drain_duration: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracing>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tracingServiceName"
-    )]
-    pub tracing_service_name:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingServiceName>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "zipkinAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingServiceName")]
+    pub tracing_service_name: Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingServiceName>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zipkinAddress")]
     pub zipkin_address: Option<String>,
 }
 
@@ -3172,20 +2154,10 @@ pub enum PeerIstioControlPlaneMeshConfigDefaultConfigControlPlaneAuthPolicy {
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
-    pub tcp_keepalive:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogServiceTcpKeepalive>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
-    pub tls_settings:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
+    pub tcp_keepalive: Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogServiceTcpKeepalive>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
+    pub tls_settings: Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettings>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3200,44 +2172,20 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogServiceTcpK
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -3257,20 +2205,10 @@ pub enum PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSet
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
-    pub tcp_keepalive:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsServiceTcpKeepalive>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
-    pub tls_settings:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
+    pub tcp_keepalive: Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsServiceTcpKeepalive>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
+    pub tls_settings: Option<PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettings>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3285,44 +2223,20 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsServiceTcpKee
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -3340,18 +2254,9 @@ pub enum PeerIstioControlPlaneMeshConfigDefaultConfigEnvoyMetricsServiceTlsSetti
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigGatewayTopology {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardClientCertDetails"
-    )]
-    pub forward_client_cert_details:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigGatewayTopologyForwardClientCertDetails>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numTrustedProxies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardClientCertDetails")]
+    pub forward_client_cert_details: Option<PeerIstioControlPlaneMeshConfigDefaultConfigGatewayTopologyForwardClientCertDetails>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numTrustedProxies")]
     pub num_trusted_proxies: Option<i64>,
 }
 
@@ -3409,23 +2314,11 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigPrivateKeyProviderQat {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigProxyStatsMatcher {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inclusionPrefixes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inclusionPrefixes")]
     pub inclusion_prefixes: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inclusionRegexps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inclusionRegexps")]
     pub inclusion_regexps: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inclusionSuffixes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inclusionSuffixes")]
     pub inclusion_suffixes: Option<Vec<String>>,
 }
 
@@ -3433,39 +2326,19 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigProxyStatsMatcher {
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PeerIstioControlPlaneMeshConfigDefaultConfigReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PeerIstioControlPlaneMeshConfigDefaultConfigReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PeerIstioControlPlaneMeshConfigDefaultConfigReadinessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3479,13 +2352,8 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigReadinessProbeExec {
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<PeerIstioControlPlaneMeshConfigDefaultConfigReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PeerIstioControlPlaneMeshConfigDefaultConfigReadinessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     pub port: i64,
@@ -3512,49 +2380,27 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigReadinessProbeTcpSocket {
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigSds {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sSaJwtPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sSaJwtPath")]
     pub k8s_sa_jwt_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracing {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTags"
-    )]
-    pub custom_tags:
-        Option<BTreeMap<String, PeerIstioControlPlaneMeshConfigDefaultConfigTracingCustomTags>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTags")]
+    pub custom_tags: Option<BTreeMap<String, PeerIstioControlPlaneMeshConfigDefaultConfigTracingCustomTags>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datadog: Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingDatadog>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lightstep: Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingLightstep>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPathTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPathTagLength")]
     pub max_path_tag_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openCensusAgent"
-    )]
-    pub open_census_agent:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingOpenCensusAgent>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openCensusAgent")]
+    pub open_census_agent: Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingOpenCensusAgent>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stackdriver: Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingStackdriver>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingTlsSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zipkin: Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingZipkin>,
@@ -3563,8 +2409,7 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracing {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracingCustomTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub environment:
-        Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingCustomTagsEnvironment>,
+    pub environment: Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingCustomTagsEnvironment>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub header: Option<PeerIstioControlPlaneMeshConfigDefaultConfigTracingCustomTagsHeader>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3573,11 +2418,7 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracingCustomTags {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracingCustomTagsEnvironment {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3585,11 +2426,7 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracingCustomTagsEnvironm
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracingCustomTagsHeader {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3609,11 +2446,7 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracingDatadog {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracingLightstep {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
@@ -3631,66 +2464,30 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracingOpenCensusAgent {
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracingStackdriver {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAnnotations")]
     pub max_number_of_annotations: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAttributes")]
     pub max_number_of_attributes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfMessageEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfMessageEvents")]
     pub max_number_of_message_events: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultConfigTracingTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: PeerIstioControlPlaneMeshConfigDefaultConfigTracingTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -3725,29 +2522,17 @@ pub enum PeerIstioControlPlaneMeshConfigDefaultConfigTracingServiceName {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultHttpRetryPolicy {
     pub attempts: i32,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perTryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perTryTimeout")]
     pub per_try_timeout: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOn")]
     pub retry_on: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryRemoteLocalities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryRemoteLocalities")]
     pub retry_remote_localities: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDefaultProviders {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogging"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogging")]
     pub access_logging: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<Vec<String>>,
@@ -3757,18 +2542,9 @@ pub struct PeerIstioControlPlaneMeshConfigDefaultProviders {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigDiscoverySelectors {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PeerIstioControlPlaneMeshConfigDiscoverySelectorsMatchExpressions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PeerIstioControlPlaneMeshConfigDiscoverySelectorsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -3786,44 +2562,17 @@ pub struct PeerIstioControlPlaneMeshConfigDiscoverySelectorsMatchExpressions {
 pub struct PeerIstioControlPlaneMeshConfigExtensionProviders {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datadog: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersDatadog>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyExtAuthzGrpc"
-    )]
-    pub envoy_ext_authz_grpc:
-        Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzGrpc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyExtAuthzHttp"
-    )]
-    pub envoy_ext_authz_http:
-        Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzHttp>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyFileAccessLog"
-    )]
-    pub envoy_file_access_log:
-        Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLog>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyHttpAls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyExtAuthzGrpc")]
+    pub envoy_ext_authz_grpc: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzGrpc>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyExtAuthzHttp")]
+    pub envoy_ext_authz_http: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzHttp>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyFileAccessLog")]
+    pub envoy_file_access_log: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLog>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyHttpAls")]
     pub envoy_http_als: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyHttpAls>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyOtelAls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyOtelAls")]
     pub envoy_otel_als: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyOtelAls>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyTcpAls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyTcpAls")]
     pub envoy_tcp_als: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyTcpAls>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lightstep: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersLightstep>,
@@ -3845,11 +2594,7 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProviders {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersDatadog {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -3861,48 +2606,25 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersDatadog {
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzGrpc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOpen")]
     pub fail_open: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeRequestBodyInCheck"
-    )]
-    pub include_request_body_in_check: Option<
-        PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzGrpcIncludeRequestBodyInCheck,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeRequestBodyInCheck")]
+    pub include_request_body_in_check: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzGrpcIncludeRequestBodyInCheck>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusOnError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusOnError")]
     pub status_on_error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzGrpcIncludeRequestBodyInCheck
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPartialMessage"
-    )]
+pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzGrpcIncludeRequestBodyInCheck {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPartialMessage")]
     pub allow_partial_message: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestBytes")]
     pub max_request_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packAsBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packAsBytes")]
     pub pack_as_bytes: Option<bool>,
 }
 
@@ -3910,98 +2632,46 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzGrpcInc
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzHttp {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOpen")]
     pub fail_open: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headersToDownstreamOnAllow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headersToDownstreamOnAllow")]
     pub headers_to_downstream_on_allow: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headersToDownstreamOnDeny"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headersToDownstreamOnDeny")]
     pub headers_to_downstream_on_deny: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headersToUpstreamOnAllow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headersToUpstreamOnAllow")]
     pub headers_to_upstream_on_allow: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeAdditionalHeadersInCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeAdditionalHeadersInCheck")]
     pub include_additional_headers_in_check: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeHeadersInCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeHeadersInCheck")]
     pub include_headers_in_check: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeRequestBodyInCheck"
-    )]
-    pub include_request_body_in_check: Option<
-        PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzHttpIncludeRequestBodyInCheck,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeRequestHeadersInCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeRequestBodyInCheck")]
+    pub include_request_body_in_check: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzHttpIncludeRequestBodyInCheck>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeRequestHeadersInCheck")]
     pub include_request_headers_in_check: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathPrefix")]
     pub path_prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusOnError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusOnError")]
     pub status_on_error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzHttpIncludeRequestBodyInCheck
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPartialMessage"
-    )]
+pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyExtAuthzHttpIncludeRequestBodyInCheck {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPartialMessage")]
     pub allow_partial_message: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestBytes")]
     pub max_request_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packAsBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packAsBytes")]
     pub pack_as_bytes: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLog {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
-    pub log_format:
-        Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormat>,
+    pub log_format: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormat>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
 }
@@ -4009,40 +2679,24 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLog {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormat {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels:
-        Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormatLabels>,
+    pub labels: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormatLabels>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormatLabels {}
+pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormatLabels {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyHttpAls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalRequestHeadersToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalRequestHeadersToLog")]
     pub additional_request_headers_to_log: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalResponseHeadersToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalResponseHeadersToLog")]
     pub additional_response_headers_to_log: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalResponseTrailersToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalResponseTrailersToLog")]
     pub additional_response_trailers_to_log: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterStateObjectsToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterStateObjectsToLog")]
     pub filter_state_objects_to_log: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logName")]
     pub log_name: Option<String>,
@@ -4067,22 +2721,18 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyOtelAls {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyOtelAlsLogFormat {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels:
-        Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyOtelAlsLogFormatLabels>,
+    pub labels: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyOtelAlsLogFormatLabels>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyOtelAlsLogFormatLabels {}
+pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyOtelAlsLogFormatLabels {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyTcpAls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterStateObjectsToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterStateObjectsToLog")]
     pub filter_state_objects_to_log: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logName")]
     pub log_name: Option<String>,
@@ -4094,17 +2744,9 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersEnvoyTcpAls {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersLightstep {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -4116,11 +2758,7 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersLightstep {
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersOpencensus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -4130,11 +2768,7 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersOpencensus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersOpentelemetry {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -4143,15 +2777,12 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersOpentelemetry {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersPrometheus {}
+pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersPrometheus {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersSkywalking {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -4165,29 +2796,13 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersStackdriver {
     pub debug: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<PeerIstioControlPlaneMeshConfigExtensionProvidersStackdriverLogging>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAnnotations")]
     pub max_number_of_annotations: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAttributes")]
     pub max_number_of_attributes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfMessageEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfMessageEvents")]
     pub max_number_of_message_events: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
 }
 
@@ -4199,11 +2814,7 @@ pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersStackdriverLogging {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigExtensionProvidersZipkin {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -4239,11 +2850,7 @@ pub struct PeerIstioControlPlaneMeshConfigLocalityLbSetting {
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failover: Option<Vec<PeerIstioControlPlaneMeshConfigLocalityLbSettingFailover>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failoverPriority"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failoverPriority")]
     pub failover_priority: Option<Vec<String>>,
 }
 
@@ -4265,11 +2872,7 @@ pub struct PeerIstioControlPlaneMeshConfigLocalityLbSettingFailover {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigMeshMtls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProtocolVersion")]
     pub min_protocol_version: Option<PeerIstioControlPlaneMeshConfigMeshMtlsMinProtocolVersion>,
 }
 
@@ -4327,11 +2930,7 @@ pub struct PeerIstioControlPlaneMeshConfigServiceSettings {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshConfigServiceSettingsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterLocal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterLocal")]
     pub cluster_local: Option<bool>,
 }
 
@@ -4347,11 +2946,7 @@ pub struct PeerIstioControlPlaneMeshConfigTcpKeepalive {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansion {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterServices")]
     pub cluster_services: Option<PeerIstioControlPlaneMeshExpansionClusterServices>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -4373,13 +2968,8 @@ pub struct PeerIstioControlPlaneMeshExpansionClusterServices {
 pub struct PeerIstioControlPlaneMeshExpansionGateway {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<PeerIstioControlPlaneMeshExpansionGatewayDeployment>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sResourceOverlays"
-    )]
-    pub k8s_resource_overlays:
-        Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayK8sResourceOverlays>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sResourceOverlays")]
+    pub k8s_resource_overlays: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayK8sResourceOverlays>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<PeerIstioControlPlaneMeshExpansionGatewayMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsRoot")]
@@ -4392,101 +2982,43 @@ pub struct PeerIstioControlPlaneMeshExpansionGateway {
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeployment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentStrategy"
-    )]
-    pub deployment_strategy:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentDeploymentStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
+    pub deployment_strategy: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentDeploymentStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
-    pub image_pull_secrets:
-        Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentImagePullSecrets>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentImagePullSecrets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podDisruptionBudget"
-    )]
-    pub pod_disruption_budget:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodDisruptionBudget>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
+    pub pod_disruption_budget: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodDisruptionBudget>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
-    pub pod_security_context:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
+    pub pod_security_context: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentReplicas>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentTolerations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentTopologySpreadConstraints>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumeMounts>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumes>>,
@@ -4494,27 +3026,12 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeployment {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAffinity>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4542,8 +3059,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4553,8 +3069,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4578,8 +3093,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4589,8 +3103,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4636,8 +3149,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinit
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4655,8 +3167,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinit
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4686,8 +3197,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinit
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4705,8 +3215,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinit
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4752,8 +3261,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAff
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4771,8 +3279,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAff
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4802,8 +3309,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAff
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4821,8 +3327,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAff
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4833,13 +3338,8 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentAffinityPodAntiAff
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentDeploymentStrategy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
-    pub rolling_update:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentDeploymentStrategyRollingUpdate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentDeploymentStrategyRollingUpdate>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -4848,11 +3348,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentDeploymentStrategy
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentDeploymentStrategyRollingUpdate {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
     pub max_surge: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -4868,29 +3364,14 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnv {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromResourceFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4904,19 +3385,14 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromConfig
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromConfigMapKeyRefLocalObjectReference
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromConfigMapKeyRefLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
@@ -4924,11 +3400,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromFieldR
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromResourceFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -4947,8 +3419,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromSecret
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromSecretKeyRefLocalObjectReference
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentEnvValueFromSecretKeyRefLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -4963,48 +3434,23 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentImagePullSecrets {
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5026,14 +3472,8 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbeGrpc 
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentLivenessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5068,17 +3508,9 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentMetadata {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodDisruptionBudget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
 }
 
@@ -5094,56 +3526,24 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodMetadata {
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sysctls:
-        Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContextSysctls>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContextWindowsOptions>,
+    pub sysctls: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContextSysctls>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5160,11 +3560,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContext
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -5180,29 +3576,13 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContext
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -5210,48 +3590,23 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentPodSecurityContext
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5273,14 +3628,8 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbeGrpc
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentReadinessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5313,11 +3662,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentReplicas {
     pub max: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetCPUUtilizationPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCPUUtilizationPercentage")]
     pub target_cpu_utilization_percentage: Option<i64>,
 }
 
@@ -5331,60 +3676,28 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextCapabilities>,
+    pub capabilities: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5409,11 +3722,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextSeL
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -5421,29 +3730,13 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextSec
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -5455,11 +3748,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentTolerations {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -5467,27 +3756,13 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentTopologySpreadConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentTopologySpreadConstraintsLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentTopologySpreadConstraintsLabelSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSkew")]
     pub max_skew: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologyKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyKey")]
     pub topology_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "whenUnsatisfiable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenUnsatisfiable")]
     pub when_unsatisfiable: Option<String>,
 }
 
@@ -5500,8 +3775,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentTopologySpreadCons
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentTopologySpreadConstraintsLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5514,11 +3788,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentTopologySpreadCons
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -5526,11 +3796,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumeMounts {
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -5538,141 +3804,74 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumeMounts {
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
-    pub volume_source:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
+    pub volume_source: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSource>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceAwsElasticBlockStore,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceAwsElasticBlockStore>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
-    pub azure_disk:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceAzureDisk>,
+    pub azure_disk: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceAzureDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
-    pub azure_file:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceAzureFile>,
+    pub azure_file: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceAzureFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cephfs:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCephfs>,
+    pub cephfs: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCephfs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cinder:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCinder>,
+    pub cinder: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCinder>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceConfigMap>,
+    pub config_map: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCsi>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEmptyDir>,
+    pub empty_dir: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEmptyDir>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ephemeral:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeral>,
+    pub ephemeral: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeral>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceFc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
-    pub flex_volume:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceFlexVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
+    pub flex_volume: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceFlexVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flocker:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceFlocker>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceGcePersistentDisk,
-    >,
+    pub flocker: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceFlocker>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceGcePersistentDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
-    pub git_repo:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceGitRepo>,
+    pub git_repo: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceGitRepo>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glusterfs:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceGlusterfs>,
+    pub glusterfs: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceHostPath>,
+    pub host_path: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceHostPath>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceIscsi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceNfs>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourcePersistentVolumeClaim,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourcePhotonPersistentDisk,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourcePortworxVolume,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourcePhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourcePortworxVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub projected:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjected>,
+    pub projected: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub quobyte:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceQuobyte>,
+    pub quobyte: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceQuobyte>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceRbd>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
-    pub scale_io:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceScaleIo>,
+    pub scale_io: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceScaleIo>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceSecret>,
+    pub secret: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub storageos:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceStorageos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
-    pub vsphere_volume:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceVsphereVolume>,
+    pub storageos: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceStorageos>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceVsphereVolume>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceAwsElasticBlockStore
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceAwsElasticBlockStore {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5685,11 +3884,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceAzureDisk {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskName")]
     pub disk_name: Option<String>,
@@ -5707,11 +3902,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceAzureFile {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareName")]
     pub share_name: Option<String>,
@@ -5725,16 +3916,10 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCephfsSecretRef,
-    >,
+    pub secret_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCephfsSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
@@ -5752,9 +3937,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCinderSecretRef,
-    >,
+    pub secret_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCinderSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeID")]
     pub volume_id: Option<String>,
 }
@@ -5788,8 +3971,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceConfigMapLocalObjectReference
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceConfigMapLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5809,24 +3991,17 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCsiNodePublishSecretRef
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceCsiNodePublishSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceDownwardApi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceDownwardApiItems>,
-    >,
+    pub items: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceDownwardApiItems>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5842,26 +4017,16 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -5928,8 +4093,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataCreationTimestamp
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataCreationTimestamp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5937,8 +4101,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataDeletionTimestamp
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataDeletionTimestamp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5964,15 +4127,13 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsFieldsV1
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsFieldsV1 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "Raw")]
     pub raw: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsTime
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsTime {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5980,19 +4141,10 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataOwnerReferences
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataOwnerReferences {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockOwnerDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockOwnerDeletion")]
     pub block_owner_deletion: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller: Option<bool>,
@@ -6025,8 +4177,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6036,8 +4187,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6055,15 +4205,13 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesLimits
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub string: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesRequests
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub string: Option<String>,
 }
@@ -6077,8 +4225,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6095,11 +4242,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
     pub lun: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
@@ -6116,31 +4259,20 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceFlexVolumeSecretRef,
-    >,
+    pub secret_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceFlexVolumeSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceFlexVolumeSecretRef
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceFlexVolumeSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceFlocker {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -6186,33 +4318,17 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceIscsi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iqn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
@@ -6221,14 +4337,8 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceIscsiSecretRef,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPortal"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceIscsiSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortal")]
     pub target_portal: Option<String>,
 }
 
@@ -6249,8 +4359,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourcePersistentVolumeClaim
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourcePersistentVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
     pub claim_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -6258,8 +4367,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourcePhotonPersistentDisk
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourcePhotonPersistentDisk {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pdID")]
@@ -6278,16 +4386,10 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources: Option<
-        Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSources>,
-    >,
+    pub sources: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSources>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6313,8 +4415,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesConfigMapItems
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesConfigMapItems {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6324,8 +4425,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesConfigMapLocalObjectReference
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesConfigMapLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6349,26 +4449,16 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -6387,8 +4477,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesSecretItems
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesSecretItems {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6398,22 +4487,16 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesSecretLocalObjectReference
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesSecretLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesServiceAccountToken
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -6450,8 +4533,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceRbdSecretRef>,
+    pub secret_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceRbdSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
@@ -6468,43 +4550,21 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
     pub fs_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceScaleIoSecretRef,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceScaleIoSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub system: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -6516,23 +4576,13 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceSecretItems>,
-    >,
+    pub items: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -6553,26 +4603,15 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<
-        PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceStorageosSecretRef,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceStorageosSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceStorageosSecretRef
-{
+pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceStorageosSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6581,35 +4620,18 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourc
 pub struct PeerIstioControlPlaneMeshExpansionGatewayDeploymentVolumesVolumeSourceVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumePath")]
     pub volume_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayK8sResourceOverlays {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupVersionKind"
-    )]
-    pub group_version_kind:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayK8sResourceOverlaysGroupVersionKind>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupVersionKind")]
+    pub group_version_kind: Option<PeerIstioControlPlaneMeshExpansionGatewayK8sResourceOverlaysGroupVersionKind>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectKey")]
     pub object_key: Option<PeerIstioControlPlaneMeshExpansionGatewayK8sResourceOverlaysObjectKey>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6636,11 +4658,7 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayK8sResourceOverlaysObjectKey
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayK8sResourceOverlaysPatches {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parseValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parseValue")]
     pub parse_value: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -6672,69 +4690,32 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayMetadata {
 pub struct PeerIstioControlPlaneMeshExpansionGatewayService {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIP")]
     pub cluster_ip: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalName")]
     pub external_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckNodePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckNodePort")]
     pub health_check_node_port: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamily")]
     pub ip_family: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<PeerIstioControlPlaneMeshExpansionGatewayServiceMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<PeerIstioControlPlaneMeshExpansionGatewayServicePorts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publishNotReadyAddresses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
     pub publish_not_ready_addresses: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinityConfig"
-    )]
-    pub session_affinity_config:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayServiceSessionAffinityConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
+    pub session_affinity_config: Option<PeerIstioControlPlaneMeshExpansionGatewayServiceSessionAffinityConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<PeerIstioControlPlaneMeshExpansionGatewayServiceType>,
 }
@@ -6756,28 +4737,19 @@ pub struct PeerIstioControlPlaneMeshExpansionGatewayServicePorts {
     pub port: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayServiceSessionAffinityConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientIP")]
-    pub client_ip:
-        Option<PeerIstioControlPlaneMeshExpansionGatewayServiceSessionAffinityConfigClientIp>,
+    pub client_ip: Option<PeerIstioControlPlaneMeshExpansionGatewayServiceSessionAffinityConfigClientIp>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneMeshExpansionGatewayServiceSessionAffinityConfigClientIp {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -6811,55 +4783,23 @@ pub enum PeerIstioControlPlaneMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDomain")]
     pub cluster_domain: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentLogLevel")]
     pub component_log_level: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCoreDump"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCoreDump")]
     pub enable_core_dump: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeIPRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeIPRanges")]
     pub exclude_ip_ranges: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeInboundPorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeInboundPorts")]
     pub exclude_inbound_ports: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeOutboundPorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeOutboundPorts")]
     pub exclude_outbound_ports: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "holdApplicationUntilProxyStarts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "holdApplicationUntilProxyStarts")]
     pub hold_application_until_proxy_starts: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeIPRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeIPRanges")]
     pub include_ip_ranges: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<PeerIstioControlPlaneProxyLifecycle>,
@@ -6901,11 +4841,7 @@ pub struct PeerIstioControlPlaneProxyLifecyclePostStartExec {
 pub struct PeerIstioControlPlaneProxyLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PeerIstioControlPlaneProxyLifecyclePostStartHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -6951,11 +4887,7 @@ pub struct PeerIstioControlPlaneProxyLifecyclePreStopExec {
 pub struct PeerIstioControlPlaneProxyLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PeerIstioControlPlaneProxyLifecyclePreStopHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -7025,43 +4957,23 @@ pub struct PeerIstioControlPlaneProxyInitCni {
     pub chained: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "confDir")]
     pub conf_dir: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "confFileName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "confFileName")]
     pub conf_file_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub daemonset: Option<PeerIstioControlPlaneProxyInitCniDaemonset>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeNamespaces")]
     pub exclude_namespaces: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeNamespaces")]
     pub include_namespaces: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pspClusterRoleName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pspClusterRoleName")]
     pub psp_cluster_role_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repair: Option<PeerIstioControlPlaneProxyInitCniRepair>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceQuotas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceQuotas")]
     pub resource_quotas: Option<PeerIstioControlPlaneProxyInitCniResourceQuotas>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taint: Option<PeerIstioControlPlaneProxyInitCniTaint>,
@@ -7071,97 +4983,43 @@ pub struct PeerIstioControlPlaneProxyInitCni {
 pub struct PeerIstioControlPlaneProxyInitCniDaemonset {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<PeerIstioControlPlaneProxyInitCniDaemonsetAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
     pub deployment_strategy: Option<PeerIstioControlPlaneProxyInitCniDaemonsetDeploymentStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetImagePullSecrets>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PeerIstioControlPlaneProxyInitCniDaemonsetLivenessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<PeerIstioControlPlaneProxyInitCniDaemonsetMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podDisruptionBudget"
-    )]
-    pub pod_disruption_budget:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetPodDisruptionBudget>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
+    pub pod_disruption_budget: Option<PeerIstioControlPlaneProxyInitCniDaemonsetPodDisruptionBudget>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<PeerIstioControlPlaneProxyInitCniDaemonsetPodMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PeerIstioControlPlaneProxyInitCniDaemonsetReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<PeerIstioControlPlaneProxyInitCniDaemonsetReplicas>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PeerIstioControlPlaneProxyInitCniDaemonsetResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetTolerations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetTopologySpreadConstraints>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetVolumeMounts>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetVolumes>>,
@@ -7169,25 +5027,12 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonset {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinity>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7215,8 +5060,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityPreferr
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7226,8 +5070,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityPreferr
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7251,8 +5094,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityRequire
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7262,8 +5104,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityRequire
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7309,8 +5150,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityPreferre
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7328,8 +5168,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityPreferre
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7359,8 +5198,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityRequired
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7378,8 +5216,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityRequired
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7425,8 +5262,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityPref
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7444,8 +5280,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityPref
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7475,8 +5310,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityRequ
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7494,8 +5328,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityRequ
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7506,13 +5339,8 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetAffinityPodAntiAffinityRequ
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetDeploymentStrategy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
-    pub rolling_update:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetDeploymentStrategyRollingUpdate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<PeerIstioControlPlaneProxyInitCniDaemonsetDeploymentStrategyRollingUpdate>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -7521,11 +5349,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetDeploymentStrategy {
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetDeploymentStrategyRollingUpdate {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
     pub max_surge: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -7541,27 +5365,13 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnv {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromResourceFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromSecretKeyRef>,
 }
 
@@ -7569,32 +5379,21 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFrom {
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localObjectReference"
-    )]
-    pub local_object_reference: Option<
-        PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromConfigMapKeyRefLocalObjectReference,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localObjectReference")]
+    pub local_object_reference: Option<PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromConfigMapKeyRefLocalObjectReference>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromConfigMapKeyRefLocalObjectReference
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromConfigMapKeyRefLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
@@ -7602,11 +5401,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromFieldRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromResourceFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -7618,14 +5413,8 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromResourceFieldRe
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localObjectReference"
-    )]
-    pub local_object_reference: Option<
-        PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromSecretKeyRefLocalObjectReference,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localObjectReference")]
+    pub local_object_reference: Option<PeerIstioControlPlaneProxyInitCniDaemonsetEnvValueFromSecretKeyRefLocalObjectReference>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -7646,47 +5435,23 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetImagePullSecrets {
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PeerIstioControlPlaneProxyInitCniDaemonsetLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PeerIstioControlPlaneProxyInitCniDaemonsetLivenessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PeerIstioControlPlaneProxyInitCniDaemonsetLivenessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PeerIstioControlPlaneProxyInitCniDaemonsetLivenessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -7708,13 +5473,8 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetLivenessProbeGrpc {
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetLivenessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7749,17 +5509,9 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetMetadata {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetPodDisruptionBudget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
 }
 
@@ -7775,55 +5527,24 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetPodMetadata {
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextSysctls>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7840,11 +5561,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextSeLinuxOp
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -7860,29 +5577,13 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextSysctls {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -7890,47 +5591,23 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetPodSecurityContextWindowsOp
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PeerIstioControlPlaneProxyInitCniDaemonsetReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PeerIstioControlPlaneProxyInitCniDaemonsetReadinessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PeerIstioControlPlaneProxyInitCniDaemonsetReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PeerIstioControlPlaneProxyInitCniDaemonsetReadinessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -7952,13 +5629,8 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetReadinessProbeGrpc {
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetReadinessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7991,11 +5663,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetReplicas {
     pub max: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetCPUUtilizationPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCPUUtilizationPercentage")]
     pub target_cpu_utilization_percentage: Option<i64>,
 }
 
@@ -8009,11 +5677,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextCapabilities>,
@@ -8021,47 +5685,20 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContext {
     pub privileged: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8086,11 +5723,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextSeLinuxOptio
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -8098,29 +5731,13 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextSeccompProfi
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -8132,11 +5749,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetTolerations {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -8144,26 +5757,13 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetTopologySpreadConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PeerIstioControlPlaneProxyInitCniDaemonsetTopologySpreadConstraintsLabelSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSkew")]
     pub max_skew: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologyKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyKey")]
     pub topology_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "whenUnsatisfiable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenUnsatisfiable")]
     pub when_unsatisfiable: Option<String>,
 }
 
@@ -8176,8 +5776,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetTopologySpreadConstraintsLa
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetTopologySpreadConstraintsLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8190,11 +5789,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetTopologySpreadConstraintsLa
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -8202,11 +5797,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumeMounts {
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -8214,23 +5805,14 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumeMounts {
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSource>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceAwsElasticBlockStore>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceAzureDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
@@ -8243,35 +5825,20 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSource {
     pub config_map: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCsi>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEmptyDir>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeral>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceFc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
-    pub flex_volume:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceFlexVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
+    pub flex_volume: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceFlexVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceFlocker>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceGcePersistentDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceGitRepo>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8282,27 +5849,12 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSource {
     pub iscsi: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceIscsi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceNfs>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourcePersistentVolumeClaim>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourcePhotonPersistentDisk>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourcePortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourcePhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourcePortworxVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8315,13 +5867,8 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSource {
     pub secret: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceStorageos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
-    pub vsphere_volume:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceVsphereVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceVsphereVolume>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8338,11 +5885,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceAwsElast
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceAzureDisk {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskName")]
     pub disk_name: Option<String>,
@@ -8360,11 +5903,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceAzureDis
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceAzureFile {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareName")]
     pub share_name: Option<String>,
@@ -8378,15 +5917,10 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCephfs {
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCephfsSecretRef>,
+    pub secret_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCephfsSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
@@ -8404,8 +5938,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCinder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCinderSecretRef>,
+    pub secret_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCinderSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeID")]
     pub volume_id: Option<String>,
 }
@@ -8418,23 +5951,12 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCinderSe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceConfigMapItems>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localObjectReference"
-    )]
-    pub local_object_reference: Option<
-        PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceConfigMapLocalObjectReference,
-    >,
+    pub items: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceConfigMapItems>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localObjectReference")]
+    pub local_object_reference: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceConfigMapLocalObjectReference>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -8450,8 +5972,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceConfigMa
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceConfigMapLocalObjectReference
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceConfigMapLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -8462,21 +5983,11 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCsi {
     pub driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref: Option<
-        PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCsiNodePublishSecretRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -8488,15 +5999,10 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceCsiNodeP
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceDownwardApi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceDownwardApiItems>>,
+    pub items: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceDownwardApiItems>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8513,24 +6019,15 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceDownward
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceDownwardApiItemsFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -8548,14 +6045,8 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEmptyDir
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeral {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template: Option<
-        PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplate,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplate>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8603,8 +6094,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemera
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataCreationTimestamp
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataCreationTimestamp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8612,8 +6102,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemera
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataDeletionTimestamp
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataDeletionTimestamp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8639,15 +6128,13 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemera
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsFieldsV1
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsFieldsV1 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "Raw")]
     pub raw: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsTime
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsTime {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8655,19 +6142,10 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemera
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataOwnerReferences
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataOwnerReferences {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockOwnerDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockOwnerDeletion")]
     pub block_owner_deletion: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller: Option<bool>,
@@ -8700,8 +6178,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemera
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8711,8 +6188,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemera
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8730,15 +6206,13 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemera
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesLimits
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub string: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesRequests
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub string: Option<String>,
 }
@@ -8752,8 +6226,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemera
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8770,11 +6243,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceFc {
     pub lun: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
@@ -8791,8 +6260,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceFlexVolu
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceFlexVolumeSecretRef>,
+    pub secret_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceFlexVolumeSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8803,17 +6271,9 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceFlexVolu
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceFlocker {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -8859,33 +6319,17 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceHostPath
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceIscsi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iqn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
@@ -8894,13 +6338,8 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceIscsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceIscsiSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPortal"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceIscsiSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortal")]
     pub target_portal: Option<String>,
 }
 
@@ -8948,15 +6387,10 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourcePortworx
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources:
-        Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSources>>,
+    pub sources: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSources>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8982,8 +6416,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjecte
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesConfigMapItems
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesConfigMapItems {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8993,8 +6426,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjecte
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesConfigMapLocalObjectReference
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesConfigMapLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -9018,26 +6450,16 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjecte
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -9056,8 +6478,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjecte
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesSecretItems
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesSecretItems {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9067,22 +6488,16 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjecte
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesSecretLocalObjectReference
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesSecretLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesServiceAccountToken
-{
+pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -9119,8 +6534,7 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceRbd {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceRbdSecretRef>,
+    pub secret_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceRbdSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
@@ -9137,42 +6551,21 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceScaleIo 
     pub fs_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceScaleIoSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceScaleIoSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub system: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -9184,22 +6577,13 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceScaleIoS
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceSecretItems>>,
+    pub items: Option<Vec<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -9220,19 +6604,10 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceStorageo
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceStorageosSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceStorageosSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -9246,53 +6621,25 @@ pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceStorageo
 pub struct PeerIstioControlPlaneProxyInitCniDaemonsetVolumesVolumeSourceVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumePath")]
     pub volume_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniRepair {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokenPodLabelKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokenPodLabelKey")]
     pub broken_pod_label_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokenPodLabelValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokenPodLabelValue")]
     pub broken_pod_label_value: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletePods"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePods")]
     pub delete_pods: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainerName")]
     pub init_container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelPods")]
     pub label_pods: Option<bool>,
@@ -9304,11 +6651,7 @@ pub struct PeerIstioControlPlaneProxyInitCniResourceQuotas {
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClasses")]
     pub priority_classes: Option<Vec<String>>,
 }
 
@@ -9328,17 +6671,9 @@ pub struct PeerIstioControlPlaneProxyInitCniTaintContainer {
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PeerIstioControlPlaneProxyInitCniTaintContainerResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<PeerIstioControlPlaneProxyInitCniTaintContainerVolumeMounts>>,
 }
 
@@ -9354,29 +6689,14 @@ pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnv {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromResourceFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9390,19 +6710,14 @@ pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromConfigMapK
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromConfigMapKeyRefLocalObjectReference
-{
+pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromConfigMapKeyRefLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
@@ -9410,11 +6725,7 @@ pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromFieldRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromResourceFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -9426,21 +6737,14 @@ pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromResourceFi
 pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localObjectReference"
-    )]
-    pub local_object_reference: Option<
-        PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromSecretKeyRefLocalObjectReference,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localObjectReference")]
+    pub local_object_reference: Option<PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromSecretKeyRefLocalObjectReference>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromSecretKeyRefLocalObjectReference
-{
+pub struct PeerIstioControlPlaneProxyInitCniTaintContainerEnvValueFromSecretKeyRefLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -9455,60 +6759,28 @@ pub struct PeerIstioControlPlaneProxyInitCniTaintContainerResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextCapabilities>,
+    pub capabilities: Option<PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9533,11 +6805,7 @@ pub struct PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextSeLinux
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -9545,29 +6813,13 @@ pub struct PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextSeccomp
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -9575,11 +6827,7 @@ pub struct PeerIstioControlPlaneProxyInitCniTaintContainerSecurityContextWindows
 pub struct PeerIstioControlPlaneProxyInitCniTaintContainerVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -9587,11 +6835,7 @@ pub struct PeerIstioControlPlaneProxyInitCniTaintContainerVolumeMounts {
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -9611,11 +6855,7 @@ pub struct PeerIstioControlPlaneProxyWasm {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSds {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenAudience"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenAudience")]
     pub token_audience: Option<String>,
 }
 
@@ -9633,100 +6873,43 @@ pub struct PeerIstioControlPlaneSidecarInjector {
 pub struct PeerIstioControlPlaneSidecarInjectorDeployment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<PeerIstioControlPlaneSidecarInjectorDeploymentAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentStrategy"
-    )]
-    pub deployment_strategy:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentDeploymentStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
+    pub deployment_strategy: Option<PeerIstioControlPlaneSidecarInjectorDeploymentDeploymentStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
-    pub image_pull_secrets:
-        Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentImagePullSecrets>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentImagePullSecrets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PeerIstioControlPlaneSidecarInjectorDeploymentLivenessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<PeerIstioControlPlaneSidecarInjectorDeploymentMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podDisruptionBudget"
-    )]
-    pub pod_disruption_budget:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodDisruptionBudget>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
+    pub pod_disruption_budget: Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodDisruptionBudget>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
-    pub pod_security_context:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
+    pub pod_security_context: Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PeerIstioControlPlaneSidecarInjectorDeploymentReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<PeerIstioControlPlaneSidecarInjectorDeploymentReplicas>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PeerIstioControlPlaneSidecarInjectorDeploymentResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentTolerations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentTopologySpreadConstraints>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentVolumeMounts>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentVolumes>>,
@@ -9734,25 +6917,12 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeployment {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinity>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9780,8 +6950,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityPre
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9791,8 +6960,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityPre
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9816,8 +6984,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityReq
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9827,8 +6994,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityReq
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9874,8 +7040,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityPref
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9893,8 +7058,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityPref
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9924,8 +7088,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityRequ
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9943,8 +7106,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityRequ
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9990,8 +7152,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinity
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10009,8 +7170,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinity
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10040,8 +7200,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinity
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10059,8 +7218,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinity
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10071,13 +7229,8 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentAffinityPodAntiAffinity
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentDeploymentStrategy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
-    pub rolling_update:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentDeploymentStrategyRollingUpdate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<PeerIstioControlPlaneSidecarInjectorDeploymentDeploymentStrategyRollingUpdate>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -10086,11 +7239,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentDeploymentStrategy {
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentDeploymentStrategyRollingUpdate {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
     pub max_surge: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -10106,29 +7255,14 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnv {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromResourceFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10142,19 +7276,14 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromConfigMapKe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromConfigMapKeyRefLocalObjectReference
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromConfigMapKeyRefLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
@@ -10162,11 +7291,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromFieldRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromResourceFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -10178,21 +7303,14 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromResourceFie
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localObjectReference"
-    )]
-    pub local_object_reference: Option<
-        PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromSecretKeyRefLocalObjectReference,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localObjectReference")]
+    pub local_object_reference: Option<PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromSecretKeyRefLocalObjectReference>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromSecretKeyRefLocalObjectReference
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentEnvValueFromSecretKeyRefLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -10207,47 +7325,23 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentImagePullSecrets {
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PeerIstioControlPlaneSidecarInjectorDeploymentLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PeerIstioControlPlaneSidecarInjectorDeploymentLivenessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PeerIstioControlPlaneSidecarInjectorDeploymentLivenessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PeerIstioControlPlaneSidecarInjectorDeploymentLivenessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -10269,13 +7363,8 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentLivenessProbeGrpc {
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentLivenessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10310,17 +7399,9 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentMetadata {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentPodDisruptionBudget {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
 }
 
@@ -10336,56 +7417,24 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentPodMetadata {
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sysctls:
-        Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextSysctls>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextWindowsOptions>,
+    pub sysctls: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextSysctls>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10402,11 +7451,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextSeLin
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -10422,29 +7467,13 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextSysct
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -10452,47 +7481,23 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentPodSecurityContextWindo
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PeerIstioControlPlaneSidecarInjectorDeploymentReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PeerIstioControlPlaneSidecarInjectorDeploymentReadinessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PeerIstioControlPlaneSidecarInjectorDeploymentReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PeerIstioControlPlaneSidecarInjectorDeploymentReadinessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -10514,13 +7519,8 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentReadinessProbeGrpc {
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentReadinessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10553,11 +7553,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentReplicas {
     pub max: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetCPUUtilizationPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCPUUtilizationPercentage")]
     pub target_cpu_utilization_percentage: Option<i64>,
 }
 
@@ -10571,60 +7567,28 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextCapabilities>,
+    pub capabilities: Option<PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10649,11 +7613,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextSeLinuxO
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -10661,29 +7621,13 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextSeccompP
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -10695,11 +7639,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentTolerations {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -10707,27 +7647,13 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentTopologySpreadConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        PeerIstioControlPlaneSidecarInjectorDeploymentTopologySpreadConstraintsLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PeerIstioControlPlaneSidecarInjectorDeploymentTopologySpreadConstraintsLabelSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSkew")]
     pub max_skew: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologyKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyKey")]
     pub topology_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "whenUnsatisfiable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenUnsatisfiable")]
     pub when_unsatisfiable: Option<String>,
 }
 
@@ -10740,8 +7666,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentTopologySpreadConstrain
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentTopologySpreadConstraintsLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10754,11 +7679,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentTopologySpreadConstrain
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -10766,11 +7687,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumeMounts {
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -10778,108 +7695,58 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumeMounts {
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSource>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store: Option<
-        PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceAwsElasticBlockStore,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceAwsElasticBlockStore>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
-    pub azure_disk:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceAzureDisk>,
+    pub azure_disk: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceAzureDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
-    pub azure_file:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceAzureFile>,
+    pub azure_file: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceAzureFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCephfs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCinder>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceConfigMap>,
+    pub config_map: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCsi>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEmptyDir>,
+    pub empty_dir: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEmptyDir>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ephemeral:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeral>,
+    pub ephemeral: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeral>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceFc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
-    pub flex_volume:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceFlexVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
+    pub flex_volume: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceFlexVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceFlocker>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceGcePersistentDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceGitRepo>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glusterfs:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceGlusterfs>,
+    pub glusterfs: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceHostPath>,
+    pub host_path: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceHostPath>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceIscsi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceNfs>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim: Option<
-        PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourcePersistentVolumeClaim,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk: Option<
-        PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourcePhotonPersistentDisk,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourcePortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourcePhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourcePortworxVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub projected:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjected>,
+    pub projected: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceQuobyte>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10889,15 +7756,9 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub storageos:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceStorageos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
-    pub vsphere_volume:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceVsphereVolume>,
+    pub storageos: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceStorageos>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceVsphereVolume>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10914,11 +7775,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceAwsE
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceAzureDisk {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskName")]
     pub disk_name: Option<String>,
@@ -10936,11 +7793,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceAzur
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceAzureFile {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareName")]
     pub share_name: Option<String>,
@@ -10954,15 +7807,10 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCeph
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCephfsSecretRef>,
+    pub secret_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCephfsSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
@@ -10980,8 +7828,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCind
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCinderSecretRef>,
+    pub secret_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCinderSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeID")]
     pub volume_id: Option<String>,
 }
@@ -11015,8 +7862,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceConf
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceConfigMapLocalObjectReference
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceConfigMapLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -11027,43 +7873,26 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCsi 
     pub driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref: Option<
-        PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCsiNodePublishSecretRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCsiNodePublishSecretRef
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceCsiNodePublishSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceDownwardApi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceDownwardApiItems>,
-    >,
+    pub items: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceDownwardApiItems>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11079,26 +7908,16 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceDown
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -11165,8 +7984,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataCreationTimestamp
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataCreationTimestamp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11174,8 +7992,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataDeletionTimestamp
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataDeletionTimestamp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11201,15 +8018,13 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsFieldsV1
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsFieldsV1 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "Raw")]
     pub raw: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsTime
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataManagedFieldsTime {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nanos: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11217,19 +8032,10 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataOwnerReferences
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadataOwnerReferences {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockOwnerDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockOwnerDeletion")]
     pub block_owner_deletion: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller: Option<bool>,
@@ -11262,8 +8068,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11273,8 +8078,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11292,15 +8096,13 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesLimits
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub string: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesRequests
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResourcesRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub string: Option<String>,
 }
@@ -11314,8 +8116,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11332,11 +8133,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceFc {
     pub lun: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
@@ -11353,9 +8150,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceFlex
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<
-        PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceFlexVolumeSecretRef,
-    >,
+    pub secret_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceFlexVolumeSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11366,17 +8161,9 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceFlex
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceFlocker {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -11422,33 +8209,17 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceHost
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceIscsi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iqn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i32>,
@@ -11457,13 +8228,8 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceIscs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceIscsiSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPortal"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceIscsiSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortal")]
     pub target_portal: Option<String>,
 }
 
@@ -11511,16 +8277,10 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourcePort
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources: Option<
-        Vec<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSources>,
-    >,
+    pub sources: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSources>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11546,8 +8306,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProj
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesConfigMapItems
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesConfigMapItems {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11557,8 +8316,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProj
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesConfigMapLocalObjectReference
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesConfigMapLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -11582,26 +8340,16 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProj
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -11620,8 +8368,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProj
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesSecretItems
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesSecretItems {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11631,22 +8378,16 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProj
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesSecretLocalObjectReference
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesSecretLocalObjectReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesServiceAccountToken
-{
+pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -11683,8 +8424,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceRbd 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceRbdSecretRef>,
+    pub secret_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceRbdSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
@@ -11701,42 +8441,21 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceScal
     pub fs_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceScaleIoSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceScaleIoSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub system: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -11748,22 +8467,13 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceScal
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceSecretItems>>,
+    pub items: Option<Vec<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -11784,19 +8494,10 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceStor
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceStorageosSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    pub secret_ref: Option<PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceStorageosSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -11810,23 +8511,11 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceStor
 pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumePath")]
     pub volume_path: Option<String>,
 }
 
@@ -11834,68 +8523,31 @@ pub struct PeerIstioControlPlaneSidecarInjectorDeploymentVolumesVolumeSourceVsph
 pub struct PeerIstioControlPlaneSidecarInjectorService {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIP")]
     pub cluster_ip: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalName")]
     pub external_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckNodePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckNodePort")]
     pub health_check_node_port: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamily")]
     pub ip_family: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<PeerIstioControlPlaneSidecarInjectorServiceMetadata>,
     pub ports: Vec<PeerIstioControlPlaneSidecarInjectorServicePorts>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publishNotReadyAddresses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
     pub publish_not_ready_addresses: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinityConfig"
-    )]
-    pub session_affinity_config:
-        Option<PeerIstioControlPlaneSidecarInjectorServiceSessionAffinityConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
+    pub session_affinity_config: Option<PeerIstioControlPlaneSidecarInjectorServiceSessionAffinityConfig>,
     #[serde(rename = "type")]
     pub r#type: PeerIstioControlPlaneSidecarInjectorServiceType,
 }
@@ -11917,11 +8569,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorServicePorts {
     pub port: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
 }
 
@@ -11933,11 +8581,7 @@ pub struct PeerIstioControlPlaneSidecarInjectorServiceSessionAffinityConfig {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorServiceSessionAffinityConfigClientIp {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -11951,11 +8595,7 @@ pub enum PeerIstioControlPlaneSidecarInjectorServiceType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneSidecarInjectorTemplates {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTemplates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTemplates")]
     pub custom_templates: Option<Vec<PeerIstioControlPlaneSidecarInjectorTemplatesCustomTemplates>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<String>,
@@ -11979,37 +8619,21 @@ pub struct PeerIstioControlPlaneTelemetryV2 {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneTracer {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTags")]
     pub custom_tags: Option<BTreeMap<String, PeerIstioControlPlaneTracerCustomTags>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datadog: Option<PeerIstioControlPlaneTracerDatadog>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lightstep: Option<PeerIstioControlPlaneTracerLightstep>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPathTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPathTagLength")]
     pub max_path_tag_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openCensusAgent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openCensusAgent")]
     pub open_census_agent: Option<PeerIstioControlPlaneTracerOpenCensusAgent>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stackdriver: Option<PeerIstioControlPlaneTracerStackdriver>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<PeerIstioControlPlaneTracerTlsSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zipkin: Option<PeerIstioControlPlaneTracerZipkin>,
@@ -12027,11 +8651,7 @@ pub struct PeerIstioControlPlaneTracerCustomTags {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneTracerCustomTagsEnvironment {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -12039,11 +8659,7 @@ pub struct PeerIstioControlPlaneTracerCustomTagsEnvironment {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneTracerCustomTagsHeader {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -12063,11 +8679,7 @@ pub struct PeerIstioControlPlaneTracerDatadog {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneTracerLightstep {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
@@ -12085,66 +8697,30 @@ pub struct PeerIstioControlPlaneTracerOpenCensusAgent {
 pub struct PeerIstioControlPlaneTracerStackdriver {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAnnotations")]
     pub max_number_of_annotations: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAttributes")]
     pub max_number_of_attributes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfMessageEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfMessageEvents")]
     pub max_number_of_message_events: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneTracerTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: PeerIstioControlPlaneTracerTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -12168,51 +8744,23 @@ pub struct PeerIstioControlPlaneTracerZipkin {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caRootCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caRootCertificate")]
     pub ca_root_certificate: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksums: Option<PeerIstioControlPlaneStatusChecksums>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterID")]
     pub cluster_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMessage")]
     pub error_message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayAddress")]
     pub gateway_address: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "injectionNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "injectionNamespaces")]
     pub injection_namespaces: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "istioControlPlaneName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "istioControlPlaneName")]
     pub istio_control_plane_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "istiodAddresses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "istiodAddresses")]
     pub istiod_addresses: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "meshConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshConfig")]
     pub mesh_config: Option<PeerIstioControlPlaneStatusMeshConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<PeerIstioControlPlaneStatusStatus>,
@@ -12220,262 +8768,97 @@ pub struct PeerIstioControlPlaneStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusChecksums {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "meshConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshConfig")]
     pub mesh_config: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sidecarInjector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarInjector")]
     pub sidecar_injector: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogEncoding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogEncoding")]
     pub access_log_encoding: Option<PeerIstioControlPlaneStatusMeshConfigAccessLogEncoding>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogFile")]
     pub access_log_file: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogFormat")]
     pub access_log_format: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<PeerIstioControlPlaneStatusMeshConfigCa>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<Vec<PeerIstioControlPlaneStatusMeshConfigCaCertificates>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<Vec<PeerIstioControlPlaneStatusMeshConfigCertificates>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configSources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSources")]
     pub config_sources: Option<Vec<PeerIstioControlPlaneStatusMeshConfigConfigSources>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultConfig")]
     pub default_config: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultDestinationRuleExportTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultDestinationRuleExportTo")]
     pub default_destination_rule_export_to: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultHttpRetryPolicy"
-    )]
-    pub default_http_retry_policy:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultHttpRetryPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultProviders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultHttpRetryPolicy")]
+    pub default_http_retry_policy: Option<PeerIstioControlPlaneStatusMeshConfigDefaultHttpRetryPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultProviders")]
     pub default_providers: Option<PeerIstioControlPlaneStatusMeshConfigDefaultProviders>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultServiceExportTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultServiceExportTo")]
     pub default_service_export_to: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultVirtualServiceExportTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultVirtualServiceExportTo")]
     pub default_virtual_service_export_to: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableEnvoyListenerLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableEnvoyListenerLog")]
     pub disable_envoy_listener_log: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discoverySelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoverySelectors")]
     pub discovery_selectors: Option<Vec<PeerIstioControlPlaneStatusMeshConfigDiscoverySelectors>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsRefreshRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsRefreshRate")]
     pub dns_refresh_rate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableAutoMtls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableAutoMtls")]
     pub enable_auto_mtls: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableEnvoyAccessLogService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableEnvoyAccessLogService")]
     pub enable_envoy_access_log_service: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enablePrometheusMerge"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enablePrometheusMerge")]
     pub enable_prometheus_merge: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableTracing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableTracing")]
     pub enable_tracing: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extensionProviders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extensionProviders")]
     pub extension_providers: Option<Vec<PeerIstioControlPlaneStatusMeshConfigExtensionProviders>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "h2UpgradePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "h2UpgradePolicy")]
     pub h2_upgrade_policy: Option<PeerIstioControlPlaneStatusMeshConfigH2UpgradePolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inboundClusterStatName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inboundClusterStatName")]
     pub inbound_cluster_stat_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClass")]
     pub ingress_class: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressControllerMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressControllerMode")]
     pub ingress_controller_mode: Option<PeerIstioControlPlaneStatusMeshConfigIngressControllerMode>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressSelector")]
     pub ingress_selector: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressService")]
     pub ingress_service: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localityLbSetting"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localityLbSetting")]
     pub locality_lb_setting: Option<PeerIstioControlPlaneStatusMeshConfigLocalityLbSetting>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshMTLS")]
     pub mesh_mtls: Option<PeerIstioControlPlaneStatusMeshConfigMeshMtls>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outboundClusterStatName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outboundClusterStatName")]
     pub outbound_cluster_stat_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outboundTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outboundTrafficPolicy")]
     pub outbound_traffic_policy: Option<PeerIstioControlPlaneStatusMeshConfigOutboundTrafficPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathNormalization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathNormalization")]
     pub path_normalization: Option<PeerIstioControlPlaneStatusMeshConfigPathNormalization>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolDetectionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolDetectionTimeout")]
     pub protocol_detection_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyHttpPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyHttpPort")]
     pub proxy_http_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyListenPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyListenPort")]
     pub proxy_listen_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootNamespace")]
     pub root_namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceSettings")]
     pub service_settings: Option<Vec<PeerIstioControlPlaneStatusMeshConfigServiceSettings>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<PeerIstioControlPlaneStatusMeshConfigTcpKeepalive>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomain")]
     pub trust_domain: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustDomainAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomainAliases")]
     pub trust_domain_aliases: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyCertificateAtClient"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyCertificateAtClient")]
     pub verify_certificate_at_client: Option<bool>,
 }
 
@@ -12491,66 +8874,30 @@ pub enum PeerIstioControlPlaneStatusMeshConfigAccessLogEncoding {
 pub struct PeerIstioControlPlaneStatusMeshConfigCa {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "istiodSide"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "istiodSide")]
     pub istiod_side: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
     pub request_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<PeerIstioControlPlaneStatusMeshConfigCaTlsSettings>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigCaTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: PeerIstioControlPlaneStatusMeshConfigCaTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -12568,25 +8915,13 @@ pub enum PeerIstioControlPlaneStatusMeshConfigCaTlsSettingsMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigCaCertificates {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSigners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSigners")]
     pub cert_signers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pem: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spiffeBundleUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spiffeBundleUrl")]
     pub spiffe_bundle_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomains")]
     pub trust_domains: Option<Vec<String>>,
 }
 
@@ -12594,11 +8929,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigCaCertificates {
 pub struct PeerIstioControlPlaneStatusMeshConfigCertificates {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsNames")]
     pub dns_names: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -12606,60 +8937,28 @@ pub struct PeerIstioControlPlaneStatusMeshConfigCertificates {
 pub struct PeerIstioControlPlaneStatusMeshConfigConfigSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subscribedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subscribedResources")]
     pub subscribed_resources: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<PeerIstioControlPlaneStatusMeshConfigConfigSourcesTlsSettings>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigConfigSourcesTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: PeerIstioControlPlaneStatusMeshConfigConfigSourcesTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -12677,202 +8976,75 @@ pub enum PeerIstioControlPlaneStatusMeshConfigConfigSourcesTlsSettingsMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZone")]
     pub availability_zone: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "binaryPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "binaryPath")]
     pub binary_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificatesPem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificatesPem")]
     pub ca_certificates_pem: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub concurrency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configPath")]
     pub config_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneAuthPolicy"
-    )]
-    pub control_plane_auth_policy:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigControlPlaneAuthPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customConfigFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneAuthPolicy")]
+    pub control_plane_auth_policy: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigControlPlaneAuthPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customConfigFile")]
     pub custom_config_file: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discoveryAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryAddress")]
     pub discovery_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discoveryRefreshDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryRefreshDelay")]
     pub discovery_refresh_delay: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "drainDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "drainDuration")]
     pub drain_duration: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyAccessLogService"
-    )]
-    pub envoy_access_log_service:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogService>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyMetricsService"
-    )]
-    pub envoy_metrics_service:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsService>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyMetricsServiceAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyAccessLogService")]
+    pub envoy_access_log_service: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogService>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyMetricsService")]
+    pub envoy_metrics_service: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsService>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyMetricsServiceAddress")]
     pub envoy_metrics_service_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraStatTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraStatTags")]
     pub extra_stat_tags: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayTopology"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayTopology")]
     pub gateway_topology: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigGatewayTopology>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "holdApplicationUntilProxyStarts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "holdApplicationUntilProxyStarts")]
     pub hold_application_until_proxy_starts: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigImage>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "interceptionMode"
-    )]
-    pub interception_mode:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigInterceptionMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interceptionMode")]
+    pub interception_mode: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigInterceptionMode>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshId")]
     pub mesh_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKeyProvider"
-    )]
-    pub private_key_provider:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProvider>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyAdminPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyProvider")]
+    pub private_key_provider: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProvider>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyAdminPort")]
     pub proxy_admin_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyBootstrapTemplatePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyBootstrapTemplatePath")]
     pub proxy_bootstrap_template_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyMetadata")]
     pub proxy_metadata: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyStatsMatcher"
-    )]
-    pub proxy_stats_matcher:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigProxyStatsMatcher>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyStatsMatcher")]
+    pub proxy_stats_matcher: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigProxyStatsMatcher>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbe>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeValues")]
     pub runtime_values: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sds: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigSds>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceCluster")]
     pub service_cluster: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statNameLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statNameLength")]
     pub stat_name_length: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statsdUdpAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statsdUdpAddress")]
     pub statsd_udp_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusPort")]
     pub status_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationDrainDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationDrainDuration")]
     pub termination_drain_duration: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracing>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tracingServiceName"
-    )]
-    pub tracing_service_name:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingServiceName>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "zipkinAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingServiceName")]
+    pub tracing_service_name: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingServiceName>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zipkinAddress")]
     pub zipkin_address: Option<String>,
 }
 
@@ -12890,20 +9062,10 @@ pub enum PeerIstioControlPlaneStatusMeshConfigDefaultConfigControlPlaneAuthPolic
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
-    pub tcp_keepalive:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogServiceTcpKeepalive>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
-    pub tls_settings:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
+    pub tcp_keepalive: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogServiceTcpKeepalive>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
+    pub tls_settings: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettings>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -12918,45 +9080,20 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogServi
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    pub mode:
-        PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    pub mode: PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogServiceTlsSettingsMode,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -12976,20 +9113,10 @@ pub enum PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyAccessLogService
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
-    pub tcp_keepalive:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsServiceTcpKeepalive>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
-    pub tls_settings:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
+    pub tcp_keepalive: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsServiceTcpKeepalive>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
+    pub tls_settings: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettings>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -13004,44 +9131,20 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsService
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsServiceTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -13059,19 +9162,9 @@ pub enum PeerIstioControlPlaneStatusMeshConfigDefaultConfigEnvoyMetricsServiceTl
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigGatewayTopology {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardClientCertDetails"
-    )]
-    pub forward_client_cert_details: Option<
-        PeerIstioControlPlaneStatusMeshConfigDefaultConfigGatewayTopologyForwardClientCertDetails,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numTrustedProxies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardClientCertDetails")]
+    pub forward_client_cert_details: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigGatewayTopologyForwardClientCertDetails>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numTrustedProxies")]
     pub num_trusted_proxies: Option<i64>,
 }
 
@@ -13110,8 +9203,7 @@ pub enum PeerIstioControlPlaneStatusMeshConfigDefaultConfigInterceptionMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProvider {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cryptomb:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProviderCryptomb>,
+    pub cryptomb: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProviderCryptomb>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub qat: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProviderQat>,
 }
@@ -13130,23 +9222,11 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProviderQ
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigProxyStatsMatcher {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inclusionPrefixes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inclusionPrefixes")]
     pub inclusion_prefixes: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inclusionRegexps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inclusionRegexps")]
     pub inclusion_regexps: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inclusionSuffixes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inclusionSuffixes")]
     pub inclusion_suffixes: Option<Vec<String>>,
 }
 
@@ -13154,40 +9234,19 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigProxyStatsMatcher {
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    pub tcp_socket: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -13201,14 +9260,8 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbeExec 
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     pub port: i64,
@@ -13235,50 +9288,27 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigReadinessProbeTcpSo
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigSds {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sSaJwtPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sSaJwtPath")]
     pub k8s_sa_jwt_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracing {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTags"
-    )]
-    pub custom_tags: Option<
-        BTreeMap<String, PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingCustomTags>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTags")]
+    pub custom_tags: Option<BTreeMap<String, PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingCustomTags>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datadog: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingDatadog>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lightstep: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingLightstep>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPathTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPathTagLength")]
     pub max_path_tag_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openCensusAgent"
-    )]
-    pub open_census_agent:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingOpenCensusAgent>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openCensusAgent")]
+    pub open_census_agent: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingOpenCensusAgent>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stackdriver: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingStackdriver>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
     pub tls_settings: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingTlsSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zipkin: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingZipkin>,
@@ -13287,8 +9317,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracing {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingCustomTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub environment:
-        Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingCustomTagsEnvironment>,
+    pub environment: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingCustomTagsEnvironment>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub header: Option<PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingCustomTagsHeader>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13297,11 +9326,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingCustomTags {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingCustomTagsEnvironment {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -13309,11 +9334,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingCustomTagsEn
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingCustomTagsHeader {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -13333,11 +9354,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingDatadog {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingLightstep {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
@@ -13355,66 +9372,30 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingOpenCensusAg
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingStackdriver {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAnnotations")]
     pub max_number_of_annotations: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAttributes")]
     pub max_number_of_attributes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfMessageEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfMessageEvents")]
     pub max_number_of_message_events: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingTlsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     pub mode: PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingTlsSettingsMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -13449,29 +9430,17 @@ pub enum PeerIstioControlPlaneStatusMeshConfigDefaultConfigTracingServiceName {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultHttpRetryPolicy {
     pub attempts: i32,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perTryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perTryTimeout")]
     pub per_try_timeout: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOn")]
     pub retry_on: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryRemoteLocalities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryRemoteLocalities")]
     pub retry_remote_localities: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDefaultProviders {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogging"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogging")]
     pub access_logging: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<Vec<String>>,
@@ -13481,18 +9450,9 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDefaultProviders {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigDiscoverySelectors {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PeerIstioControlPlaneStatusMeshConfigDiscoverySelectorsMatchExpressions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PeerIstioControlPlaneStatusMeshConfigDiscoverySelectorsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -13510,44 +9470,17 @@ pub struct PeerIstioControlPlaneStatusMeshConfigDiscoverySelectorsMatchExpressio
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProviders {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datadog: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersDatadog>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyExtAuthzGrpc"
-    )]
-    pub envoy_ext_authz_grpc:
-        Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyExtAuthzGrpc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyExtAuthzHttp"
-    )]
-    pub envoy_ext_authz_http:
-        Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyExtAuthzHttp>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyFileAccessLog"
-    )]
-    pub envoy_file_access_log:
-        Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAccessLog>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyHttpAls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyExtAuthzGrpc")]
+    pub envoy_ext_authz_grpc: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyExtAuthzGrpc>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyExtAuthzHttp")]
+    pub envoy_ext_authz_http: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyExtAuthzHttp>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyFileAccessLog")]
+    pub envoy_file_access_log: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAccessLog>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyHttpAls")]
     pub envoy_http_als: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyHttpAls>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyOtelAls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyOtelAls")]
     pub envoy_otel_als: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyOtelAls>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyTcpAls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyTcpAls")]
     pub envoy_tcp_als: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyTcpAls>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lightstep: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersLightstep>,
@@ -13569,11 +9502,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProviders {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersDatadog {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -13598,25 +9527,12 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyExtAuthzG
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyExtAuthzGrpcIncludeRequestBodyInCheck
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPartialMessage"
-    )]
+pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyExtAuthzGrpcIncludeRequestBodyInCheck {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPartialMessage")]
     pub allow_partial_message: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestBytes")]
     pub max_request_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packAsBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packAsBytes")]
     pub pack_as_bytes: Option<bool>,
 }
 
@@ -13651,33 +9567,19 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyExtAuthzH
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyExtAuthzHttpIncludeRequestBodyInCheck
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPartialMessage"
-    )]
+pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyExtAuthzHttpIncludeRequestBodyInCheck {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPartialMessage")]
     pub allow_partial_message: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestBytes")]
     pub max_request_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packAsBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packAsBytes")]
     pub pack_as_bytes: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAccessLog {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
-    pub log_format:
-        Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormat>,
+    pub log_format: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormat>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
 }
@@ -13685,42 +9587,24 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAcces
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormat {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<
-        PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormatLabels,
-    >,
+    pub labels: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormatLabels>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormatLabels
-{}
+pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyFileAccessLogLogFormatLabels {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyHttpAls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalRequestHeadersToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalRequestHeadersToLog")]
     pub additional_request_headers_to_log: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalResponseHeadersToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalResponseHeadersToLog")]
     pub additional_response_headers_to_log: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalResponseTrailersToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalResponseTrailersToLog")]
     pub additional_response_trailers_to_log: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterStateObjectsToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterStateObjectsToLog")]
     pub filter_state_objects_to_log: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logName")]
     pub log_name: Option<String>,
@@ -13733,8 +9617,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyHttpAls {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyOtelAls {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
-    pub log_format:
-        Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyOtelAlsLogFormat>,
+    pub log_format: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyOtelAlsLogFormat>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logName")]
     pub log_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13746,22 +9629,18 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyOtelAls {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyOtelAlsLogFormat {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels:
-        Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyOtelAlsLogFormatLabels>,
+    pub labels: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyOtelAlsLogFormatLabels>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyOtelAlsLogFormatLabels {}
+pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyOtelAlsLogFormatLabels {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyTcpAls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterStateObjectsToLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterStateObjectsToLog")]
     pub filter_state_objects_to_log: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logName")]
     pub log_name: Option<String>,
@@ -13773,17 +9652,9 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersEnvoyTcpAls {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersLightstep {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -13795,11 +9666,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersLightstep {
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersOpencensus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -13809,11 +9676,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersOpencensus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersOpentelemetry {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -13822,15 +9685,12 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersOpentelemetry 
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersPrometheus {}
+pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersPrometheus {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersSkywalking {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -13844,29 +9704,13 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersStackdriver {
     pub debug: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<PeerIstioControlPlaneStatusMeshConfigExtensionProvidersStackdriverLogging>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAnnotations")]
     pub max_number_of_annotations: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAttributes")]
     pub max_number_of_attributes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfMessageEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfMessageEvents")]
     pub max_number_of_message_events: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
 }
 
@@ -13878,11 +9722,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersStackdriverLog
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigExtensionProvidersZipkin {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
     pub max_tag_length: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -13918,11 +9758,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigLocalityLbSetting {
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failover: Option<Vec<PeerIstioControlPlaneStatusMeshConfigLocalityLbSettingFailover>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failoverPriority"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failoverPriority")]
     pub failover_priority: Option<Vec<String>>,
 }
 
@@ -13944,13 +9780,8 @@ pub struct PeerIstioControlPlaneStatusMeshConfigLocalityLbSettingFailover {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigMeshMtls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProtocolVersion"
-    )]
-    pub min_protocol_version:
-        Option<PeerIstioControlPlaneStatusMeshConfigMeshMtlsMinProtocolVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProtocolVersion")]
+    pub min_protocol_version: Option<PeerIstioControlPlaneStatusMeshConfigMeshMtlsMinProtocolVersion>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -14007,11 +9838,7 @@ pub struct PeerIstioControlPlaneStatusMeshConfigServiceSettings {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PeerIstioControlPlaneStatusMeshConfigServiceSettingsSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterLocal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterLocal")]
     pub cluster_local: Option<bool>,
 }
 
@@ -14034,3 +9861,4 @@ pub enum PeerIstioControlPlaneStatusStatus {
     Available,
     Unmanaged,
 }
+

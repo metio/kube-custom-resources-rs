@@ -4,53 +4,36 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// SriovNetworkPoolConfigSpec defines the desired state of SriovNetworkPoolConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sriovnetwork.openshift.io",
-    version = "v1",
-    kind = "SriovNetworkPoolConfig",
-    plural = "sriovnetworkpoolconfigs"
-)]
+#[kube(group = "sriovnetwork.openshift.io", version = "v1", kind = "SriovNetworkPoolConfig", plural = "sriovnetworkpoolconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SriovNetworkPoolConfigSpec {
     /// maxUnavailable defines either an integer number or percentage
     /// of nodes in the pool that can go Unavailable during an update.
-    ///
-    ///
+    /// 
+    /// 
     /// A value larger than 1 will mean multiple nodes going unavailable during
     /// the update, which may affect your workload stress on the remaining nodes.
     /// Drain will respect Pod Disruption Budgets (PDBs) such as etcd quorum guards,
     /// even if maxUnavailable is greater than one.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// nodeSelector specifies a label selector for Nodes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<SriovNetworkPoolConfigNodeSelector>,
     /// OvsHardwareOffloadConfig describes the OVS HWOL configuration for selected Nodes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ovsHardwareOffloadConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ovsHardwareOffloadConfig")]
     pub ovs_hardware_offload_config: Option<SriovNetworkPoolConfigOvsHardwareOffloadConfig>,
 }
 
@@ -58,20 +41,12 @@ pub struct SriovNetworkPoolConfigSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SriovNetworkPoolConfigNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<SriovNetworkPoolConfigNodeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -106,4 +81,6 @@ pub struct SriovNetworkPoolConfigOvsHardwareOffloadConfig {
 
 /// SriovNetworkPoolConfigStatus defines the observed state of SriovNetworkPoolConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SriovNetworkPoolConfigStatus {}
+pub struct SriovNetworkPoolConfigStatus {
+}
+

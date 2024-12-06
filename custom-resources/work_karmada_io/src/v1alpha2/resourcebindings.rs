@@ -4,44 +4,35 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec represents the desired behavior.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "work.karmada.io",
-    version = "v1alpha2",
-    kind = "ResourceBinding",
-    plural = "resourcebindings"
-)]
+#[kube(group = "work.karmada.io", version = "v1alpha2", kind = "ResourceBinding", plural = "resourcebindings")]
 #[kube(namespaced)]
 #[kube(status = "ResourceBindingStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ResourceBindingSpec {
     /// Clusters represents target member clusters where the resource to be deployed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<Vec<ResourceBindingClusters>>,
     /// ConflictResolution declares how potential conflict should be handled when
     /// a resource that is being propagated already exists in the target cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// It defaults to "Abort" which means stop propagating to avoid unexpected
     /// overwrites. The "Overwrite" might be useful when migrating legacy cluster
     /// resources to Karmada, in which case conflict is predictable and can be
     /// instructed to Karmada take over the resource by overwriting.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conflictResolution"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conflictResolution")]
     pub conflict_resolution: Option<ResourceBindingConflictResolution>,
     /// Failover indicates how Karmada migrates applications in case of failures.
     /// It inherits directly from the associated PropagationPolicy(or ClusterPropagationPolicy).
@@ -59,11 +50,7 @@ pub struct ResourceBindingSpec {
     /// 3. The graceful eviction controller takes care of the graceful eviction tasks and
     ///    performs the final removal after the workload(resource) is available on the substitute
     ///    cluster or exceed the grace termination period(defaults to 10 minutes).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracefulEvictionTasks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulEvictionTasks")]
     pub graceful_eviction_tasks: Option<Vec<ResourceBindingGracefulEvictionTasks>>,
     /// Placement represents the rule for select clusters to propagate resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -73,61 +60,37 @@ pub struct ResourceBindingSpec {
     /// If set to true, resources will be preserved on the member clusters.
     /// Default is false, which means resources will be deleted along with the binding object.
     /// This setting applies to all Work objects created under this binding object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preserveResourcesOnDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveResourcesOnDeletion")]
     pub preserve_resources_on_deletion: Option<bool>,
     /// PropagateDeps tells if relevant resources should be propagated automatically.
     /// It is inherited from PropagationPolicy or ClusterPropagationPolicy.
     /// default false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propagateDeps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propagateDeps")]
     pub propagate_deps: Option<bool>,
     /// ReplicaRequirements represents the requirements required by each replica.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaRequirements")]
     pub replica_requirements: Option<ResourceBindingReplicaRequirements>,
     /// Replicas represents the replica number of the referencing resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// RequiredBy represents the list of Bindings that depend on the referencing resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredBy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredBy")]
     pub required_by: Option<Vec<ResourceBindingRequiredBy>>,
     /// RescheduleTriggeredAt is a timestamp representing when the referenced resource is triggered rescheduling.
     /// When this field is updated, it means a rescheduling is manually triggered by user, and the expected behavior
     /// of this action is to do a complete recalculation without referring to last scheduling results.
     /// It works with the status.lastScheduledTime field, and only when this timestamp is later than timestamp in
     /// status.lastScheduledTime will the rescheduling actually execute, otherwise, ignored.
-    ///
-    ///
+    /// 
+    /// 
     /// It is represented in RFC3339 form (like '2006-01-02T15:04:05Z') and is in UTC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rescheduleTriggeredAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rescheduleTriggeredAt")]
     pub reschedule_triggered_at: Option<String>,
     /// Resource represents the Kubernetes resource to be propagated.
     pub resource: ResourceBindingResource,
     /// SchedulerName represents which scheduler to proceed the scheduling.
     /// It inherits directly from the associated PropagationPolicy(or ClusterPropagationPolicy).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// Suspension declares the policy for suspending different aspects of propagation.
     /// nil means no suspension. no default values.
@@ -182,11 +145,7 @@ pub struct ResourceBindingFailoverApplication {
     /// If the application on the new cluster cannot reach a Healthy state,
     /// Karmada will delete the application after GracePeriodSeconds is reached.
     /// Value must be positive integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
     pub grace_period_seconds: Option<i32>,
     /// PurgeMode represents how to deal with the legacy applications on the
     /// cluster from which the application is migrated.
@@ -206,11 +165,7 @@ pub struct ResourceBindingFailoverApplicationDecisionConditions {
     /// after reaching the desired state before performing failover process.
     /// If not specified, Karmada will immediately perform failover process.
     /// Defaults to 300s.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i32>,
 }
 
@@ -232,14 +187,10 @@ pub struct ResourceBindingGracefulEvictionTasks {
     /// created.
     /// Clients should not set this value to avoid the time inconsistency issue.
     /// It is represented in RFC3339 form(like '2021-04-25T10:02:10Z') and is in UTC.
-    ///
-    ///
+    /// 
+    /// 
     /// Populated by the system. Read-only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTimestamp")]
     pub creation_timestamp: Option<String>,
     /// FromCluster which cluster the eviction perform from.
     #[serde(rename = "fromCluster")]
@@ -249,11 +200,7 @@ pub struct ResourceBindingGracefulEvictionTasks {
     /// Karmada will delete the item after GracePeriodSeconds is reached.
     /// Value must be positive integer.
     /// It can not co-exist with SuppressDeletion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
     pub grace_period_seconds: Option<i32>,
     /// Message is a human-readable message indicating details about the eviction.
     /// This may be an empty string.
@@ -274,11 +221,7 @@ pub struct ResourceBindingGracefulEvictionTasks {
     /// SuppressDeletion represents the grace period will be persistent until
     /// the tools or human intervention stops it.
     /// It can not co-exist with GracePeriodSeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "suppressDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suppressDeletion")]
     pub suppress_deletion: Option<bool>,
 }
 
@@ -287,76 +230,56 @@ pub struct ResourceBindingGracefulEvictionTasks {
 pub struct ResourceBindingPlacement {
     /// ClusterAffinities represents scheduling restrictions to multiple cluster
     /// groups that indicated by ClusterAffinityTerm.
-    ///
-    ///
+    /// 
+    /// 
     /// The scheduler will evaluate these groups one by one in the order they
     /// appear in the spec, the group that does not satisfy scheduling restrictions
     /// will be ignored which means all clusters in this group will not be selected
     /// unless it also belongs to the next group(a cluster could belong to multiple
     /// groups).
-    ///
-    ///
+    /// 
+    /// 
     /// If none of the groups satisfy the scheduling restrictions, then scheduling
     /// fails, which means no cluster will be selected.
-    ///
-    ///
+    /// 
+    /// 
     /// Note:
     ///   1. ClusterAffinities can not co-exist with ClusterAffinity.
     ///   2. If both ClusterAffinity and ClusterAffinities are not set, any cluster
     ///      can be scheduling candidates.
-    ///
-    ///
+    /// 
+    /// 
     /// Potential use case 1:
     /// The private clusters in the local data center could be the main group, and
     /// the managed clusters provided by cluster providers could be the secondary
     /// group. So that the Karmada scheduler would prefer to schedule workloads
     /// to the main group and the second group will only be considered in case of
     /// the main group does not satisfy restrictions(like, lack of resources).
-    ///
-    ///
+    /// 
+    /// 
     /// Potential use case 2:
     /// For the disaster recovery scenario, the clusters could be organized to
     /// primary and backup groups, the workloads would be scheduled to primary
     /// clusters firstly, and when primary cluster fails(like data center power off),
     /// Karmada scheduler could migrate workloads to the backup clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterAffinities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAffinities")]
     pub cluster_affinities: Option<Vec<ResourceBindingPlacementClusterAffinities>>,
     /// ClusterAffinity represents scheduling restrictions to a certain set of clusters.
     /// Note:
     ///   1. ClusterAffinity can not co-exist with ClusterAffinities.
     ///   2. If both ClusterAffinity and ClusterAffinities are not set, any cluster
     ///      can be scheduling candidates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAffinity")]
     pub cluster_affinity: Option<ResourceBindingPlacementClusterAffinity>,
     /// ClusterTolerations represents the tolerations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTolerations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTolerations")]
     pub cluster_tolerations: Option<Vec<ResourceBindingPlacementClusterTolerations>>,
     /// ReplicaScheduling represents the scheduling policy on dealing with the number of replicas
     /// when propagating resources that have replicas in spec (e.g. deployments, statefulsets) to member clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaScheduling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaScheduling")]
     pub replica_scheduling: Option<ResourceBindingPlacementReplicaScheduling>,
     /// SpreadConstraints represents a list of the scheduling constraints.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spreadConstraints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spreadConstraints")]
     pub spread_constraints: Option<Vec<ResourceBindingPlacementSpreadConstraints>>,
 }
 
@@ -367,11 +290,7 @@ pub struct ResourceBindingPlacementClusterAffinities {
     #[serde(rename = "affinityName")]
     pub affinity_name: String,
     /// ClusterNames is the list of clusters to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
     pub cluster_names: Option<Vec<String>>,
     /// ExcludedClusters is the list of clusters to be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -380,19 +299,11 @@ pub struct ResourceBindingPlacementClusterAffinities {
     /// The key(field) of the match expression should be 'provider', 'region', or 'zone',
     /// and the operator of the match expression should be 'In' or 'NotIn'.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelector")]
     pub field_selector: Option<ResourceBindingPlacementClusterAffinitiesFieldSelector>,
     /// LabelSelector is a filter to select member clusters by labels.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ResourceBindingPlacementClusterAffinitiesLabelSelector>,
 }
 
@@ -403,13 +314,8 @@ pub struct ResourceBindingPlacementClusterAffinities {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingPlacementClusterAffinitiesFieldSelector {
     /// A list of field selector requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<ResourceBindingPlacementClusterAffinitiesFieldSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ResourceBindingPlacementClusterAffinitiesFieldSelectorMatchExpressions>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
@@ -435,21 +341,12 @@ pub struct ResourceBindingPlacementClusterAffinitiesFieldSelectorMatchExpression
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingPlacementClusterAffinitiesLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<ResourceBindingPlacementClusterAffinitiesLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ResourceBindingPlacementClusterAffinitiesLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -478,11 +375,7 @@ pub struct ResourceBindingPlacementClusterAffinitiesLabelSelectorMatchExpression
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingPlacementClusterAffinity {
     /// ClusterNames is the list of clusters to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
     pub cluster_names: Option<Vec<String>>,
     /// ExcludedClusters is the list of clusters to be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -491,19 +384,11 @@ pub struct ResourceBindingPlacementClusterAffinity {
     /// The key(field) of the match expression should be 'provider', 'region', or 'zone',
     /// and the operator of the match expression should be 'In' or 'NotIn'.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelector")]
     pub field_selector: Option<ResourceBindingPlacementClusterAffinityFieldSelector>,
     /// LabelSelector is a filter to select member clusters by labels.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ResourceBindingPlacementClusterAffinityLabelSelector>,
 }
 
@@ -514,13 +399,8 @@ pub struct ResourceBindingPlacementClusterAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingPlacementClusterAffinityFieldSelector {
     /// A list of field selector requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<ResourceBindingPlacementClusterAffinityFieldSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ResourceBindingPlacementClusterAffinityFieldSelectorMatchExpressions>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
@@ -546,21 +426,12 @@ pub struct ResourceBindingPlacementClusterAffinityFieldSelectorMatchExpressions 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingPlacementClusterAffinityLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<ResourceBindingPlacementClusterAffinityLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ResourceBindingPlacementClusterAffinityLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -603,11 +474,7 @@ pub struct ResourceBindingPlacementClusterTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -624,32 +491,18 @@ pub struct ResourceBindingPlacementReplicaScheduling {
     /// "Aggregated" divides replicas into clusters as few as possible,
     /// while respecting clusters' resource availabilities during the division.
     /// "Weighted" divides replicas by weight according to WeightPreference.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaDivisionPreference"
-    )]
-    pub replica_division_preference:
-        Option<ResourceBindingPlacementReplicaSchedulingReplicaDivisionPreference>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaDivisionPreference")]
+    pub replica_division_preference: Option<ResourceBindingPlacementReplicaSchedulingReplicaDivisionPreference>,
     /// ReplicaSchedulingType determines how the replicas is scheduled when karmada propagating
     /// a resource. Valid options are Duplicated and Divided.
     /// "Duplicated" duplicates the same replicas to each candidate member cluster from resource.
     /// "Divided" divides replicas into parts according to number of valid candidate member
     /// clusters, and exact replicas for each cluster are determined by ReplicaDivisionPreference.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaSchedulingType"
-    )]
-    pub replica_scheduling_type:
-        Option<ResourceBindingPlacementReplicaSchedulingReplicaSchedulingType>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaSchedulingType")]
+    pub replica_scheduling_type: Option<ResourceBindingPlacementReplicaSchedulingReplicaSchedulingType>,
     /// WeightPreference describes weight for each cluster or for each group of cluster
     /// If ReplicaDivisionPreference is set to "Weighted", and WeightPreference is not set, scheduler will weight all clusters the same.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "weightPreference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "weightPreference")]
     pub weight_preference: Option<ResourceBindingPlacementReplicaSchedulingWeightPreference>,
 }
 
@@ -675,21 +528,11 @@ pub enum ResourceBindingPlacementReplicaSchedulingReplicaSchedulingType {
 pub struct ResourceBindingPlacementReplicaSchedulingWeightPreference {
     /// DynamicWeight specifies the factor to generates dynamic weight list.
     /// If specified, StaticWeightList will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dynamicWeight"
-    )]
-    pub dynamic_weight:
-        Option<ResourceBindingPlacementReplicaSchedulingWeightPreferenceDynamicWeight>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicWeight")]
+    pub dynamic_weight: Option<ResourceBindingPlacementReplicaSchedulingWeightPreferenceDynamicWeight>,
     /// StaticWeightList defines the static cluster weight.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticWeightList"
-    )]
-    pub static_weight_list:
-        Option<Vec<ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeightList>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticWeightList")]
+    pub static_weight_list: Option<Vec<ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeightList>>,
 }
 
 /// WeightPreference describes weight for each cluster or for each group of cluster
@@ -704,8 +547,7 @@ pub enum ResourceBindingPlacementReplicaSchedulingWeightPreferenceDynamicWeight 
 pub struct ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeightList {
     /// TargetCluster describes the filter to select clusters.
     #[serde(rename = "targetCluster")]
-    pub target_cluster:
-        ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetCluster,
+    pub target_cluster: ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetCluster,
     /// Weight expressing the preference to the cluster(s) specified by 'TargetCluster'.
     pub weight: i64,
 }
@@ -745,8 +587,7 @@ pub struct ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeight
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetClusterFieldSelectorMatchExpressions
-{
+pub struct ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetClusterFieldSelectorMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -778,8 +619,7 @@ pub struct ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeight
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetClusterLabelSelectorMatchExpressions
-{
+pub struct ResourceBindingPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetClusterLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -809,21 +649,13 @@ pub struct ResourceBindingPlacementSpreadConstraints {
     /// Available fields for spreading are: cluster, region, zone, and provider.
     /// SpreadByField should not co-exist with SpreadByLabel.
     /// If both SpreadByField and SpreadByLabel are empty, SpreadByField will be set to "cluster" by system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spreadByField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spreadByField")]
     pub spread_by_field: Option<ResourceBindingPlacementSpreadConstraintsSpreadByField>,
     /// SpreadByLabel represents the label key used for
     /// grouping member clusters into different groups.
     /// Resources will be spread among different cluster groups.
     /// SpreadByLabel should not co-exist with SpreadByField.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spreadByLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spreadByLabel")]
     pub spread_by_label: Option<String>,
 }
 
@@ -850,18 +682,10 @@ pub struct ResourceBindingReplicaRequirements {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeClaim")]
     pub node_claim: Option<ResourceBindingReplicaRequirementsNodeClaim>,
     /// PriorityClassName represents the resources priorityClassName
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// ResourceRequest represents the resources required by each replica.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequest")]
     pub resource_request: Option<BTreeMap<String, IntOrString>>,
 }
 
@@ -872,19 +696,11 @@ pub struct ResourceBindingReplicaRequirementsNodeClaim {
     /// nodes; that is, it represents the OR of the selectors represented by the node selector terms.
     /// Note that only PodSpec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution
     /// is included here because it has a hard limit on pod scheduling.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardNodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardNodeAffinity")]
     pub hard_node_affinity: Option<ResourceBindingReplicaRequirementsNodeClaimHardNodeAffinity>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -899,8 +715,7 @@ pub struct ResourceBindingReplicaRequirementsNodeClaim {
 pub struct ResourceBindingReplicaRequirementsNodeClaimHardNodeAffinity {
     /// Required. A list of node selector terms. The terms are ORed.
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms:
-        Vec<ResourceBindingReplicaRequirementsNodeClaimHardNodeAffinityNodeSelectorTerms>,
+    pub node_selector_terms: Vec<ResourceBindingReplicaRequirementsNodeClaimHardNodeAffinityNodeSelectorTerms>,
 }
 
 /// A null or empty node selector term matches no objects. The requirements of
@@ -919,8 +734,7 @@ pub struct ResourceBindingReplicaRequirementsNodeClaimHardNodeAffinityNodeSelect
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ResourceBindingReplicaRequirementsNodeClaimHardNodeAffinityNodeSelectorTermsMatchExpressions
-{
+pub struct ResourceBindingReplicaRequirementsNodeClaimHardNodeAffinityNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -975,11 +789,7 @@ pub struct ResourceBindingReplicaRequirementsNodeClaimTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1030,11 +840,7 @@ pub struct ResourceBindingResource {
     pub namespace: Option<String>,
     /// ResourceVersion represents the internal version of the referenced object, that can be used by clients to
     /// determine when object has changed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1054,11 +860,7 @@ pub struct ResourceBindingSuspension {
     /// DispatchingOnClusters declares a list of clusters to which the dispatching
     /// should be suspended.
     /// Note: Can not co-exist with Dispatching which is used to suspend all.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dispatchingOnClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dispatchingOnClusters")]
     pub dispatching_on_clusters: Option<ResourceBindingSuspensionDispatchingOnClusters>,
 }
 
@@ -1068,11 +870,7 @@ pub struct ResourceBindingSuspension {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingSuspensionDispatchingOnClusters {
     /// ClusterNames is the list of clusters to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
     pub cluster_names: Option<Vec<String>>,
 }
 
@@ -1080,39 +878,23 @@ pub struct ResourceBindingSuspensionDispatchingOnClusters {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingStatus {
     /// AggregatedStatus represents status list of the resource running in each member cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aggregatedStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aggregatedStatus")]
     pub aggregated_status: Option<Vec<ResourceBindingStatusAggregatedStatus>>,
     /// Conditions contain the different condition statuses.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// LastScheduledTime representing the latest timestamp when scheduler successfully finished a scheduling.
     /// It is represented in RFC3339 form (like '2006-01-02T15:04:05Z') and is in UTC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastScheduledTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastScheduledTime")]
     pub last_scheduled_time: Option<String>,
     /// SchedulerObservedGeneration is the generation(.metadata.generation) observed by the scheduler.
     /// If SchedulerObservedGeneration is less than the generation in metadata means the scheduler hasn't confirmed
     /// the scheduling result or hasn't done the schedule yet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerObservedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerObservedGeneration")]
     pub scheduler_observed_generation: Option<i64>,
     /// SchedulerObservedAffinityName is the name of affinity term that is
     /// the basis of current scheduling.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerObservingAffinityName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerObservingAffinityName")]
     pub scheduler_observing_affinity_name: Option<String>,
 }
 
@@ -1125,11 +907,7 @@ pub struct ResourceBindingStatusAggregatedStatus {
     pub applied: Option<bool>,
     /// AppliedMessage is a human readable message indicating details about the applied status.
     /// This is usually holds the error message in case of apply failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appliedMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedMessage")]
     pub applied_message: Option<String>,
     /// ClusterName represents the member cluster name which the resource deployed on.
     #[serde(rename = "clusterName")]
@@ -1150,3 +928,4 @@ pub enum ResourceBindingStatusAggregatedStatusHealth {
     Unhealthy,
     Unknown,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DataUploadSpec is the specification for a DataUpload.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "velero.io",
-    version = "v2alpha1",
-    kind = "DataUpload",
-    plural = "datauploads"
-)]
+#[kube(group = "velero.io", version = "v2alpha1", kind = "DataUpload", plural = "datauploads")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DataUploadSpec {
     /// BackupStorageLocation is the name of the backup storage location
     /// where the backup repository is stored.
@@ -32,18 +27,10 @@ pub struct DataUploadSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cancel: Option<bool>,
     /// If SnapshotType is CSI, CSISnapshot provides the information of the CSI snapshot.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiSnapshot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiSnapshot")]
     pub csi_snapshot: Option<DataUploadCsiSnapshot>,
     /// DataMoverConfig is for data-mover-specific configuration fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataMoverConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataMoverConfig")]
     pub data_mover_config: Option<BTreeMap<String, String>>,
     /// DataMover specifies the data mover to be used by the backup.
     /// If DataMover is "" or "velero", the built-in data mover will be used.
@@ -69,11 +56,7 @@ pub struct DataUploadSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataUploadCsiSnapshot {
     /// SnapshotClass is the name of the snapshot class that the volume snapshot is created with
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotClass")]
     pub snapshot_class: Option<String>,
     /// StorageClass is the name of the storage class of the PVC that the volume snapshot is created from
     #[serde(rename = "storageClass")]
@@ -90,18 +73,10 @@ pub struct DataUploadStatus {
     /// Completion time is recorded even on failed backups.
     /// Completion time is recorded before uploading the backup object.
     /// The server's time is used for CompletionTimestamps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTimestamp")]
     pub completion_timestamp: Option<String>,
     /// DataMoverResult stores data-mover-specific information as a result of the DataUpload.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataMoverResult"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataMoverResult")]
     pub data_mover_result: Option<BTreeMap<String, String>>,
     /// Message is a message about the DataUpload's status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -121,21 +96,13 @@ pub struct DataUploadStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub progress: Option<DataUploadStatusProgress>,
     /// SnapshotID is the identifier for the snapshot in the backup repository.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotID")]
     pub snapshot_id: Option<String>,
     /// StartTimestamp records the time a backup was started.
     /// Separate from CreationTimestamp, since that value changes
     /// on restores.
     /// The server's time is used for StartTimestamps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
 }
 
@@ -159,10 +126,7 @@ pub enum DataUploadStatusPhase {
 pub struct DataUploadStatusProgress {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bytesDone")]
     pub bytes_done: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalBytes")]
     pub total_bytes: Option<i64>,
 }
+

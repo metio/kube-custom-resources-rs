@@ -5,29 +5,20 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// JobSpec defines the desired state of Job
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "theketch.io",
-    version = "v1beta1",
-    kind = "Job",
-    plural = "jobs"
-)]
+#[kube(group = "theketch.io", version = "v1beta1", kind = "Job", plural = "jobs")]
 #[kube(namespaced)]
 #[kube(status = "JobStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct JobSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backoffLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completions: Option<i64>,
@@ -35,11 +26,7 @@ pub struct JobSpec {
     pub containers: Option<Vec<JobContainers>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedJobsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
     pub failed_jobs_history_limit: Option<i64>,
     pub name: String,
     pub namespace: String,
@@ -51,17 +38,9 @@ pub struct JobSpec {
     /// CronJob-specific
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startingDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingDeadlineSeconds")]
     pub starting_deadline_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successfulJobsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulJobsHistoryLimit")]
     pub successful_jobs_history_limit: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
@@ -83,18 +62,10 @@ pub struct JobContainers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobPolicy {
     /// CronJob-specific
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "concurrencyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrencyPolicy")]
     pub concurrency_policy: Option<String>,
     /// RestartPolicy describes how the container should be restarted. Only one of the following restart policies may be specified. If none of the following policies is specified, the default one is RestartPolicyAlways.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
 }
 
@@ -105,17 +76,9 @@ pub struct JobStatus {
     pub active: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<JobStatusConditions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastScheduleTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastScheduleTime")]
     pub last_schedule_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSuccessfulTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSuccessfulTime")]
     pub last_successful_time: Option<String>,
 }
 
@@ -123,11 +86,7 @@ pub struct JobStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobStatusConditions {
     /// LastTransitionTime is the timestamp corresponding to the last status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     /// A human readable message indicating details about why the application is in this condition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -138,3 +97,4 @@ pub struct JobStatusConditions {
     #[serde(rename = "type")]
     pub r#type: String,
 }
+

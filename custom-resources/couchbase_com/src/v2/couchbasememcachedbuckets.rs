@@ -5,41 +5,28 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// CouchbaseMemcachedBucketSpec is the specification for a Memcached bucket
 /// resource, and allows the bucket to be customized.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "couchbase.com",
-    version = "v2",
-    kind = "CouchbaseMemcachedBucket",
-    plural = "couchbasememcachedbuckets"
-)]
+#[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseMemcachedBucket", plural = "couchbasememcachedbuckets")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CouchbaseMemcachedBucketSpec {
     /// EnableFlush defines whether a client can delete all documents in a bucket.
     /// This field defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableFlush"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFlush")]
     pub enable_flush: Option<bool>,
     /// MemoryQuota is a memory limit to the size of a bucket. The memory quota
     /// is defined per Couchbase pod running the data service.  This field defaults to, and must
     /// be greater than or equal to 100Mi.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memoryQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryQuota")]
     pub memory_quota: Option<String>,
     /// Name is the name of the bucket within Couchbase server.  By default the Operator
     /// will use the `metadata.name` field to define the bucket name.  The `metadata.name`
@@ -49,3 +36,4 @@ pub struct CouchbaseMemcachedBucketSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

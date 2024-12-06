@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterPoolSpec defines the desired state of the ClusterPool.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hive.openshift.io",
-    version = "v1",
-    kind = "ClusterPool",
-    plural = "clusterpools"
-)]
+#[kube(group = "hive.openshift.io", version = "v1", kind = "ClusterPool", plural = "clusterpools")]
 #[kube(namespaced)]
 #[kube(status = "ClusterPoolStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterPoolSpec {
     /// Annotations to be applied to new ClusterDeployments created for the pool. ClusterDeployments that have already been
     /// claimed will not be affected when this value is modified.
@@ -34,11 +29,7 @@ pub struct ClusterPoolSpec {
     #[serde(rename = "baseDomain")]
     pub base_domain: String,
     /// ClaimLifetime defines the lifetimes for claims for the cluster pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "claimLifetime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimLifetime")]
     pub claim_lifetime: Option<ClusterPoolClaimLifetime>,
     /// HibernateAfter will be applied to new ClusterDeployments created for the pool. HibernateAfter will transition
     /// clusters in the clusterpool to hibernating power state after it has been running for the given duration. The time
@@ -49,46 +40,26 @@ pub struct ClusterPoolSpec {
     /// https://bugzilla.redhat.com/show_bug.cgi?id=2050332
     /// https://github.com/kubernetes/apimachinery/issues/131
     /// https://github.com/kubernetes/apiextensions-apiserver/issues/56
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hibernateAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hibernateAfter")]
     pub hibernate_after: Option<String>,
     /// HibernationConfig configures the hibernation/resume behavior of ClusterDeployments owned by the ClusterPool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hibernationConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hibernationConfig")]
     pub hibernation_config: Option<ClusterPoolHibernationConfig>,
     /// ImageSetRef is a reference to a ClusterImageSet. The release image specified in the ClusterImageSet will be used
     /// by clusters created for this cluster pool.
     #[serde(rename = "imageSetRef")]
     pub image_set_ref: ClusterPoolImageSetRef,
     /// InstallAttemptsLimit is the maximum number of times Hive will attempt to install the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installAttemptsLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installAttemptsLimit")]
     pub install_attempts_limit: Option<i32>,
     /// InstallConfigSecretTemplateRef is a secret with the key install-config.yaml consisting of the content of the install-config.yaml
     /// to be used as a template for all clusters in this pool.
     /// Cluster specific settings (name, basedomain) will be injected dynamically when the ClusterDeployment install-config Secret is generated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installConfigSecretTemplateRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installConfigSecretTemplateRef")]
     pub install_config_secret_template_ref: Option<ClusterPoolInstallConfigSecretTemplateRef>,
     /// InstallerEnv are extra environment variables to pass through to the installer. This may be used to enable
     /// additional features of the installer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installerEnv"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installerEnv")]
     pub installer_env: Option<Vec<ClusterPoolInstallerEnv>>,
     /// Inventory maintains a list of entries consumed by the ClusterPool
     /// to customize the default ClusterDeployment.
@@ -101,11 +72,7 @@ pub struct ClusterPoolSpec {
     /// MaxConcurrent is the maximum number of clusters that will be provisioned or deprovisioned at an time. This includes the
     /// claimed clusters being deprovisioned.
     /// By default there is no limit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrent")]
     pub max_concurrent: Option<i32>,
     /// MaxSize is the maximum number of clusters that will be provisioned including clusters that have been claimed
     /// and ones waiting to be used.
@@ -115,28 +82,16 @@ pub struct ClusterPoolSpec {
     /// Platform encompasses the desired platform for the cluster.
     pub platform: ClusterPoolPlatform,
     /// PullSecretRef is the reference to the secret to use when pulling images.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecretRef")]
     pub pull_secret_ref: Option<ClusterPoolPullSecretRef>,
     /// RunningCount is the number of clusters we should keep running. The remainder will be kept hibernated until claimed.
     /// By default no clusters will be kept running (all will be hibernated).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runningCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningCount")]
     pub running_count: Option<i32>,
     /// Size is the default number of clusters that we should keep provisioned and waiting for use.
     pub size: i32,
     /// SkipMachinePools allows creating clusterpools where the machinepools are not managed by hive after cluster creation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipMachinePools"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipMachinePools")]
     pub skip_machine_pools: Option<bool>,
 }
 
@@ -175,11 +130,7 @@ pub struct ClusterPoolHibernationConfig {
     /// https://bugzilla.redhat.com/show_bug.cgi?id=2050332
     /// https://github.com/kubernetes/apimachinery/issues/131
     /// https://github.com/kubernetes/apiextensions-apiserver/issues/56
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resumeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resumeTimeout")]
     pub resume_timeout: Option<String>,
 }
 
@@ -230,11 +181,7 @@ pub struct ClusterPoolInstallerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolInstallerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ClusterPoolInstallerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -242,18 +189,10 @@ pub struct ClusterPoolInstallerEnvValueFrom {
     pub field_ref: Option<ClusterPoolInstallerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ClusterPoolInstallerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterPoolInstallerEnvValueFromSecretKeyRef>,
 }
 
@@ -279,11 +218,7 @@ pub struct ClusterPoolInstallerEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolInstallerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -295,11 +230,7 @@ pub struct ClusterPoolInstallerEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolInstallerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -348,11 +279,7 @@ pub enum ClusterPoolInventoryKind {
 pub struct ClusterPoolPlatform {
     /// AgentBareMetal is the configuration used when performing an Assisted Agent based installation
     /// to bare metal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentBareMetal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentBareMetal")]
     pub agent_bare_metal: Option<ClusterPoolPlatformAgentBareMetal>,
     /// AWS is the configuration used when installing on AWS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -399,21 +326,12 @@ pub struct ClusterPoolPlatformAgentBareMetal {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformAgentBareMetalAgentSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<ClusterPoolPlatformAgentBareMetalAgentSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterPoolPlatformAgentBareMetalAgentSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -439,29 +357,17 @@ pub struct ClusterPoolPlatformAgentBareMetalAgentSelectorMatchExpressions {
 pub struct ClusterPoolPlatformAws {
     /// CredentialsAssumeRole refers to the IAM role that must be assumed to obtain
     /// AWS account access for the cluster operations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsAssumeRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsAssumeRole")]
     pub credentials_assume_role: Option<ClusterPoolPlatformAwsCredentialsAssumeRole>,
     /// CredentialsSecretRef refers to a secret that contains the AWS account access
     /// credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretRef")]
     pub credentials_secret_ref: Option<ClusterPoolPlatformAwsCredentialsSecretRef>,
     /// PrivateLink allows uses to enable access to the cluster's API server using AWS
     /// PrivateLink. AWS PrivateLink includes a pair of VPC Endpoint Service and VPC
     /// Endpoint accross AWS accounts and allows clients to connect to services using AWS's
     /// internal networking instead of the Internet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateLink"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateLink")]
     pub private_link: Option<ClusterPoolPlatformAwsPrivateLink>,
     /// Region specifies the AWS region where the cluster will be created.
     pub region: String,
@@ -477,11 +383,7 @@ pub struct ClusterPoolPlatformAwsCredentialsAssumeRole {
     /// ExternalID is random string generated by platform so that assume role
     /// is protected from confused deputy problem.
     /// more info: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalID")]
     pub external_id: Option<String>,
     #[serde(rename = "roleARN")]
     pub role_arn: String,
@@ -510,11 +412,7 @@ pub struct ClusterPoolPlatformAwsPrivateLink {
     /// for the Private Link cluster's VPC Endpoint Service.
     /// ARNs provided as AdditionalAllowedPrincipals will be configured for the cluster's VPC Endpoint
     /// Service in addition to the IAM entity used by Hive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAllowedPrincipals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAllowedPrincipals")]
     pub additional_allowed_principals: Option<Vec<String>>,
     pub enabled: bool,
 }
@@ -523,11 +421,7 @@ pub struct ClusterPoolPlatformAwsPrivateLink {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformAzure {
     /// BaseDomainResourceGroupName specifies the resource group where the azure DNS zone for the base domain is found
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseDomainResourceGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseDomainResourceGroupName")]
     pub base_domain_resource_group_name: Option<String>,
     /// cloudName is the name of the Azure cloud environment which can be used to configure the Azure SDK
     /// with the appropriate Azure API endpoints.
@@ -574,8 +468,7 @@ pub struct ClusterPoolPlatformBaremetal {
     /// for access to the libvirt provisioning host.
     /// The SSH private key is expected to be in the secret data under the "ssh-privatekey" key.
     #[serde(rename = "libvirtSSHPrivateKeySecretRef")]
-    pub libvirt_ssh_private_key_secret_ref:
-        ClusterPoolPlatformBaremetalLibvirtSshPrivateKeySecretRef,
+    pub libvirt_ssh_private_key_secret_ref: ClusterPoolPlatformBaremetalLibvirtSshPrivateKeySecretRef,
 }
 
 /// LibvirtSSHPrivateKeySecretRef is the reference to the secret that contains the private SSH key to use
@@ -596,21 +489,13 @@ pub struct ClusterPoolPlatformBaremetalLibvirtSshPrivateKeySecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPoolPlatformGcp {
     /// CredentialsSecretRef refers to a secret that contains the GCP account access credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretRef")]
     pub credentials_secret_ref: Option<ClusterPoolPlatformGcpCredentialsSecretRef>,
     /// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP
     /// Private Service Connect. It includes a forwarding rule paired with a Service Attachment
     /// across GCP accounts and allows clients to connect to services using GCP internal networking
     /// of using public load balancers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateServiceConnect"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateServiceConnect")]
     pub private_service_connect: Option<ClusterPoolPlatformGcpPrivateServiceConnect>,
     /// Region specifies the GCP region where the cluster will be created.
     pub region: String,
@@ -637,11 +522,7 @@ pub struct ClusterPoolPlatformGcpPrivateServiceConnect {
     /// Enabled specifies if Private Service Connect is to be enabled on the cluster.
     pub enabled: bool,
     /// ServiceAttachment configures the service attachment to be used by the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAttachment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAttachment")]
     pub service_attachment: Option<ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachment>,
 }
 
@@ -664,8 +545,7 @@ pub struct ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachmentSubnet {
     /// configured with a purpose of "Private Service Connect", and have sufficient routing and firewall rules
     /// to access the api-int load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub existing:
-        Option<ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachmentSubnetExisting>,
+    pub existing: Option<ClusterPoolPlatformGcpPrivateServiceConnectServiceAttachmentSubnetExisting>,
 }
 
 /// Existing specifies a pre-existing subnet to use instead of creating a new service attachment subnet.
@@ -693,11 +573,7 @@ pub struct ClusterPoolPlatformIbmcloud {
     /// CISInstanceCRN is the IBM Cloud Internet Services Instance CRN
     /// CISInstanceCRN is DEPRECATED and gathered via the IBM Cloud API for the provided
     /// credentials and cluster deployment base domain. This field will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cisInstanceCRN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cisInstanceCRN")]
     pub cis_instance_crn: Option<String>,
     /// CredentialsSecretRef refers to a secret that contains IBM Cloud account access
     /// credentials.
@@ -724,7 +600,8 @@ pub struct ClusterPoolPlatformIbmcloudCredentialsSecretRef {
 /// None indicates platform-agnostic install.
 /// https://docs.openshift.com/container-platform/4.7/installing/installing_platform_agnostic/installing-platform-agnostic.html
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterPoolPlatformNone {}
+pub struct ClusterPoolPlatformNone {
+}
 
 /// OpenStack is the configuration used when installing on OpenStack
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -739,7 +616,7 @@ pub struct ClusterPoolPlatformOpenstack {
     /// The "clouds.yaml" file must set the "cacert" field to
     /// either "/etc/openstack-ca/<key name containing the trust bundle in credentialsSecretRef Secret>" or
     /// "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem".
-    ///
+    /// 
     /// For example,
     /// """clouds.yaml
     /// clouds:
@@ -747,11 +624,7 @@ pub struct ClusterPoolPlatformOpenstack {
     ///     auth: ...
     ///     cacert: "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
     /// """
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificatesSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesSecretRef")]
     pub certificates_secret_ref: Option<ClusterPoolPlatformOpenstackCertificatesSecretRef>,
     /// Cloud will be used to indicate the OS_CLOUD value to use the right section
     /// from the clouds.yaml in the CredentialsSecretRef.
@@ -761,11 +634,7 @@ pub struct ClusterPoolPlatformOpenstack {
     #[serde(rename = "credentialsSecretRef")]
     pub credentials_secret_ref: ClusterPoolPlatformOpenstackCredentialsSecretRef,
     /// TrunkSupport indicates whether or not to use trunk ports in your OpenShift cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trunkSupport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trunkSupport")]
     pub trunk_support: Option<bool>,
 }
 
@@ -779,7 +648,7 @@ pub struct ClusterPoolPlatformOpenstack {
 /// The "clouds.yaml" file must set the "cacert" field to
 /// either "/etc/openstack-ca/<key name containing the trust bundle in credentialsSecretRef Secret>" or
 /// "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem".
-///
+/// 
 /// For example,
 /// """clouds.yaml
 /// clouds:
@@ -941,3 +810,4 @@ pub struct ClusterPoolStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub standby: Option<i32>,
 }
+

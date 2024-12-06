@@ -4,30 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Configuration for access control on workloads. See more details at: https://istio.io/docs/reference/config/security/authorization-policy.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "security.istio.io",
-    version = "v1beta1",
-    kind = "AuthorizationPolicy",
-    plural = "authorizationpolicies"
-)]
+#[kube(group = "security.istio.io", version = "v1beta1", kind = "AuthorizationPolicy", plural = "authorizationpolicies")]
 #[kube(namespaced)]
 #[kube(status = "AuthorizationPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AuthorizationPolicySpec {
     /// Optional.
-    ///
+    /// 
     /// Valid Options: ALLOW, DENY, AUDIT, CUSTOM
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<AuthorizationPolicyAction>,
@@ -43,11 +38,7 @@ pub struct AuthorizationPolicySpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
     pub target_ref: Option<AuthorizationPolicyTargetRef>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefs")]
     pub target_refs: Option<Vec<AuthorizationPolicyTargetRefs>>,
 }
 
@@ -102,56 +93,28 @@ pub struct AuthorizationPolicyRulesFromSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notIpBlocks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notIpBlocks")]
     pub not_ip_blocks: Option<Vec<String>>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notNamespaces")]
     pub not_namespaces: Option<Vec<String>>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notPrincipals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notPrincipals")]
     pub not_principals: Option<Vec<String>>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notRemoteIpBlocks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notRemoteIpBlocks")]
     pub not_remote_ip_blocks: Option<Vec<String>>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notRequestPrincipals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notRequestPrincipals")]
     pub not_request_principals: Option<Vec<String>>,
     /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub principals: Option<Vec<String>>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteIpBlocks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteIpBlocks")]
     pub remote_ip_blocks: Option<Vec<String>>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestPrincipals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestPrincipals")]
     pub request_principals: Option<Vec<String>>,
 }
 
@@ -175,11 +138,7 @@ pub struct AuthorizationPolicyRulesToOperation {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notHosts")]
     pub not_hosts: Option<Vec<String>>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notMethods"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notMethods")]
     pub not_methods: Option<Vec<String>>,
     /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notPaths")]
@@ -211,11 +170,7 @@ pub struct AuthorizationPolicyRulesWhen {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorizationPolicySelector {
     /// One or more labels that indicate a specific set of pods/VMs on which a policy should be applied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -253,32 +208,20 @@ pub struct AuthorizationPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Resource Generation to which the Reconciled Condition refers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<IntOrString>,
     /// Includes any errors or warnings detected by Istio's analyzers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationMessages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationMessages")]
     pub validation_messages: Option<Vec<AuthorizationPolicyStatusValidationMessages>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorizationPolicyStatusValidationMessages {
     /// A url pointing to the Istio documentation for this specific error type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "documentationUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "documentationUrl")]
     pub documentation_url: Option<String>,
     /// Represents how severe a message is.
-    ///
+    /// 
     /// Valid Options: UNKNOWN, ERROR, WARNING, INFO
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<AuthorizationPolicyStatusValidationMessagesLevel>,
@@ -307,3 +250,4 @@ pub struct AuthorizationPolicyStatusValidationMessagesType {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

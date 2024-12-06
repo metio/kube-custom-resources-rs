@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "api.clever-cloud.com",
-    version = "v1",
-    kind = "PostgreSql",
-    plural = "postgresqls"
-)]
+#[kube(group = "api.clever-cloud.com", version = "v1", kind = "PostgreSql", plural = "postgresqls")]
 #[kube(namespaced)]
 #[kube(status = "PostgreSqlStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PostgreSqlSpec {
     pub instance: PostgreSqlInstance,
     pub options: PostgreSqlOptions,
@@ -58,3 +53,4 @@ pub struct PostgreSqlStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addon: Option<String>,
 }
+

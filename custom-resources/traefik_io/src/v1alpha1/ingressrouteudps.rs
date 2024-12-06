@@ -4,34 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// IngressRouteUDPSpec defines the desired state of a IngressRouteUDP.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "traefik.io",
-    version = "v1alpha1",
-    kind = "IngressRouteUDP",
-    plural = "ingressrouteudps"
-)]
+#[kube(group = "traefik.io", version = "v1alpha1", kind = "IngressRouteUDP", plural = "ingressrouteudps")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IngressRouteUDPSpec {
     /// EntryPoints defines the list of entry point names to bind to.
     /// Entry points have to be configured in the static configuration.
     /// More info: https://doc.traefik.io/traefik/v3.2/routing/entrypoints/
     /// Default: all.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "entryPoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoints")]
     pub entry_points: Option<Vec<String>>,
     /// Routes defines the list of routes.
     pub routes: Vec<IngressRouteUDPRoutes>,
@@ -63,11 +54,7 @@ pub struct IngressRouteUDPRoutesServices {
     /// whether the LB's children are directly the nodes internal IPs using the nodePort when the service type is NodePort.
     /// It allows services to be reachable when Traefik runs externally from the Kubernetes cluster but within the same network of the nodes.
     /// By default, NodePortLB is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePortLB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePortLB")]
     pub node_port_lb: Option<bool>,
     /// Port defines the port of a Kubernetes Service.
     /// This can be a reference to a named port.
@@ -76,3 +63,4 @@ pub struct IngressRouteUDPRoutesServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub weight: Option<i64>,
 }
+

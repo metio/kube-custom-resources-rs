@@ -4,66 +4,41 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// CanarySpec defines the desired state of a Canary.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "flagger.app",
-    version = "v1beta1",
-    kind = "Canary",
-    plural = "canaries"
-)]
+#[kube(group = "flagger.app", version = "v1beta1", kind = "Canary", plural = "canaries")]
 #[kube(namespaced)]
 #[kube(status = "CanaryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct CanarySpec {
     /// Canary analysis for this canary
     pub analysis: CanaryAnalysis,
     /// Scaler selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoscalerRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscalerRef")]
     pub autoscaler_ref: Option<CanaryAutoscalerRef>,
     /// Ingress selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressRef")]
     pub ingress_ref: Option<CanaryIngressRef>,
     /// Prometheus URL
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsServer")]
     pub metrics_server: Option<String>,
     /// Deployment progress deadline
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "progressDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "progressDeadlineSeconds")]
     pub progress_deadline_seconds: Option<f64>,
     /// Traffic managent provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider: Option<String>,
     /// Revert mutated resources to original spec on deletion
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revertOnDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revertOnDeletion")]
     pub revert_on_deletion: Option<bool>,
     /// APISIX route selector
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeRef")]
@@ -71,11 +46,7 @@ pub struct CanarySpec {
     /// Kubernetes Service spec
     pub service: CanaryService,
     /// Skip analysis and promote canary
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipAnalysis"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipAnalysis")]
     pub skip_analysis: Option<bool>,
     /// Suspend Canary disabling/pausing all canary runs
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -84,11 +55,7 @@ pub struct CanarySpec {
     #[serde(rename = "targetRef")]
     pub target_ref: CanaryTargetRef,
     /// Gloo Upstream selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upstreamRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upstreamRef")]
     pub upstream_ref: Option<CanaryUpstreamRef>,
 }
 
@@ -99,11 +66,7 @@ pub struct CanaryAnalysis {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alerts: Option<Vec<CanaryAnalysisAlerts>>,
     /// Percentage of pods that need to be available to consider canary as ready
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "canaryReadyThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "canaryReadyThreshold")]
     pub canary_ready_threshold: Option<f64>,
     /// Schedule interval for this canary
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -124,46 +87,22 @@ pub struct CanaryAnalysis {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mirror: Option<bool>,
     /// Weight of traffic to be mirrored
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirrorWeight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirrorWeight")]
     pub mirror_weight: Option<f64>,
     /// Percentage of pods that need to be available to consider primary as ready
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryReadyThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryReadyThreshold")]
     pub primary_ready_threshold: Option<f64>,
     /// SessionAffinity represents the session affinity settings for a canary run.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<CanaryAnalysisSessionAffinity>,
     /// Incremental traffic step weight for the analysis phase
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stepWeight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stepWeight")]
     pub step_weight: Option<f64>,
     /// Incremental traffic step weight for the promotion phase
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stepWeightPromotion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stepWeightPromotion")]
     pub step_weight_promotion: Option<f64>,
     /// Incremental traffic step weights for the analysis phase
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stepWeights"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stepWeights")]
     pub step_weights: Option<Vec<f64>>,
     /// Max number of failed checks before rollback
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -212,18 +151,10 @@ pub struct CanaryAnalysisMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, CanaryAnalysisMatchHeaders>>,
     /// Query parameters for matching.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParams")]
     pub query_params: Option<BTreeMap<String, CanaryAnalysisMatchQueryParams>>,
     /// Applicable only when the 'mesh' gateway is included in the service.gateways list
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -263,28 +194,16 @@ pub struct CanaryAnalysisMetrics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub query: Option<String>,
     /// Metric template reference
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
     pub template_ref: Option<CanaryAnalysisMetricsTemplateRef>,
     /// Additional variables to be used in the metrics query (key-value pairs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateVariables"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateVariables")]
     pub template_variables: Option<BTreeMap<String, String>>,
     /// Max value accepted for this metric
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub threshold: Option<f64>,
     /// Range accepted for this metric
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "thresholdRange"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "thresholdRange")]
     pub threshold_range: Option<CanaryAnalysisMetricsThresholdRange>,
 }
 
@@ -372,17 +291,9 @@ pub struct CanaryAutoscalerRef {
     pub api_version: String,
     pub kind: CanaryAutoscalerRefKind,
     pub name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryScalerQueries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryScalerQueries")]
     pub primary_scaler_queries: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryScalerReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryScalerReplicas")]
     pub primary_scaler_replicas: Option<CanaryAutoscalerRefPrimaryScalerReplicas>,
 }
 
@@ -395,17 +306,9 @@ pub enum CanaryAutoscalerRefKind {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAutoscalerRefPrimaryScalerReplicas {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicas")]
     pub max_replicas: Option<f64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<f64>,
 }
 
@@ -446,11 +349,7 @@ pub struct CanaryService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub apex: Option<CanaryServiceApex>,
     /// Application protocol of the port
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
     /// AppMesh backend array
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -459,21 +358,13 @@ pub struct CanaryService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canary: Option<CanaryServiceCanary>,
     /// Istio Cross-Origin Resource Sharing policy (CORS)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "corsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "corsPolicy")]
     pub cors_policy: Option<CanaryServiceCorsPolicy>,
     /// enable behaving as a delegate VirtualService
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delegation: Option<bool>,
     /// The list of parent Gateways for a HTTPRoute
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayRefs")]
     pub gateway_refs: Option<Vec<CanaryServiceGatewayRefs>>,
     /// The list of Istio gateway for this virtual service
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -499,11 +390,7 @@ pub struct CanaryService {
     /// Container port number
     pub port: f64,
     /// Enable port dicovery
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portDiscovery")]
     pub port_discovery: Option<bool>,
     /// Container port name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
@@ -518,21 +405,13 @@ pub struct CanaryService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rewrite: Option<CanaryServiceRewrite>,
     /// Container target port name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
     /// HTTP or gRPC request timeout
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
     /// Istio traffic policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]
     pub traffic_policy: Option<CanaryServiceTrafficPolicy>,
 }
 
@@ -557,44 +436,20 @@ pub struct CanaryServiceCanary {
 /// Istio Cross-Origin Resource Sharing policy (CORS)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryServiceCorsPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowCredentials"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCredentials")]
     pub allow_credentials: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowHeaders")]
     pub allow_headers: Option<Vec<String>>,
     /// List of HTTP methods allowed to access the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowMethods"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowMethods")]
     pub allow_methods: Option<Vec<String>>,
     /// The list of origins that are allowed to perform CORS requests.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowOrigin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowOrigin")]
     pub allow_origin: Option<Vec<String>>,
     /// String patterns that match allowed origins
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowOrigins"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowOrigins")]
     pub allow_origins: Option<Vec<CanaryServiceCorsPolicyAllowOrigins>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposeHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeHeaders")]
     pub expose_headers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
     pub max_age: Option<String>,
@@ -621,11 +476,7 @@ pub struct CanaryServiceGatewayRefs {
     pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
 }
 
@@ -668,11 +519,7 @@ pub struct CanaryServiceMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, CanaryServiceMatchHeaders>>,
     /// Flag to specify whether the URI matching should be case-insensitive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreUriCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreUriCase")]
     pub ignore_uri_case: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<CanaryServiceMatchMethod>,
@@ -683,35 +530,19 @@ pub struct CanaryServiceMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// Query parameters for matching.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParams")]
     pub query_params: Option<BTreeMap<String, CanaryServiceMatchQueryParams>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<CanaryServiceMatchScheme>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<BTreeMap<String, String>>,
     /// Source namespace constraining the applicability of a rule to workloads in that namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceNamespace")]
     pub source_namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uri: Option<CanaryServiceMatchUri>,
     /// withoutHeader has the same syntax with the header, but has opposite meaning.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withoutHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withoutHeaders")]
     pub without_headers: Option<BTreeMap<String, CanaryServiceMatchWithoutHeaders>>,
 }
 
@@ -796,11 +627,7 @@ pub struct CanaryServiceMatchWithoutHeaders {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryServiceMirror {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendRef")]
     pub backend_ref: Option<CanaryServiceMirrorBackendRef>,
 }
 
@@ -833,11 +660,7 @@ pub struct CanaryServiceRetries {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attempts: Option<i32>,
     /// Timeout per retry attempt for a given request
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perTryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perTryTimeout")]
     pub per_try_timeout: Option<String>,
     /// Specifies the conditions under which retry takes place
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOn")]
@@ -858,25 +681,13 @@ pub struct CanaryServiceRewrite {
 /// Istio traffic policy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryServiceTrafficPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionPool")]
     pub connection_pool: Option<CanaryServiceTrafficPolicyConnectionPool>,
     /// Settings controlling the load balancer algorithms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<CanaryServiceTrafficPolicyLoadBalancer>,
     /// Settings controlling eviction of unhealthy hosts from the load balancing pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outlierDetection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outlierDetection")]
     pub outlier_detection: Option<CanaryServiceTrafficPolicyOutlierDetection>,
     /// Istio TLS related settings for connections to the upstream service
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -894,45 +705,21 @@ pub struct CanaryServiceTrafficPolicyConnectionPool {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryServiceTrafficPolicyConnectionPoolHttp {
     /// Specify if http1.1 connection should be upgraded to http2 for the associated destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "h2UpgradePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "h2UpgradePolicy")]
     pub h2_upgrade_policy: Option<CanaryServiceTrafficPolicyConnectionPoolHttpH2UpgradePolicy>,
     /// Maximum number of pending HTTP requests to a destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http1MaxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http1MaxPendingRequests")]
     pub http1_max_pending_requests: Option<i32>,
     /// Maximum number of requests to a backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http2MaxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http2MaxRequests")]
     pub http2_max_requests: Option<i32>,
     /// The idle timeout for upstream connection pool connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// Maximum number of requests per connection to a backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
 }
 
@@ -950,64 +737,32 @@ pub enum CanaryServiceTrafficPolicyConnectionPoolHttpH2UpgradePolicy {
 /// Settings controlling the load balancer algorithms.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryServiceTrafficPolicyLoadBalancer {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consistentHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consistentHash")]
     pub consistent_hash: Option<CanaryServiceTrafficPolicyLoadBalancerConsistentHash>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localityLbSetting"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localityLbSetting")]
     pub locality_lb_setting: Option<CanaryServiceTrafficPolicyLoadBalancerLocalityLbSetting>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub simple: Option<CanaryServiceTrafficPolicyLoadBalancerSimple>,
     /// Represents the warmup duration of Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "warmupDurationSecs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "warmupDurationSecs")]
     pub warmup_duration_secs: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryServiceTrafficPolicyLoadBalancerConsistentHash {
     /// Hash based on HTTP cookie.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpCookie"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpCookie")]
     pub http_cookie: Option<CanaryServiceTrafficPolicyLoadBalancerConsistentHashHttpCookie>,
     /// Hash based on a specific HTTP header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaderName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaderName")]
     pub http_header_name: Option<String>,
     /// Hash based on a specific HTTP query parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpQueryParameterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpQueryParameterName")]
     pub http_query_parameter_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumRingSize")]
     pub minimum_ring_size: Option<i64>,
     /// Hash based on the source IP address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useSourceIp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSourceIp")]
     pub use_source_ip: Option<bool>,
 }
 
@@ -1076,82 +831,42 @@ pub enum CanaryServiceTrafficPolicyLoadBalancerSimple {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryServiceTrafficPolicyOutlierDetection {
     /// Minimum ejection duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseEjectionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseEjectionTime")]
     pub base_ejection_time: Option<String>,
     /// Number of 5xx errors before a host is ejected from the connection pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutive5xxErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutive5xxErrors")]
     pub consecutive5xx_errors: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveErrors")]
     pub consecutive_errors: Option<i32>,
     /// Number of gateway errors before a host is ejected from the connection pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveGatewayErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveGatewayErrors")]
     pub consecutive_gateway_errors: Option<i32>,
     /// Time interval between ejection sweep analysis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEjectionPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEjectionPercent")]
     pub max_ejection_percent: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minHealthPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minHealthPercent")]
     pub min_health_percent: Option<i32>,
 }
 
 /// Istio TLS related settings for connections to the upstream service
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryServiceTrafficPolicyTls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
     /// REQUIRED if mode is `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<CanaryServiceTrafficPolicyTlsMode>,
     /// REQUIRED if mode is `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// SNI string to present to the server during TLS handshake.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -1206,69 +921,37 @@ pub enum CanaryUpstreamRefKind {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryStatus {
     /// Traffic weight routed to canary
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "canaryWeight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "canaryWeight")]
     pub canary_weight: Option<f64>,
     /// Status conditions of this canary
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Failed check count of the current canary analysis
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedChecks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedChecks")]
     pub failed_checks: Option<f64>,
     /// Iteration count of the current canary analysis
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iterations: Option<f64>,
     /// LastAppliedSpec of this canary
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAppliedSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedSpec")]
     pub last_applied_spec: Option<String>,
     /// LastPromotedSpec of this canary
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPromotedSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPromotedSpec")]
     pub last_promoted_spec: Option<String>,
     /// LastTransitionTime of this canary
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     /// Analysis phase of this canary
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<CanaryStatusPhase>,
     /// Session affinity cookie of the previous canary run
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "previousSessionAffinityCookie"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousSessionAffinityCookie")]
     pub previous_session_affinity_cookie: Option<String>,
     /// Session affinity cookie of the current canary run
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinityCookie"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityCookie")]
     pub session_affinity_cookie: Option<String>,
     /// TrackedConfig of this canary
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trackedConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackedConfigs")]
     pub tracked_configs: Option<BTreeMap<String, String>>,
 }
 
@@ -1289,3 +972,4 @@ pub enum CanaryStatusPhase {
     Terminating,
     Terminated,
 }
+

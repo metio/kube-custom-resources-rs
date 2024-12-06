@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec is the desired state of the MultiClusterService.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "networking.karmada.io",
-    version = "v1alpha1",
-    kind = "MultiClusterService",
-    plural = "multiclusterservices"
-)]
+#[kube(group = "networking.karmada.io", version = "v1alpha1", kind = "MultiClusterService", plural = "multiclusterservices")]
 #[kube(namespaced)]
 #[kube(status = "MultiClusterServiceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MultiClusterServiceSpec {
     /// ConsumerClusters specifies the clusters where the service will be exposed, for clients.
     /// If leave it empty, the service will be exposed to all clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consumerClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerClusters")]
     pub consumer_clusters: Option<Vec<MultiClusterServiceConsumerClusters>>,
     /// Ports is the list of ports that are exposed by this MultiClusterService.
     /// No specified port will be filtered out during the service
@@ -41,11 +32,7 @@ pub struct MultiClusterServiceSpec {
     /// ProviderClusters specifies the clusters which will provide the service backend.
     /// If leave it empty, we will collect the backend endpoints from all clusters and sync
     /// them to the ConsumerClusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerClusters")]
     pub provider_clusters: Option<Vec<MultiClusterServiceProviderClusters>>,
     /// Range specifies the ranges where the referencing service should
     /// be exposed.
@@ -59,21 +46,13 @@ pub struct MultiClusterServiceSpec {
     /// ServiceConsumptionClusters specifies the clusters where the service will be exposed, for clients.
     /// If leave it empty, the service will be exposed to all clusters.
     /// Deprecated: in favor of ProviderClusters/ConsumerClusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceConsumptionClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceConsumptionClusters")]
     pub service_consumption_clusters: Option<Vec<String>>,
     /// ServiceProvisionClusters specifies the clusters which will provision the service backend.
     /// If leave it empty, we will collect the backend endpoints from all clusters and sync
     /// them to the ServiceConsumptionClusters.
     /// Deprecated: in favor of ProviderClusters/ConsumerClusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceProvisionClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceProvisionClusters")]
     pub service_provision_clusters: Option<Vec<String>>,
     /// Types specifies how to expose the service referencing by this
     /// MultiClusterService.
@@ -117,11 +96,7 @@ pub struct MultiClusterServiceProviderClusters {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MultiClusterServiceRange {
     /// ClusterNames is the list of clusters to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
     pub cluster_names: Option<Vec<String>>,
 }
 
@@ -133,11 +108,7 @@ pub struct MultiClusterServiceStatus {
     pub conditions: Option<Vec<Condition>>,
     /// LoadBalancer contains the current status of the load-balancer,
     /// if one is present.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<MultiClusterServiceStatusLoadBalancer>,
 }
 
@@ -195,3 +166,4 @@ pub struct MultiClusterServiceStatusLoadBalancerIngressPorts {
     /// The supported values are: "TCP", "UDP", "SCTP"
     pub protocol: String,
 }
+

@@ -4,42 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// ModuleSpec describes how the KMM operator should deploy a Module on those nodes that need it.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kmm.sigs.x-k8s.io",
-    version = "v1beta1",
-    kind = "Module",
-    plural = "modules"
-)]
+#[kube(group = "kmm.sigs.x-k8s.io", version = "v1beta1", kind = "Module", plural = "modules")]
 #[kube(namespaced)]
 #[kube(status = "ModuleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ModuleSpec {
     /// DevicePlugin allows overriding some properties of the container that deploys the device plugin on the node.
     /// Name is ignored and is set automatically by the KMM Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "devicePlugin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "devicePlugin")]
     pub device_plugin: Option<ModuleDevicePlugin>,
     /// ImageRepoSecret is an optional secret that is used to pull both the module loader and the device plugin, and
     /// to push the resulting image from the module loader build, if enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRepoSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRepoSecret")]
     pub image_repo_secret: Option<ModuleImageRepoSecret>,
     /// ModuleLoader allows overriding some properties of the container that loads the kernel module on the node.
     /// Name and image are ignored and are set automatically by the KMM Operator.
@@ -56,11 +43,7 @@ pub struct ModuleDevicePlugin {
     pub container: ModuleDevicePluginContainer,
     /// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ModuleDevicePluginVolumes>>,
@@ -99,11 +82,7 @@ pub struct ModuleDevicePluginContainer {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -111,11 +90,7 @@ pub struct ModuleDevicePluginContainer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ModuleDevicePluginContainerResources>,
     /// VolumeMounts is a list of volume mounts that are appended to the default ones.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ModuleDevicePluginContainerVolumeMounts>>,
 }
 
@@ -144,11 +119,7 @@ pub struct ModuleDevicePluginContainerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginContainerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ModuleDevicePluginContainerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -156,18 +127,10 @@ pub struct ModuleDevicePluginContainerEnvValueFrom {
     pub field_ref: Option<ModuleDevicePluginContainerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ModuleDevicePluginContainerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ModuleDevicePluginContainerEnvValueFromSecretKeyRef>,
 }
 
@@ -193,11 +156,7 @@ pub struct ModuleDevicePluginContainerEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginContainerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -209,11 +168,7 @@ pub struct ModuleDevicePluginContainerEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginContainerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -246,10 +201,10 @@ pub struct ModuleDevicePluginContainerEnvValueFromSecretKeyRef {
 pub struct ModuleDevicePluginContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ModuleDevicePluginContainerResourcesClaims>>,
@@ -292,11 +247,7 @@ pub struct ModuleDevicePluginContainerVolumeMounts {
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -306,25 +257,21 @@ pub struct ModuleDevicePluginContainerVolumeMounts {
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -334,11 +281,7 @@ pub struct ModuleDevicePluginContainerVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -348,11 +291,7 @@ pub struct ModuleDevicePluginVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<ModuleDevicePluginVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
@@ -374,11 +313,7 @@ pub struct ModuleDevicePluginVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<ModuleDevicePluginVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ModuleDevicePluginVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -387,7 +322,7 @@ pub struct ModuleDevicePluginVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -397,15 +332,15 @@ pub struct ModuleDevicePluginVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -415,11 +350,7 @@ pub struct ModuleDevicePluginVolumes {
     pub fc: Option<ModuleDevicePluginVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ModuleDevicePluginVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -427,11 +358,7 @@ pub struct ModuleDevicePluginVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<ModuleDevicePluginVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -452,11 +379,11 @@ pub struct ModuleDevicePluginVolumes {
     pub host_path: Option<ModuleDevicePluginVolumesHostPath>,
     /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
     /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
-    ///
+    /// 
     /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
     /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
-    ///
+    /// 
     /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
     /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
@@ -482,25 +409,13 @@ pub struct ModuleDevicePluginVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<ModuleDevicePluginVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<ModuleDevicePluginVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<ModuleDevicePluginVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -523,11 +438,7 @@ pub struct ModuleDevicePluginVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<ModuleDevicePluginVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<ModuleDevicePluginVolumesVsphereVolume>,
 }
 
@@ -562,11 +473,7 @@ pub struct ModuleDevicePluginVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -619,11 +526,7 @@ pub struct ModuleDevicePluginVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -696,11 +599,7 @@ pub struct ModuleDevicePluginVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -759,11 +658,7 @@ pub struct ModuleDevicePluginVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<ModuleDevicePluginVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
@@ -771,11 +666,7 @@ pub struct ModuleDevicePluginVolumesCsi {
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -806,11 +697,7 @@ pub struct ModuleDevicePluginVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -835,11 +722,7 @@ pub struct ModuleDevicePluginVolumesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ModuleDevicePluginVolumesDownwardApiItemsResourceFieldRef>,
 }
 
@@ -847,11 +730,7 @@ pub struct ModuleDevicePluginVolumesDownwardApiItems {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -863,11 +742,7 @@ pub struct ModuleDevicePluginVolumesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -899,7 +774,7 @@ pub struct ModuleDevicePluginVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -909,15 +784,15 @@ pub struct ModuleDevicePluginVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -929,7 +804,7 @@ pub struct ModuleDevicePluginVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -938,16 +813,12 @@ pub struct ModuleDevicePluginVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<ModuleDevicePluginVolumesEphemeralVolumeClaimTemplate>,
 }
 
@@ -958,7 +829,7 @@ pub struct ModuleDevicePluginVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -967,10 +838,10 @@ pub struct ModuleDevicePluginVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplate {
@@ -990,7 +861,8 @@ pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplate {
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateMetadata {}
+pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -1000,11 +872,7 @@ pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateMetadata {}
 pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -1014,11 +882,7 @@ pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
@@ -1043,13 +907,8 @@ pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
@@ -1062,11 +921,7 @@ pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -1080,26 +935,14 @@ pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -1188,22 +1031,12 @@ pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpecResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ModuleDevicePluginVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1240,11 +1073,7 @@ pub struct ModuleDevicePluginVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -1300,18 +1129,10 @@ pub struct ModuleDevicePluginVolumesFlexVolumeSecretRef {
 pub struct ModuleDevicePluginVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -1400,11 +1221,11 @@ pub struct ModuleDevicePluginVolumesHostPath {
 
 /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
 /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
-///
+/// 
 /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
 /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
 /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
-///
+/// 
 /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
 /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
@@ -1419,11 +1240,7 @@ pub struct ModuleDevicePluginVolumesImage {
     /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
     /// Required: Image or artifact reference to be used.
     /// Behaves in the same way as pod.spec.containers[*].image.
@@ -1441,18 +1258,10 @@ pub struct ModuleDevicePluginVolumesImage {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -1463,21 +1272,13 @@ pub struct ModuleDevicePluginVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -1581,11 +1382,7 @@ pub struct ModuleDevicePluginVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections. Each entry in this list
     /// handles one source.
@@ -1599,53 +1396,41 @@ pub struct ModuleDevicePluginVolumesProjected {
 pub struct ModuleDevicePluginVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
     pub cluster_trust_bundle: Option<ModuleDevicePluginVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ModuleDevicePluginVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ModuleDevicePluginVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ModuleDevicePluginVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<ModuleDevicePluginVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -1657,13 +1442,8 @@ pub struct ModuleDevicePluginVolumesProjectedSourcesClusterTrustBundle {
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<ModuleDevicePluginVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ModuleDevicePluginVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1680,11 +1460,7 @@ pub struct ModuleDevicePluginVolumesProjectedSourcesClusterTrustBundle {
     /// Select all ClusterTrustBundles that match this signer name.
     /// Mutually-exclusive with name.  The contents of all selected
     /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -1707,8 +1483,7 @@ pub struct ModuleDevicePluginVolumesProjectedSourcesClusterTrustBundleLabelSelec
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ModuleDevicePluginVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct ModuleDevicePluginVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1792,24 +1567,15 @@ pub struct ModuleDevicePluginVolumesProjectedSourcesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ModuleDevicePluginVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ModuleDevicePluginVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1821,11 +1587,7 @@ pub struct ModuleDevicePluginVolumesProjectedSourcesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleDevicePluginVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1893,11 +1655,7 @@ pub struct ModuleDevicePluginVolumesProjectedSourcesServiceAccountToken {
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -2002,11 +1760,7 @@ pub struct ModuleDevicePluginVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -2017,36 +1771,20 @@ pub struct ModuleDevicePluginVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: ModuleDevicePluginVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -2074,11 +1812,7 @@ pub struct ModuleDevicePluginVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -2094,11 +1828,7 @@ pub struct ModuleDevicePluginVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -2140,11 +1870,7 @@ pub struct ModuleDevicePluginVolumesStorageos {
     pub secret_ref: Option<ModuleDevicePluginVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -2152,11 +1878,7 @@ pub struct ModuleDevicePluginVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -2182,18 +1904,10 @@ pub struct ModuleDevicePluginVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -2221,11 +1935,7 @@ pub struct ModuleModuleLoader {
     pub container: ModuleModuleLoaderContainer,
     /// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
 }
 
@@ -2236,39 +1946,23 @@ pub struct ModuleModuleLoaderContainer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub build: Option<ModuleModuleLoaderContainerBuild>,
     /// ContainerImage is a top-level field
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerImage")]
     pub container_image: Option<String>,
     /// Image pull policy.
     /// One of Always, Never, IfNotPresent.
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Deprecated: please use InTreeModulesToRemove.
     /// InTreeModuleToRemove specifies one in-tree kernel module that should be removed (if present)
     /// before loading the kernel module from the ContainerImage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inTreeModuleToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModuleToRemove")]
     pub in_tree_module_to_remove: Option<String>,
     /// InTreeModulesToRemove specifies any number of  in-tree kernel modules that should be removed (if present)
     /// before loading the kernel module from the ContainerImage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inTreeModulesToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModulesToRemove")]
     pub in_tree_modules_to_remove: Option<Vec<String>>,
     /// KernelMappings is a list of kernel mappings.
     /// When a node's labels match Selector, then the KMM Operator will look for the first mapping that matches its
@@ -2278,11 +1972,7 @@ pub struct ModuleModuleLoaderContainer {
     /// Modprobe is a set of properties to customize which module modprobe loads and with which properties.
     pub modprobe: ModuleModuleLoaderContainerModprobe,
     /// RegistryTLS set the TLS configs for accessing the registry of the module-loader's image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registryTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryTLS")]
     pub registry_tls: Option<ModuleModuleLoaderContainerRegistryTls>,
     /// Sign provides default kmod signing settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2297,11 +1987,7 @@ pub struct ModuleModuleLoaderContainer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleModuleLoaderContainerBuild {
     /// BaseImageRegistryTLS contains settings determining how to access registries of the base images in the build-process' Dockerfile.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseImageRegistryTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImageRegistryTLS")]
     pub base_image_registry_tls: Option<ModuleModuleLoaderContainerBuildBaseImageRegistryTls>,
     /// BuildArgs is an array of build variables that are provided to the image building backend.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildArgs")]
@@ -2310,11 +1996,7 @@ pub struct ModuleModuleLoaderContainerBuild {
     #[serde(rename = "dockerfileConfigMap")]
     pub dockerfile_config_map: ModuleModuleLoaderContainerBuildDockerfileConfigMap,
     /// KanikoParams is used to customize the building process of the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kanikoParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kanikoParams")]
     pub kaniko_params: Option<ModuleModuleLoaderContainerBuildKanikoParams>,
     /// Secrets is an optional list of secrets to be made available to the build system.
     /// Those secrets should be used for private resources such as a private Github repo.
@@ -2333,11 +2015,7 @@ pub struct ModuleModuleLoaderContainerBuildBaseImageRegistryTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     /// If InsecureSkipTLSVerify, the operator will accept any certificate provided by the registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipTLSVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
     pub insecure_skip_tls_verify: Option<bool>,
 }
 
@@ -2394,19 +2072,11 @@ pub struct ModuleModuleLoaderContainerKernelMappings {
     /// Deprecated: please use InTreeModulesToRemove.
     /// InTreeModuleToRemove specifies one in-tree kernel module that should be removed (if present)
     /// before loading the kernel module from the ContainerImage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inTreeModuleToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModuleToRemove")]
     pub in_tree_module_to_remove: Option<String>,
     /// InTreeModulesToRemove specifies any number of  in-tree kernel modules that should be removed (if present)
     /// before loading the kernel module from the ContainerImage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inTreeModulesToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModulesToRemove")]
     pub in_tree_modules_to_remove: Option<Vec<String>>,
     /// Literal defines a literal target kernel version to be matched exactly against node kernels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2415,11 +2085,7 @@ pub struct ModuleModuleLoaderContainerKernelMappings {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regexp: Option<String>,
     /// RegistryTLS set the TLS configs for accessing the registry of the module-loader's image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registryTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryTLS")]
     pub registry_tls: Option<ModuleModuleLoaderContainerKernelMappingsRegistryTls>,
     /// Sign enables in-cluster signing for this mapping
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2430,13 +2096,8 @@ pub struct ModuleModuleLoaderContainerKernelMappings {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleModuleLoaderContainerKernelMappingsBuild {
     /// BaseImageRegistryTLS contains settings determining how to access registries of the base images in the build-process' Dockerfile.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseImageRegistryTLS"
-    )]
-    pub base_image_registry_tls:
-        Option<ModuleModuleLoaderContainerKernelMappingsBuildBaseImageRegistryTls>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImageRegistryTLS")]
+    pub base_image_registry_tls: Option<ModuleModuleLoaderContainerKernelMappingsBuildBaseImageRegistryTls>,
     /// BuildArgs is an array of build variables that are provided to the image building backend.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildArgs")]
     pub build_args: Option<Vec<ModuleModuleLoaderContainerKernelMappingsBuildBuildArgs>>,
@@ -2444,11 +2105,7 @@ pub struct ModuleModuleLoaderContainerKernelMappingsBuild {
     #[serde(rename = "dockerfileConfigMap")]
     pub dockerfile_config_map: ModuleModuleLoaderContainerKernelMappingsBuildDockerfileConfigMap,
     /// KanikoParams is used to customize the building process of the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kanikoParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kanikoParams")]
     pub kaniko_params: Option<ModuleModuleLoaderContainerKernelMappingsBuildKanikoParams>,
     /// Secrets is an optional list of secrets to be made available to the build system.
     /// Those secrets should be used for private resources such as a private Github repo.
@@ -2467,11 +2124,7 @@ pub struct ModuleModuleLoaderContainerKernelMappingsBuildBaseImageRegistryTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     /// If InsecureSkipTLSVerify, the operator will accept any certificate provided by the registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipTLSVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
     pub insecure_skip_tls_verify: Option<bool>,
 }
 
@@ -2522,11 +2175,7 @@ pub struct ModuleModuleLoaderContainerKernelMappingsRegistryTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     /// If InsecureSkipTLSVerify, the operator will accept any certificate provided by the registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipTLSVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
     pub insecure_skip_tls_verify: Option<bool>,
 }
 
@@ -2537,30 +2186,17 @@ pub struct ModuleModuleLoaderContainerKernelMappingsSign {
     #[serde(rename = "certSecret")]
     pub cert_secret: ModuleModuleLoaderContainerKernelMappingsSignCertSecret,
     /// paths inside the image for the kernel modules to sign (if ommited all kmods are signed)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filesToSign"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesToSign")]
     pub files_to_sign: Option<Vec<String>>,
     /// a secret containing the private key used to sign kernel modules for secureboot
     #[serde(rename = "keySecret")]
     pub key_secret: ModuleModuleLoaderContainerKernelMappingsSignKeySecret,
     /// Image to sign, ignored if a Build is present, required otherwise
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unsignedImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unsignedImage")]
     pub unsigned_image: Option<String>,
     /// UnsignedImageRegistryTLS contains settings determining how to access registries of the unsigned image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unsignedImageRegistryTLS"
-    )]
-    pub unsigned_image_registry_tls:
-        Option<ModuleModuleLoaderContainerKernelMappingsSignUnsignedImageRegistryTls>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unsignedImageRegistryTLS")]
+    pub unsigned_image_registry_tls: Option<ModuleModuleLoaderContainerKernelMappingsSignUnsignedImageRegistryTls>,
 }
 
 /// a secret containing the public key used to sign kernel modules for secureboot
@@ -2594,11 +2230,7 @@ pub struct ModuleModuleLoaderContainerKernelMappingsSignUnsignedImageRegistryTls
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     /// If InsecureSkipTLSVerify, the operator will accept any certificate provided by the registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipTLSVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
     pub insecure_skip_tls_verify: Option<bool>,
 }
 
@@ -2615,19 +2247,11 @@ pub struct ModuleModuleLoaderContainerModprobe {
     pub dir_name: Option<String>,
     /// FirmwarePath is the path of the firmware(s).
     /// The firmware(s) will be copied to the host for the kernel to find them.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firmwarePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firmwarePath")]
     pub firmware_path: Option<String>,
     /// ModuleName is the name of the Module to be loaded.
     /// This field can only be unset if rawArgs is set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moduleName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moduleName")]
     pub module_name: Option<String>,
     /// ModulesLoadingOrder defines the dependency between kernel modules loading, in case
     /// it was not created by depmod (independent kernel modules).
@@ -2639,11 +2263,7 @@ pub struct ModuleModuleLoaderContainerModprobe {
     ///    - moduleB
     ///    - moduleC
     /// In order to load all 3 modules, moduleA shoud be defined in the ModuleName parameter of this struct
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modulesLoadingOrder"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modulesLoadingOrder")]
     pub modules_loading_order: Option<Vec<String>>,
     /// Parameters is an optional list of kernel module parameters to be provided to modprobe.
     /// They should be in the form of key=value and will be separated by spaces in the modprobe command.
@@ -2689,11 +2309,7 @@ pub struct ModuleModuleLoaderContainerRegistryTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     /// If InsecureSkipTLSVerify, the operator will accept any certificate provided by the registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipTLSVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
     pub insecure_skip_tls_verify: Option<bool>,
 }
 
@@ -2704,30 +2320,17 @@ pub struct ModuleModuleLoaderContainerSign {
     #[serde(rename = "certSecret")]
     pub cert_secret: ModuleModuleLoaderContainerSignCertSecret,
     /// paths inside the image for the kernel modules to sign (if ommited all kmods are signed)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filesToSign"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesToSign")]
     pub files_to_sign: Option<Vec<String>>,
     /// a secret containing the private key used to sign kernel modules for secureboot
     #[serde(rename = "keySecret")]
     pub key_secret: ModuleModuleLoaderContainerSignKeySecret,
     /// Image to sign, ignored if a Build is present, required otherwise
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unsignedImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unsignedImage")]
     pub unsigned_image: Option<String>,
     /// UnsignedImageRegistryTLS contains settings determining how to access registries of the unsigned image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unsignedImageRegistryTLS"
-    )]
-    pub unsigned_image_registry_tls:
-        Option<ModuleModuleLoaderContainerSignUnsignedImageRegistryTls>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unsignedImageRegistryTLS")]
+    pub unsigned_image_registry_tls: Option<ModuleModuleLoaderContainerSignUnsignedImageRegistryTls>,
 }
 
 /// a secret containing the public key used to sign kernel modules for secureboot
@@ -2761,11 +2364,7 @@ pub struct ModuleModuleLoaderContainerSignUnsignedImageRegistryTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     /// If InsecureSkipTLSVerify, the operator will accept any certificate provided by the registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipTLSVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
     pub insecure_skip_tls_verify: Option<bool>,
 }
 
@@ -2774,11 +2373,7 @@ pub struct ModuleModuleLoaderContainerSignUnsignedImageRegistryTls {
 pub struct ModuleStatus {
     /// DevicePlugin contains the status of the Device Plugin daemonset
     /// if it was deployed during reconciliation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "devicePlugin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "devicePlugin")]
     pub device_plugin: Option<ModuleStatusDevicePlugin>,
     /// ModuleLoader contains the status of the ModuleLoader daemonset
     #[serde(rename = "moduleLoader")]
@@ -2790,25 +2385,13 @@ pub struct ModuleStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleStatusDevicePlugin {
     /// number of the actually deployed and running pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableNumber")]
     pub available_number: Option<i32>,
     /// number of the pods that should be deployed for daemonset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredNumber")]
     pub desired_number: Option<i32>,
     /// number of nodes that are targeted by the module selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodesMatchingSelectorNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodesMatchingSelectorNumber")]
     pub nodes_matching_selector_number: Option<i32>,
 }
 
@@ -2816,24 +2399,13 @@ pub struct ModuleStatusDevicePlugin {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleStatusModuleLoader {
     /// number of the actually deployed and running pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableNumber")]
     pub available_number: Option<i32>,
     /// number of the pods that should be deployed for daemonset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredNumber")]
     pub desired_number: Option<i32>,
     /// number of nodes that are targeted by the module selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodesMatchingSelectorNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodesMatchingSelectorNumber")]
     pub nodes_matching_selector_number: Option<i32>,
 }
+

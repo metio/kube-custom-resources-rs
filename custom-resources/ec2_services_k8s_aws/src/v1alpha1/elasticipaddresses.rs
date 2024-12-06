@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ElasticIPAddressSpec defines the desired state of ElasticIPAddress.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ec2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "ElasticIPAddress",
-    plural = "elasticipaddresses"
-)]
+#[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "ElasticIPAddress", plural = "elasticipaddresses")]
 #[kube(namespaced)]
 #[kube(status = "ElasticIPAddressStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ElasticIPAddressSpec {
     /// [EC2-VPC] The Elastic IP address to recover or an IPv4 address from an address
     /// pool.
@@ -31,36 +26,24 @@ pub struct ElasticIPAddressSpec {
     /// The ID of a customer-owned address pool. Use this parameter to let Amazon
     /// EC2 select an address from the address pool. Alternatively, specify a specific
     /// address from the address pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customerOwnedIPv4Pool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customerOwnedIPv4Pool")]
     pub customer_owned_i_pv4_pool: Option<String>,
     /// A unique set of Availability Zones, Local Zones, or Wavelength Zones from
     /// which Amazon Web Services advertises IP addresses. Use this parameter to
     /// limit the IP address to this location. IP addresses cannot move between network
     /// border groups.
-    ///
+    /// 
     /// Use DescribeAvailabilityZones (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeAvailabilityZones.html)
     /// to view the network border groups.
-    ///
+    /// 
     /// You cannot use a network border group with EC2 Classic. If you attempt this
     /// operation on EC2 Classic, you receive an InvalidParameterCombination error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkBorderGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkBorderGroup")]
     pub network_border_group: Option<String>,
     /// The ID of an address pool that you own. Use this parameter to let Amazon
     /// EC2 select an address from the address pool. To specify a specific address
     /// from the address pool, use the Address parameter instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publicIPv4Pool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicIPv4Pool")]
     pub public_i_pv4_pool: Option<String>,
     /// The tags. The value parameter is required, but if you don't want the tag
     /// to have a value, specify the parameter with no value, and we set the value
@@ -84,19 +67,11 @@ pub struct ElasticIPAddressStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ElasticIPAddressStatusAckResourceMetadata>,
     /// [EC2-VPC] The ID that Amazon Web Services assigns to represent the allocation
     /// of the Elastic IP address for use with instances in a VPC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocationID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocationID")]
     pub allocation_id: Option<String>,
     /// The carrier IP address. This option is only available for network interfaces
     /// which reside in a subnet in a Wavelength Zone (for example an EC2 instance).
@@ -109,11 +84,7 @@ pub struct ElasticIPAddressStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The customer-owned IP address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customerOwnedIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customerOwnedIP")]
     pub customer_owned_ip: Option<String>,
     /// The Elastic IP address.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicIP")]
@@ -141,3 +112,4 @@ pub struct ElasticIPAddressStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

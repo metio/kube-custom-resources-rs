@@ -5,72 +5,39 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// TriggerAuthenticationSpec defines the various ways to authenticate
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "keda.sh",
-    version = "v1alpha1",
-    kind = "TriggerAuthentication",
-    plural = "triggerauthentications"
-)]
+#[kube(group = "keda.sh", version = "v1alpha1", kind = "TriggerAuthentication", plural = "triggerauthentications")]
 #[kube(namespaced)]
 #[kube(status = "TriggerAuthenticationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TriggerAuthenticationSpec {
     /// AwsSecretManager is used to authenticate using AwsSecretManager
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsSecretManager"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsSecretManager")]
     pub aws_secret_manager: Option<TriggerAuthenticationAwsSecretManager>,
     /// AzureKeyVault is used to authenticate using Azure Key Vault
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "azureKeyVault"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureKeyVault")]
     pub azure_key_vault: Option<TriggerAuthenticationAzureKeyVault>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapTargetRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapTargetRef")]
     pub config_map_target_ref: Option<Vec<TriggerAuthenticationConfigMapTargetRef>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<TriggerAuthenticationEnv>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcpSecretManager"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcpSecretManager")]
     pub gcp_secret_manager: Option<TriggerAuthenticationGcpSecretManager>,
     /// HashiCorpVault is used to authenticate using Hashicorp Vault
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hashiCorpVault"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashiCorpVault")]
     pub hashi_corp_vault: Option<TriggerAuthenticationHashiCorpVault>,
     /// AuthPodIdentity allows users to select the platform native identity
     /// mechanism
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentity")]
     pub pod_identity: Option<TriggerAuthenticationPodIdentity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretTargetRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTargetRef")]
     pub secret_target_ref: Option<Vec<TriggerAuthenticationSecretTargetRef>>,
 }
 
@@ -81,11 +48,7 @@ pub struct TriggerAuthenticationAwsSecretManager {
     pub credentials: Option<TriggerAuthenticationAwsSecretManagerCredentials>,
     /// AuthPodIdentity allows users to select the platform native identity
     /// mechanism
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentity")]
     pub pod_identity: Option<TriggerAuthenticationAwsSecretManagerPodIdentity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
@@ -98,11 +61,7 @@ pub struct TriggerAuthenticationAwsSecretManagerCredentials {
     pub access_key: TriggerAuthenticationAwsSecretManagerCredentialsAccessKey,
     #[serde(rename = "accessSecretKey")]
     pub access_secret_key: TriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKey,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<TriggerAuthenticationAwsSecretManagerCredentialsAccessToken>,
 }
 
@@ -115,8 +74,7 @@ pub struct TriggerAuthenticationAwsSecretManagerCredentialsAccessKey {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TriggerAuthenticationAwsSecretManagerCredentialsAccessKeyValueFrom {
     #[serde(rename = "secretKeyRef")]
-    pub secret_key_ref:
-        TriggerAuthenticationAwsSecretManagerCredentialsAccessKeyValueFromSecretKeyRef,
+    pub secret_key_ref: TriggerAuthenticationAwsSecretManagerCredentialsAccessKeyValueFromSecretKeyRef,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -134,8 +92,7 @@ pub struct TriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKey {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKeyValueFrom {
     #[serde(rename = "secretKeyRef")]
-    pub secret_key_ref:
-        TriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKeyValueFromSecretKeyRef,
+    pub secret_key_ref: TriggerAuthenticationAwsSecretManagerCredentialsAccessSecretKeyValueFromSecretKeyRef,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -153,8 +110,7 @@ pub struct TriggerAuthenticationAwsSecretManagerCredentialsAccessToken {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TriggerAuthenticationAwsSecretManagerCredentialsAccessTokenValueFrom {
     #[serde(rename = "secretKeyRef")]
-    pub secret_key_ref:
-        TriggerAuthenticationAwsSecretManagerCredentialsAccessTokenValueFromSecretKeyRef,
+    pub secret_key_ref: TriggerAuthenticationAwsSecretManagerCredentialsAccessTokenValueFromSecretKeyRef,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -168,31 +124,15 @@ pub struct TriggerAuthenticationAwsSecretManagerCredentialsAccessTokenValueFromS
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TriggerAuthenticationAwsSecretManagerPodIdentity {
     /// Set identityAuthorityHost to override the default Azure authority host. If this is set, then the IdentityTenantID must also be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityAuthorityHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityAuthorityHost")]
     pub identity_authority_host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
     pub identity_id: Option<String>,
     /// IdentityOwner configures which identity has to be used during auto discovery, keda or the scaled workload. Mutually exclusive with roleArn
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityOwner"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityOwner")]
     pub identity_owner: Option<TriggerAuthenticationAwsSecretManagerPodIdentityIdentityOwner>,
     /// Set identityTenantId to override the default Azure tenant id. If this is set, then the IdentityID must also be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityTenantId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityTenantId")]
     pub identity_tenant_id: Option<String>,
     /// PodIdentityProvider contains the list of providers
     pub provider: TriggerAuthenticationAwsSecretManagerPodIdentityProvider,
@@ -233,11 +173,7 @@ pub struct TriggerAuthenticationAwsSecretManagerSecrets {
     pub parameter: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionId")]
     pub version_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "versionStage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionStage")]
     pub version_stage: Option<String>,
 }
 
@@ -250,11 +186,7 @@ pub struct TriggerAuthenticationAzureKeyVault {
     pub credentials: Option<TriggerAuthenticationAzureKeyVaultCredentials>,
     /// AuthPodIdentity allows users to select the platform native identity
     /// mechanism
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentity")]
     pub pod_identity: Option<TriggerAuthenticationAzureKeyVaultPodIdentity>,
     pub secrets: Vec<TriggerAuthenticationAzureKeyVaultSecrets>,
     #[serde(rename = "vaultUri")]
@@ -263,17 +195,9 @@ pub struct TriggerAuthenticationAzureKeyVault {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TriggerAuthenticationAzureKeyVaultCloud {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDirectoryEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDirectoryEndpoint")]
     pub active_directory_endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyVaultResourceURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyVaultResourceURL")]
     pub key_vault_resource_url: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -298,8 +222,7 @@ pub struct TriggerAuthenticationAzureKeyVaultCredentialsClientSecret {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TriggerAuthenticationAzureKeyVaultCredentialsClientSecretValueFrom {
     #[serde(rename = "secretKeyRef")]
-    pub secret_key_ref:
-        TriggerAuthenticationAzureKeyVaultCredentialsClientSecretValueFromSecretKeyRef,
+    pub secret_key_ref: TriggerAuthenticationAzureKeyVaultCredentialsClientSecretValueFromSecretKeyRef,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -313,31 +236,15 @@ pub struct TriggerAuthenticationAzureKeyVaultCredentialsClientSecretValueFromSec
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TriggerAuthenticationAzureKeyVaultPodIdentity {
     /// Set identityAuthorityHost to override the default Azure authority host. If this is set, then the IdentityTenantID must also be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityAuthorityHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityAuthorityHost")]
     pub identity_authority_host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
     pub identity_id: Option<String>,
     /// IdentityOwner configures which identity has to be used during auto discovery, keda or the scaled workload. Mutually exclusive with roleArn
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityOwner"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityOwner")]
     pub identity_owner: Option<TriggerAuthenticationAzureKeyVaultPodIdentityIdentityOwner>,
     /// Set identityTenantId to override the default Azure tenant id. If this is set, then the IdentityID must also be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityTenantId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityTenantId")]
     pub identity_tenant_id: Option<String>,
     /// PodIdentityProvider contains the list of providers
     pub provider: TriggerAuthenticationAzureKeyVaultPodIdentityProvider,
@@ -392,11 +299,7 @@ pub struct TriggerAuthenticationConfigMapTargetRef {
 /// in the destination ScaleTarget spec
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TriggerAuthenticationEnv {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     pub name: String,
     pub parameter: String,
@@ -408,11 +311,7 @@ pub struct TriggerAuthenticationGcpSecretManager {
     pub credentials: Option<TriggerAuthenticationGcpSecretManagerCredentials>,
     /// AuthPodIdentity allows users to select the platform native identity
     /// mechanism
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentity")]
     pub pod_identity: Option<TriggerAuthenticationGcpSecretManagerPodIdentity>,
     pub secrets: Vec<TriggerAuthenticationGcpSecretManagerSecrets>,
 }
@@ -432,8 +331,7 @@ pub struct TriggerAuthenticationGcpSecretManagerCredentialsClientSecret {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TriggerAuthenticationGcpSecretManagerCredentialsClientSecretValueFrom {
     #[serde(rename = "secretKeyRef")]
-    pub secret_key_ref:
-        TriggerAuthenticationGcpSecretManagerCredentialsClientSecretValueFromSecretKeyRef,
+    pub secret_key_ref: TriggerAuthenticationGcpSecretManagerCredentialsClientSecretValueFromSecretKeyRef,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -447,31 +345,15 @@ pub struct TriggerAuthenticationGcpSecretManagerCredentialsClientSecretValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TriggerAuthenticationGcpSecretManagerPodIdentity {
     /// Set identityAuthorityHost to override the default Azure authority host. If this is set, then the IdentityTenantID must also be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityAuthorityHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityAuthorityHost")]
     pub identity_authority_host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
     pub identity_id: Option<String>,
     /// IdentityOwner configures which identity has to be used during auto discovery, keda or the scaled workload. Mutually exclusive with roleArn
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityOwner"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityOwner")]
     pub identity_owner: Option<TriggerAuthenticationGcpSecretManagerPodIdentityIdentityOwner>,
     /// Set identityTenantId to override the default Azure tenant id. If this is set, then the IdentityID must also be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityTenantId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityTenantId")]
     pub identity_tenant_id: Option<String>,
     /// PodIdentityProvider contains the list of providers
     pub provider: TriggerAuthenticationGcpSecretManagerPodIdentityProvider,
@@ -535,11 +417,7 @@ pub struct TriggerAuthenticationHashiCorpVault {
 /// Credential defines the Hashicorp Vault credentials depending on the authentication method
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TriggerAuthenticationHashiCorpVaultCredential {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
@@ -562,11 +440,7 @@ pub struct TriggerAuthenticationHashiCorpVaultSecrets {
 pub struct TriggerAuthenticationHashiCorpVaultSecretsPkiData {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "altNames")]
     pub alt_names: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonName")]
     pub common_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
@@ -585,31 +459,15 @@ pub struct TriggerAuthenticationHashiCorpVaultSecretsPkiData {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TriggerAuthenticationPodIdentity {
     /// Set identityAuthorityHost to override the default Azure authority host. If this is set, then the IdentityTenantID must also be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityAuthorityHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityAuthorityHost")]
     pub identity_authority_host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
     pub identity_id: Option<String>,
     /// IdentityOwner configures which identity has to be used during auto discovery, keda or the scaled workload. Mutually exclusive with roleArn
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityOwner"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityOwner")]
     pub identity_owner: Option<TriggerAuthenticationPodIdentityIdentityOwner>,
     /// Set identityTenantId to override the default Azure tenant id. If this is set, then the IdentityID must also be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityTenantId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityTenantId")]
     pub identity_tenant_id: Option<String>,
     /// PodIdentityProvider contains the list of providers
     pub provider: TriggerAuthenticationPodIdentityProvider,
@@ -660,3 +518,4 @@ pub struct TriggerAuthenticationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scaledobjects: Option<String>,
 }
+
