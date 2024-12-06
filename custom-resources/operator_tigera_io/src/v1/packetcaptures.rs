@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired state for the PacketCapture.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "PacketCapture",
-    plural = "packetcaptures"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "PacketCapture", plural = "packetcaptures")]
 #[kube(status = "PacketCaptureStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PacketCaptureSpec {
     /// PacketCaptureDeployment configures the PacketCapture Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packetCaptureDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packetCaptureDeployment")]
     pub packet_capture_deployment: Option<PacketCapturePacketCaptureDeployment>,
 }
 
@@ -69,13 +60,8 @@ pub struct PacketCapturePacketCaptureDeploymentSpecTemplateSpec {
     /// InitContainers is a list of PacketCapture init containers.
     /// If specified, this overrides the specified PacketCapture Deployment init containers.
     /// If omitted, the PacketCapture Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<PacketCapturePacketCaptureDeploymentSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<PacketCapturePacketCaptureDeploymentSpecTemplateSpecInitContainers>>,
 }
 
 /// PacketCaptureDeploymentContainer is a PacketCapture Deployment container.
@@ -109,8 +95,7 @@ pub struct PacketCapturePacketCaptureDeploymentSpecTemplateSpecContainersResourc
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<PacketCapturePacketCaptureDeploymentSpecTemplateSpecContainersResourcesClaims>>,
+    pub claims: Option<Vec<PacketCapturePacketCaptureDeploymentSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -142,8 +127,7 @@ pub struct PacketCapturePacketCaptureDeploymentSpecTemplateSpecInitContainers {
     /// If specified, this overrides the named PacketCapture Deployment init container's resources.
     /// If omitted, the PacketCapture Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<PacketCapturePacketCaptureDeploymentSpecTemplateSpecInitContainersResources>,
+    pub resources: Option<PacketCapturePacketCaptureDeploymentSpecTemplateSpecInitContainersResources>,
 }
 
 /// PacketCaptureDeploymentInitContainer is a PacketCapture Deployment init container.
@@ -164,9 +148,7 @@ pub struct PacketCapturePacketCaptureDeploymentSpecTemplateSpecInitContainersRes
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<PacketCapturePacketCaptureDeploymentSpecTemplateSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<PacketCapturePacketCaptureDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -199,3 +181,4 @@ pub struct PacketCaptureStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "awx.ansible.com",
-    version = "v1beta1",
-    kind = "AWX",
-    plural = "awxs"
-)]
+#[kube(group = "awx.ansible.com", version = "v1beta1", kind = "AWX", plural = "awxs")]
 #[kube(namespaced)]
 #[kube(status = "AWXStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AWXSpec {
     /// Additional labels defined on the resource, which should be propagated to child resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -287,8 +282,7 @@ pub struct AWXSpec {
     pub postgres_init_container_commands: Option<String>,
     /// (Deprecated, use postgres_resource_requirements parameter) Resource requirements for the postgres init container
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub postgres_init_container_resource_requirements:
-        Option<AWXPostgresInitContainerResourceRequirements>,
+    pub postgres_init_container_resource_requirements: Option<AWXPostgresInitContainerResourceRequirements>,
     /// Specify whether or not to keep the old PVC after PostgreSQL upgrades
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_keep_pvc_after_upgrade: Option<bool>,
@@ -552,48 +546,25 @@ pub struct AWXSpec {
 /// If specified, the pod's scheduling constraints
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<AWXAffinityNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<AWXAffinityPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<AWXAffinityPodAntiAffinity>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXAffinityNodeAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    pub preference:
-        AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
@@ -606,8 +577,7 @@ pub struct AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutio
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -615,8 +585,7 @@ pub struct AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutio
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -626,8 +595,7 @@ pub struct AWXAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutio
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms:
-        Vec<AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+    pub node_selector_terms: Vec<AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -639,8 +607,7 @@ pub struct AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -648,8 +615,7 @@ pub struct AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -658,27 +624,16 @@ pub struct AWXAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXAffinityPodAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
@@ -703,8 +658,7 @@ pub struct AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -720,8 +674,7 @@ pub struct AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -730,21 +683,10 @@ pub struct AWXAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
-    pub namespace_selector: Option<
-        AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     #[serde(rename = "topologyKey")]
@@ -760,8 +702,7 @@ pub struct AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionL
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -777,8 +718,7 @@ pub struct AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionN
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -787,27 +727,16 @@ pub struct AWXAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionN
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXAffinityPodAntiAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
@@ -832,8 +761,7 @@ pub struct AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -849,8 +777,7 @@ pub struct AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -859,22 +786,10 @@ pub struct AWXAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecu
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
-    pub namespace_selector: Option<
-        AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     #[serde(rename = "topologyKey")]
@@ -890,8 +805,7 @@ pub struct AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecut
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -907,8 +821,7 @@ pub struct AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecut
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AWXAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -936,11 +849,7 @@ pub struct AWXEeResourceRequirements {
 pub struct AWXEeResourceRequirementsLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -952,11 +861,7 @@ pub struct AWXEeResourceRequirementsLimits {
 pub struct AWXEeResourceRequirementsRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -1053,11 +958,7 @@ pub struct AWXInitContainerResourceRequirements {
 pub struct AWXInitContainerResourceRequirementsLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -1069,11 +970,7 @@ pub struct AWXInitContainerResourceRequirementsLimits {
 pub struct AWXInitContainerResourceRequirementsRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -1185,11 +1082,7 @@ pub struct AWXRedisResourceRequirements {
 pub struct AWXRedisResourceRequirementsLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -1201,11 +1094,7 @@ pub struct AWXRedisResourceRequirementsLimits {
 pub struct AWXRedisResourceRequirementsRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -1236,11 +1125,7 @@ pub struct AWXRsyslogResourceRequirements {
 pub struct AWXRsyslogResourceRequirementsLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -1252,11 +1137,7 @@ pub struct AWXRsyslogResourceRequirementsLimits {
 pub struct AWXRsyslogResourceRequirementsRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -1281,48 +1162,25 @@ pub enum AWXServiceType {
 /// If specified, the pod's scheduling constraints
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXTaskAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<AWXTaskAffinityNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<AWXTaskAffinityPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<AWXTaskAffinityPodAntiAffinity>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXTaskAffinityNodeAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    pub preference:
-        AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
@@ -1335,8 +1193,7 @@ pub struct AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1344,8 +1201,7 @@ pub struct AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1355,9 +1211,7 @@ pub struct AWXTaskAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<
-        AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms,
-    >,
+    pub node_selector_terms: Vec<AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1369,8 +1223,7 @@ pub struct AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1378,8 +1231,7 @@ pub struct AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1388,27 +1240,16 @@ pub struct AWXTaskAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXTaskAffinityPodAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
@@ -1433,8 +1274,7 @@ pub struct AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1450,8 +1290,7 @@ pub struct AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1460,22 +1299,10 @@ pub struct AWXTaskAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecu
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
-    pub namespace_selector: Option<
-        AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     #[serde(rename = "topologyKey")]
@@ -1491,8 +1318,7 @@ pub struct AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecut
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1508,8 +1334,7 @@ pub struct AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecut
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1518,20 +1343,10 @@ pub struct AWXTaskAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecut
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXTaskAffinityPodAntiAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXTaskAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXTaskAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<AWXTaskAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<AWXTaskAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1562,8 +1377,7 @@ pub struct AWXTaskAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AWXTaskAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1579,8 +1393,7 @@ pub struct AWXTaskAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AWXTaskAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1608,8 +1421,7 @@ pub struct AWXTaskAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AWXTaskAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1625,8 +1437,7 @@ pub struct AWXTaskAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXTaskAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AWXTaskAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1646,11 +1457,7 @@ pub struct AWXTaskResourceRequirements {
 pub struct AWXTaskResourceRequirementsLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -1662,11 +1469,7 @@ pub struct AWXTaskResourceRequirementsLimits {
 pub struct AWXTaskResourceRequirementsRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -1677,48 +1480,25 @@ pub struct AWXTaskResourceRequirementsRequests {
 /// If specified, the pod's scheduling constraints
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXWebAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<AWXWebAffinityNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<AWXWebAffinityPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<AWXWebAffinityPodAntiAffinity>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXWebAffinityNodeAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    pub preference:
-        AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
@@ -1731,8 +1511,7 @@ pub struct AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1740,8 +1519,7 @@ pub struct AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1751,9 +1529,7 @@ pub struct AWXWebAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecu
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<
-        AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms,
-    >,
+    pub node_selector_terms: Vec<AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1765,8 +1541,7 @@ pub struct AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecut
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1774,8 +1549,7 @@ pub struct AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecut
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1784,27 +1558,16 @@ pub struct AWXWebAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecut
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXWebAffinityPodAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
@@ -1829,8 +1592,7 @@ pub struct AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecut
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1846,8 +1608,7 @@ pub struct AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecut
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1856,22 +1617,10 @@ pub struct AWXWebAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecut
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
-    pub namespace_selector: Option<
-        AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     #[serde(rename = "topologyKey")]
@@ -1887,8 +1636,7 @@ pub struct AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecuti
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1904,8 +1652,7 @@ pub struct AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecuti
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1914,27 +1661,16 @@ pub struct AWXWebAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecuti
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXWebAffinityPodAntiAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<AWXWebAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<AWXWebAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
@@ -1959,8 +1695,7 @@ pub struct AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringEx
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1976,8 +1711,7 @@ pub struct AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringEx
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AWXWebAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2005,8 +1739,7 @@ pub struct AWXWebAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AWXWebAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2022,8 +1755,7 @@ pub struct AWXWebAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWXWebAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AWXWebAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2043,11 +1775,7 @@ pub struct AWXWebResourceRequirements {
 pub struct AWXWebResourceRequirementsLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -2059,11 +1787,7 @@ pub struct AWXWebResourceRequirementsLimits {
 pub struct AWXWebResourceRequirementsRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeral-storage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeral-storage")]
     pub ephemeral_storage: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
@@ -2077,21 +1801,13 @@ pub struct AWXStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "URL")]
     pub url: Option<String>,
     /// Admin password secret name of the deployed instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPasswordSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPasswordSecret")]
     pub admin_password_secret: Option<String>,
     /// Admin user of the deployed instance
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUser")]
     pub admin_user: Option<String>,
     /// Broadcast websocket secret name of the deployed instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "broadcastWebsocketSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "broadcastWebsocketSecret")]
     pub broadcast_websocket_secret: Option<String>,
     /// The resulting conditions when a Service Telemetry is instantiated
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2100,39 +1816,19 @@ pub struct AWXStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// The secret used for migrating an old instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "migratedFromSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "migratedFromSecret")]
     pub migrated_from_secret: Option<String>,
     /// Postgres Configuration secret name of the deployed instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postgresConfigurationSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postgresConfigurationSecret")]
     pub postgres_configuration_secret: Option<String>,
     /// Secret key secret name of the deployed instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeySecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeySecret")]
     pub secret_key_secret: Option<String>,
     /// Last gated version
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upgradedFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradedFrom")]
     pub upgraded_from: Option<String>,
     /// Status to indicate that the database has been upgraded to the version in the status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upgradedPostgresVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradedPostgresVersion")]
     pub upgraded_postgres_version: Option<String>,
     /// Version of the deployed instance
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2141,11 +1837,7 @@ pub struct AWXStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXStatusConditions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
@@ -2154,3 +1846,4 @@ pub struct AWXStatusConditions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

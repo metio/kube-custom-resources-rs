@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// OVSNetworkSpec defines the desired state of OVSNetwork
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sriovnetwork.openshift.io",
-    version = "v1",
-    kind = "OVSNetwork",
-    plural = "ovsnetworks"
-)]
+#[kube(group = "sriovnetwork.openshift.io", version = "v1", kind = "OVSNetwork", plural = "ovsnetworks")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct OVSNetworkSpec {
     /// name of the OVS bridge, if not set OVS will automatically select bridge
     /// based on VF PCI address
@@ -31,31 +26,19 @@ pub struct OVSNetworkSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<String>,
     /// The type of interface on ovs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "interfaceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceType")]
     pub interface_type: Option<String>,
     /// IPAM configuration to be used for this network.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipam: Option<String>,
     /// MetaPluginsConfig configuration to be used in order to chain metaplugins
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metaPlugins"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metaPlugins")]
     pub meta_plugins: Option<String>,
     /// Mtu for the OVS port
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mtu: Option<i64>,
     /// Namespace of the NetworkAttachmentDefinition custom resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkNamespace")]
     pub network_namespace: Option<String>,
     /// OVS Network device plugin endpoint resource name
     #[serde(rename = "resourceName")]
@@ -81,4 +64,6 @@ pub struct OVSNetworkTrunk {
 
 /// OVSNetworkStatus defines the observed state of OVSNetwork
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OVSNetworkStatus {}
+pub struct OVSNetworkStatus {
+}
+

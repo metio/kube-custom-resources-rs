@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// MetricTemplateSpec defines the desired state of a MetricTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "flagger.app",
-    version = "v1beta1",
-    kind = "MetricTemplate",
-    plural = "metrictemplates"
-)]
+#[kube(group = "flagger.app", version = "v1beta1", kind = "MetricTemplate", plural = "metrictemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct MetricTemplateSpec {
     /// Provider of this metric template
     pub provider: MetricTemplateProvider,
@@ -34,11 +29,7 @@ pub struct MetricTemplateProvider {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
     /// Disable SSL certificate validation for the provider address
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Region of the provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -80,3 +71,4 @@ pub enum MetricTemplateProviderType {
     #[serde(rename = "keptn")]
     Keptn,
 }
+

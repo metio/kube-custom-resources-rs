@@ -4,41 +4,28 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "scheduling.koordinator.sh",
-    version = "v1alpha1",
-    kind = "Reservation",
-    plural = "reservations"
-)]
+#[kube(group = "scheduling.koordinator.sh", version = "v1alpha1", kind = "Reservation", plural = "reservations")]
 #[kube(status = "ReservationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ReservationSpec {
     /// When `AllocateOnce` is set, the reserved resources are only available for the first owner who allocates successfully
     /// and are not allocatable to other owners anymore. Defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateOnce"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateOnce")]
     pub allocate_once: Option<bool>,
     /// AllocatePolicy represents the allocation policy of reserved resources that Reservation expects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocatePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatePolicy")]
     pub allocate_policy: Option<ReservationAllocatePolicy>,
     /// Expired timestamp when the reservation is expected to expire.
     /// If both `expires` and `ttl` are set, `expires` is checked first.
@@ -52,11 +39,7 @@ pub struct ReservationSpec {
     /// node has sufficient free resources (i.e. Reservation Request <  Node Free).
     /// When `preAllocation` is set, the scheduler will skip this validation and allow overcommitment. The scheduled
     /// reservation would be waiting to be available until free resources are sufficient.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preAllocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preAllocation")]
     pub pre_allocation: Option<bool>,
     /// Specifies the reservation's taints. This can be toleranted by the reservation tolerance.
     /// Eviction is not supported for NoExecute taints
@@ -90,11 +73,7 @@ pub struct ReservationOwners {
     /// A label selector is a label query over a set of resources. The result of matchLabels and
     /// matchExpressions are ANDed. An empty label selector matches all objects. A null
     /// label selector matches no objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ReservationOwnersLabelSelector>,
     /// Multiple field selectors are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -114,11 +93,7 @@ pub struct ReservationOwnersController {
     /// Defaults to false.
     /// To set this field, a user needs "delete" permission of the owner,
     /// otherwise 422 (Unprocessable Entity) will be returned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockOwnerDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockOwnerDeletion")]
     pub block_owner_deletion: Option<bool>,
     /// If true, this reference points to the managing controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -142,20 +117,12 @@ pub struct ReservationOwnersController {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReservationOwnersLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ReservationOwnersLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -180,11 +147,7 @@ pub struct ReservationOwnersLabelSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReservationOwnersObject {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -210,11 +173,7 @@ pub struct ReservationOwnersObject {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -253,11 +212,7 @@ pub struct ReservationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Current resource owners which allocated the reservation resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentOwners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentOwners")]
     pub current_owners: Option<Vec<ObjectReference>>,
     /// Name of node the reservation is scheduled on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
@@ -267,3 +222,4 @@ pub struct ReservationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

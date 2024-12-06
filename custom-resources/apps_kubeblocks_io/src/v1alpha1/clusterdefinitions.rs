@@ -4,46 +4,37 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// ClusterDefinitionSpec defines the desired state of ClusterDefinition.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.kubeblocks.io",
-    version = "v1alpha1",
-    kind = "ClusterDefinition",
-    plural = "clusterdefinitions"
-)]
+#[kube(group = "apps.kubeblocks.io", version = "v1alpha1", kind = "ClusterDefinition", plural = "clusterdefinitions")]
 #[kube(status = "ClusterDefinitionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterDefinitionSpec {
     /// Provides the definitions for the cluster components.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated since v0.9.
     /// Components should now be individually defined using ComponentDefinition and
     /// collectively referenced via `topology.components`.
     /// This field is maintained for backward compatibility and its use is discouraged.
     /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentDefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefs")]
     pub component_defs: Option<Vec<ClusterDefinitionComponentDefs>>,
     /// Connection credential template used for creating a connection credential secret for cluster objects.
-    ///
-    ///
+    /// 
+    /// 
     /// Built-in objects are:
-    ///
-    ///
+    /// 
+    /// 
     /// - `$(RANDOM_PASSWD)` random 8 characters.
     /// - `$(STRONG_RANDOM_PASSWD)` random 16 characters, with mixed cases, digits and symbols.
     /// - `$(UUID)` generate a random UUID v4 string.
@@ -57,23 +48,19 @@ pub struct ClusterDefinitionSpec {
     /// - `$(SVC_PORT_{PORT-NAME})` is ServicePort's port value with specified port name, i.e, a servicePort JSON struct:
     ///    `{"name": "mysql", "targetPort": "mysqlContainerPort", "port": 3306}`, and `$(SVC_PORT_mysql)` in the
     ///    connection credential value is 3306.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated since v0.9.
     /// This field is maintained for backward compatibility and its use is discouraged.
     /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionCredential"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<BTreeMap<String, String>>,
     /// Topologies defines all possible topologies within the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topologies: Option<Vec<ClusterDefinitionTopologies>>,
     /// Specifies the well-known database type, such as mysql, redis, or mongodb.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated since v0.9.
     /// This field is maintained for backward compatibility and its use is discouraged.
     /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
@@ -83,46 +70,26 @@ pub struct ClusterDefinitionSpec {
 
 /// ClusterComponentDefinition defines a Component within a ClusterDefinition but is deprecated and
 /// has been replaced by ComponentDefinition.
-///
-///
+/// 
+/// 
 /// Deprecated: Use ComponentDefinition instead. This type is deprecated as of version 0.8.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefs {
     /// Defines well-known database component name, such as mongos(mongodb), proxy(redis), mariadb(mysql).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "characterType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "characterType")]
     pub character_type: Option<String>,
     /// Used to inject values from other components into the current component. Values will be saved and updated in a
     /// configmap and mounted to the current component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentDefRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefRef")]
     pub component_def_ref: Option<Vec<ClusterDefinitionComponentDefsComponentDefRef>>,
     /// Defines the template of configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configSpecs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSpecs")]
     pub config_specs: Option<Vec<ClusterDefinitionComponentDefsConfigSpecs>>,
     /// Defines spec for `Consensus` workloads. It's required if the workload type is `Consensus`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consensusSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consensusSpec")]
     pub consensus_spec: Option<ClusterDefinitionComponentDefsConsensusSpec>,
     /// Used for custom label tags which you want to add to the component resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customLabelSpecs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customLabelSpecs")]
     pub custom_label_specs: Option<Vec<ClusterDefinitionComponentDefsCustomLabelSpecs>>,
     /// Description of the component definition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -131,18 +98,10 @@ pub struct ClusterDefinitionComponentDefs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exporter: Option<ClusterDefinitionComponentDefsExporter>,
     /// Defines the behavior of horizontal scale.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "horizontalScalePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "horizontalScalePolicy")]
     pub horizontal_scale_policy: Option<ClusterDefinitionComponentDefsHorizontalScalePolicy>,
     /// Specify the logging files which can be observed and configured by cluster users.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logConfigs")]
     pub log_configs: Option<Vec<ClusterDefinitionComponentDefsLogConfigs>>,
     /// Deprecated since v0.9
     /// monitor is monitoring config which provided by provider.
@@ -157,21 +116,13 @@ pub struct ClusterDefinitionComponentDefs {
     pub pod_spec: Option<ClusterDefinitionComponentDefsPodSpec>,
     /// Defines the command to be executed when the component is ready, and the command will only be executed once after
     /// the component becomes ready.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postStartSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStartSpec")]
     pub post_start_spec: Option<ClusterDefinitionComponentDefsPostStartSpec>,
     /// Settings for health checks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub probes: Option<ClusterDefinitionComponentDefsProbes>,
     /// Defines spec for `Replication` workloads.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationSpec")]
     pub replication_spec: Option<ClusterDefinitionComponentDefsReplicationSpec>,
     /// Defines workload spec of this component.
     /// From KB 0.7.0, RSM(InstanceSetSpec) will be the underlying CR which powers all kinds of workload in KB.
@@ -179,82 +130,50 @@ pub struct ClusterDefinitionComponentDefs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rsmSpec")]
     pub rsm_spec: Option<ClusterDefinitionComponentDefsRsmSpec>,
     /// Defines the template of scripts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scriptSpecs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecs")]
     pub script_specs: Option<Vec<ClusterDefinitionComponentDefsScriptSpecs>>,
     /// Defines the service spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<ClusterDefinitionComponentDefsService>,
     /// Used to declare the service reference of the current component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceRefDeclarations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRefDeclarations")]
     pub service_ref_declarations: Option<Vec<ClusterDefinitionComponentDefsServiceRefDeclarations>>,
     /// Defines spec for `Stateful` workloads.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statefulSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statefulSpec")]
     pub stateful_spec: Option<ClusterDefinitionComponentDefsStatefulSpec>,
     /// Defines spec for `Stateless` workloads.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statelessSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statelessSpec")]
     pub stateless_spec: Option<ClusterDefinitionComponentDefsStatelessSpec>,
     /// Defines command to do switchover.
     /// In particular, when workloadType=Replication, the command defined in switchoverSpec will only be executed under
     /// the condition of cluster.componentSpecs[x].SwitchPolicy.type=Noop.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "switchoverSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchoverSpec")]
     pub switchover_spec: Option<ClusterDefinitionComponentDefsSwitchoverSpec>,
     /// Defines system accounts needed to manage the component, and the statement to create them.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemAccounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemAccounts")]
     pub system_accounts: Option<ClusterDefinitionComponentDefsSystemAccounts>,
     /// Defines settings to do volume protect.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeProtectionSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeProtectionSpec")]
     pub volume_protection_spec: Option<ClusterDefinitionComponentDefsVolumeProtectionSpec>,
     /// Used to describe the purpose of the volumes mapping the name of the VolumeMounts in the PodSpec.Container field,
     /// such as data volume, log volume, etc. When backing up the volume, the volume can be correctly backed up according
     /// to the volumeType.
-    ///
-    ///
+    /// 
+    /// 
     /// For example:
-    ///
-    ///
+    /// 
+    /// 
     /// - `name: data, type: data` means that the volume named `data` is used to store `data`.
     /// - `name: binlog, type: log` means that the volume named `binlog` is used to store `log`.
-    ///
-    ///
+    /// 
+    /// 
     /// NOTE: When volumeTypes is not defined, the backup function will not be supported, even if a persistent volume has
     /// been specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeTypes")]
     pub volume_types: Option<Vec<ClusterDefinitionComponentDefsVolumeTypes>>,
     /// Defines the type of the workload.
-    ///
-    ///
+    /// 
+    /// 
     /// - `Stateless` describes stateless applications.
     /// - `Stateful` describes common stateful applications.
     /// - `Consensus` describes applications based on consensus protocols, such as raft and paxos.
@@ -264,8 +183,8 @@ pub struct ClusterDefinitionComponentDefs {
 }
 
 /// ComponentDefRef is used to select the component and its fields to be referenced.
-///
-///
+/// 
+/// 
 /// Deprecated since v0.8.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsComponentDefRef {
@@ -273,25 +192,16 @@ pub struct ClusterDefinitionComponentDefsComponentDefRef {
     #[serde(rename = "componentDefName")]
     pub component_def_name: String,
     /// The values that are to be injected as environment variables into each component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentRefEnv"
-    )]
-    pub component_ref_env:
-        Option<Vec<ClusterDefinitionComponentDefsComponentDefRefComponentRefEnv>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentRefEnv")]
+    pub component_ref_env: Option<Vec<ClusterDefinitionComponentDefsComponentDefRefComponentRefEnv>>,
     /// Defines the policy to be followed in case of a failure in finding the component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failurePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<String>,
 }
 
 /// ComponentRefEnv specifies name and value of an env.
-///
-///
+/// 
+/// 
 /// Deprecated since v0.8.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsComponentDefRefComponentRefEnv {
@@ -310,16 +220,16 @@ pub struct ClusterDefinitionComponentDefsComponentDefRefComponentRefEnv {
 pub struct ClusterDefinitionComponentDefsComponentDefRefComponentRefEnvValueFrom {
     /// The jsonpath of the source to select when the Type is `FieldRef`.
     /// Two objects are registered in the jsonpath: `componentDef` and `components`:
-    ///
-    ///
+    /// 
+    /// 
     /// - `componentDef` is the component definition object specified in `componentRef.componentDefName`.
     /// - `components` are the component list objects referring to the component definition object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Defines the format of each headless service address.
     /// Three builtin variables can be used as placeholders: `$POD_ORDINAL`, `$POD_FQDN`, `$POD_NAME`
-    ///
-    ///
+    /// 
+    /// 
     /// - `$POD_ORDINAL` represents the ordinal of the pod.
     /// - `$POD_FQDN` represents the fully qualified domain name of the pod.
     /// - `$POD_NAME` represents the name of the pod.
@@ -336,17 +246,17 @@ pub struct ClusterDefinitionComponentDefsComponentDefRefComponentRefEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsConfigSpecs {
     /// Specifies the containers to inject the ConfigMap parameters as environment variables.
-    ///
-    ///
+    /// 
+    /// 
     /// This is useful when application images accept parameters through environment variables and
     /// generate the final configuration file in the startup script based on these variables.
-    ///
-    ///
+    /// 
+    /// 
     /// This field allows users to specify a list of container names, and KubeBlocks will inject the environment
     /// variables converted from the ConfigMap into these designated containers. This provides a flexible way to
     /// pass the configuration items from the ConfigMap to the container without modifying the image.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated: `asEnvFrom` has been deprecated since 0.9.0 and will be removed in 0.10.0.
     /// Use `injectEnvTo` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asEnvFrom")]
@@ -355,84 +265,67 @@ pub struct ClusterDefinitionComponentDefsConfigSpecs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asSecret")]
     pub as_secret: Option<bool>,
     /// Specifies the name of the referenced configuration constraints object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "constraintRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintRef")]
     pub constraint_ref: Option<String>,
     /// The operator attempts to set default file permissions for scripts (0555) and configurations (0444).
     /// However, certain database engines may require different file permissions.
     /// You can specify the desired file permissions here.
-    ///
-    ///
+    /// 
+    /// 
     /// Must be specified as an octal value between 0000 and 0777 (inclusive),
     /// or as a decimal value between 0 and 511 (inclusive).
     /// YAML supports both octal and decimal values for file permissions.
-    ///
-    ///
+    /// 
+    /// 
     /// Please note that this setting only affects the permissions of the files themselves.
     /// Directories within the specified path are not impacted by this setting.
     /// It's important to be aware that this setting might conflict with other options
     /// that influence the file mode, such as fsGroup.
     /// In such cases, the resulting file mode may have additional bits set.
     /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Specifies the containers to inject the ConfigMap parameters as environment variables.
-    ///
-    ///
+    /// 
+    /// 
     /// This is useful when application images accept parameters through environment variables and
     /// generate the final configuration file in the startup script based on these variables.
-    ///
-    ///
+    /// 
+    /// 
     /// This field allows users to specify a list of container names, and KubeBlocks will inject the environment
     /// variables converted from the ConfigMap into these designated containers. This provides a flexible way to
     /// pass the configuration items from the ConfigMap to the container without modifying the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "injectEnvTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "injectEnvTo")]
     pub inject_env_to: Option<Vec<String>>,
     /// Specifies the configuration files within the ConfigMap that support dynamic updates.
-    ///
-    ///
+    /// 
+    /// 
     /// A configuration template (provided in the form of a ConfigMap) may contain templates for multiple
     /// configuration files.
     /// Each configuration file corresponds to a key in the ConfigMap.
     /// Some of these configuration files may support dynamic modification and reloading without requiring
     /// a pod restart.
-    ///
-    ///
+    /// 
+    /// 
     /// If empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates,
     /// and ConfigConstraint applies to all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<Vec<String>>,
     /// Specifies the secondary rendered config spec for pod-specific customization.
-    ///
-    ///
+    /// 
+    /// 
     /// The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main
     /// template's render result to generate the final configuration file.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is intended to handle scenarios where different pods within the same Component have
     /// varying configurations. It allows for pod-specific customization of the configuration.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field will be deprecated in future versions, and the functionality will be moved to
     /// `cluster.spec.componentSpecs[*].instances[*]`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "legacyRenderedConfigSpec"
-    )]
-    pub legacy_rendered_config_spec:
-        Option<ClusterDefinitionComponentDefsConfigSpecsLegacyRenderedConfigSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "legacyRenderedConfigSpec")]
+    pub legacy_rendered_config_spec: Option<ClusterDefinitionComponentDefsConfigSpecsLegacyRenderedConfigSpec>,
     /// Specifies the name of the configuration template.
     pub name: String,
     /// Specifies the namespace of the referenced configuration template ConfigMap object.
@@ -440,50 +333,38 @@ pub struct ClusterDefinitionComponentDefsConfigSpecs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes.
-    ///
-    ///
+    /// 
+    /// 
     /// In some scenarios, the configuration may need to be updated to reflect the changes in resource allocation
     /// or cluster topology. Examples:
-    ///
-    ///
+    /// 
+    /// 
     /// - Redis: adjust maxmemory after v-scale operation.
     /// - MySQL: increase max connections after v-scale operation.
     /// - Zookeeper: update zoo.cfg with new node addresses after h-scale operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reRenderResourceTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reRenderResourceTypes")]
     pub re_render_resource_types: Option<Vec<String>>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
     pub template_ref: Option<String>,
     /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration
     /// template will be mounted to the corresponding volume. Must be a DNS_LABEL name.
     /// The volume name must be defined in podSpec.containers[*].volumeMounts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
 /// Specifies the secondary rendered config spec for pod-specific customization.
-///
-///
+/// 
+/// 
 /// The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main
 /// template's render result to generate the final configuration file.
-///
-///
+/// 
+/// 
 /// This field is intended to handle scenarios where different pods within the same Component have
 /// varying configurations. It allows for pod-specific customization of the configuration.
-///
-///
+/// 
+/// 
 /// Note: This field will be deprecated in future versions, and the functionality will be moved to
 /// `cluster.spec.componentSpecs[*].instances[*]`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -501,16 +382,16 @@ pub struct ClusterDefinitionComponentDefsConfigSpecsLegacyRenderedConfigSpec {
 }
 
 /// Specifies the secondary rendered config spec for pod-specific customization.
-///
-///
+/// 
+/// 
 /// The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main
 /// template's render result to generate the final configuration file.
-///
-///
+/// 
+/// 
 /// This field is intended to handle scenarios where different pods within the same Component have
 /// varying configurations. It allows for pod-specific customization of the configuration.
-///
-///
+/// 
+/// 
 /// Note: This field will be deprecated in future versions, and the functionality will be moved to
 /// `cluster.spec.componentSpecs[*].instances[*]`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -535,40 +416,28 @@ pub struct ClusterDefinitionComponentDefsConsensusSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub learner: Option<ClusterDefinitionComponentDefsConsensusSpecLearner>,
     /// Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.
-    ///
-    ///
+    /// 
+    /// 
     /// - `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod
     /// is ready before continuing. Pods are removed in reverse order when scaling down.
     /// - `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once
     /// when scaling down.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "llPodManagementPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "llPodManagementPolicy")]
     pub ll_pod_management_policy: Option<String>,
     /// Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a
     /// revision to the Template.
     /// `UpdateStrategy` will be ignored if this is provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "llUpdateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "llUpdateStrategy")]
     pub ll_update_strategy: Option<ClusterDefinitionComponentDefsConsensusSpecLlUpdateStrategy>,
     /// Specifies the strategy for updating Pods.
     /// For workloadType=`Consensus`, the update strategy can be one of the following:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Serial`: Updates Members sequentially to minimize component downtime.
     /// - `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online
     /// at all times.
     /// - `Parallel`: Forces parallel updates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterDefinitionComponentDefsConsensusSpecUpdateStrategy>,
 }
 
@@ -644,13 +513,8 @@ pub enum ClusterDefinitionComponentDefsConsensusSpecLearnerAccessMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsConsensusSpecLlUpdateStrategy {
     /// RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
-    pub rolling_update:
-        Option<ClusterDefinitionComponentDefsConsensusSpecLlUpdateStrategyRollingUpdate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<ClusterDefinitionComponentDefsConsensusSpecLlUpdateStrategyRollingUpdate>,
     /// Type indicates the type of the StatefulSetUpdateStrategy.
     /// Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -667,11 +531,7 @@ pub struct ClusterDefinitionComponentDefsConsensusSpecLlUpdateStrategyRollingUpd
     /// MaxUnavailableStatefulSet feature. The field applies to all pods in the range 0 to
     /// Replicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it
     /// will be counted towards MaxUnavailable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// Partition indicates the ordinal at which the StatefulSet should be partitioned
     /// for updates. During a rolling update, all pods from ordinal Replicas-1 to
@@ -717,35 +577,19 @@ pub struct ClusterDefinitionComponentDefsCustomLabelSpecsResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsExporter {
     /// Specifies the name of the built-in metrics exporter container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the http/https url path to scrape for metrics.
     /// If empty, Prometheus uses the default value (e.g. `/metrics`).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapePath")]
     pub scrape_path: Option<String>,
     /// Specifies the port name to scrape for metrics.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapePort")]
     pub scrape_port: Option<String>,
     /// Specifies the schema to use for scraping.
     /// `http` and `https` are the expected values unless you rewrite the `__scheme__` label via relabeling.
     /// If empty, Prometheus uses the default value `http`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeScheme"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeScheme")]
     pub scrape_scheme: Option<ClusterDefinitionComponentDefsExporterScrapeScheme>,
 }
 
@@ -762,16 +606,12 @@ pub enum ClusterDefinitionComponentDefsExporterScrapeScheme {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsHorizontalScalePolicy {
     /// Refers to the backup policy template.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupPolicyTemplateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPolicyTemplateName")]
     pub backup_policy_template_name: Option<String>,
     /// Determines the data synchronization method when a component scales out.
     /// The policy can be one of the following: {None, CloneVolume}. The default policy is `None`.
-    ///
-    ///
+    /// 
+    /// 
     /// - `None`: This is the default policy. It creates an empty volume without data cloning.
     /// - `CloneVolume`: This policy clones data to newly scaled pods. It first tries to use a volume snapshot.
     ///   If volume snapshot is not enabled, it will attempt to use a backup tool. If neither method works, it will report an error.
@@ -780,11 +620,7 @@ pub struct ClusterDefinitionComponentDefsHorizontalScalePolicy {
     pub r#type: Option<ClusterDefinitionComponentDefsHorizontalScalePolicyType>,
     /// Specifies the volumeMount of the container to backup.
     /// This only works if Type is not None. If not specified, the first volumeMount will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMountsName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMountsName")]
     pub volume_mounts_name: Option<String>,
 }
 
@@ -800,11 +636,11 @@ pub enum ClusterDefinitionComponentDefsHorizontalScalePolicyType {
 pub struct ClusterDefinitionComponentDefsLogConfigs {
     /// Specifies the paths or patterns identifying where the log files are stored.
     /// This field allows the system to locate and manage log files effectively.
-    ///
-    ///
+    /// 
+    /// 
     /// Examples:
-    ///
-    ///
+    /// 
+    /// 
     /// - /home/postgres/pgdata/pgroot/data/log/postgresql-*
     /// - /data/mysql/log/mysqld-error.log
     #[serde(rename = "filePathPattern")]
@@ -825,11 +661,7 @@ pub struct ClusterDefinitionComponentDefsMonitor {
     pub built_in: Option<bool>,
     /// exporterConfig provided by provider, which specify necessary information to Time Series Database.
     /// exporterConfig is valid when builtIn is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exporterConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exporterConfig")]
     pub exporter_config: Option<ClusterDefinitionComponentDefsMonitorExporterConfig>,
 }
 
@@ -838,11 +670,7 @@ pub struct ClusterDefinitionComponentDefsMonitor {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsMonitorExporterConfig {
     /// scrapePath is exporter url path for Time Series Database to scrape metrics.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapePath")]
     pub scrape_path: Option<String>,
     /// scrapePort is exporter port for Time Series Database to scrape metrics.
     #[serde(rename = "scrapePort")]
@@ -855,21 +683,13 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
     /// Optional duration in seconds the pod may be active on the node relative to
     /// StartTime before the system will actively try to mark it failed and kill associated containers.
     /// Value must be a positive integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// If specified, the pod's scheduling constraints
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ClusterDefinitionComponentDefsPodSpecAffinity>,
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     /// List of containers belonging to the pod.
     /// Containers cannot currently be added or removed.
@@ -892,29 +712,17 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
     /// EnableServiceLinks indicates whether information about services should be injected into pod's
     /// environment variables, matching the syntax of Docker links.
     /// Optional: Defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableServiceLinks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
     /// List of ephemeral containers run in this pod. Ephemeral containers may be run in an existing
     /// pod to perform user-initiated actions such as debugging. This list cannot be specified when
     /// creating a pod, and it cannot be modified by updating the pod spec. In order to add an
     /// ephemeral container to an existing pod, use the pod's ephemeralcontainers subresource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeralContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralContainers")]
     pub ephemeral_containers: Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainers>>,
     /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts
     /// file if specified. This is only valid for non-hostNetwork pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<ClusterDefinitionComponentDefsPodSpecHostAliases>>,
     /// Use the host's ipc namespace.
     /// Optional: Default to false.
@@ -923,11 +731,7 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
     /// Host networking requested for this pod. Use the host's network namespace.
     /// If this option is set, the ports that will be used must be specified.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// Use the host's pid namespace.
     /// Optional: Default to false.
@@ -951,11 +755,7 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
     /// If specified, these secrets will be passed to individual puller implementations for them to use.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<ClusterDefinitionComponentDefsPodSpecImagePullSecrets>>,
     /// List of initialization containers belonging to the pod.
     /// Init containers are executed in order prior to containers being started. If any
@@ -970,11 +770,7 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
     /// Init containers cannot currently be added or removed.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainers>>,
     /// NodeName is a request to schedule this pod onto a specific node. If it is non-empty,
     /// the scheduler simply schedules this pod onto that node, assuming that it fits resource
@@ -984,20 +780,16 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Specifies the OS of the containers in the pod.
     /// Some pod and container fields are restricted if this is set.
-    ///
-    ///
+    /// 
+    /// 
     /// If the OS field is set to linux, the following fields must be unset:
     /// -securityContext.windowsOptions
-    ///
-    ///
+    /// 
+    /// 
     /// If the OS field is set to windows, following fields must be unset:
     /// - spec.hostPID
     /// - spec.hostIPC
@@ -1034,11 +826,7 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
     /// PreemptionPolicy is the Policy for preempting pods with lower priority.
     /// One of Never, PreemptLowerPriority.
     /// Defaults to PreemptLowerPriority if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
     pub preemption_policy: Option<String>,
     /// The priority value. Various system components use this field to find the
     /// priority of the pod. When Priority Admission Controller is enabled, it
@@ -1053,128 +841,80 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
     /// name must be defined by creating a PriorityClass object with that name.
     /// If not specified, the pod priority will be default or zero if there is no
     /// default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// If specified, all readiness gates will be evaluated for pod readiness.
     /// A pod is ready when all its containers are ready AND
     /// all conditions specified in the readiness gates have status equal to "True"
     /// More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gates
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<ClusterDefinitionComponentDefsPodSpecReadinessGates>>,
     /// ResourceClaims defines which ResourceClaims must be allocated
     /// and reserved before the Pod is allowed to start. The resources
     /// will be made available to those containers which consume them
     /// by name.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaims"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<ClusterDefinitionComponentDefsPodSpecResourceClaims>>,
     /// Restart policy for all containers within the pod.
     /// One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted.
     /// Default to Always.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used
     /// to run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.
     /// If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an
     /// empty definition that uses the default runtime handler.
     /// More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     /// If specified, the pod will be dispatched by specified scheduler.
     /// If not specified, the pod will be dispatched by default scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// SchedulingGates is an opaque list of values that if specified will block scheduling the pod.
     /// If schedulingGates is not empty, the pod will stay in the SchedulingGated state and the
     /// scheduler will not attempt to schedule the pod.
-    ///
-    ///
+    /// 
+    /// 
     /// SchedulingGates can only be set at pod creation time, and be removed only afterwards.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta feature enabled by the PodSchedulingReadiness feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
     pub scheduling_gates: Option<Vec<ClusterDefinitionComponentDefsPodSpecSchedulingGates>>,
     /// SecurityContext holds pod-level security attributes and common container settings.
     /// Optional: Defaults to empty.  See type description for default values of each field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ClusterDefinitionComponentDefsPodSpecSecurityContext>,
     /// DeprecatedServiceAccount is a depreciated alias for ServiceAccountName.
     /// Deprecated: Use serviceAccountName instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// If true the pod's hostname will be configured as the pod's FQDN, rather than the leaf name (the default).
     /// In Linux containers, this means setting the FQDN in the hostname field of the kernel (the nodename field of struct utsname).
     /// In Windows containers, this means setting the registry value of hostname for the registry key HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters to FQDN.
     /// If a pod does not have FQDN, this has no effect.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setHostnameAsFQDN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
     /// Share a single process namespace between all of the containers in a pod.
     /// When this is set containers will be able to view and signal processes from other containers
     /// in the same pod, and the first process in each container will not be assigned PID 1.
     /// HostPID and ShareProcessNamespace cannot both be set.
     /// Optional: Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     /// If specified, the fully qualified Pod hostname will be "<hostname>.<subdomain>.<pod namespace>.svc.<cluster domain>".
     /// If not specified, the pod will not have a domainname at all.
@@ -1188,11 +928,7 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
     /// Set this value longer than the expected cleanup time for your process.
     /// Defaults to 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1200,13 +936,8 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
     /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraints>>,
     /// List of volumes that can be mounted by containers belonging to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1217,25 +948,13 @@ pub struct ClusterDefinitionComponentDefsPodSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<ClusterDefinitionComponentDefsPodSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinity>,
 }
 
@@ -1286,8 +1005,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityPreferredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1305,8 +1023,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityPreferredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1349,8 +1066,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityRequiredDuri
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1368,8 +1084,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityRequiredDuri
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1488,8 +1203,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityPreferredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1523,8 +1237,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityPreferredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1611,8 +1324,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityRequiredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1646,8 +1358,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityRequiredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1765,8 +1476,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityPreferred
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1800,8 +1510,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityPreferred
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1888,8 +1597,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityRequiredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1923,8 +1631,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityRequiredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1984,11 +1691,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -1998,11 +1701,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ClusterDefinitionComponentDefsPodSpecContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -2021,18 +1720,10 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ClusterDefinitionComponentDefsPodSpecContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -2054,20 +1745,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ClusterDefinitionComponentDefsPodSpecContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -2076,11 +1759,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ClusterDefinitionComponentDefsPodSpecContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -2103,11 +1782,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -2116,40 +1791,24 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -2178,34 +1837,19 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -2228,11 +1872,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromConfigMapK
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2244,11 +1884,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2276,11 +1912,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersEnvValueFromSecretKeyR
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ClusterDefinitionComponentDefsPodSpecContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2358,8 +1990,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersLifecyclePostStart {
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecContainersLifecyclePostStartTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -2382,14 +2013,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersLifecyclePostStartHttp
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ClusterDefinitionComponentDefsPodSpecContainersLifecyclePostStartHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2458,8 +2083,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersLifecyclePreStop {
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecContainersLifecyclePreStopTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -2482,14 +2106,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersLifecyclePreStopHttpGe
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ClusterDefinitionComponentDefsPodSpecContainersLifecyclePreStopHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2545,11 +2163,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersLivenessProbe {
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2559,27 +2173,15 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersLivenessProbe {
     pub http_get: Option<ClusterDefinitionComponentDefsPodSpecContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2594,20 +2196,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2630,8 +2224,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2645,13 +2239,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2725,11 +2314,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersReadinessProbe {
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2739,27 +2324,15 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersReadinessProbe {
     pub http_get: Option<ClusterDefinitionComponentDefsPodSpecContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2774,20 +2347,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2810,8 +2375,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2825,14 +2390,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersReadinessProbeHttpGet 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ClusterDefinitionComponentDefsPodSpecContainersReadinessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2888,12 +2447,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersResizePolicy {
 pub struct ClusterDefinitionComponentDefsPodSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersResourcesClaims>>,
@@ -2930,18 +2489,13 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<ClusterDefinitionComponentDefsPodSpecContainersSecurityContextCapabilities>,
+    pub capabilities: Option<ClusterDefinitionComponentDefsPodSpecContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -2958,22 +2512,14 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -2981,11 +2527,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -2999,35 +2541,20 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<ClusterDefinitionComponentDefsPodSpecContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ClusterDefinitionComponentDefsPodSpecContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<ClusterDefinitionComponentDefsPodSpecContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ClusterDefinitionComponentDefsPodSpecContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<ClusterDefinitionComponentDefsPodSpecContainersSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ClusterDefinitionComponentDefsPodSpecContainersSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -3074,16 +2601,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersSecurityContextSeccomp
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3100,38 +2623,22 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersSecurityContextWindows
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3149,11 +2656,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersStartupProbe {
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3163,27 +2666,15 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersStartupProbe {
     pub http_get: Option<ClusterDefinitionComponentDefsPodSpecContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -3198,20 +2689,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3234,8 +2717,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3249,13 +2732,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -3312,11 +2790,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -3332,11 +2806,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3378,8 +2848,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecDnsConfigOptions {
 /// scheduling guarantees, and they will not be restarted when they exit or when a Pod is
 /// removed or restarted. The kubelet may evict a Pod if an ephemeral container causes the
 /// Pod to exceed its resource allocation.
-///
-///
+/// 
+/// 
 /// To add an ephemeral container, use the ephemeralcontainers subresource of an existing
 /// Pod. Ephemeral containers may not be removed or restarted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3425,23 +2895,14 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Lifecycle is not allowed for ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecycle>,
     /// Probes are not allowed for ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbe>,
     /// Name of the ephemeral container specified as a DNS_LABEL.
     /// This name must be unique among all containers, init containers and ephemeral containers.
     pub name: String,
@@ -3449,21 +2910,11 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersPorts>>,
     /// Probes are not allowed for ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersResizePolicy>>,
     /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
     /// already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3472,27 +2923,14 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainers {
     /// container within a pod.
     /// This may only be set for init containers. You cannot set this field on
     /// ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// Optional: SecurityContext defines the security options the ephemeral container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityContext>,
     /// Probes are not allowed for ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -3511,15 +2949,11 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainers {
     /// If set, the name of the container from PodSpec that this ephemeral container targets.
     /// The ephemeral container will be run in the namespaces (IPC, PID, etc) of this container.
     /// If not set then the ephemeral container uses the namespaces configured in the Pod spec.
-    ///
-    ///
+    /// 
+    /// 
     /// The container runtime must implement support for this feature. If the runtime does not
     /// support namespace targeting then the result of setting this field is undefined.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetContainerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetContainerName")]
     pub target_container_name: Option<String>,
     /// Optional: Path at which the file to which the container's termination message
     /// will be written is mounted into the container's filesystem.
@@ -3528,11 +2962,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -3541,42 +2971,24 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem. Subpath mounts are not allowed for ephemeral containers.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -3605,36 +3017,19 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromFieldRef>,
+    pub field_ref: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -3657,11 +3052,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromC
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3673,11 +3064,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3705,20 +3092,14 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvValueFromS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvFromSecretRef>,
+    pub secret_ref: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersEnvFromSecretRef>,
 }
 
 /// The ConfigMap to select from
@@ -3755,8 +3136,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecycle {
     /// Other management of the container blocks until the hook completes.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStart>,
+    pub post_start: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStart>,
     /// PreStop is called immediately before a container is terminated due to an
     /// API request or management event such as liveness/startup probe failure,
     /// preemption, resource contention, etc. The handler is not called if the
@@ -3778,22 +3158,18 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecycle {
 pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStart {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStartExec>,
+    pub exec: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStartHttpGet>,
+    pub http_get: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStartSleep>,
+    pub sleep: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStartTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -3833,8 +3209,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePost
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -3879,18 +3254,15 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreS
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreStopHttpGet>,
+    pub http_get: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreStopSleep>,
+    pub sleep: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreStopTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -3930,8 +3302,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreS
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -3968,47 +3339,29 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbe
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbeHttpGet>,
+    pub http_get: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -4019,20 +3372,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbe
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4055,8 +3400,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbe
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4070,16 +3415,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbe
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<
-            ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -4150,47 +3487,29 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProb
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProbeHttpGet>,
+    pub http_get: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProbeTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -4201,20 +3520,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProb
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4237,8 +3548,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProb
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4269,8 +3580,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProb
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -4309,16 +3619,15 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersResizePolicy 
 pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersResourcesClaims>>,
+    pub claims: Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4351,18 +3660,13 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityConte
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityContextCapabilities>,
+    pub capabilities: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -4379,22 +3683,14 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityConte
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -4402,11 +3698,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityConte
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -4420,38 +3712,20 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityConte
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityContextSeLinuxOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityContextSeccompProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -4498,16 +3772,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityConte
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -4524,38 +3794,22 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersSecurityConte
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -4567,47 +3821,29 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbe 
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbeHttpGet>,
+    pub http_get: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbeTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -4618,20 +3854,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbe 
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4654,8 +3882,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbeG
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4669,14 +3897,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbeH
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecEphemeralContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -4733,11 +3955,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersVolumeMounts 
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -4753,11 +3971,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecEphemeralContainersVolumeMounts 
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -4830,11 +4044,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -4844,11 +4054,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -4867,18 +4073,10 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -4900,22 +4098,13 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
@@ -4923,11 +4112,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -4950,11 +4135,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -4963,41 +4144,24 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -5026,34 +4190,19 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -5076,11 +4225,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -5092,11 +4237,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromFieldR
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5124,13 +4265,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersEnvValueFromSecret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ClusterDefinitionComponentDefsPodSpecInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -5199,8 +4335,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStart
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStartHttpGet>,
+    pub http_get: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStartSleep>,
@@ -5208,8 +4343,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStart
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStartTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -5232,16 +4366,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStart
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<
-            ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStartHttpGetHttpHeaders,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -5302,8 +4428,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStop {
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStopHttpGet>,
+    pub http_get: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStopSleep>,
@@ -5311,8 +4436,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStop {
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStopTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -5335,14 +4459,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStopHt
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -5398,11 +4516,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbe {
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5412,32 +4526,19 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbe {
     pub http_get: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -5448,20 +4549,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5484,8 +4577,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbeGrpc 
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -5499,14 +4592,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbeHttpG
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -5580,11 +4667,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbe {
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5594,32 +4677,19 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbe {
     pub http_get: Option<ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbeTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -5630,20 +4700,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5666,8 +4728,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbeGrpc
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -5681,14 +4743,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbeHttp
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -5744,12 +4800,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersResizePolicy {
 pub struct ClusterDefinitionComponentDefsPodSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainersResourcesClaims>>,
@@ -5786,18 +4842,13 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContextCapabilities>,
+    pub capabilities: Option<ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -5814,22 +4865,14 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -5837,11 +4880,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -5855,35 +4894,20 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -5930,16 +4954,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContextSec
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -5956,38 +4976,22 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersSecurityContextWin
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -6005,11 +5009,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbe {
     pub exec: Option<ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6019,32 +5019,19 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbe {
     pub http_get: Option<ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbeTcpSocket>,
+    pub tcp_socket: Option<ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -6055,20 +5042,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -6091,8 +5070,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -6106,14 +5085,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbeHttpGe
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ClusterDefinitionComponentDefsPodSpecInitContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -6170,11 +5143,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -6190,22 +5159,18 @@ pub struct ClusterDefinitionComponentDefsPodSpecInitContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
 /// Specifies the OS of the containers in the pod.
 /// Some pod and container fields are restricted if this is set.
-///
-///
+/// 
+/// 
 /// If the OS field is set to linux, the following fields must be unset:
 /// -securityContext.windowsOptions
-///
-///
+/// 
+/// 
 /// If the OS field is set to windows, following fields must be unset:
 /// - spec.hostPID
 /// - spec.hostIPC
@@ -6263,31 +5228,23 @@ pub struct ClusterDefinitionComponentDefsPodSpecResourceClaims {
 pub struct ClusterDefinitionComponentDefsPodSpecResourceClaimsSource {
     /// ResourceClaimName is the name of a ResourceClaim object in the same
     /// namespace as this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     /// ResourceClaimTemplateName is the name of a ResourceClaimTemplate
     /// object in the same namespace as this pod.
-    ///
-    ///
+    /// 
+    /// 
     /// The template will be used to create a new ResourceClaim, which will
     /// be bound to this pod. When this pod is deleted, the ResourceClaim
     /// will also be deleted. The pod name and resource name, along with a
     /// generated component, will be used to form a unique name for the
     /// ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable and no changes will be made to the
     /// corresponding ResourceClaim by the control plane after creating the
     /// ResourceClaim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimTemplateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
 }
 
@@ -6306,13 +5263,13 @@ pub struct ClusterDefinitionComponentDefsPodSpecSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -6324,11 +5281,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -6336,11 +5289,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -6348,11 +5297,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -6368,20 +5313,11 @@ pub struct ClusterDefinitionComponentDefsPodSpecSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<ClusterDefinitionComponentDefsPodSpecSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ClusterDefinitionComponentDefsPodSpecSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ClusterDefinitionComponentDefsPodSpecSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -6390,11 +5326,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -6405,11 +5337,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ClusterDefinitionComponentDefsPodSpecSecurityContextWindowsOptions>,
 }
 
@@ -6443,16 +5371,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -6478,38 +5402,22 @@ pub struct ClusterDefinitionComponentDefsPodSpecSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -6535,11 +5443,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -6553,13 +5457,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -6568,14 +5467,10 @@ pub struct ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraints {
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -6606,8 +5501,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -6616,43 +5511,31 @@ pub struct ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -6706,8 +5589,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraintsLabelSe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6727,13 +5609,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<ClusterDefinitionComponentDefsPodSpecVolumesAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<ClusterDefinitionComponentDefsPodSpecVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<ClusterDefinitionComponentDefsPodSpecVolumesAzureDisk>,
@@ -6754,11 +5631,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<ClusterDefinitionComponentDefsPodSpecVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ClusterDefinitionComponentDefsPodSpecVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -6767,8 +5640,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -6778,18 +5651,18 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6799,11 +5672,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumes {
     pub fc: Option<ClusterDefinitionComponentDefsPodSpecVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ClusterDefinitionComponentDefsPodSpecVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6811,11 +5680,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<ClusterDefinitionComponentDefsPodSpecVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -6853,27 +5718,13 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<ClusterDefinitionComponentDefsPodSpecVolumesPersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<ClusterDefinitionComponentDefsPodSpecVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<ClusterDefinitionComponentDefsPodSpecVolumesPhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<ClusterDefinitionComponentDefsPodSpecVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<ClusterDefinitionComponentDefsPodSpecVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6896,11 +5747,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<ClusterDefinitionComponentDefsPodSpecVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<ClusterDefinitionComponentDefsPodSpecVolumesVsphereVolume>,
 }
 
@@ -6936,11 +5783,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -6993,11 +5836,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -7066,11 +5905,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -7127,24 +5962,15 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<ClusterDefinitionComponentDefsPodSpecVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -7173,11 +5999,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7202,24 +6024,15 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ClusterDefinitionComponentDefsPodSpecVolumesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterDefinitionComponentDefsPodSpecVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -7231,11 +6044,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesDownwardApiItemsFieldRef 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7267,8 +6076,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -7278,18 +6087,18 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7301,8 +6110,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -7311,20 +6120,15 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -7334,8 +6138,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -7344,12 +6148,12 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplate {
@@ -7357,8 +6161,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTempl
     /// when creating it. No other fields are allowed and will be rejected during
     /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata:
-        Option<ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateMetadata>,
+    pub metadata: Option<ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is
     /// copied unchanged into the PVC that gets created from this
     /// template. The same fields as in a PersistentVolumeClaim
@@ -7391,11 +6194,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTempl
 pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -7405,14 +6204,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTempl
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
-    pub data_source: Option<
-        ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -7436,35 +6229,21 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTempl
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref: Option<
-        ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecResources,
-    >,
+    pub resources: Option<ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<
-        ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecSelector,
-    >,
+    pub selector: Option<ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -7478,26 +6257,14 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTempl
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -7546,8 +6313,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTempl
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -7599,8 +6365,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTempl
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7631,11 +6396,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -7689,18 +6450,10 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesFlexVolumeSecretRef {
 pub struct ClusterDefinitionComponentDefsPodSpecVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -7797,18 +6550,10 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -7820,21 +6565,13 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -7936,11 +6673,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7952,62 +6685,47 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjected {
 pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
-    ///
+    /// 
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
-    ///
+    /// 
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle:
-        Option<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -8019,14 +6737,8 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesClusterTr
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8043,11 +6755,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesClusterTr
     /// Select all ClusterTrustBundles that match this signer name.
     /// Mutually-exclusive with name.  The contents of all selected
     /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -8070,8 +6778,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesClusterTr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8096,8 +6803,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesConfigMap
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesConfigMapItems>>,
+    pub items: Option<Vec<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -8133,8 +6839,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesConfigMap
 pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesDownwardApiItems>>,
+    pub items: Option<Vec<ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -8163,11 +6868,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesDownwardA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -8177,14 +6878,9 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesDownwardA
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8250,11 +6946,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesProjectedSourcesServiceAc
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -8358,11 +7050,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -8373,36 +7061,20 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: ClusterDefinitionComponentDefsPodSpecVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -8428,11 +7100,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -8448,11 +7116,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -8494,11 +7158,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesStorageos {
     pub secret_ref: Option<ClusterDefinitionComponentDefsPodSpecVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -8506,11 +7166,7 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -8534,18 +7190,10 @@ pub struct ClusterDefinitionComponentDefsPodSpecVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -8561,13 +7209,8 @@ pub struct ClusterDefinitionComponentDefsPostStartSpec {
     pub cmd_executor_config: ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfig,
     /// Used to select the script that need to be referenced.
     /// When defined, the scripts defined in scriptSpecs can be referenced within the CmdExecutorConfig.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scriptSpecSelectors"
-    )]
-    pub script_spec_selectors:
-        Option<Vec<ClusterDefinitionComponentDefsPostStartSpecScriptSpecSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecSelectors")]
+    pub script_spec_selectors: Option<Vec<ClusterDefinitionComponentDefsPostStartSpecScriptSpecSelectors>>,
 }
 
 /// Specifies the  post-start command to be executed.
@@ -8603,46 +7246,26 @@ pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFrom>,
+    pub value_from: Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromFieldRef>,
+    pub field_ref: Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -8665,11 +7288,7 @@ pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -8679,14 +7298,9 @@ pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueF
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromResourceFieldRef
-{
+pub struct ClusterDefinitionComponentDefsPostStartSpecCmdExecutorConfigEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8726,29 +7340,17 @@ pub struct ClusterDefinitionComponentDefsProbes {
     /// The system will check if the application is available in the pod.
     /// If pods exceed the InitializationTimeoutSeconds time without a role label, this component will enter the
     /// Failed/Abnormal phase.
-    ///
-    ///
+    /// 
+    /// 
     /// Note that this configuration will only take effect if the component supports RoleProbe
     /// and will not affect the life cycle of the pod. default values are 60 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleProbeTimeoutAfterPodsReady"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleProbeTimeoutAfterPodsReady")]
     pub role_probe_timeout_after_pods_ready: Option<i32>,
     /// Specifies the probe used for checking the running status of the component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runningProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningProbe")]
     pub running_probe: Option<ClusterDefinitionComponentDefsProbesRunningProbe>,
     /// Specifies the probe used for checking the status of the component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusProbe")]
     pub status_probe: Option<ClusterDefinitionComponentDefsProbesStatusProbe>,
 }
 
@@ -8759,25 +7361,13 @@ pub struct ClusterDefinitionComponentDefsProbesRoleProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commands: Option<ClusterDefinitionComponentDefsProbesRoleProbeCommands>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// How often (in seconds) to perform the probe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Number of seconds after which the probe times out. Defaults to 1 second.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -8799,25 +7389,13 @@ pub struct ClusterDefinitionComponentDefsProbesRunningProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commands: Option<ClusterDefinitionComponentDefsProbesRunningProbeCommands>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// How often (in seconds) to perform the probe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Number of seconds after which the probe times out. Defaults to 1 second.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -8839,25 +7417,13 @@ pub struct ClusterDefinitionComponentDefsProbesStatusProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commands: Option<ClusterDefinitionComponentDefsProbesStatusProbeCommands>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// How often (in seconds) to perform the probe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Number of seconds after which the probe times out. Defaults to 1 second.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -8876,40 +7442,28 @@ pub struct ClusterDefinitionComponentDefsProbesStatusProbeCommands {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsReplicationSpec {
     /// Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.
-    ///
-    ///
+    /// 
+    /// 
     /// - `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod
     /// is ready before continuing. Pods are removed in reverse order when scaling down.
     /// - `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once
     /// when scaling down.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "llPodManagementPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "llPodManagementPolicy")]
     pub ll_pod_management_policy: Option<String>,
     /// Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a
     /// revision to the Template.
     /// `UpdateStrategy` will be ignored if this is provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "llUpdateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "llUpdateStrategy")]
     pub ll_update_strategy: Option<ClusterDefinitionComponentDefsReplicationSpecLlUpdateStrategy>,
     /// Specifies the strategy for updating Pods.
     /// For workloadType=`Consensus`, the update strategy can be one of the following:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Serial`: Updates Members sequentially to minimize component downtime.
     /// - `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online
     /// at all times.
     /// - `Parallel`: Forces parallel updates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterDefinitionComponentDefsReplicationSpecUpdateStrategy>,
 }
 
@@ -8919,13 +7473,8 @@ pub struct ClusterDefinitionComponentDefsReplicationSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsReplicationSpecLlUpdateStrategy {
     /// RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
-    pub rolling_update:
-        Option<ClusterDefinitionComponentDefsReplicationSpecLlUpdateStrategyRollingUpdate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<ClusterDefinitionComponentDefsReplicationSpecLlUpdateStrategyRollingUpdate>,
     /// Type indicates the type of the StatefulSetUpdateStrategy.
     /// Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -8942,11 +7491,7 @@ pub struct ClusterDefinitionComponentDefsReplicationSpecLlUpdateStrategyRollingU
     /// MaxUnavailableStatefulSet feature. The field applies to all pods in the range 0 to
     /// Replicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it
     /// will be counted towards MaxUnavailable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// Partition indicates the ordinal at which the StatefulSet should be partitioned
     /// for updates. During a rolling update, all pods from ordinal Replicas-1 to
@@ -8970,25 +7515,16 @@ pub enum ClusterDefinitionComponentDefsReplicationSpecUpdateStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsRsmSpec {
     /// Describes the strategy for updating Members (Pods).
-    ///
-    ///
+    /// 
+    /// 
     /// - `Serial`: Updates Members sequentially to ensure minimum component downtime.
     /// - `BestEffortParallel`: Updates Members in parallel to ensure minimum component write downtime.
     /// - `Parallel`: Forces parallel updates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memberUpdateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberUpdateStrategy")]
     pub member_update_strategy: Option<ClusterDefinitionComponentDefsRsmSpecMemberUpdateStrategy>,
     /// Indicates the actions required for dynamic membership reconfiguration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "membershipReconfiguration"
-    )]
-    pub membership_reconfiguration:
-        Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfiguration>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "membershipReconfiguration")]
+    pub membership_reconfiguration: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfiguration>,
     /// Defines the method used to probe a role.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleProbe")]
     pub role_probe: Option<ClusterDefinitionComponentDefsRsmSpecRoleProbe>,
@@ -9012,57 +7548,32 @@ pub enum ClusterDefinitionComponentDefsRsmSpecMemberUpdateStrategy {
 pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfiguration {
     /// Defines the action to trigger the new member to start log syncing.
     /// If the Image is not configured, the Image from the previous non-nil action will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logSyncAction"
-    )]
-    pub log_sync_action:
-        Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationLogSyncAction>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSyncAction")]
+    pub log_sync_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationLogSyncAction>,
     /// Defines the action to add a member.
     /// If the Image is not configured, the Image from the previous non-nil action will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memberJoinAction"
-    )]
-    pub member_join_action:
-        Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberJoinAction>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberJoinAction")]
+    pub member_join_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberJoinAction>,
     /// Defines the action to remove a member.
     /// If the Image is not configured, the Image from the previous non-nil action will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memberLeaveAction"
-    )]
-    pub member_leave_action:
-        Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberLeaveAction>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberLeaveAction")]
+    pub member_leave_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationMemberLeaveAction>,
     /// Defines the action to inform the cluster that the new member can join voting now.
     /// If the Image is not configured, the Image from the previous non-nil action will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "promoteAction"
-    )]
-    pub promote_action:
-        Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationPromoteAction>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteAction")]
+    pub promote_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationPromoteAction>,
     /// Specifies the environment variables that can be used in all following Actions:
     /// - KB_ITS_USERNAME: Represents the username part of the credential
     /// - KB_ITS_PASSWORD: Represents the password part of the credential
     /// - KB_ITS_LEADER_HOST: Represents the leader host
     /// - KB_ITS_TARGET_HOST: Represents the target host
     /// - KB_ITS_SERVICE_PORT: Represents the service port
-    ///
-    ///
+    /// 
+    /// 
     /// Defines the action to perform a switchover.
     /// If the Image is not configured, the latest [BusyBox](https://busybox.net/) image will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "switchoverAction"
-    )]
-    pub switchover_action:
-        Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationSwitchoverAction>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchoverAction")]
+    pub switchover_action: Option<ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationSwitchoverAction>,
 }
 
 /// Defines the action to trigger the new member to start log syncing.
@@ -9127,8 +7638,8 @@ pub struct ClusterDefinitionComponentDefsRsmSpecMembershipReconfigurationPromote
 /// - KB_ITS_LEADER_HOST: Represents the leader host
 /// - KB_ITS_TARGET_HOST: Represents the target host
 /// - KB_ITS_SERVICE_PORT: Represents the service port
-///
-///
+/// 
+/// 
 /// Defines the action to perform a switchover.
 /// If the Image is not configured, the latest [BusyBox](https://busybox.net/) image will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9154,54 +7665,25 @@ pub struct ClusterDefinitionComponentDefsRsmSpecRoleProbe {
     /// - v_KB_ITS_LAST_STDOUT: stdout from the last action, watch for 'v_' prefix
     /// - KB_ITS_USERNAME: username part of the credential
     /// - KB_ITS_PASSWORD: password part of the credential
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<Vec<ClusterDefinitionComponentDefsRsmSpecRoleProbeCustomHandler>>,
     /// Specifies the minimum number of consecutive failures for the probe to be considered failed after having succeeded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Specifies the number of seconds to wait after the container has started before initiating role probing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// Specifies the frequency (in seconds) of probe execution.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Specifies the method for updating the pod role label.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleUpdateMechanism"
-    )]
-    pub role_update_mechanism:
-        Option<ClusterDefinitionComponentDefsRsmSpecRoleProbeRoleUpdateMechanism>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleUpdateMechanism")]
+    pub role_update_mechanism: Option<ClusterDefinitionComponentDefsRsmSpecRoleProbeRoleUpdateMechanism>,
     /// Specifies the minimum number of consecutive successes for the probe to be considered successful after having failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// Specifies the number of seconds after which the probe times out.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -9252,24 +7734,20 @@ pub struct ClusterDefinitionComponentDefsScriptSpecs {
     /// The operator attempts to set default file permissions for scripts (0555) and configurations (0444).
     /// However, certain database engines may require different file permissions.
     /// You can specify the desired file permissions here.
-    ///
-    ///
+    /// 
+    /// 
     /// Must be specified as an octal value between 0000 and 0777 (inclusive),
     /// or as a decimal value between 0 and 511 (inclusive).
     /// YAML supports both octal and decimal values for file permissions.
-    ///
-    ///
+    /// 
+    /// 
     /// Please note that this setting only affects the permissions of the files themselves.
     /// Directories within the specified path are not impacted by this setting.
     /// It's important to be aware that this setting might conflict with other options
     /// that influence the file mode, such as fsGroup.
     /// In such cases, the resulting file mode may have additional bits set.
     /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Specifies the name of the configuration template.
     pub name: String,
@@ -9278,20 +7756,12 @@ pub struct ClusterDefinitionComponentDefsScriptSpecs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
     pub template_ref: Option<String>,
     /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration
     /// template will be mounted to the corresponding volume. Must be a DNS_LABEL name.
     /// The volume name must be defined in podSpec.containers[*].volumeMounts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -9313,11 +7783,7 @@ pub struct ClusterDefinitionComponentDefsServicePorts {
     /// RFC-6335 and https://www.iana.org/assignments/service-names).
     /// Non-standard protocols should use prefixed names such as
     /// mycompany.com/my-custom-protocol.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
     /// The name of this port within the service. This must be a DNS_LABEL.
     /// All ports within a ServiceSpec must have unique names. When considering
@@ -9332,25 +7798,21 @@ pub struct ClusterDefinitionComponentDefsServicePorts {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<ClusterDefinitionComponentDefsServicePortsProtocol>,
     /// Number or name of the port to access on the pods targeted by the service.
-    ///
-    ///
+    /// 
+    /// 
     /// Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
-    ///
-    ///
+    /// 
+    /// 
     /// - If this is a string, it will be looked up as a named port in the target Pod's container ports.
     /// - If this is not specified, the value of the `port` field is used (an identity map).
-    ///
-    ///
+    /// 
+    /// 
     /// This field is ignored for services with clusterIP=None, and should be
     /// omitted or set equal to the `port` field.
-    ///
-    ///
+    /// 
+    /// 
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
 }
 
@@ -9368,15 +7830,15 @@ pub enum ClusterDefinitionComponentDefsServicePortsProtocol {
 /// ServiceRefDeclaration represents a reference to a service that can be either provided by a KubeBlocks Cluster
 /// or an external service.
 /// It acts as a placeholder for the actual service reference, which is determined later when a Cluster is created.
-///
-///
+/// 
+/// 
 /// The purpose of ServiceRefDeclaration is to declare a service dependency without specifying the concrete details
 /// of the service.
 /// It allows for flexibility and abstraction in defining service references within a Component.
 /// By using ServiceRefDeclaration, you can define service dependencies in a declarative manner, enabling loose coupling
 /// and easier management of service references across different components and clusters.
-///
-///
+/// 
+/// 
 /// Upon Cluster creation, the ServiceRefDeclaration is bound to an actual service through the ServiceRef field,
 /// effectively resolving and connecting to the specified service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9384,8 +7846,8 @@ pub struct ClusterDefinitionComponentDefsServiceRefDeclarations {
     /// Specifies the name of the ServiceRefDeclaration.
     pub name: String,
     /// Specifies whether the service reference can be optional.
-    ///
-    ///
+    /// 
+    /// 
     /// For an optional service-ref, the component can still be created even if the service-ref is not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
@@ -9393,14 +7855,13 @@ pub struct ClusterDefinitionComponentDefsServiceRefDeclarations {
     /// upon Cluster creation.
     /// Each ServiceRefDeclarationSpec defines a ServiceKind and ServiceVersion,
     /// outlining the acceptable service types and versions that are compatible.
-    ///
-    ///
+    /// 
+    /// 
     /// This flexibility allows a ServiceRefDeclaration to be fulfilled by any one of the provided specs.
     /// For example, if it requires an OLTP database, specs for both MySQL and PostgreSQL are listed,
     /// either MySQL or PostgreSQL services can be used when binding.
     #[serde(rename = "serviceRefDeclarationSpecs")]
-    pub service_ref_declaration_specs:
-        Vec<ClusterDefinitionComponentDefsServiceRefDeclarationsServiceRefDeclarationSpecs>,
+    pub service_ref_declaration_specs: Vec<ClusterDefinitionComponentDefsServiceRefDeclarationsServiceRefDeclarationSpecs>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9422,40 +7883,28 @@ pub struct ClusterDefinitionComponentDefsServiceRefDeclarationsServiceRefDeclara
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsStatefulSpec {
     /// Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.
-    ///
-    ///
+    /// 
+    /// 
     /// - `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod
     /// is ready before continuing. Pods are removed in reverse order when scaling down.
     /// - `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once
     /// when scaling down.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "llPodManagementPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "llPodManagementPolicy")]
     pub ll_pod_management_policy: Option<String>,
     /// Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a
     /// revision to the Template.
     /// `UpdateStrategy` will be ignored if this is provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "llUpdateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "llUpdateStrategy")]
     pub ll_update_strategy: Option<ClusterDefinitionComponentDefsStatefulSpecLlUpdateStrategy>,
     /// Specifies the strategy for updating Pods.
     /// For workloadType=`Consensus`, the update strategy can be one of the following:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Serial`: Updates Members sequentially to minimize component downtime.
     /// - `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online
     /// at all times.
     /// - `Parallel`: Forces parallel updates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterDefinitionComponentDefsStatefulSpecUpdateStrategy>,
 }
 
@@ -9465,13 +7914,8 @@ pub struct ClusterDefinitionComponentDefsStatefulSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsStatefulSpecLlUpdateStrategy {
     /// RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
-    pub rolling_update:
-        Option<ClusterDefinitionComponentDefsStatefulSpecLlUpdateStrategyRollingUpdate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<ClusterDefinitionComponentDefsStatefulSpecLlUpdateStrategyRollingUpdate>,
     /// Type indicates the type of the StatefulSetUpdateStrategy.
     /// Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -9488,11 +7932,7 @@ pub struct ClusterDefinitionComponentDefsStatefulSpecLlUpdateStrategyRollingUpda
     /// MaxUnavailableStatefulSet feature. The field applies to all pods in the range 0 to
     /// Replicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it
     /// will be counted towards MaxUnavailable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// Partition indicates the ordinal at which the StatefulSet should be partitioned
     /// for updates. During a rolling update, all pods from ordinal Replicas-1 to
@@ -9514,11 +7954,7 @@ pub enum ClusterDefinitionComponentDefsStatefulSpecUpdateStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsStatelessSpec {
     /// Specifies the deployment strategy that will be used to replace existing pods with new ones.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ClusterDefinitionComponentDefsStatelessSpecUpdateStrategy>,
 }
 
@@ -9530,13 +7966,8 @@ pub struct ClusterDefinitionComponentDefsStatelessSpecUpdateStrategy {
     /// ---
     /// TODO: Update this to follow our convention for oneOf, whatever we decide it
     /// to be.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
-    pub rolling_update:
-        Option<ClusterDefinitionComponentDefsStatelessSpecUpdateStrategyRollingUpdate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<ClusterDefinitionComponentDefsStatelessSpecUpdateStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -9572,11 +8003,7 @@ pub struct ClusterDefinitionComponentDefsStatelessSpecUpdateStrategyRollingUpdat
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -9586,18 +8013,10 @@ pub struct ClusterDefinitionComponentDefsStatelessSpecUpdateStrategyRollingUpdat
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSwitchoverSpec {
     /// Represents the action of switching over to a specified candidate primary or leader instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withCandidate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withCandidate")]
     pub with_candidate: Option<ClusterDefinitionComponentDefsSwitchoverSpecWithCandidate>,
     /// Represents the action of switching over without specifying a candidate primary or leader instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withoutCandidate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withoutCandidate")]
     pub without_candidate: Option<ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidate>,
 }
 
@@ -9606,17 +8025,11 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpec {
 pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidate {
     /// Specifies the switchover command.
     #[serde(rename = "cmdExecutorConfig")]
-    pub cmd_executor_config:
-        ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfig,
+    pub cmd_executor_config: ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfig,
     /// Used to select the script that need to be referenced.
     /// When defined, the scripts defined in scriptSpecs can be referenced within the SwitchoverAction.CmdExecutorConfig.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scriptSpecSelectors"
-    )]
-    pub script_spec_selectors:
-        Option<Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateScriptSpecSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecSelectors")]
+    pub script_spec_selectors: Option<Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateScriptSpecSelectors>>,
 }
 
 /// Specifies the switchover command.
@@ -9629,8 +8042,7 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorC
     pub command: Vec<String>,
     /// A list of environment variables that will be injected into the command execution context.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env:
-        Option<Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnv>>,
+    pub env: Option<Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnv>>,
     /// Specifies the image used to execute the command.
     pub image: String,
 }
@@ -9653,9 +8065,7 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorC
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<
-        ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnvValueFrom,
-    >,
+    pub value_from: Option<ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -9679,8 +8089,7 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorC
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnvValueFromConfigMapKeyRef
-{
+pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -9696,14 +8105,9 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorC
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnvValueFromFieldRef
-{
+pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -9713,14 +8117,9 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorC
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnvValueFromResourceFieldRef
-{
+pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9731,8 +8130,7 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorC
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnvValueFromSecretKeyRef
-{
+pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateCmdExecutorConfigEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -9756,18 +8154,11 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithCandidateScriptSpecSe
 pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidate {
     /// Specifies the switchover command.
     #[serde(rename = "cmdExecutorConfig")]
-    pub cmd_executor_config:
-        ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfig,
+    pub cmd_executor_config: ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfig,
     /// Used to select the script that need to be referenced.
     /// When defined, the scripts defined in scriptSpecs can be referenced within the SwitchoverAction.CmdExecutorConfig.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scriptSpecSelectors"
-    )]
-    pub script_spec_selectors: Option<
-        Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateScriptSpecSelectors>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecSelectors")]
+    pub script_spec_selectors: Option<Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateScriptSpecSelectors>>,
 }
 
 /// Specifies the switchover command.
@@ -9780,9 +8171,7 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecut
     pub command: Vec<String>,
     /// A list of environment variables that will be injected into the command execution context.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<
-        Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnv>,
-    >,
+    pub env: Option<Vec<ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnv>>,
     /// Specifies the image used to execute the command.
     pub image: String,
 }
@@ -9805,9 +8194,7 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecut
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<
-        ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnvValueFrom,
-    >,
+    pub value_from: Option<ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -9831,8 +8218,7 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecut
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnvValueFromConfigMapKeyRef
-{
+pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -9848,14 +8234,9 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecut
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnvValueFromFieldRef
-{
+pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -9865,14 +8246,9 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecut
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnvValueFromResourceFieldRef
-{
+pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9883,8 +8259,7 @@ pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecut
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnvValueFromSecretKeyRef
-{
+pub struct ClusterDefinitionComponentDefsSwitchoverSpecWithoutCandidateCmdExecutorConfigEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -9917,8 +8292,8 @@ pub struct ClusterDefinitionComponentDefsSystemAccounts {
 }
 
 /// SystemAccountConfig specifies how to create and delete system accounts.
-///
-///
+/// 
+/// 
 /// Deprecated since v0.9.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSystemAccountsAccounts {
@@ -9930,8 +8305,8 @@ pub struct ClusterDefinitionComponentDefsSystemAccountsAccounts {
 }
 
 /// SystemAccountConfig specifies how to create and delete system accounts.
-///
-///
+/// 
+/// 
 /// Deprecated since v0.9.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsSystemAccountsAccountsName {
@@ -9954,12 +8329,10 @@ pub struct ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicy {
     pub scope: String,
     /// The external secret to refer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicySecretRef>,
+    pub secret_ref: Option<ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicySecretRef>,
     /// The statement to provision an account.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub statements:
-        Option<ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicyStatements>,
+    pub statements: Option<ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicyStatements>,
     /// Specifies the method to provision an account.
     #[serde(rename = "type")]
     pub r#type: ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicyType,
@@ -9982,8 +8355,8 @@ pub struct ClusterDefinitionComponentDefsSystemAccountsAccountsProvisionPolicySt
     /// Defines the statement required to delete an existing account.
     /// Typically used in conjunction with the creation statement to delete an account before recreating it.
     /// For example, one might use a `drop user if exists` statement followed by a `create user` statement to ensure a fresh account.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated: This field is deprecated and the update statement should be used instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<String>,
@@ -10032,52 +8405,31 @@ pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFrom>,
+    pub value_from: Option<ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromFieldRef>,
+    pub field_ref: Option<ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromConfigMapKeyRef
-{
+pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -10095,11 +8447,7 @@ pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValue
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -10109,14 +8457,9 @@ pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValue
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromResourceFieldRef
-{
+pub struct ClusterDefinitionComponentDefsSystemAccountsCmdExecutorConfigEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10147,21 +8490,13 @@ pub struct ClusterDefinitionComponentDefsSystemAccountsPasswordConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub length: Option<i32>,
     /// The case of the letters in the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "letterCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "letterCase")]
     pub letter_case: Option<ClusterDefinitionComponentDefsSystemAccountsPasswordConfigLetterCase>,
     /// The number of digits in the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numDigits")]
     pub num_digits: Option<i32>,
     /// The number of symbols in the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numSymbols"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numSymbols")]
     pub num_symbols: Option<i32>,
     /// Seed to generate the account's password.
     /// Cannot be updated.
@@ -10185,11 +8520,7 @@ pub struct ClusterDefinitionComponentDefsVolumeProtectionSpec {
     /// will be triggered to degrade the service to protect volume from space exhaustion, such as to set the instance
     /// as read-only. And after that, if all volumes' space usage drops under the threshold later, the pre-defined
     /// "UNLOCK" action will be performed to recover the service normally.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "highWatermark"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highWatermark")]
     pub high_watermark: Option<i64>,
     /// The Volumes to be protected.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10200,11 +8531,7 @@ pub struct ClusterDefinitionComponentDefsVolumeProtectionSpec {
 pub struct ClusterDefinitionComponentDefsVolumeProtectionSpecVolumes {
     /// Defines the high watermark threshold for the volume, it will override the component level threshold.
     /// If the value is invalid, it will be ignored and the component level threshold will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "highWatermark"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highWatermark")]
     pub high_watermark: Option<i64>,
     /// The Name of the volume to protect.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10232,8 +8559,8 @@ pub enum ClusterDefinitionComponentDefsVolumeTypesType {
 
 /// ClusterComponentDefinition defines a Component within a ClusterDefinition but is deprecated and
 /// has been replaced by ComponentDefinition.
-///
-///
+/// 
+/// 
 /// Deprecated: Use ComponentDefinition instead. This type is deprecated as of version 0.8.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterDefinitionComponentDefsWorkloadType {
@@ -10267,17 +8594,17 @@ pub struct ClusterDefinitionTopologies {
 pub struct ClusterDefinitionTopologiesComponents {
     /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
     /// custom resource (CR) that defines the Component's characteristics and behavior.
-    ///
-    ///
+    /// 
+    /// 
     /// The system selects the ComponentDefinition CR with the latest version that matches the pattern.
     /// This approach allows:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. Precise selection by providing the exact name of a ComponentDefinition CR.
     /// 2. Flexible and automatic selection of the most up-to-date ComponentDefinition CR
     /// 	  by specifying a name prefix or regular expression pattern.
-    ///
-    ///
+    /// 
+    /// 
     /// Once set, this field cannot be updated.
     #[serde(rename = "compDef")]
     pub comp_def: String,
@@ -10285,8 +8612,8 @@ pub struct ClusterDefinitionTopologiesComponents {
     /// It follows IANA Service naming rules and is used as part of the Service's DNS name.
     /// The name must start with a lowercase letter, can contain lowercase letters, numbers,
     /// and hyphens, and must end with a lowercase letter or number.
-    ///
-    ///
+    /// 
+    /// 
     /// Cannot be updated once set.
     pub name: String,
 }
@@ -10298,24 +8625,24 @@ pub struct ClusterDefinitionTopologiesComponents {
 pub struct ClusterDefinitionTopologiesOrders {
     /// Specifies the order for creating and initializing components.
     /// This is designed for components that depend on one another. Components without dependencies can be grouped together.
-    ///
-    ///
+    /// 
+    /// 
     /// Components that can be provisioned independently or have no dependencies can be listed together in the same stage,
     /// separated by commas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provision: Option<Vec<String>>,
     /// Outlines the order for stopping and deleting components.
     /// This sequence is designed for components that require a graceful shutdown or have interdependencies.
-    ///
-    ///
+    /// 
+    /// 
     /// Components that can be terminated independently or have no dependencies can be listed together in the same stage,
     /// separated by commas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub terminate: Option<Vec<String>>,
     /// Update determines the order for updating components' specifications, such as image upgrades or resource scaling.
     /// This sequence is designed for components that have dependencies or require specific update procedures.
-    ///
-    ///
+    /// 
+    /// 
     /// Components that can be updated independently or have no dependencies can be listed together in the same stage,
     /// separated by commas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10329,22 +8656,14 @@ pub struct ClusterDefinitionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// Represents the most recent generation observed for this ClusterDefinition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Specifies the current phase of the ClusterDefinition. Valid values are `empty`, `Available`, `Unavailable`.
     /// When `Available`, the ClusterDefinition is ready and can be referenced by related objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ClusterDefinitionStatusPhase>,
     /// The service references declared by this ClusterDefinition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRefs")]
     pub service_refs: Option<String>,
     /// Topologies this ClusterDefinition supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10357,3 +8676,4 @@ pub enum ClusterDefinitionStatusPhase {
     Available,
     Unavailable,
 }
+

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Important: Run "make" to regenerate code after modifying this file
 /// CNINodeSpec defines the desired state of CNINode
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "vpcresources.k8s.aws",
-    version = "v1alpha1",
-    kind = "CNINode",
-    plural = "cninodes"
-)]
+#[kube(group = "vpcresources.k8s.aws", version = "v1alpha1", kind = "CNINode", plural = "cninodes")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CNINodeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<CNINodeFeatures>>,
@@ -38,4 +33,6 @@ pub struct CNINodeFeatures {
 
 /// CNINodeStatus defines the managed VPC resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CNINodeStatus {}
+pub struct CNINodeStatus {
+}
+

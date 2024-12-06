@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -14,27 +14,18 @@ use self::prelude::*;
 /// that Module CRs need to be verified against as well as the debug configuration of the logs
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kmm.sigs.x-k8s.io",
-    version = "v1beta1",
-    kind = "PreflightValidation",
-    plural = "preflightvalidations"
-)]
+#[kube(group = "kmm.sigs.x-k8s.io", version = "v1beta1", kind = "PreflightValidation", plural = "preflightvalidations")]
 #[kube(status = "PreflightValidationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PreflightValidationSpec {
     /// KernelVersion describes the kernel image that all Modules need to be checked against.
     #[serde(rename = "kernelVersion")]
     pub kernel_version: String,
     /// Boolean flag that determines whether images build during preflight must also
     /// be pushed to a defined repository
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pushBuiltImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pushBuiltImage")]
     pub push_built_image: Option<bool>,
 }
 
@@ -44,11 +35,7 @@ pub struct PreflightValidationSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PreflightValidationStatus {
     /// CRStatuses contain observations about each Module's preflight upgradability validation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "crStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "crStatuses")]
     pub cr_statuses: Option<BTreeMap<String, PreflightValidationStatusCrStatuses>>,
 }
 
@@ -57,34 +44,18 @@ pub struct PreflightValidationStatus {
 pub struct PreflightValidationStatusCrStatuses {
     /// LastTransitionTime is the last time the CR status transitioned from one status to another.
     /// This should be when the underlying status changed.  If that is not known, then using the time when the API field changed is acceptable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     /// StatusReason contains a string describing the status source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusReason")]
     pub status_reason: Option<String>,
     /// Current stage of the verification process:
     /// image (image existence verification), build(build process verification)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verificationStage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verificationStage")]
     pub verification_stage: Option<PreflightValidationStatusCrStatusesVerificationStage>,
     /// Status of Module CR verification: true (verified), false (verification failed),
     /// error (error during verification process), unknown (verification has not started yet)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verificationStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verificationStatus")]
     pub verification_status: Option<PreflightValidationStatusCrStatusesVerificationStatus>,
 }
 
@@ -104,3 +75,4 @@ pub enum PreflightValidationStatusCrStatusesVerificationStatus {
     True,
     False,
 }
+

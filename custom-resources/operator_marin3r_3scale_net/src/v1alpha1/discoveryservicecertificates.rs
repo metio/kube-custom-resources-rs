@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DiscoveryServiceCertificateSpec defines the desired state of DiscoveryServiceCertificate
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.marin3r.3scale.net",
-    version = "v1alpha1",
-    kind = "DiscoveryServiceCertificate",
-    plural = "discoveryservicecertificates"
-)]
+#[kube(group = "operator.marin3r.3scale.net", version = "v1alpha1", kind = "DiscoveryServiceCertificate", plural = "discoveryservicecertificates")]
 #[kube(namespaced)]
 #[kube(status = "DiscoveryServiceCertificateStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DiscoveryServiceCertificateSpec {
     /// CertificateRenewalConfig configures the certificate renewal process. If unset default
     /// behavior is to renew the certificate but not notify of renewals.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateRenewal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateRenewal")]
     pub certificate_renewal: Option<DiscoveryServiceCertificateCertificateRenewal>,
     /// CommonName is the CommonName of the certificate
     #[serde(rename = "commonName")]
@@ -87,11 +78,7 @@ pub struct DiscoveryServiceCertificateSigner {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSigned")]
     pub ca_signed: Option<DiscoveryServiceCertificateSignerCaSigned>,
     /// SelfSigned holds specific configuration for the SelfSigned signer
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selfSigned"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selfSigned")]
     pub self_signed: Option<DiscoveryServiceCertificateSignerSelfSigned>,
 }
 
@@ -116,18 +103,15 @@ pub struct DiscoveryServiceCertificateSignerCaSignedCaSecretRef {
 
 /// SelfSigned holds specific configuration for the SelfSigned signer
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DiscoveryServiceCertificateSignerSelfSigned {}
+pub struct DiscoveryServiceCertificateSignerSelfSigned {
+}
 
 /// DiscoveryServiceCertificateStatus defines the observed state of DiscoveryServiceCertificate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DiscoveryServiceCertificateStatus {
     /// CertificateHash stores the current hash of the certificate. It is used
     /// for other controllers to validate if a certificate has been re-issued.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateHash")]
     pub certificate_hash: Option<String>,
     /// Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -143,3 +127,4 @@ pub struct DiscoveryServiceCertificateStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
 }
+

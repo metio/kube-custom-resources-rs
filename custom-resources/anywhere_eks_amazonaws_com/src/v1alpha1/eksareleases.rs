@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// EKSAReleaseSpec defines the desired state of EKSARelease.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "anywhere.eks.amazonaws.com",
-    version = "v1alpha1",
-    kind = "EKSARelease",
-    plural = "eksareleases"
-)]
+#[kube(group = "anywhere.eks.amazonaws.com", version = "v1alpha1", kind = "EKSARelease", plural = "eksareleases")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EKSAReleaseSpec {
     /// Manifest url to parse bundle information from for this EKS-A release
     #[serde(rename = "bundleManifestUrl")]
@@ -49,3 +44,4 @@ pub struct EKSAReleaseBundlesRef {
     /// Namespace refers to the Bundles's namespace
     pub namespace: String,
 }
+

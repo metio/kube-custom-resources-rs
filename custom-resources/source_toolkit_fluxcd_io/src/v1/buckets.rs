@@ -4,50 +4,41 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BucketSpec specifies the required configuration to produce an Artifact for
 /// an object storage bucket.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "source.toolkit.fluxcd.io",
-    version = "v1",
-    kind = "Bucket",
-    plural = "buckets"
-)]
+#[kube(group = "source.toolkit.fluxcd.io", version = "v1", kind = "Bucket", plural = "buckets")]
 #[kube(namespaced)]
 #[kube(status = "BucketStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BucketSpec {
     /// BucketName is the name of the object storage bucket.
     #[serde(rename = "bucketName")]
     pub bucket_name: String,
     /// CertSecretRef can be given the name of a Secret containing
     /// either or both of
-    ///
+    /// 
     /// - a PEM-encoded client certificate (`tls.crt`) and private
     /// key (`tls.key`);
     /// - a PEM-encoded CA certificate (`ca.crt`)
-    ///
+    /// 
     /// and whichever are supplied, will be used for connecting to the
     /// bucket. The client cert and key are useful if you are
     /// authenticating with a certificate; the CA cert is useful if
     /// you are using a self-signed server certificate. The Secret must
     /// be of type `Opaque` or `kubernetes.io/tls`.
-    ///
+    /// 
     /// This field is only supported for the `generic` provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<BucketCertSecretRef>,
     /// Endpoint is the object storage address the BucketName is located at.
     pub endpoint: String,
@@ -73,11 +64,7 @@ pub struct BucketSpec {
     pub provider: Option<BucketProvider>,
     /// ProxySecretRef specifies the Secret containing the proxy configuration
     /// to use while communicating with the Bucket server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxySecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySecretRef")]
     pub proxy_secret_ref: Option<BucketProxySecretRef>,
     /// Region of the Endpoint where the BucketName is located in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -89,7 +76,7 @@ pub struct BucketSpec {
     /// STS specifies the required configuration to use a Security Token
     /// Service for fetching temporary credentials to authenticate in a
     /// Bucket provider.
-    ///
+    /// 
     /// This field is only supported for the `aws` and `generic` providers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sts: Option<BucketSts>,
@@ -104,17 +91,17 @@ pub struct BucketSpec {
 
 /// CertSecretRef can be given the name of a Secret containing
 /// either or both of
-///
+/// 
 /// - a PEM-encoded client certificate (`tls.crt`) and private
 /// key (`tls.key`);
 /// - a PEM-encoded CA certificate (`ca.crt`)
-///
+/// 
 /// and whichever are supplied, will be used for connecting to the
 /// bucket. The client cert and key are useful if you are
 /// authenticating with a certificate; the CA cert is useful if
 /// you are using a self-signed server certificate. The Secret must
 /// be of type `Opaque` or `kubernetes.io/tls`.
-///
+/// 
 /// This field is only supported for the `generic` provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketCertSecretRef {
@@ -155,29 +142,25 @@ pub struct BucketSecretRef {
 /// STS specifies the required configuration to use a Security Token
 /// Service for fetching temporary credentials to authenticate in a
 /// Bucket provider.
-///
+/// 
 /// This field is only supported for the `aws` and `generic` providers.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BucketSts {
     /// CertSecretRef can be given the name of a Secret containing
     /// either or both of
-    ///
+    /// 
     /// - a PEM-encoded client certificate (`tls.crt`) and private
     /// key (`tls.key`);
     /// - a PEM-encoded CA certificate (`ca.crt`)
-    ///
+    /// 
     /// and whichever are supplied, will be used for connecting to the
     /// STS endpoint. The client cert and key are useful if you are
     /// authenticating with a certificate; the CA cert is useful if
     /// you are using a self-signed server certificate. The Secret must
     /// be of type `Opaque` or `kubernetes.io/tls`.
-    ///
+    /// 
     /// This field is only supported for the `ldap` provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<BucketStsCertSecretRef>,
     /// Endpoint is the HTTP/S endpoint of the Security Token Service from
     /// where temporary credentials will be fetched.
@@ -193,17 +176,17 @@ pub struct BucketSts {
 
 /// CertSecretRef can be given the name of a Secret containing
 /// either or both of
-///
+/// 
 /// - a PEM-encoded client certificate (`tls.crt`) and private
 /// key (`tls.key`);
 /// - a PEM-encoded CA certificate (`ca.crt`)
-///
+/// 
 /// and whichever are supplied, will be used for connecting to the
 /// STS endpoint. The client cert and key are useful if you are
 /// authenticating with a certificate; the CA cert is useful if
 /// you are using a self-signed server certificate. The Secret must
 /// be of type `Opaque` or `kubernetes.io/tls`.
-///
+/// 
 /// This field is only supported for the `ldap` provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketStsCertSecretRef {
@@ -214,7 +197,7 @@ pub struct BucketStsCertSecretRef {
 /// STS specifies the required configuration to use a Security Token
 /// Service for fetching temporary credentials to authenticate in a
 /// Bucket provider.
-///
+/// 
 /// This field is only supported for the `aws` and `generic` providers.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BucketStsProvider {
@@ -245,26 +228,14 @@ pub struct BucketStatus {
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation of the Bucket object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ObservedIgnore is the observed exclusion patterns used for constructing
     /// the source artifact.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedIgnore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedIgnore")]
     pub observed_ignore: Option<String>,
     /// URL is the dynamic fetch link for the latest Artifact.
     /// It is provided on a "best effort" basis, and using the precise
@@ -301,3 +272,4 @@ pub struct BucketStatusArtifact {
     /// consumption, e.g. by another controller applying the Artifact contents.
     pub url: String,
 }
+

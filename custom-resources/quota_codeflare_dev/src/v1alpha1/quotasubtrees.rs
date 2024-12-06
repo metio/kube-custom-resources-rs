@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// QuotaSubtreeSpec is the spec for a resource plan
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "quota.codeflare.dev",
-    version = "v1alpha1",
-    kind = "QuotaSubtree",
-    plural = "quotasubtrees"
-)]
+#[kube(group = "quota.codeflare.dev", version = "v1alpha1", kind = "QuotaSubtree", plural = "quotasubtrees")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct QuotaSubtreeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub children: Option<Vec<QuotaSubtreeChildren>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parentNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentNamespace")]
     pub parent_namespace: Option<String>,
 }
 
@@ -111,3 +102,4 @@ pub struct QuotaSubtreeStatusTotalAllocationAllocated {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, String>>,
 }
+

@@ -5,27 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// IPReservationSpec contains the specification for an IPReservation resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "crd.projectcalico.org",
-    version = "v1",
-    kind = "IPReservation",
-    plural = "ipreservations"
-)]
+#[kube(group = "crd.projectcalico.org", version = "v1", kind = "IPReservation", plural = "ipreservations")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IPReservationSpec {
     /// ReservedCIDRs is a list of CIDRs and/or IP addresses that Calico IPAM will exclude from new allocations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reservedCIDRs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reservedCIDRs")]
     pub reserved_cid_rs: Option<Vec<String>>,
 }
+

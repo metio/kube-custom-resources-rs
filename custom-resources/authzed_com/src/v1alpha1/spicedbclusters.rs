@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterSpec holds the desired state of the cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "authzed.com",
-    version = "v1alpha1",
-    kind = "SpiceDBCluster",
-    plural = "spicedbclusters"
-)]
+#[kube(group = "authzed.com", version = "v1alpha1", kind = "SpiceDBCluster", plural = "spicedbclusters")]
 #[kube(namespaced)]
 #[kube(status = "SpiceDBClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SpiceDBClusterSpec {
     /// Channel is a defined series of updates that operator should follow.
     /// The operator is configured with a datasource that configures available
@@ -45,11 +40,7 @@ pub struct SpiceDBClusterSpec {
     /// SecretName points to a secret (in the same namespace) that holds secret
     /// config for the cluster like passwords, credentials, etc.
     /// If the secret is omitted, one will be generated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// Version is the name of the version of SpiceDB that will be run.
     /// The version is usually a simple version string like `v1.13.0`, but the
@@ -79,11 +70,7 @@ pub struct SpiceDBClusterPatches {
 pub struct SpiceDBClusterStatus {
     /// AvailableVersions is a list of versions that the currently running
     /// version can be updated to. Only applies if using an update channel.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableVersions")]
     pub available_versions: Option<Vec<SpiceDBClusterStatusAvailableVersions>>,
     /// Conditions for the current state of the Stack.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -91,11 +78,7 @@ pub struct SpiceDBClusterStatus {
     /// CurrentMigrationHash is a hash of the currently running migration target and config.
     /// If this is equal to TargetMigrationHash (and there are no conditions) then the datastore
     /// is fully migrated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentMigrationHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentMigrationHash")]
     pub current_migration_hash: Option<String>,
     /// Image is the image that is or will be used for this cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -105,28 +88,16 @@ pub struct SpiceDBClusterStatus {
     pub migration: Option<String>,
     /// ObservedGeneration represents the .metadata.generation that has been
     /// seen by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Phase is the currently running phase (used for phased migrations)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     /// SecretHash is a digest of the last applied secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretHash")]
     pub secret_hash: Option<String>,
     /// TargetMigrationHash is a hash of the desired migration target and config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetMigrationHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetMigrationHash")]
     pub target_migration_hash: Option<String>,
     /// CurrentVersion is a description of the currently selected version from
     /// the channel, if an update channel is being used.
@@ -167,3 +138,4 @@ pub struct SpiceDBClusterStatusVersion {
     /// Name is the identifier for this version
     pub name: String,
 }
+

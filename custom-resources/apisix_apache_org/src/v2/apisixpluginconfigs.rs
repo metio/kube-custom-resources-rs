@@ -5,29 +5,20 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apisix.apache.org",
-    version = "v2",
-    kind = "ApisixPluginConfig",
-    plural = "apisixpluginconfigs"
-)]
+#[kube(group = "apisix.apache.org", version = "v2", kind = "ApisixPluginConfig", plural = "apisixpluginconfigs")]
 #[kube(namespaced)]
 #[kube(status = "ApisixPluginConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ApisixPluginConfigSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     pub plugins: Vec<ApisixPluginConfigPlugins>,
 }
@@ -54,11 +45,7 @@ pub struct ApisixPluginConfigStatus {
 pub struct ApisixPluginConfigStatusConditions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
@@ -67,3 +54,4 @@ pub struct ApisixPluginConfigStatusConditions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

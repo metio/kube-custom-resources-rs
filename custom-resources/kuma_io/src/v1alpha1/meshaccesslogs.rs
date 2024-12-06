@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the Kuma MeshAccessLog resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshAccessLog",
-    plural = "meshaccesslogs"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshAccessLog", plural = "meshaccesslogs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshAccessLogSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -62,11 +57,7 @@ pub struct MeshAccessLogFromDefaultBackends {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<MeshAccessLogFromDefaultBackendsFile>,
     /// Defines an OpenTelemetry logging backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openTelemetry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
     pub open_telemetry: Option<MeshAccessLogFromDefaultBackendsOpenTelemetry>,
     /// TCPBackend defines a TCP logging backend.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -92,11 +83,7 @@ pub struct MeshAccessLogFromDefaultBackendsFile {
 pub struct MeshAccessLogFromDefaultBackendsFileFormat {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub json: Option<Vec<MeshAccessLogFromDefaultBackendsFileFormatJson>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "omitEmptyValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "omitEmptyValues")]
     pub omit_empty_values: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plain: Option<String>,
@@ -162,11 +149,7 @@ pub struct MeshAccessLogFromDefaultBackendsTcp {
 pub struct MeshAccessLogFromDefaultBackendsTcpFormat {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub json: Option<Vec<MeshAccessLogFromDefaultBackendsTcpFormatJson>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "omitEmptyValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "omitEmptyValues")]
     pub omit_empty_values: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plain: Option<String>,
@@ -221,19 +204,11 @@ pub struct MeshAccessLogFromTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -281,19 +256,11 @@ pub struct MeshAccessLogTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -343,11 +310,7 @@ pub struct MeshAccessLogToDefaultBackends {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<MeshAccessLogToDefaultBackendsFile>,
     /// Defines an OpenTelemetry logging backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openTelemetry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
     pub open_telemetry: Option<MeshAccessLogToDefaultBackendsOpenTelemetry>,
     /// TCPBackend defines a TCP logging backend.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -373,11 +336,7 @@ pub struct MeshAccessLogToDefaultBackendsFile {
 pub struct MeshAccessLogToDefaultBackendsFileFormat {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub json: Option<Vec<MeshAccessLogToDefaultBackendsFileFormatJson>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "omitEmptyValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "omitEmptyValues")]
     pub omit_empty_values: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plain: Option<String>,
@@ -443,11 +402,7 @@ pub struct MeshAccessLogToDefaultBackendsTcp {
 pub struct MeshAccessLogToDefaultBackendsTcpFormat {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub json: Option<Vec<MeshAccessLogToDefaultBackendsTcpFormatJson>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "omitEmptyValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "omitEmptyValues")]
     pub omit_empty_values: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plain: Option<String>,
@@ -502,19 +457,11 @@ pub struct MeshAccessLogToTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -536,3 +483,4 @@ pub enum MeshAccessLogToTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
 }
+

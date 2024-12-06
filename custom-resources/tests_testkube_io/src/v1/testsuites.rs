@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// TestSuiteSpec defines the desired state of TestSuite
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tests.testkube.io",
-    version = "v1",
-    kind = "TestSuite",
-    plural = "testsuites"
-)]
+#[kube(group = "tests.testkube.io", version = "v1", kind = "TestSuite", plural = "testsuites")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TestSuiteSpec {
     /// After steps is list of tests which will be sequentially orchestrated
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -76,11 +71,7 @@ pub struct TestSuiteAfterExecute {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stopOnFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopOnFailure")]
     pub stop_on_failure: Option<bool>,
 }
 
@@ -112,11 +103,7 @@ pub struct TestSuiteBeforeExecute {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stopOnFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopOnFailure")]
     pub stop_on_failure: Option<bool>,
 }
 
@@ -148,11 +135,7 @@ pub struct TestSuiteStepsExecute {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stopOnFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopOnFailure")]
     pub stop_on_failure: Option<bool>,
 }
 
@@ -177,11 +160,7 @@ pub struct TestSuiteVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteVariablesValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<TestSuiteVariablesValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -189,18 +168,10 @@ pub struct TestSuiteVariablesValueFrom {
     pub field_ref: Option<TestSuiteVariablesValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<TestSuiteVariablesValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<TestSuiteVariablesValueFromSecretKeyRef>,
 }
 
@@ -224,11 +195,7 @@ pub struct TestSuiteVariablesValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteVariablesValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -240,11 +207,7 @@ pub struct TestSuiteVariablesValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestSuiteVariablesValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -270,4 +233,6 @@ pub struct TestSuiteVariablesValueFromSecretKeyRef {
 
 /// TestSuiteStatus defines the observed state of TestSuite
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestSuiteStatus {}
+pub struct TestSuiteStatus {
+}
+

@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// KubevirtMachineTemplateSpec defines the desired state of KubevirtMachineTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1alpha1",
-    kind = "KubevirtMachineTemplate",
-    plural = "kubevirtmachinetemplates"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1alpha1", kind = "KubevirtMachineTemplate", plural = "kubevirtmachinetemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KubevirtMachineTemplateSpec {
     /// KubevirtMachineTemplateResource describes the data needed to create a KubevirtMachine from a template.
     pub template: KubevirtMachineTemplateTemplate,
@@ -41,33 +36,16 @@ pub struct KubevirtMachineTemplateTemplate {
 pub struct KubevirtMachineTemplateTemplateSpec {
     /// InfraClusterSecretRef is a reference to a secret with a kubeconfig for external cluster used for infra.
     /// When nil, this defaults to the value present in the KubevirtCluster object's spec associated with this machine.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "infraClusterSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infraClusterSecretRef")]
     pub infra_cluster_secret_ref: Option<ObjectReference>,
     /// ProviderID TBD what to use for Kubevirt
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
     /// BootstrapCheckSpec defines how the CAPK controller is checking CAPI Sentinel file inside the VM.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualMachineBootstrapCheck"
-    )]
-    pub virtual_machine_bootstrap_check:
-        Option<KubevirtMachineTemplateTemplateSpecVirtualMachineBootstrapCheck>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualMachineBootstrapCheck")]
+    pub virtual_machine_bootstrap_check: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineBootstrapCheck>,
     /// VirtualMachineTemplateSpec defines the desired state of the kubevirt VM.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualMachineTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualMachineTemplate")]
     pub virtual_machine_template: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplate>,
 }
 
@@ -76,11 +54,7 @@ pub struct KubevirtMachineTemplateTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecInfraClusterSecretRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -106,11 +80,7 @@ pub struct KubevirtMachineTemplateTemplateSpecInfraClusterSecretRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -124,13 +94,8 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineBootstrapCheck {
     /// CheckStrategy describes how CAPK controller will validate a successful CAPI bootstrap.
     /// Following specified method, CAPK will try to retrieve the state of the CAPI Sentinel file from the VM.
     /// Possible values are: "none" or "ssh" (default is "ssh") and this value is validated by apiserver.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checkStrategy"
-    )]
-    pub check_strategy:
-        Option<KubevirtMachineTemplateTemplateSpecVirtualMachineBootstrapCheckCheckStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkStrategy")]
+    pub check_strategy: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineBootstrapCheckCheckStrategy>,
 }
 
 /// BootstrapCheckSpec defines how the CAPK controller is checking CAPI Sentinel file inside the VM.
@@ -157,28 +122,17 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplate {
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpec {
     /// dataVolumeTemplates is a list of dataVolumes that the VirtualMachineInstance template can reference.
     /// DataVolumes in this list are dynamically created for the VirtualMachine and are tied to the VirtualMachine's life-cycle.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataVolumeTemplates"
-    )]
-    pub data_volume_templates: Option<
-        Vec<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplates>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataVolumeTemplates")]
+    pub data_volume_templates: Option<Vec<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplates>>,
     /// InstancetypeMatcher references a instancetype that is used to fill fields in Template
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub instancetype:
-        Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecInstancetype>,
+    pub instancetype: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecInstancetype>,
     /// PreferenceMatcher references a set of preference that is used to fill fields in Template
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preference: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecPreference>,
     /// Running state indicates the requested running state of the VirtualMachineInstance
     /// mutually exclusive with Running
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runStrategy")]
     pub run_strategy: Option<String>,
     /// Running controls whether the associatied VirtualMachineInstance is created or not
     /// Mutually exclusive with RunStrategy
@@ -194,11 +148,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
     /// Servers should convert recognized schemas to the latest internal value, and
     /// may reject unrecognized values.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind is a string value representing the REST resource this object represents.
     /// Servers may infer this from the endpoint the client submits requests to.
@@ -214,9 +164,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
     /// DataVolumeTemplateDummyStatus is here simply for backwards compatibility with
     /// a previous API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<
-        KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesStatus,
-    >,
+    pub status: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesStatus>,
 }
 
 /// DataVolumeSpec contains the DataVolume specification.
@@ -253,8 +201,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// DataVolumeCheckpoint defines a stage in a warm migration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecCheckpoints
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecCheckpoints {
     /// Current is the identifier of the snapshot created for this checkpoint.
     pub current: String,
     /// Previous is the identifier of the snapshot from the previous checkpoint.
@@ -263,8 +210,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// DataVolumeSpec contains the DataVolume specification.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecContentType
-{
+pub enum KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecContentType {
     #[serde(rename = "kubevirt")]
     Kubevirt,
     #[serde(rename = "archive")]
@@ -359,8 +305,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
 /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecPvcDataSource
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecPvcDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -396,8 +341,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecPvcDataSourceRef
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecPvcDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -420,8 +364,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 /// status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecPvcResources
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecPvcResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -450,8 +393,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecPvcSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecPvcSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -502,13 +444,12 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// DataVolumeBlankImage provides the parameters to create a new raw blank image for the PVC
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceBlank
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceBlank {
+}
 
 /// DataVolumeSourceGCS provides the parameters to create a Data Volume from an GCS source
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceGcs
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceGcs {
     /// SecretRef provides the secret reference needed to access the GCS source
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<String>,
@@ -518,28 +459,15 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// DataVolumeSourceHTTP can be either an http or https endpoint, with an optional basic auth user name and password, and an optional configmap containing additional CAs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceHttp
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceHttp {
     /// CertConfigMap is a configmap reference, containing a Certificate Authority(CA) public key, and a base64 encoded pem certificate
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certConfigMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certConfigMap")]
     pub cert_config_map: Option<String>,
     /// ExtraHeaders is a list of strings containing extra headers to include with HTTP transfer requests
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraHeaders")]
     pub extra_headers: Option<Vec<String>>,
     /// SecretExtraHeaders is a list of Secret references, each containing an extra HTTP header that may include sensitive information
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretExtraHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretExtraHeaders")]
     pub secret_extra_headers: Option<Vec<String>>,
     /// SecretRef A Secret reference, the secret should contain accessKeyId (user name) base64 encoded, and secretKey (password) also base64 encoded
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
@@ -550,14 +478,9 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// DataVolumeSourceImageIO provides the parameters to create a Data Volume from an imageio source
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceImageio
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceImageio {
     /// CertConfigMap provides a reference to the CA cert
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certConfigMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certConfigMap")]
     pub cert_config_map: Option<String>,
     /// DiskID provides id of a disk to be imported
     #[serde(rename = "diskId")]
@@ -571,8 +494,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// DataVolumeSourcePVC provides the parameters to create a Data Volume from an existing PVC
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourcePvc
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourcePvc {
     /// The name of the source PVC
     pub name: String,
     /// The namespace of the source PVC
@@ -581,28 +503,15 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// DataVolumeSourceRegistry provides the parameters to create a Data Volume from an registry source
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceRegistry
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceRegistry {
     /// CertConfigMap provides a reference to the Registry certs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certConfigMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certConfigMap")]
     pub cert_config_map: Option<String>,
     /// ImageStream is the name of image stream for import
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageStream"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageStream")]
     pub image_stream: Option<String>,
     /// PullMethod can be either "pod" (default import), or "node" (node docker cache based import)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullMethod")]
     pub pull_method: Option<String>,
     /// SecretRef provides the secret reference needed to access the Registry source
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
@@ -614,14 +523,9 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// DataVolumeSourceS3 provides the parameters to create a Data Volume from an S3 source
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceS3
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceS3 {
     /// CertConfigMap is a configmap reference, containing a Certificate Authority(CA) public key, and a base64 encoded pem certificate
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certConfigMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certConfigMap")]
     pub cert_config_map: Option<String>,
     /// SecretRef provides the secret reference needed to access the S3 source
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
@@ -632,8 +536,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// DataVolumeSourceSnapshot provides the parameters to create a Data Volume from an existing VolumeSnapshot
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceSnapshot
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceSnapshot {
     /// The name of the source VolumeSnapshot
     pub name: String,
     /// The namespace of the source VolumeSnapshot
@@ -642,26 +545,17 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// DataVolumeSourceUpload provides the parameters to create a Data Volume by uploading the source
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceUpload
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceUpload {
+}
 
 /// DataVolumeSourceVDDK provides the parameters to create a Data Volume from a Vmware source
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceVddk
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceVddk {
     /// BackingFile is the path to the virtual hard disk to migrate from vCenter/ESXi
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backingFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingFile")]
     pub backing_file: Option<String>,
     /// InitImageURL is an optional URL to an image containing an extracted VDDK library, overrides v2v-vmware config map
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initImageURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initImageURL")]
     pub init_image_url: Option<String>,
     /// SecretRef provides a reference to a secret containing the username and password needed to access the vCenter or ESXi host
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
@@ -679,8 +573,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// SourceRef is an indirect reference to the source of data for the requested DataVolume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceRef
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourceRef {
     /// The kind of the source reference, currently only "DataSource" is supported
     pub kind: String,
     /// The name of the source reference
@@ -732,8 +625,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 /// This field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) * An existing custom resource that implements data population (Alpha) In order to use custom resource types that implement data population, the AnyVolumeDataSource feature gate must be enabled. If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source.
 /// If the AnyVolumeDataSource feature gate is enabled, this field will always have the same contents as the DataSourceRef field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageDataSource
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -752,8 +644,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 /// * While DataSource ignores disallowed values (dropping them), DataSourceRef preserves all values, and generates an error if a disallowed value is specified.
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageDataSourceRef
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -799,8 +690,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageResourcesClaims
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -823,8 +713,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -850,20 +739,12 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecInstance
     /// InferFromVolume lists the name of a volume that should be used to infer or discover the instancetype
     /// to be used through known annotations on the underlying resource. Once applied to the InstancetypeMatcher
     /// this field is removed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inferFromVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferFromVolume")]
     pub infer_from_volume: Option<String>,
     /// InferFromVolumeFailurePolicy controls what should happen on failure when inferring the instancetype.
     /// Allowed values are: "RejectInferFromVolumeFailure" and "IgnoreInferFromVolumeFailure".
     /// If not specified, "RejectInferFromVolumeFailure" is used by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inferFromVolumeFailurePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferFromVolumeFailurePolicy")]
     pub infer_from_volume_failure_policy: Option<String>,
     /// Kind specifies which instancetype resource is referenced.
     /// Allowed values are: "VirtualMachineInstancetype" and "VirtualMachineClusterInstancetype".
@@ -876,11 +757,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecInstance
     /// RevisionName specifies a ControllerRevision containing a specific copy of the
     /// VirtualMachineInstancetype or VirtualMachineClusterInstancetype to be used. This is initially
     /// captured the first time the instancetype is applied to the VirtualMachineInstance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revisionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionName")]
     pub revision_name: Option<String>,
 }
 
@@ -890,20 +767,12 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecPreferen
     /// InferFromVolume lists the name of a volume that should be used to infer or discover the preference
     /// to be used through known annotations on the underlying resource. Once applied to the PreferenceMatcher
     /// this field is removed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inferFromVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferFromVolume")]
     pub infer_from_volume: Option<String>,
     /// InferFromVolumeFailurePolicy controls what should happen on failure when preference the instancetype.
     /// Allowed values are: "RejectInferFromVolumeFailure" and "IgnoreInferFromVolumeFailure".
     /// If not specified, "RejectInferFromVolumeFailure" is used by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inferFromVolumeFailurePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferFromVolumeFailurePolicy")]
     pub infer_from_volume_failure_policy: Option<String>,
     /// Kind specifies which preference resource is referenced.
     /// Allowed values are: "VirtualMachinePreference" and "VirtualMachineClusterPreference".
@@ -916,11 +785,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecPreferen
     /// RevisionName specifies a ControllerRevision containing a specific copy of the
     /// VirtualMachinePreference or VirtualMachineClusterPreference to be used. This is
     /// initially captured the first time the instancetype is applied to the VirtualMachineInstance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revisionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionName")]
     pub revision_name: Option<String>,
 }
 
@@ -1072,21 +937,20 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// ConfigDrivePropagation means that the ssh public keys are injected
 /// into the VM using metadata using the configDrive cloud-init provider
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsSshPublicKeyPropagationMethodConfigDrive
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsSshPublicKeyPropagationMethodConfigDrive {
+}
 
 /// NoCloudPropagation means that the ssh public keys are injected
 /// into the VM using metadata using the noCloud cloud-init provider
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsSshPublicKeyPropagationMethodNoCloud
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsSshPublicKeyPropagationMethodNoCloud {
+}
 
 /// QemuGuestAgentAccessCredentailPropagation means ssh public keys are
 /// dynamically injected into the vm at runtime via the qemu guest agent.
 /// This feature requires the qemu guest agent to be running within the guest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsSshPublicKeyPropagationMethodQemuGuestAgent
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsSshPublicKeyPropagationMethodQemuGuestAgent {
     /// Users represents a list of guest users that should have the ssh public keys
     /// added to their authorized_keys file.
     pub users: Vec<String>,
@@ -1102,8 +966,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Secret means that the access credential is pulled from a kubernetes secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsSshPublicKeySourceSecret
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsSshPublicKeySourceSecret {
     /// SecretName represents the name of the secret in the VMI's namespace
     #[serde(rename = "secretName")]
     pub secret_name: String,
@@ -1134,8 +997,8 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// dynamically injected into the vm at runtime via the qemu guest agent.
 /// This feature requires the qemu guest agent to be running within the guest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsUserPasswordPropagationMethodQemuGuestAgent
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsUserPasswordPropagationMethodQemuGuestAgent {
+}
 
 /// Source represents where the user passwords are pulled from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1147,8 +1010,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Secret means that the access credential is pulled from a kubernetes secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsUserPasswordSourceSecret
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAccessCredentialsUserPasswordSourceSecret {
     /// SecretName represents the name of the secret in the VMI's namespace
     #[serde(rename = "secretName")]
     pub secret_name: String,
@@ -1215,8 +1077,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1234,8 +1095,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1278,8 +1138,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1297,8 +1156,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1417,8 +1275,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1452,8 +1309,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1540,8 +1396,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1575,8 +1430,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1694,8 +1548,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1729,8 +1582,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1817,8 +1669,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1852,8 +1703,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1892,8 +1742,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// PodDNSConfigOption defines DNS resolver options of a pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDnsConfigOptions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDnsConfigOptions {
     /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1960,9 +1809,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClock {
     /// Timer specifies whih timers are attached to the vmi.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timer: Option<
-        KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimer,
-    >,
+    pub timer: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimer>,
     /// Timezone sets the guest clock to the specified timezone.
     /// Zone name follows the TZ environment variable format (e.g. 'America/New_York').
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1970,9 +1817,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// UTC sets the guest clock to UTC on each boot. If an offset is specified,
     /// guest changes to the clock will be kept during reboots and are not reset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub utc: Option<
-        KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockUtc,
-    >,
+    pub utc: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockUtc>,
 }
 
 /// Timer specifies whih timers are attached to the vmi.
@@ -1997,26 +1842,20 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// HPET (High Precision Event Timer) - multiple timers with periodic interrupts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimerHpet
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimerHpet {
     /// Enabled set to false makes sure that the machine type or a preset can't add the timer.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub present: Option<bool>,
     /// TickPolicy determines what happens when QEMU misses a deadline for injecting a tick to the guest.
     /// One of "delay", "catchup", "merge", "discard".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tickPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tickPolicy")]
     pub tick_policy: Option<String>,
 }
 
 /// Hyperv (Hypervclock) - lets guests read the host’s wall clock time (paravirtualized). For windows guests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimerHyperv
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimerHyperv {
     /// Enabled set to false makes sure that the machine type or a preset can't add the timer.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2025,8 +1864,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// KVM 	(KVM clock) - lets guests read the host’s wall clock time (paravirtualized). For linux guests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimerKvm
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimerKvm {
     /// Enabled set to false makes sure that the machine type or a preset can't add the timer.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2035,37 +1873,27 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// PIT (Programmable Interval Timer) - a timer with periodic interrupts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimerPit
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimerPit {
     /// Enabled set to false makes sure that the machine type or a preset can't add the timer.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub present: Option<bool>,
     /// TickPolicy determines what happens when QEMU misses a deadline for injecting a tick to the guest.
     /// One of "delay", "catchup", "discard".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tickPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tickPolicy")]
     pub tick_policy: Option<String>,
 }
 
 /// RTC (Real Time Clock) - a continuously running timer with periodic interrupts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimerRtc
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockTimerRtc {
     /// Enabled set to false makes sure that the machine type or a preset can't add the timer.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub present: Option<bool>,
     /// TickPolicy determines what happens when QEMU misses a deadline for injecting a tick to the guest.
     /// One of "delay", "catchup".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tickPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tickPolicy")]
     pub tick_policy: Option<String>,
     /// Track the guest or the wall clock.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2078,11 +1906,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainClockUtc {
     /// OffsetSeconds specifies an offset in seconds, relative to UTC. If set,
     /// guest changes to the clock will be kept during reboots and not reset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "offsetSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offsetSeconds")]
     pub offset_seconds: Option<i64>,
 }
 
@@ -2133,8 +1957,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// CPUFeature allows specifying a CPU feature.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainCpuFeatures
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainCpuFeatures {
     /// Name of the CPU feature
     pub name: String,
     /// Policy is the CPU feature attribute which can have the following attributes:
@@ -2160,13 +1983,12 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// GuestMappingPassthrough will create an efficient guest topology based on host CPUs exclusively assigned to a pod.
 /// The created topology ensures that memory and CPUs on the virtual numa nodes never cross boundaries of host numa nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainCpuNumaGuestMappingPassthrough
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainCpuNumaGuestMappingPassthrough {
+}
 
 /// Realtime instructs the virt-launcher to tune the VMI for lower latency, optional for real time workloads
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainCpuRealtime
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainCpuRealtime {
     /// Mask defines the vcpu mask expression that defines which vcpus are used for realtime. Format matches libvirt's expressions.
     /// Example: "0-3,^1","0,2,3","2-3"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2261,8 +2083,8 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// To configure and access client devices such as redirecting USB
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesClientPassthrough
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesClientPassthrough {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisks {
@@ -2326,16 +2148,14 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// CustomBlockSize represents the desired logical and physical block size for a VM disk.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksBlockSizeCustom
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksBlockSizeCustom {
     pub logical: i64,
     pub physical: i64,
 }
 
 /// Represents if a feature is enabled or disabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksBlockSizeMatchVolume
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksBlockSizeMatchVolume {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2344,8 +2164,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Attach a volume as a cdrom to the vmi.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksCdrom
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksCdrom {
     /// Bus indicates the type of disk device to emulate.
     /// supported values: virtio, sata, scsi.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2363,18 +2182,13 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Attach a volume as a disk to the vmi.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksDisk
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksDisk {
     /// Bus indicates the type of disk device to emulate.
     /// supported values: virtio, sata, scsi, usb.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bus: Option<String>,
     /// If specified, the virtual disk will be placed on the guests pci address with the specified PCI address. For example: 0000:81:01.10
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pciAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pciAddress")]
     pub pci_address: Option<String>,
     /// ReadOnly.
     /// Defaults to false.
@@ -2384,8 +2198,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Attach a volume as a LUN to the vmi.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksLun
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksLun {
     /// Bus indicates the type of disk device to emulate.
     /// supported values: virtio, sata, scsi.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2401,8 +2214,8 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// DownwardMetrics creates a virtio serials for exposing the downward metrics to the vmi.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDownwardMetrics
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesDownwardMetrics {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesFilesystems {
@@ -2414,8 +2227,8 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Virtiofs is supported
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesFilesystemsVirtiofs
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesFilesystemsVirtiofs {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesGpus {
@@ -2451,8 +2264,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Enables a boot framebuffer, until the guest OS loads a real GPU driver
 /// Defaults to true.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesGpusVirtualGpuOptionsDisplayRamFb
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesGpusVirtualGpuOptionsDisplayRamFb {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2460,8 +2272,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesHostDevices
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesHostDevices {
     /// DeviceName is the resource name of the host device exposed by a device plugin
     #[serde(rename = "deviceName")]
     pub device_name: String,
@@ -2472,8 +2283,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInputs
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInputs {
     /// Bus indicates the bus of input device to emulate.
     /// Supported values: virtio, usb.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2556,8 +2366,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// It provides an alternative to InterfaceBindingMethod.
 /// version: 1alphav1
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesBinding
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesBinding {
     /// Name references to the binding name as denined in the kubevirt CR.
     /// version: 1alphav1
     pub name: String,
@@ -2565,8 +2374,8 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// InterfaceBridge connects to a given network via a linux bridge.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesBridge
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesBridge {
+}
 
 /// If specified the network interface will pass additional DHCP options to the VMI
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2587,8 +2396,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// DHCPExtraOptions defines Extra DHCP options for a VM.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesDhcpOptionsPrivateOptions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesDhcpOptionsPrivateOptions {
     /// Option is an Integer value from 224-254
     /// Required.
     pub option: i64,
@@ -2599,25 +2407,24 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Deprecated, please refer to Kubevirt user guide for alternatives.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesMacvtap
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesMacvtap {
+}
 
 /// InterfaceMasquerade connects to a given network using netfilter rules to nat the traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesMasquerade
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesMasquerade {
+}
 
 /// Deprecated, please refer to Kubevirt user guide for alternatives.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesPasst
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesPasst {
+}
 
 /// Port represents a port to expose from the virtual machine.
 /// Default protocol TCP.
 /// The port field is mandatory
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesPorts
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesPorts {
     /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
     /// named port in a pod must have a unique name. Name for the port that can be
     /// referred to by services.
@@ -2634,23 +2441,22 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// InterfaceSlirp connects to a given network using QEMU user networking mode.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesSlirp
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesSlirp {
+}
 
 /// InterfaceSRIOV connects to a given network by passing-through an SR-IOV PCI device via vfio.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesSriov
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesSriov {
+}
 
 /// Whether to have random number generator from host
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesRng
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesRng {
+}
 
 /// Whether to emulate a sound device.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesSound
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesSound {
     /// We only support ich9 or ac97.
     /// If SoundDevice is not set: No sound card is emulated.
     /// If SoundDevice is set but Model is not: ich9
@@ -2662,8 +2468,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Whether to emulate a TPM device.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesTpm
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesTpm {
     /// Persistent indicates the state of the TPM device should be kept accross reboots
     /// Defaults to false
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2682,8 +2487,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// i6300esb watchdog device.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesWatchdogI6300esb
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesWatchdogI6300esb {
     /// The action to take. Valid values are poweroff, reset, shutdown.
     /// Defaults to reset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2719,8 +2523,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// ACPI enables/disables ACPI inside the guest.
 /// Defaults to enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesAcpi
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesAcpi {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2729,19 +2532,14 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesApic
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesApic {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// EndOfInterrupt enables the end of interrupt notification in the guest.
     /// Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endOfInterrupt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endOfInterrupt")]
     pub end_of_interrupt: Option<bool>,
 }
 
@@ -2808,8 +2606,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// EVMCS Speeds up L2 vmexits, but disables other virtualization features. Requires vapic.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervEvmcs
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervEvmcs {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2819,8 +2616,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Frequencies improves the TSC clock source handling for Hyper-V on KVM.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervFrequencies
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervFrequencies {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2830,8 +2626,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// IPI improves performances in overcommited environments. Requires vpindex.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervIpi
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervIpi {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2841,8 +2636,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Reenlightenment enables the notifications on TSC frequency changes.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervReenlightenment
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervReenlightenment {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2852,8 +2646,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Relaxed instructs the guest OS to disable watchdog timeouts.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervRelaxed
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervRelaxed {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2863,8 +2656,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Reset enables Hyperv reboot/reset for the vmi. Requires synic.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervReset
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervReset {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2874,8 +2666,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Runtime improves the time accounting to improve scheduling in the guest.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervRuntime
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervRuntime {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2884,8 +2675,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Spinlocks allows to configure the spinlock retry attempts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervSpinlocks
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervSpinlocks {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2900,8 +2690,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// SyNIC enables the Synthetic Interrupt Controller.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervSynic
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervSynic {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2921,8 +2710,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Represents if a feature is enabled or disabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervSynictimerDirect
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervSynictimerDirect {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2932,8 +2720,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// TLBFlush improves performances in overcommited environments. Requires vpindex.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervTlbflush
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervTlbflush {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2943,8 +2730,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// VAPIC improves the paravirtualized handling of interrupts.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervVapic
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervVapic {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2954,8 +2740,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// VendorID allows setting the hypervisor vendor id.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervVendorid
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervVendorid {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2969,8 +2754,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// VPIndex enables the Virtual Processor Index to help windows identifying virtual processors.
 /// Defaults to the machine type setting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervVpindex
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervVpindex {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2979,8 +2763,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Configure how KVM presence is exposed to the guest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesKvm
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesKvm {
     /// Hide the KVM hypervisor from standard MSR based discovery.
     /// Defaults to false
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2990,8 +2773,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Notify the guest that the host supports paravirtual spinlocks.
 /// For older kernels this feature should be explicitly disabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesPvspinlock
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesPvspinlock {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3001,8 +2783,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// SMM enables/disables System Management Mode.
 /// TSEG not yet implemented.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesSmm
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesSmm {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3032,16 +2813,11 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Information that can be set in the ACPI table
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFirmwareAcpi
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFirmwareAcpi {
     /// SlicNameRef should match the volume name of a secret object. The data in the secret should
     /// be a binary blob that follows the ACPI SLIC standard, see:
     /// https://learn.microsoft.com/en-us/previous-versions/windows/hardware/design/dn653305(v=vs.85)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "slicNameRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slicNameRef")]
     pub slic_name_ref: Option<String>,
 }
 
@@ -3058,8 +2834,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// If set (default), BIOS will be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFirmwareBootloaderBios
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFirmwareBootloaderBios {
     /// If set, the BIOS output will be transmitted over serial
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSerial")]
     pub use_serial: Option<bool>,
@@ -3067,8 +2842,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// If set, EFI will be used instead of BIOS.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFirmwareBootloaderEfi
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFirmwareBootloaderEfi {
     /// If set to true, Persistent will persist the EFI NVRAM across reboots.
     /// Defaults to false
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3077,11 +2851,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// SecureBoot-enabled ones.
     /// Requires SMM to be enabled.
     /// Defaults to true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secureBoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secureBoot")]
     pub secure_boot: Option<bool>,
 }
 
@@ -3098,8 +2868,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Container defines the container that containes kernel artifacts
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFirmwareKernelBootContainer
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFirmwareKernelBootContainer {
     /// Image that contains initrd / kernel files.
     pub image: String,
     /// Image pull policy.
@@ -3107,32 +2876,16 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// ImagePullSecret is the name of the Docker registry secret required to pull the image. The secret must already exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecret")]
     pub image_pull_secret: Option<String>,
     /// the fully-qualified path to the ramdisk image in the host OS
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initrdPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initrdPath")]
     pub initrd_path: Option<String>,
     /// The fully-qualified path to the kernel image in the host OS
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kernelPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelPath")]
     pub kernel_path: Option<String>,
 }
 
@@ -3164,21 +2917,16 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// If specified, run the attestation process for a vmi.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecuritySevAttestation
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecuritySevAttestation {
+}
 
 /// Guest policy flags as defined in AMD SEV API specification.
 /// Note: due to security reasons it is not allowed to enable guest debugging. Therefore NoDebug flag is not exposed to users and is always true.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecuritySevPolicy
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecuritySevPolicy {
     /// SEV-ES is required.
     /// Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptedState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptedState")]
     pub encrypted_state: Option<bool>,
 }
 
@@ -3209,8 +2957,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Hugepages allow to use hugepages for the VirtualMachineInstance instead of regular memory.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainMemoryHugepages
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainMemoryHugepages {
     /// PageSize specifies the hugepage size, for x86_64 architecture valid values are 1Gi and 2Mi.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pageSize")]
     pub page_size: Option<String>,
@@ -3218,8 +2965,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Resources describes the Compute Resources required by this vmi.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainResources
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// Valid resource keys are "memory" and "cpu".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3227,11 +2973,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// Don't ask the scheduler to take the guest-management overhead into account. Instead
     /// put the overhead only into the container's memory limit. This can lead to crashes if
     /// all memory is in use on a node. Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overcommitGuestOverhead"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overcommitGuestOverhead")]
     pub overcommit_guest_overhead: Option<bool>,
     /// Requests is a description of the initial vmi resources.
     /// Valid resource keys are "memory" and "cpu".
@@ -3292,8 +3034,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Exec specifies the action to take, it will be executed on the guest through the qemu-guest-agent.
 /// If the guest agent is not available, this probe will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecLivenessProbeExec
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
     /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
     /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
@@ -3305,8 +3046,8 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// GuestAgentPing contacts the qemu-guest-agent for availability checks.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecLivenessProbeGuestAgentPing
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecLivenessProbeGuestAgentPing {
+}
 
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3333,8 +3074,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecLivenessProbeHttpGetHttpHeaders
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecLivenessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -3346,8 +3086,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// TCP hooks not yet supported
 /// TODO: implement a realistic TCP lifecycle hook
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecLivenessProbeTcpSocket
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -3362,18 +3101,14 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecNetworks {
     /// Represents the multus cni network.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub multus: Option<
-        KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecNetworksMultus,
-    >,
+    pub multus: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecNetworksMultus>,
     /// Network name.
     /// Must be a DNS_LABEL and unique within the vm.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
     /// Represents the stock pod network interface.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pod: Option<
-        KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecNetworksPod,
-    >,
+    pub pod: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecNetworksPod>,
 }
 
 /// Represents the multus cni network.
@@ -3395,19 +3130,11 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecNetworksPod {
     /// IPv6 CIDR for the vm network.
     /// Defaults to fd10:0:2::/120 if not specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vmIPv6NetworkCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vmIPv6NetworkCIDR")]
     pub vm_i_pv6_network_cidr: Option<String>,
     /// CIDR for vm network.
     /// Default 10.0.2.0/24 if not specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vmNetworkCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vmNetworkCIDR")]
     pub vm_network_cidr: Option<String>,
 }
 
@@ -3464,8 +3191,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Exec specifies the action to take, it will be executed on the guest through the qemu-guest-agent.
 /// If the guest agent is not available, this probe will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecReadinessProbeExec
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
     /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
     /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
@@ -3477,8 +3203,8 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// GuestAgentPing contacts the qemu-guest-agent for availability checks.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecReadinessProbeGuestAgentPing
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecReadinessProbeGuestAgentPing {
+}
 
 /// HTTPGet specifies the http request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3505,8 +3231,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecReadinessProbeHttpGetHttpHeaders
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecReadinessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -3518,8 +3243,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// TCP hooks not yet supported
 /// TODO: implement a realistic TCP lifecycle hook
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecReadinessProbeTcpSocket
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -3551,11 +3275,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -3698,8 +3418,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3808,8 +3527,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// NetworkDataSecretRef references a k8s secret that contains config drive networkdata.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesCloudInitConfigDriveNetworkDataSecretRef
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesCloudInitConfigDriveNetworkDataSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -3823,8 +3541,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// UserDataSecretRef references a k8s secret that contains config drive userdata.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesCloudInitConfigDriveSecretRef
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesCloudInitConfigDriveSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -3863,8 +3580,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// NetworkDataSecretRef references a k8s secret that contains NoCloud networkdata.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesCloudInitNoCloudNetworkDataSecretRef
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesCloudInitNoCloudNetworkDataSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -3878,8 +3594,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// UserDataSecretRef references a k8s secret that contains NoCloud userdata.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesCloudInitNoCloudSecretRef
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesCloudInitNoCloudSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -3894,8 +3609,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// ConfigMapSource represents a reference to a ConfigMap in the same namespace.
 /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesConfigMap
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesConfigMap {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -3911,19 +3625,14 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// The volume label of the resulting disk inside the VMI.
     /// Different bootstrapping mechanisms require different values.
     /// Typical values are "cidata" (cloud-init), "config-2" (cloud-init) or "OEMDRV" (kickstart).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeLabel")]
     pub volume_label: Option<String>,
 }
 
 /// ContainerDisk references a docker image, embedding a qcow or raw disk.
 /// More info: https://kubevirt.gitbooks.io/user-guide/registry-disk.html
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesContainerDisk
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesContainerDisk {
     /// Image is the name of the image with the embedded disk.
     pub image: String,
     /// Image pull policy.
@@ -3931,18 +3640,10 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// ImagePullSecret is the name of the Docker registry secret required to pull the image. The secret must already exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecret")]
     pub image_pull_secret: Option<String>,
     /// Path defines the path to disk file in the container
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3952,8 +3653,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// DataVolume represents the dynamic creation a PVC for this volume as well as
 /// the process of populating that PVC with a disk image.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesDataVolume
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesDataVolume {
     /// Hotpluggable indicates whether the volume can be hotplugged and hotunplugged.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hotpluggable: Option<bool>,
@@ -3999,14 +3699,9 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesDownwardApiFieldsFieldRef
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesDownwardApiFieldsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4016,14 +3711,9 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesDownwardApiFieldsResourceFieldRef
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesDownwardApiFieldsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4035,14 +3725,13 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// DownwardMetrics adds a very small disk to VMIs which contains a limited view of host and guest
 /// metrics. The disk content is compatible with vhostmd (https://github.com/vhostmd/vhostmd) and vm-dump-metrics.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesDownwardMetrics
-{}
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesDownwardMetrics {
+}
 
 /// EmptyDisk represents a temporary disk which shares the vmis lifecycle.
 /// More info: https://kubevirt.gitbooks.io/user-guide/disks-and-volumes.html
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesEmptyDisk
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesEmptyDisk {
     /// Capacity of the sparse disk.
     pub capacity: IntOrString,
 }
@@ -4061,8 +3750,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Directly attached to the vmi via qemu.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesEphemeralPersistentVolumeClaim
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesEphemeralPersistentVolumeClaim {
     /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
@@ -4075,8 +3763,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// HostDisk represents a disk created on the cluster level
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesHostDisk
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesHostDisk {
     /// Capacity of the sparse disk
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<IntOrString>,
@@ -4093,8 +3780,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// MemoryDump is attached to the virt launcher and is populated with a memory dump of the vmi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesMemoryDump
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesMemoryDump {
     /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
@@ -4112,8 +3798,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// Directly attached to the vmi via qemu.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesPersistentVolumeClaim
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesPersistentVolumeClaim {
     /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
@@ -4136,20 +3821,12 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     pub optional: Option<bool>,
     /// Name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// The volume label of the resulting disk inside the VMI.
     /// Different bootstrapping mechanisms require different values.
     /// Typical values are "cidata" (cloud-init), "config-2" (cloud-init) or "OEMDRV" (kickstart).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeLabel")]
     pub volume_label: Option<String>,
 }
 
@@ -4157,15 +3834,10 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// There can only be one volume of this type!
 /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesServiceAccount
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesServiceAccount {
     /// Name of the service account in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
 }
 
@@ -4182,8 +3854,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// ConfigMap references a ConfigMap that contains Sysprep answer file named autounattend.xml that should be attached as disk of CDROM type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesSysprepConfigMap
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesSysprepConfigMap {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -4197,8 +3868,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// Secret references a k8s Secret that contains Sysprep answer file named autounattend.xml that should be attached as disk of CDROM type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesSysprepSecret
-{
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecVolumesSysprepSecret {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -4209,3 +3879,4 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

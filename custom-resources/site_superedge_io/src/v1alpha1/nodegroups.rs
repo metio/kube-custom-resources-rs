@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// NodeGroupSpec defines the desired state of NodeGroup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "site.superedge.io",
-    version = "v1alpha1",
-    kind = "NodeGroup",
-    plural = "nodegroups"
-)]
+#[kube(group = "site.superedge.io", version = "v1alpha1", kind = "NodeGroup", plural = "nodegroups")]
 #[kube(status = "NodeGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeGroupSpec {
     /// If specified, create new NodeUnits based on node have same label keys, for different values will create different nodeunites
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -44,18 +39,10 @@ pub struct NodeGroupSelector {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<NodeGroupSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -91,18 +78,10 @@ pub struct NodeGroupWorkloadSelector {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<NodeGroupWorkloadSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -145,3 +124,4 @@ pub struct NodeGroupStatusWorkloadstatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workloadname: Option<String>,
 }
+

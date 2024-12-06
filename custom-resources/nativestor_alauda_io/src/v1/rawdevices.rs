@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// RawDeviceSpec defines the desired state of RawDevice
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "nativestor.alauda.io",
-    version = "v1",
-    kind = "RawDevice",
-    plural = "rawdevices"
-)]
+#[kube(group = "nativestor.alauda.io", version = "v1", kind = "RawDevice", plural = "rawdevices")]
 #[kube(status = "RawDeviceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RawDeviceSpec {
     pub available: bool,
     pub major: i32,
@@ -42,3 +37,4 @@ pub struct RawDeviceStatus {
     /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file
     pub name: String,
 }
+

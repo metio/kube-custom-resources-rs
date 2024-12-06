@@ -4,61 +4,36 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired state for Tigera compliance reporting.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "Compliance",
-    plural = "compliances"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "Compliance", plural = "compliances")]
 #[kube(status = "ComplianceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ComplianceSpec {
     /// ComplianceBenchmarkerDaemonSet configures the Compliance Benchmarker DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "complianceBenchmarkerDaemonSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "complianceBenchmarkerDaemonSet")]
     pub compliance_benchmarker_daemon_set: Option<ComplianceComplianceBenchmarkerDaemonSet>,
     /// ComplianceControllerDeployment configures the Compliance Controller Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "complianceControllerDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "complianceControllerDeployment")]
     pub compliance_controller_deployment: Option<ComplianceComplianceControllerDeployment>,
     /// ComplianceReporterPodTemplate configures the Compliance Reporter PodTemplate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "complianceReporterPodTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "complianceReporterPodTemplate")]
     pub compliance_reporter_pod_template: Option<ComplianceComplianceReporterPodTemplate>,
     /// ComplianceServerDeployment configures the Compliance Server Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "complianceServerDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "complianceServerDeployment")]
     pub compliance_server_deployment: Option<ComplianceComplianceServerDeployment>,
     /// ComplianceSnapshotterDeployment configures the Compliance Snapshotter Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "complianceSnapshotterDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "complianceSnapshotterDeployment")]
     pub compliance_snapshotter_deployment: Option<ComplianceComplianceSnapshotterDeployment>,
 }
 
@@ -97,13 +72,8 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpec {
     /// InitContainers is a list of Compliance benchmark init containers.
     /// If specified, this overrides the specified Compliance Benchmarker DaemonSet init containers.
     /// If omitted, the Compliance Benchmarker DaemonSet will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainers>>,
 }
 
 /// ComplianceBenchmarkerDaemonSetContainer is a Compliance Benchmarker DaemonSet container.
@@ -116,8 +86,7 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainers {
     /// If specified, this overrides the named Compliance Benchmarker DaemonSet container's resources.
     /// If omitted, the Compliance Benchmarker DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersResources>,
+    pub resources: Option<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersResources>,
 }
 
 /// ComplianceBenchmarkerDaemonSetContainer is a Compliance Benchmarker DaemonSet container.
@@ -138,9 +107,7 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersRes
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -172,8 +139,7 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainer
     /// If specified, this overrides the named Compliance Benchmarker DaemonSet init container's resources.
     /// If omitted, the Compliance Benchmarker DaemonSet will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersResources>,
+    pub resources: Option<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersResources>,
 }
 
 /// ComplianceBenchmarkerDaemonSetInitContainer is a Compliance Benchmarker DaemonSet init container.
@@ -194,9 +160,7 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainer
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -253,13 +217,8 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpec {
     /// InitContainers is a list of compliance controller init containers.
     /// If specified, this overrides the specified compliance controller Deployment init containers.
     /// If omitted, the compliance controller Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainers>>,
 }
 
 /// ComplianceControllerDeploymentContainer is a compliance controller Deployment container.
@@ -272,8 +231,7 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecContainers {
     /// If specified, this overrides the named compliance controller Deployment container's resources.
     /// If omitted, the compliance controller Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersResources>,
+    pub resources: Option<ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersResources>,
 }
 
 /// ComplianceControllerDeploymentContainer is a compliance controller Deployment container.
@@ -294,9 +252,7 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersRes
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -328,8 +284,7 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainer
     /// If specified, this overrides the named compliance controller Deployment init container's resources.
     /// If omitted, the compliance controller Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersResources>,
+    pub resources: Option<ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersResources>,
 }
 
 /// ComplianceControllerDeploymentInitContainer is a compliance controller Deployment init container.
@@ -350,9 +305,7 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainer
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -401,13 +354,8 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpec {
     /// InitContainers is a list of ComplianceReporter PodSpec init containers.
     /// If specified, this overrides the specified ComplianceReporter PodSpec init containers.
     /// If omitted, the ComplianceServer Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<ComplianceComplianceReporterPodTemplateTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ComplianceComplianceReporterPodTemplateTemplateSpecInitContainers>>,
 }
 
 /// ComplianceReporterPodTemplateContainer is a ComplianceServer Deployment container.
@@ -441,8 +389,7 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpecContainersResource
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<ComplianceComplianceReporterPodTemplateTemplateSpecContainersResourcesClaims>>,
+    pub claims: Option<Vec<ComplianceComplianceReporterPodTemplateTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -474,8 +421,7 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpecInitContainers {
     /// If specified, this overrides the named ComplianceReporter PodSpec init container's resources.
     /// If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersResources>,
+    pub resources: Option<ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersResources>,
 }
 
 /// ComplianceReporterPodTemplateInitContainer is a ComplianceServer Deployment init container.
@@ -496,9 +442,7 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersReso
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -555,13 +499,8 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpec {
     /// InitContainers is a list of ComplianceServer init containers.
     /// If specified, this overrides the specified ComplianceServer Deployment init containers.
     /// If omitted, the ComplianceServer Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainers>>,
 }
 
 /// ComplianceServerDeploymentContainer is a ComplianceServer Deployment container.
@@ -595,8 +534,7 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResourc
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResourcesClaims>>,
+    pub claims: Option<Vec<ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -628,8 +566,7 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainers {
     /// If specified, this overrides the named ComplianceServer Deployment init container's resources.
     /// If omitted, the ComplianceServer Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersResources>,
+    pub resources: Option<ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersResources>,
 }
 
 /// ComplianceServerDeploymentInitContainer is a ComplianceServer Deployment init container.
@@ -650,9 +587,7 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersRes
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -705,18 +640,12 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpec {
     /// If specified, this overrides the specified compliance snapshotter Deployment containers.
     /// If omitted, the compliance snapshotter Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers:
-        Option<Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainers>>,
+    pub containers: Option<Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainers>>,
     /// InitContainers is a list of compliance snapshotter init containers.
     /// If specified, this overrides the specified compliance snapshotter Deployment init containers.
     /// If omitted, the compliance snapshotter Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainers>>,
 }
 
 /// ComplianceSnapshotterDeploymentContainer is a compliance snapshotter Deployment container.
@@ -729,8 +658,7 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainers {
     /// If specified, this overrides the named compliance snapshotter Deployment container's resources.
     /// If omitted, the compliance snapshotter Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersResources>,
+    pub resources: Option<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersResources>,
 }
 
 /// ComplianceSnapshotterDeploymentContainer is a compliance snapshotter Deployment container.
@@ -751,9 +679,7 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersRe
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -785,8 +711,7 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContaine
     /// If specified, this overrides the named compliance snapshotter Deployment init container's resources.
     /// If omitted, the compliance snapshotter Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersResources>,
+    pub resources: Option<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersResources>,
 }
 
 /// ComplianceSnapshotterDeploymentInitContainer is a compliance snapshotter Deployment init container.
@@ -807,9 +732,7 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContaine
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -842,3 +765,4 @@ pub struct ComplianceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

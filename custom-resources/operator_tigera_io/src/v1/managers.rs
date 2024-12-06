@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired state for the Calico Enterprise manager.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "Manager",
-    plural = "managers"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "Manager", plural = "managers")]
 #[kube(status = "ManagerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ManagerSpec {
     /// ManagerDeployment configures the Manager Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managerDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managerDeployment")]
     pub manager_deployment: Option<ManagerManagerDeployment>,
 }
 
@@ -69,11 +60,7 @@ pub struct ManagerManagerDeploymentSpecTemplateSpec {
     /// InitContainers is a list of Manager init containers.
     /// If specified, this overrides the specified Manager Deployment init containers.
     /// If omitted, the Manager Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ManagerManagerDeploymentSpecTemplateSpecInitContainers>>,
 }
 
@@ -206,3 +193,4 @@ pub struct ManagerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

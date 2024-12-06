@@ -4,62 +4,41 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// MountTargetSpec defines the desired state of MountTarget.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "efs.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "MountTarget",
-    plural = "mounttargets"
-)]
+#[kube(group = "efs.services.k8s.aws", version = "v1alpha1", kind = "MountTarget", plural = "mounttargets")]
 #[kube(namespaced)]
 #[kube(status = "MountTargetStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MountTargetSpec {
     /// The ID of the file system for which to create the mount target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
     pub file_system_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemRef")]
     pub file_system_ref: Option<MountTargetFileSystemRef>,
     /// Valid IPv4 address within the address range of the specified subnet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddress")]
     pub ip_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupRefs")]
     pub security_group_refs: Option<Vec<MountTargetSecurityGroupRefs>>,
     /// Up to five VPC security group IDs, of the form sg-xxxxxxxx. These must be
     /// for the same VPC as subnet specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<String>>,
     /// The ID of the subnet to add the mount target in. For One Zone file systems,
     /// use the subnet that is associated with the file system's Availability Zone.
@@ -69,7 +48,7 @@ pub struct MountTargetSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRef")]
@@ -80,7 +59,7 @@ pub struct MountTargetSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -105,7 +84,7 @@ pub struct MountTargetFileSystemRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -130,7 +109,7 @@ pub struct MountTargetSecurityGroupRefsFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -157,31 +136,19 @@ pub struct MountTargetStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<MountTargetStatusAckResourceMetadata>,
     /// The unique and consistent identifier of the Availability Zone that the mount
     /// target resides in. For example, use1-az1 is an AZ ID for the us-east-1 Region
     /// and it has the same location in every Amazon Web Services account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityZoneID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZoneID")]
     pub availability_zone_id: Option<String>,
     /// The name of the Availability Zone in which the mount target is located. Availability
     /// Zones are independently mapped to names for each Amazon Web Services account.
     /// For example, the Availability Zone us-east-1a for your Amazon Web Services
     /// account might not be the same location as us-east-1a for another Amazon Web
     /// Services account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityZoneName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZoneName")]
     pub availability_zone_name: Option<String>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -190,26 +157,14 @@ pub struct MountTargetStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Lifecycle state of the mount target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifeCycleState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifeCycleState")]
     pub life_cycle_state: Option<String>,
     /// System-assigned mount target ID.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountTargetID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountTargetID")]
     pub mount_target_id: Option<String>,
     /// The ID of the network interface that Amazon EFS created when it created the
     /// mount target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkInterfaceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkInterfaceID")]
     pub network_interface_id: Option<String>,
     /// Amazon Web Services account ID that owns the resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
@@ -240,3 +195,4 @@ pub struct MountTargetStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

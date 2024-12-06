@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ManagementClusterSpec defines the desired state of a ManagementCluster
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "ManagementCluster",
-    plural = "managementclusters"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "ManagementCluster", plural = "managementclusters")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ManagementClusterSpec {
     /// This field specifies the externally reachable address to which your managed cluster will connect. When a managed
     /// cluster is added, this field is used to populate an easy-to-apply manifest that will connect both clusters.
@@ -44,11 +39,7 @@ pub struct ManagementClusterTls {
     /// To reconnect existing managed clusters, change the tls.ca of the  managed clusters' ManagementClusterConnection resource.
     /// One of: tigera-management-cluster-connection, manager-tls
     /// Default: tigera-management-cluster-connection
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<ManagementClusterTlsSecretName>,
 }
 
@@ -60,3 +51,4 @@ pub enum ManagementClusterTlsSecretName {
     #[serde(rename = "manager-tls")]
     ManagerTls,
 }
+

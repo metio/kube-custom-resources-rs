@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ServiceBindingSpec defines the desired state of ServiceBinding
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "servicebinding.io",
-    version = "v1beta1",
-    kind = "ServiceBinding",
-    plural = "servicebindings"
-)]
+#[kube(group = "servicebinding.io", version = "v1beta1", kind = "ServiceBinding", plural = "servicebindings")]
 #[kube(namespaced)]
 #[kube(status = "ServiceBindingStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ServiceBindingSpec {
     /// Env is the collection of mappings from Secret entries to environment variables
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -87,18 +82,10 @@ pub struct ServiceBindingWorkload {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceBindingWorkloadSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ServiceBindingWorkloadSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -124,11 +111,7 @@ pub struct ServiceBindingStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration is the 'Generation' of the ServiceBinding that was last processed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
 
@@ -138,3 +121,4 @@ pub struct ServiceBindingStatusBinding {
     /// Name of the referent secret. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     pub name: String,
 }
+

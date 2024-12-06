@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// DownloadRequestSpec is the specification for a download request.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "velero.io",
-    version = "v1",
-    kind = "DownloadRequest",
-    plural = "downloadrequests"
-)]
+#[kube(group = "velero.io", version = "v1", kind = "DownloadRequest", plural = "downloadrequests")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct DownloadRequestSpec {
     /// Target is what to download (e.g. logs for a backup).
     pub target: DownloadRequestTarget,
@@ -59,11 +54,7 @@ pub enum DownloadRequestTargetKind {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DownloadRequestStatus {
     /// DownloadURL contains the pre-signed URL for the target file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downloadURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downloadURL")]
     pub download_url: Option<String>,
     /// Expiration is when this DownloadRequest expires and can be deleted by the system.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -79,3 +70,4 @@ pub enum DownloadRequestStatusPhase {
     New,
     Processed,
 }
+

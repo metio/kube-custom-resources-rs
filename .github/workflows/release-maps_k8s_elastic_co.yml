@@ -33,7 +33,6 @@ jobs:
           --allow-dirty
           --token ${{ secrets.CRATES_IO_TOKEN }}
           --package kcr_maps_k8s_elastic_co
-          --all-features
           --jobs 1
           --no-verify
         env:

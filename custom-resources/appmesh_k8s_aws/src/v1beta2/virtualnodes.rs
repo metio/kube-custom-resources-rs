@@ -4,43 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VirtualNodeSpec defines the desired state of VirtualNode refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_VirtualNodeSpec.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appmesh.k8s.aws",
-    version = "v1beta2",
-    kind = "VirtualNode",
-    plural = "virtualnodes"
-)]
+#[kube(group = "appmesh.k8s.aws", version = "v1beta2", kind = "VirtualNode", plural = "virtualnodes")]
 #[kube(namespaced)]
 #[kube(status = "VirtualNodeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VirtualNodeSpec {
     /// AWSName is the AppMesh VirtualNode object's name. If unspecified or empty, it defaults to be "${name}_${namespace}" of k8s VirtualNode
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsName")]
     pub aws_name: Option<String>,
     /// A reference to an object that represents the defaults for backends.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendDefaults"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendDefaults")]
     pub backend_defaults: Option<VirtualNodeBackendDefaults>,
     /// BackendGroups that define a set of backends the virtual node is expected to send outbound traffic to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendGroups")]
     pub backend_groups: Option<Vec<VirtualNodeBackendGroups>>,
     /// The backends that the virtual node is expected to send outbound traffic to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -51,23 +38,15 @@ pub struct VirtualNodeSpec {
     /// The inbound and outbound access logging information for the virtual node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<VirtualNodeLogging>,
-    /// A reference to k8s Mesh CR that this VirtualNode belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+    /// A reference to k8s Mesh CR that this VirtualNode belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
     ///  Populated by the system. Read-only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshRef")]
     pub mesh_ref: Option<VirtualNodeMeshRef>,
     /// PodSelector selects Pods using labels to designate VirtualNode membership. This field follows standard label selector semantics: 	if present but empty, it selects all pods within namespace. 	if absent, it selects no pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<VirtualNodePodSelector>,
     /// The service discovery information for the virtual node. Optional if there is no inbound traffic(no listeners). Mandatory if a listener is specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDiscovery")]
     pub service_discovery: Option<VirtualNodeServiceDiscovery>,
 }
 
@@ -75,11 +54,7 @@ pub struct VirtualNodeSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualNodeBackendDefaults {
     /// A reference to an object that represents a client policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPolicy")]
     pub client_policy: Option<VirtualNodeBackendDefaultsClientPolicy>,
 }
 
@@ -141,13 +116,8 @@ pub struct VirtualNodeBackendDefaultsClientPolicyTlsCertificateSds {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualNodeBackendDefaultsClientPolicyTlsValidation {
     /// Possible Alternative names to consider
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAlternativeNames"
-    )]
-    pub subject_alternative_names:
-        Option<VirtualNodeBackendDefaultsClientPolicyTlsValidationSubjectAlternativeNames>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAlternativeNames")]
+    pub subject_alternative_names: Option<VirtualNodeBackendDefaultsClientPolicyTlsValidationSubjectAlternativeNames>,
     /// A reference to an object that represents a TLS validation context trust
     pub trust: VirtualNodeBackendDefaultsClientPolicyTlsValidationTrust,
 }
@@ -227,25 +197,13 @@ pub struct VirtualNodeBackends {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualNodeBackendsVirtualService {
     /// A reference to an object that represents the client policy for a backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPolicy")]
     pub client_policy: Option<VirtualNodeBackendsVirtualServiceClientPolicy>,
     /// Amazon Resource Name to AppMesh VirtualService object that is acting as a virtual node backend. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualServiceARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualServiceARN")]
     pub virtual_service_arn: Option<String>,
     /// Reference to Kubernetes VirtualService CR in cluster that is acting as a virtual node backend. Exactly one of 'virtualServiceRef' or 'virtualServiceARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualServiceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualServiceRef")]
     pub virtual_service_ref: Option<VirtualNodeBackendsVirtualServiceVirtualServiceRef>,
 }
 
@@ -307,13 +265,8 @@ pub struct VirtualNodeBackendsVirtualServiceClientPolicyTlsCertificateSds {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualNodeBackendsVirtualServiceClientPolicyTlsValidation {
     /// Possible Alternative names to consider
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAlternativeNames"
-    )]
-    pub subject_alternative_names:
-        Option<VirtualNodeBackendsVirtualServiceClientPolicyTlsValidationSubjectAlternativeNames>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAlternativeNames")]
+    pub subject_alternative_names: Option<VirtualNodeBackendsVirtualServiceClientPolicyTlsValidationSubjectAlternativeNames>,
     /// A reference to an object that represents a TLS validation context trust
     pub trust: VirtualNodeBackendsVirtualServiceClientPolicyTlsValidationTrust,
 }
@@ -323,8 +276,7 @@ pub struct VirtualNodeBackendsVirtualServiceClientPolicyTlsValidation {
 pub struct VirtualNodeBackendsVirtualServiceClientPolicyTlsValidationSubjectAlternativeNames {
     /// Match is a required field
     #[serde(rename = "match")]
-    pub r#match:
-        VirtualNodeBackendsVirtualServiceClientPolicyTlsValidationSubjectAlternativeNamesMatch,
+    pub r#match: VirtualNodeBackendsVirtualServiceClientPolicyTlsValidationSubjectAlternativeNamesMatch,
 }
 
 /// Match is a required field
@@ -386,25 +338,13 @@ pub struct VirtualNodeBackendsVirtualServiceVirtualServiceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VirtualNodeListeners {
     /// The connection pool settings for the listener
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionPool")]
     pub connection_pool: Option<VirtualNodeListenersConnectionPool>,
     /// The health check information for the listener.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<VirtualNodeListenersHealthCheck>,
     /// The outlier detection for the listener
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outlierDetection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outlierDetection")]
     pub outlier_detection: Option<VirtualNodeListenersOutlierDetection>,
     /// The port mapping information for the listener.
     #[serde(rename = "portMapping")]
@@ -449,11 +389,7 @@ pub struct VirtualNodeListenersConnectionPoolHttp {
     #[serde(rename = "maxConnections")]
     pub max_connections: i64,
     /// Represents the number of overflowing requests after max_connections that an envoy will queue to an upstream cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingRequests")]
     pub max_pending_requests: Option<i64>,
 }
 
@@ -609,11 +545,7 @@ pub struct VirtualNodeListenersTimeoutGrpc {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idle: Option<VirtualNodeListenersTimeoutGrpcIdle>,
     /// An object that represents per request timeout duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perRequest")]
     pub per_request: Option<VirtualNodeListenersTimeoutGrpcPerRequest>,
 }
 
@@ -660,11 +592,7 @@ pub struct VirtualNodeListenersTimeoutHttp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idle: Option<VirtualNodeListenersTimeoutHttpIdle>,
     /// An object that represents per request timeout duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perRequest")]
     pub per_request: Option<VirtualNodeListenersTimeoutHttpPerRequest>,
 }
 
@@ -711,11 +639,7 @@ pub struct VirtualNodeListenersTimeoutHttp2 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idle: Option<VirtualNodeListenersTimeoutHttp2Idle>,
     /// An object that represents per request timeout duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perRequest")]
     pub per_request: Option<VirtualNodeListenersTimeoutHttp2PerRequest>,
 }
 
@@ -849,11 +773,7 @@ pub enum VirtualNodeListenersTlsMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualNodeListenersTlsValidation {
     /// Possible alternative names to consider
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAlternativeNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAlternativeNames")]
     pub subject_alternative_names: Option<VirtualNodeListenersTlsValidationSubjectAlternativeNames>,
     pub trust: VirtualNodeListenersTlsValidationTrust,
 }
@@ -944,7 +864,7 @@ pub struct VirtualNodeLoggingAccessLogFileFormatJson {
     pub value: String,
 }
 
-/// A reference to k8s Mesh CR that this VirtualNode belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+/// A reference to k8s Mesh CR that this VirtualNode belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
 ///  Populated by the system. Read-only.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualNodeMeshRef {
@@ -958,18 +878,10 @@ pub struct VirtualNodeMeshRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualNodePodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<VirtualNodePodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -989,11 +901,7 @@ pub struct VirtualNodePodSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualNodeServiceDiscovery {
     /// Specifies any AWS Cloud Map information for the virtual node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsCloudMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsCloudMap")]
     pub aws_cloud_map: Option<VirtualNodeServiceDiscoveryAwsCloudMap>,
     /// Specifies the DNS information for the virtual node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1029,11 +937,7 @@ pub struct VirtualNodeServiceDiscoveryDns {
     /// Specifies the DNS service discovery hostname for the virtual node.
     pub hostname: String,
     /// Choose between ENDPOINTS (strict DNS) and LOADBALANCER (logical DNS) mode in Envoy sidecar
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseType")]
     pub response_type: Option<VirtualNodeServiceDiscoveryDnsResponseType>,
 }
 
@@ -1053,17 +957,10 @@ pub struct VirtualNodeStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The generation observed by the VirtualNode controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// VirtualNodeARN is the AppMesh VirtualNode object's Amazon Resource Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeARN")]
     pub virtual_node_arn: Option<String>,
 }
+

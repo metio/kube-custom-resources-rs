@@ -4,41 +4,28 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ManagementClusterConnectionSpec defines the desired state of ManagementClusterConnection
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "ManagementClusterConnection",
-    plural = "managementclusterconnections"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "ManagementClusterConnection", plural = "managementclusterconnections")]
 #[kube(status = "ManagementClusterConnectionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ManagementClusterConnectionSpec {
     /// GuardianDeployment configures the guardian Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "guardianDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "guardianDeployment")]
     pub guardian_deployment: Option<ManagementClusterConnectionGuardianDeployment>,
     /// Specify where the managed cluster can reach the management cluster. Ex.: "10.128.0.10:30449". A managed cluster
     /// should be able to access this address. This field is used by managed clusters only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managementClusterAddr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementClusterAddr")]
     pub management_cluster_addr: Option<String>,
     /// TLS provides options for configuring how Managed Clusters can establish an mTLS connection with the Management Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -76,18 +63,12 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpec {
     /// If specified, this overrides the specified guardian Deployment containers.
     /// If omitted, the guardian Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers:
-        Option<Vec<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainers>>,
+    pub containers: Option<Vec<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainers>>,
     /// InitContainers is a list of guardian init containers.
     /// If specified, this overrides the specified guardian Deployment init containers.
     /// If omitted, the guardian Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainers>>,
 }
 
 /// GuardianDeploymentContainer is a guardian Deployment container.
@@ -100,8 +81,7 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContaine
     /// If specified, this overrides the named guardian Deployment container's resources.
     /// If omitted, the guardian Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainersResources>,
+    pub resources: Option<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainersResources>,
 }
 
 /// GuardianDeploymentContainer is a guardian Deployment container.
@@ -122,9 +102,7 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContaine
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -155,9 +133,7 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitCont
     /// If specified, this overrides the named guardian Deployment init container's resources.
     /// If omitted, the guardian Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainersResources,
-    >,
+    pub resources: Option<ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainersResources>,
 }
 
 /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
@@ -186,8 +162,7 @@ pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitCont
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainersResourcesClaims
-{
+pub struct ManagementClusterConnectionGuardianDeploymentSpecTemplateSpecInitContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -221,3 +196,4 @@ pub struct ManagementClusterConnectionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec defines the desired state of the resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "couchbase.com",
-    version = "v2",
-    kind = "CouchbaseCollection",
-    plural = "couchbasecollections"
-)]
+#[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseCollection", plural = "couchbasecollections")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CouchbaseCollectionSpec {
     /// MaxTTL defines how long a document is permitted to exist for, without
     /// modification, until it is automatically deleted.  This field takes precedence over
@@ -44,3 +39,4 @@ pub struct CouchbaseCollectionSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

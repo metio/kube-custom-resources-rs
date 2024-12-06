@@ -4,33 +4,28 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// CacheParameterGroupSpec defines the desired state of CacheParameterGroup.
-///
-///
+/// 
+/// 
 /// Represents the output of a CreateCacheParameterGroup operation.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "elasticache.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "CacheParameterGroup",
-    plural = "cacheparametergroups"
-)]
+#[kube(group = "elasticache.services.k8s.aws", version = "v1alpha1", kind = "CacheParameterGroup", plural = "cacheparametergroups")]
 #[kube(namespaced)]
 #[kube(status = "CacheParameterGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CacheParameterGroupSpec {
     /// The name of the cache parameter group family that the cache parameter group
     /// can be used with.
-    ///
-    ///
+    /// 
+    /// 
     /// Valid values are: memcached1.4 | memcached1.5 | memcached1.6 | redis2.6 |
     /// redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x
     #[serde(rename = "cacheParameterGroupFamily")]
@@ -43,11 +38,7 @@ pub struct CacheParameterGroupSpec {
     /// An array of parameter names and values for the parameter update. You must
     /// supply at least one parameter name and value; subsequent arguments are optional.
     /// A maximum of 20 parameters may be modified per request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterNameValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterNameValues")]
     pub parameter_name_values: Option<Vec<CacheParameterGroupParameterNameValues>>,
     /// A list of tags to be added to this resource. A tag is a key-value pair. A
     /// tag key must be accompanied by a tag value, although null is accepted.
@@ -58,17 +49,9 @@ pub struct CacheParameterGroupSpec {
 /// Describes a name-value pair that is used to update the value of a parameter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CacheParameterGroupParameterNameValues {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterName")]
     pub parameter_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterValue")]
     pub parameter_value: Option<String>,
 }
 
@@ -92,11 +75,7 @@ pub struct CacheParameterGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<CacheParameterGroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -148,17 +127,9 @@ pub struct CacheParameterGroupStatusEvents {
     pub date: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceIdentifier")]
     pub source_identifier: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<String>,
 }
 
@@ -166,46 +137,23 @@ pub struct CacheParameterGroupStatusEvents {
 /// behavior.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CacheParameterGroupStatusParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedValues")]
     pub allowed_values: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "changeType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "changeType")]
     pub change_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataType")]
     pub data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isModifiable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isModifiable")]
     pub is_modifiable: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumEngineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumEngineVersion")]
     pub minimum_engine_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterName")]
     pub parameter_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterValue")]
     pub parameter_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 }
+

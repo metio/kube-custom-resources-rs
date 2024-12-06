@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DeferredResourceSpec defines the desired state of DeferredResource
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "integration.rock8s.com",
-    version = "v1beta1",
-    kind = "DeferredResource",
-    plural = "deferredresources"
-)]
+#[kube(group = "integration.rock8s.com", version = "v1beta1", kind = "DeferredResource", plural = "deferredresources")]
 #[kube(namespaced)]
 #[kube(status = "DeferredResourceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DeferredResourceSpec {
     /// Resource is the resource to create after the defer is resolved
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource: Option<serde_json::Value>,
     /// ServiceAccountName is the name of the ServiceAccount to use to create deferred resources from. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Timeout is the maximum time to wait before creating the resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -45,11 +36,7 @@ pub struct DeferredResourceSpec {
 /// Target refers to a kubernetes object by Group, Version, Kind and Name gvk.Gvk contains Group, Version and Kind APIVersion is added to keep the backward compatibility of using ObjectReference for Var.ObjRef
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeferredResourceWaitFor {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
@@ -67,11 +54,7 @@ pub struct DeferredResourceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownerReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerReferences")]
     pub owner_references: Option<DeferredResourceStatusOwnerReferences>,
 }
 
@@ -82,11 +65,7 @@ pub struct DeferredResourceStatusOwnerReferences {
     #[serde(rename = "apiVersion")]
     pub api_version: String,
     /// If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockOwnerDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockOwnerDeletion")]
     pub block_owner_deletion: Option<bool>,
     /// If true, this reference points to the managing controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -98,3 +77,4 @@ pub struct DeferredResourceStatusOwnerReferences {
     /// UID of the referent. More info: http://kubernetes.io/docs/user-guide/identifiers#uids
     pub uid: String,
 }
+

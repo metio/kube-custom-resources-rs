@@ -4,40 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ImportSpec defines the desired state of Import.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "oracle.db.anthosapis.com",
-    version = "v1alpha1",
-    kind = "Import",
-    plural = "imports"
-)]
+#[kube(group = "oracle.db.anthosapis.com", version = "v1alpha1", kind = "Import", plural = "imports")]
 #[kube(namespaced)]
 #[kube(status = "ImportStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ImportSpec {
     /// DatabaseName is the database resource name within Instance to import into.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseName")]
     pub database_name: Option<String>,
     /// GcsLogPath is an optional path in GCS to copy import log to. A user is to ensure proper write access to the bucket from within the Oracle Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcsLogPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcsLogPath")]
     pub gcs_log_path: Option<String>,
     /// GcsPath is a full path to the input file in GCS containing import data. A user is to ensure proper write access to the bucket from within the Oracle Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcsPath")]
@@ -66,3 +53,4 @@ pub struct ImportStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// EgressGatewaySpec defines the desired state of EgressGateway
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "EgressGateway",
-    plural = "egressgateways"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "EgressGateway", plural = "egressgateways")]
 #[kube(namespaced)]
 #[kube(status = "EgressGatewayStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EgressGatewaySpec {
     /// AWS defines the additional configuration options for Egress Gateways on AWS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -34,20 +29,12 @@ pub struct EgressGatewaySpec {
     /// HTTP probe should succeed for Egress Gateways to become ready.
     /// Otherwise one of ICMP or HTTP probe should succeed for Egress gateways to become
     /// ready if configured.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressGatewayFailureDetection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressGatewayFailureDetection")]
     pub egress_gateway_failure_detection: Option<EgressGatewayEgressGatewayFailureDetection>,
     /// ExternalNetworks defines the external network names this Egress Gateway is
     /// associated with.
     /// ExternalNetworks must match existing external networks.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalNetworks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalNetworks")]
     pub external_networks: Option<Vec<String>>,
     /// IPPools defines the IP Pools that the Egress Gateway pods should be using.
     /// Either name or CIDR must be specified.
@@ -56,11 +43,7 @@ pub struct EgressGatewaySpec {
     pub ip_pools: Vec<EgressGatewayIpPools>,
     /// LogSeverity defines the logging level of the Egress Gateway.
     /// Default: Info
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logSeverity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSeverity")]
     pub log_severity: Option<EgressGatewayLogSeverity>,
     /// Replicas defines how many instances of the Egress Gateway pod will run.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -75,11 +58,7 @@ pub struct EgressGatewaySpec {
 pub struct EgressGatewayAws {
     /// ElasticIPs defines the set of elastic IPs that can be used for Egress Gateway pods.
     /// NativeIP must be Enabled if elastic IPs are set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "elasticIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticIPs")]
     pub elastic_i_ps: Option<Vec<String>>,
     /// NativeIP defines if EgressGateway is to use an AWS backed IPPool.
     /// Default: Disabled
@@ -105,11 +84,7 @@ pub struct EgressGatewayEgressGatewayFailureDetection {
     /// to the datastore before reporting not ready.
     /// This value must be greater than 0.
     /// Default: 90
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthTimeoutDataStoreSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthTimeoutDataStoreSeconds")]
     pub health_timeout_data_store_seconds: Option<i32>,
     /// HTTPProbe define outgoing HTTP probes that Egress Gateway will use to
     /// verify its upsteam connection. Egress Gateway will report not ready if all
@@ -130,19 +105,11 @@ pub struct EgressGatewayEgressGatewayFailureDetection {
 pub struct EgressGatewayEgressGatewayFailureDetectionHttpProbe {
     /// IntervalSeconds defines the interval of HTTP probes. Used when URLs is non-empty.
     /// Default: 10
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i32>,
     /// TimeoutSeconds defines the timeout value of HTTP probes. Used when URLs is non-empty.
     /// Default: 30
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
     /// URLs define the list of HTTP probe URLs. Egress Gateway will probe each URL
     /// periodically.If all probes fail, Egress Gateway will report non-ready.
@@ -156,22 +123,14 @@ pub struct EgressGatewayEgressGatewayFailureDetectionHttpProbe {
 pub struct EgressGatewayEgressGatewayFailureDetectionIcmpProbe {
     /// IntervalSeconds defines the interval of ICMP probes. Used when IPs is non-empty.
     /// Default: 5
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i32>,
     /// IPs define the list of ICMP probe IPs. Egress Gateway will probe each IP
     /// periodically. If all probes fail, Egress Gateway will report non-ready.
     pub ips: Vec<String>,
     /// TimeoutSeconds defines the timeout value of ICMP probes. Used when IPs is non-empty.
     /// Default: 15
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -240,32 +199,16 @@ pub struct EgressGatewayTemplateSpec {
     /// InitContainers is a list of EGW init containers.
     /// If specified, this overrides the specified EGW Deployment init containers.
     /// If omitted, the EGW Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<EgressGatewayTemplateSpecInitContainers>>,
     /// NodeSelector gives more control over the nodes where the Egress Gateway pods will run on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PriorityClassName allows to specify a PriorityClass resource to be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// TerminationGracePeriodSeconds defines the termination grace period of the Egress Gateway pods in seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Tolerations is the egress gateway pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the EGW Deployment.
@@ -273,38 +216,21 @@ pub struct EgressGatewayTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<EgressGatewayTemplateSpecTolerations>>,
     /// TopologySpreadConstraints defines how the Egress Gateway pods should be spread across different AZs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<EgressGatewayTemplateSpecTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<EgressGatewayTemplateSpecTopologySpreadConstraints>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the EGW pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EgressGatewayTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<EgressGatewayTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<EgressGatewayTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<EgressGatewayTemplateSpecAffinityPodAntiAffinity>,
 }
 
@@ -355,8 +281,7 @@ pub struct EgressGatewayTemplateSpecAffinityNodeAffinityPreferredDuringSchedulin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct EgressGatewayTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -374,8 +299,7 @@ pub struct EgressGatewayTemplateSpecAffinityNodeAffinityPreferredDuringSchedulin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct EgressGatewayTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -418,8 +342,7 @@ pub struct EgressGatewayTemplateSpecAffinityNodeAffinityRequiredDuringScheduling
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct EgressGatewayTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -437,8 +360,7 @@ pub struct EgressGatewayTemplateSpecAffinityNodeAffinityRequiredDuringScheduling
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct EgressGatewayTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -557,8 +479,7 @@ pub struct EgressGatewayTemplateSpecAffinityPodAffinityPreferredDuringScheduling
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct EgressGatewayTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -592,8 +513,7 @@ pub struct EgressGatewayTemplateSpecAffinityPodAffinityPreferredDuringScheduling
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct EgressGatewayTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -680,8 +600,7 @@ pub struct EgressGatewayTemplateSpecAffinityPodAffinityRequiredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct EgressGatewayTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -715,8 +634,7 @@ pub struct EgressGatewayTemplateSpecAffinityPodAffinityRequiredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct EgressGatewayTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -834,8 +752,7 @@ pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -869,8 +786,7 @@ pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -957,8 +873,7 @@ pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -992,8 +907,7 @@ pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct EgressGatewayTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1139,11 +1053,7 @@ pub struct EgressGatewayTemplateSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1157,11 +1067,7 @@ pub struct EgressGatewayTemplateSpecTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<EgressGatewayTemplateSpecTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
@@ -1172,11 +1078,7 @@ pub struct EgressGatewayTemplateSpecTopologySpreadConstraints {
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -1215,11 +1117,7 @@ pub struct EgressGatewayTemplateSpecTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
@@ -1227,11 +1125,7 @@ pub struct EgressGatewayTemplateSpecTopologySpreadConstraints {
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
@@ -1240,11 +1134,7 @@ pub struct EgressGatewayTemplateSpecTopologySpreadConstraints {
     /// - Ignore: node taints are ignored. All nodes are included.
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -1286,22 +1176,12 @@ pub struct EgressGatewayTemplateSpecTopologySpreadConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EgressGatewayTemplateSpecTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<EgressGatewayTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<EgressGatewayTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1333,3 +1213,4 @@ pub struct EgressGatewayStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

@@ -4,53 +4,36 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// RulerConfigSpec defines the desired state of Ruler
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "loki.grafana.com",
-    version = "v1",
-    kind = "RulerConfig",
-    plural = "rulerconfigs"
-)]
+#[kube(group = "loki.grafana.com", version = "v1", kind = "RulerConfig", plural = "rulerconfigs")]
 #[kube(namespaced)]
 #[kube(status = "RulerConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RulerConfigSpec {
     /// Defines alert manager configuration to notify on firing alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alertmanager: Option<RulerConfigAlertmanager>,
     /// Interval on how frequently to evaluate rules.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evaluationInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationInterval")]
     pub evaluation_interval: Option<String>,
     /// Overrides defines the config overrides to be applied per-tenant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<BTreeMap<String, RulerConfigOverrides>>,
     /// Interval on how frequently to poll for new rule definitions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollInterval")]
     pub poll_interval: Option<String>,
     /// Defines a remote write endpoint to write recording rule metrics.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteWrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteWrite")]
     pub remote_write: Option<RulerConfigRemoteWrite>,
 }
 
@@ -71,32 +54,16 @@ pub struct RulerConfigAlertmanager {
     /// supported by using DNS resolution (See EnableDNSDiscovery).
     pub endpoints: Vec<String>,
     /// Additional labels to add to all alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalLabels")]
     pub external_labels: Option<BTreeMap<String, String>>,
     /// URL for alerts return path.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalUrl")]
     pub external_url: Option<String>,
     /// Defines the configuration for the notification queue to AlertManager hosts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notificationQueue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationQueue")]
     pub notification_queue: Option<RulerConfigAlertmanagerNotificationQueue>,
     /// List of alert relabel configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelConfigs")]
     pub relabel_configs: Option<Vec<RulerConfigAlertmanagerRelabelConfigs>>,
 }
 
@@ -107,11 +74,7 @@ pub struct RulerConfigAlertmanagerClient {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<RulerConfigAlertmanagerClientBasicAuth>,
     /// Header authentication configuration for reaching the alertmanager endpoints.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerAuth")]
     pub header_auth: Option<RulerConfigAlertmanagerClientHeaderAuth>,
     /// TLS configuration for reaching the alertmanager endpoints.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -136,11 +99,7 @@ pub struct RulerConfigAlertmanagerClientHeaderAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<String>,
     /// The credentials file for the Header authentication configuration. It is mutually exclusive with `credentials`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// The authentication type for the header authentication configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -157,21 +116,13 @@ pub struct RulerConfigAlertmanagerClientTls {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certPath")]
     pub cert_path: Option<String>,
     /// Skip validating server certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// The client-side key file path for the TLS configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
     pub key_path: Option<String>,
     /// The server name to validate in the alertmanager server certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -182,11 +133,7 @@ pub struct RulerConfigAlertmanagerDiscovery {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableSRV")]
     pub enable_srv: Option<bool>,
     /// How long to wait between refreshing DNS resolutions of Alertmanager hosts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
 }
 
@@ -198,25 +145,13 @@ pub struct RulerConfigAlertmanagerNotificationQueue {
     pub capacity: Option<i32>,
     /// Minimum duration between alert and restored "for" state. This is maintained
     /// only for alerts with configured "for" time greater than the grace period.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forGracePeriod")]
     pub for_grace_period: Option<String>,
     /// Max time to tolerate outage for restoring "for" state of alert.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forOutageTolerance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forOutageTolerance")]
     pub for_outage_tolerance: Option<String>,
     /// Minimum amount of time to wait before resending an alert to Alertmanager.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resendDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resendDelay")]
     pub resend_delay: Option<String>,
     /// HTTP timeout duration when sending notifications to the Alertmanager.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -251,11 +186,7 @@ pub struct RulerConfigAlertmanagerRelabelConfigs {
     pub source_labels: Vec<String>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
@@ -305,32 +236,16 @@ pub struct RulerConfigOverridesAlertmanager {
     /// supported by using DNS resolution (See EnableDNSDiscovery).
     pub endpoints: Vec<String>,
     /// Additional labels to add to all alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalLabels")]
     pub external_labels: Option<BTreeMap<String, String>>,
     /// URL for alerts return path.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalUrl")]
     pub external_url: Option<String>,
     /// Defines the configuration for the notification queue to AlertManager hosts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notificationQueue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationQueue")]
     pub notification_queue: Option<RulerConfigOverridesAlertmanagerNotificationQueue>,
     /// List of alert relabel configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelConfigs")]
     pub relabel_configs: Option<Vec<RulerConfigOverridesAlertmanagerRelabelConfigs>>,
 }
 
@@ -341,11 +256,7 @@ pub struct RulerConfigOverridesAlertmanagerClient {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<RulerConfigOverridesAlertmanagerClientBasicAuth>,
     /// Header authentication configuration for reaching the alertmanager endpoints.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerAuth")]
     pub header_auth: Option<RulerConfigOverridesAlertmanagerClientHeaderAuth>,
     /// TLS configuration for reaching the alertmanager endpoints.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -370,11 +281,7 @@ pub struct RulerConfigOverridesAlertmanagerClientHeaderAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<String>,
     /// The credentials file for the Header authentication configuration. It is mutually exclusive with `credentials`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// The authentication type for the header authentication configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -391,21 +298,13 @@ pub struct RulerConfigOverridesAlertmanagerClientTls {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certPath")]
     pub cert_path: Option<String>,
     /// Skip validating server certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// The client-side key file path for the TLS configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
     pub key_path: Option<String>,
     /// The server name to validate in the alertmanager server certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -416,11 +315,7 @@ pub struct RulerConfigOverridesAlertmanagerDiscovery {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableSRV")]
     pub enable_srv: Option<bool>,
     /// How long to wait between refreshing DNS resolutions of Alertmanager hosts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
 }
 
@@ -432,25 +327,13 @@ pub struct RulerConfigOverridesAlertmanagerNotificationQueue {
     pub capacity: Option<i32>,
     /// Minimum duration between alert and restored "for" state. This is maintained
     /// only for alerts with configured "for" time greater than the grace period.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forGracePeriod")]
     pub for_grace_period: Option<String>,
     /// Max time to tolerate outage for restoring "for" state of alert.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forOutageTolerance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forOutageTolerance")]
     pub for_outage_tolerance: Option<String>,
     /// Minimum amount of time to wait before resending an alert to Alertmanager.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resendDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resendDelay")]
     pub resend_delay: Option<String>,
     /// HTTP timeout duration when sending notifications to the Alertmanager.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -485,11 +368,7 @@ pub struct RulerConfigOverridesAlertmanagerRelabelConfigs {
     pub source_labels: Vec<String>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
@@ -527,11 +406,7 @@ pub struct RulerConfigRemoteWrite {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queue: Option<RulerConfigRemoteWriteQueue>,
     /// Minimum period to wait between refreshing remote-write reconfigurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshPeriod")]
     pub refresh_period: Option<String>,
 }
 
@@ -539,11 +414,7 @@ pub struct RulerConfigRemoteWrite {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RulerConfigRemoteWriteClient {
     /// Additional HTTP headers to be sent along with each remote write request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalHeaders")]
     pub additional_headers: Option<BTreeMap<String, String>>,
     /// Type of authorzation to use to access the remote write endpoint
     pub authorization: RulerConfigRemoteWriteClientAuthorization,
@@ -551,11 +422,7 @@ pub struct RulerConfigRemoteWriteClient {
     #[serde(rename = "authorizationSecretName")]
     pub authorization_secret_name: String,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Name of the remote write config, which if specified must be unique among remote write configs.
     pub name: String,
@@ -563,11 +430,7 @@ pub struct RulerConfigRemoteWriteClient {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// List of remote write relabel configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelConfigs")]
     pub relabel_configs: Option<Vec<RulerConfigRemoteWriteClientRelabelConfigs>>,
     /// Timeout for requests to the remote write endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -613,11 +476,7 @@ pub struct RulerConfigRemoteWriteClientRelabelConfigs {
     pub source_labels: Vec<String>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
@@ -646,38 +505,22 @@ pub enum RulerConfigRemoteWriteClientRelabelConfigsAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RulerConfigRemoteWriteQueue {
     /// Maximum time a sample will wait in buffer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batchSendDeadline"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSendDeadline")]
     pub batch_send_deadline: Option<String>,
     /// Number of samples to buffer per shard before we block reading of more
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<i32>,
     /// Maximum retry delay.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxBackOffPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBackOffPeriod")]
     pub max_back_off_period: Option<String>,
     /// Maximum number of samples per send.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxSamplesPerSend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSamplesPerSend")]
     pub max_samples_per_send: Option<i32>,
     /// Maximum number of shards, i.e. amount of concurrency.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxShards")]
     pub max_shards: Option<i32>,
     /// Initial retry delay. Gets doubled for every retry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minBackOffPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minBackOffPeriod")]
     pub min_back_off_period: Option<String>,
     /// Minimum number of shards, i.e. amount of concurrency.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minShards")]
@@ -691,3 +534,4 @@ pub struct RulerConfigStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// GitOps defines the configurations of GitOps Toolkit and Git repository it links to.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "anywhere.eks.amazonaws.com",
-    version = "v1alpha1",
-    kind = "GitOpsConfig",
-    plural = "gitopsconfigs"
-)]
+#[kube(group = "anywhere.eks.amazonaws.com", version = "v1alpha1", kind = "GitOpsConfig", plural = "gitopsconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GitOpsConfigSpec {
     /// Flux defines the Git repository options for Flux v2.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,18 +37,10 @@ pub struct GitOpsConfigFluxGithub {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
     /// ClusterConfigPath relative to the repository root, when specified the cluster sync will be scoped to this path.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterConfigPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterConfigPath")]
     pub cluster_config_path: Option<String>,
     /// FluxSystemNamespace scope for this operation. Defaults to flux-system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fluxSystemNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fluxSystemNamespace")]
     pub flux_system_namespace: Option<String>,
     /// Owner is the user or organization name of the Git provider.
     pub owner: String,
@@ -66,4 +53,6 @@ pub struct GitOpsConfigFluxGithub {
 
 /// GitOpsConfigStatus defines the observed state of GitOpsConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GitOpsConfigStatus {}
+pub struct GitOpsConfigStatus {
+}
+

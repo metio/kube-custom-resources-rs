@@ -4,38 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// CodeSigningConfigSpec defines the desired state of CodeSigningConfig.
-///
+/// 
 /// Details about a Code signing configuration (https://docs.aws.amazon.com/lambda/latest/dg/configuration-codesigning.html).
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "lambda.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "CodeSigningConfig",
-    plural = "codesigningconfigs"
-)]
+#[kube(group = "lambda.services.k8s.aws", version = "v1alpha1", kind = "CodeSigningConfig", plural = "codesigningconfigs")]
 #[kube(namespaced)]
 #[kube(status = "CodeSigningConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CodeSigningConfigSpec {
     /// Signing profiles for this code signing configuration.
     #[serde(rename = "allowedPublishers")]
     pub allowed_publishers: CodeSigningConfigAllowedPublishers,
     /// The code signing policies define the actions to take if the validation checks
     /// fail.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "codeSigningPolicies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeSigningPolicies")]
     pub code_signing_policies: Option<CodeSigningConfigCodeSigningPolicies>,
     /// Descriptive name for this code signing configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -45,11 +36,7 @@ pub struct CodeSigningConfigSpec {
 /// Signing profiles for this code signing configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CodeSigningConfigAllowedPublishers {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signingProfileVersionARNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingProfileVersionARNs")]
     pub signing_profile_version_ar_ns: Option<Vec<String>>,
 }
 
@@ -57,11 +44,7 @@ pub struct CodeSigningConfigAllowedPublishers {
 /// fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CodeSigningConfigCodeSigningPolicies {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "untrustedArtifactOnDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "untrustedArtifactOnDeployment")]
     pub untrusted_artifact_on_deployment: Option<String>,
 }
 
@@ -71,18 +54,10 @@ pub struct CodeSigningConfigStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<CodeSigningConfigStatusAckResourceMetadata>,
     /// Unique identifer for the Code signing configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "codeSigningConfigID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeSigningConfigID")]
     pub code_signing_config_id: Option<String>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -92,11 +67,7 @@ pub struct CodeSigningConfigStatus {
     pub conditions: Option<Vec<Condition>>,
     /// The date and time that the Code signing configuration was last modified,
     /// in ISO-8601 format (YYYY-MM-DDThh:mm:ss.sTZD).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModified"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModified")]
     pub last_modified: Option<String>,
 }
 
@@ -121,3 +92,4 @@ pub struct CodeSigningConfigStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

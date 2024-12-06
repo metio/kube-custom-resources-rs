@@ -5,29 +5,20 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec defines the desired state of the NginxProxy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "gateway.nginx.org",
-    version = "v1alpha1",
-    kind = "NginxProxy",
-    plural = "nginxproxies"
-)]
+#[kube(group = "gateway.nginx.org", version = "v1alpha1", kind = "NginxProxy", plural = "nginxproxies")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NginxProxySpec {
     /// DisableHTTP2 defines if http2 should be disabled for all servers.
     /// Default is false, meaning http2 will be enabled for all servers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHTTP2")]
     pub disable_http2: Option<bool>,
     /// IPFamily specifies the IP family to be used by the NGINX.
     /// Default is "dual", meaning the server will use both IPv4 and IPv6.
@@ -37,11 +28,7 @@ pub struct NginxProxySpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<NginxProxyLogging>,
     /// RewriteClientIP defines configuration for rewriting the client IP to the original client's IP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rewriteClientIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewriteClientIP")]
     pub rewrite_client_ip: Option<NginxProxyRewriteClientIp>,
     /// Telemetry specifies the OpenTelemetry configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -66,11 +53,7 @@ pub struct NginxProxyLogging {
     /// debug, info, notice, warn, error, crit, alert, and emerg. Setting a certain log level will cause all messages
     /// of the specified and more severe log levels to be logged. For example, the log level 'error' will cause error,
     /// crit, alert, and emerg messages to be logged. https://nginx.org/en/docs/ngx_core_module.html#error_log
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorLevel")]
     pub error_level: Option<NginxProxyLoggingErrorLevel>,
 }
 
@@ -114,11 +97,7 @@ pub struct NginxProxyRewriteClientIp {
     /// If disabled, NGINX will select the IP at the end of the array.
     /// In the previous example, 55.55.55.1 would be selected.
     /// Sets NGINX directive real_ip_recursive: https://nginx.org/en/docs/http/ngx_http_realip_module.html#real_ip_recursive
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setIPRecursively"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setIPRecursively")]
     pub set_ip_recursively: Option<bool>,
     /// TrustedAddresses specifies the addresses that are trusted to send correct client IP information.
     /// If a request comes from a trusted address, NGINX will rewrite the client IP information,
@@ -129,11 +108,7 @@ pub struct NginxProxyRewriteClientIp {
     /// If no addresses are provided, NGINX will not rewrite the client IP information.
     /// Sets NGINX directive set_real_ip_from: https://nginx.org/en/docs/http/ngx_http_realip_module.html#set_real_ip_from
     /// This field is required if mode is set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedAddresses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedAddresses")]
     pub trusted_addresses: Option<Vec<NginxProxyRewriteClientIpTrustedAddresses>>,
 }
 
@@ -173,18 +148,10 @@ pub struct NginxProxyTelemetry {
     /// ServiceName is the "service.name" attribute of the OpenTelemetry resource.
     /// Default is 'ngf:<gateway-namespace>:<gateway-name>'. If a value is provided by the user,
     /// then the default becomes a prefix to that value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
     /// SpanAttributes are custom key/value attributes that are added to each span.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spanAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spanAttributes")]
     pub span_attributes: Option<Vec<NginxProxyTelemetrySpanAttributes>>,
 }
 
@@ -193,11 +160,7 @@ pub struct NginxProxyTelemetry {
 pub struct NginxProxyTelemetryExporter {
     /// BatchCount is the number of pending batches per worker, spans exceeding the limit are dropped.
     /// Default: https://nginx.org/en/docs/ngx_otel_module.html#otel_exporter
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batchCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchCount")]
     pub batch_count: Option<i32>,
     /// BatchSize is the maximum number of spans to be sent in one batch per worker.
     /// Default: https://nginx.org/en/docs/ngx_otel_module.html#otel_exporter
@@ -222,3 +185,4 @@ pub struct NginxProxyTelemetrySpanAttributes {
     /// Format: must have all '"' escaped and must not contain any '$' or end with an unescaped '\'
     pub value: String,
 }
+

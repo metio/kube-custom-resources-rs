@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// MachineDeletionRemediationTemplateSpec defines the desired state of MachineDeletionRemediationTemplate
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "machine-deletion-remediation.medik8s.io",
-    version = "v1alpha1",
-    kind = "MachineDeletionRemediationTemplate",
-    plural = "machinedeletionremediationtemplates"
-)]
+#[kube(group = "machine-deletion-remediation.medik8s.io", version = "v1alpha1", kind = "MachineDeletionRemediationTemplate", plural = "machinedeletionremediationtemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MachineDeletionRemediationTemplateSpec {
     /// MachineDeletionRemediationTemplateResource is part of the desired state of MachineDeletionRemediationTemplate
     pub template: MachineDeletionRemediationTemplateTemplate,
@@ -35,8 +30,11 @@ pub struct MachineDeletionRemediationTemplateTemplate {
 
 /// MachineDeletionRemediationSpec defines the desired state of MachineDeletionRemediation
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineDeletionRemediationTemplateTemplateSpec {}
+pub struct MachineDeletionRemediationTemplateTemplateSpec {
+}
 
 /// MachineDeletionRemediationTemplateStatus defines the observed state of MachineDeletionRemediationTemplate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineDeletionRemediationTemplateStatus {}
+pub struct MachineDeletionRemediationTemplateStatus {
+}
+

@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// MaxScaleSpec defines the desired state of MaxScale.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.mariadb.com",
-    version = "v1alpha1",
-    kind = "MaxScale",
-    plural = "maxscales"
-)]
+#[kube(group = "k8s.mariadb.com", version = "v1alpha1", kind = "MaxScale", plural = "maxscales")]
 #[kube(namespaced)]
 #[kube(status = "MaxScaleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MaxScaleSpec {
     /// Admin configures the admin REST API and GUI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -54,57 +49,29 @@ pub struct MaxScaleSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<MaxScaleEnvFrom>>,
     /// GuiKubernetesService defines a template for a Kubernetes Service object to connect to MaxScale's GUI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "guiKubernetesService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "guiKubernetesService")]
     pub gui_kubernetes_service: Option<MaxScaleGuiKubernetesService>,
     /// Image name to be used by the MaxScale instances. The supported format is `<image>:<tag>`.
     /// Only MaxScale official images are supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MaxScaleImagePullPolicy>,
     /// ImagePullSecrets is the list of pull Secrets to be used to pull the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<MaxScaleImagePullSecrets>>,
     /// InheritMetadata defines the metadata to be inherited by children resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inheritMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inheritMetadata")]
     pub inherit_metadata: Option<MaxScaleInheritMetadata>,
     /// KubernetesService defines a template for a Kubernetes Service object to connect to MaxScale.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesService")]
     pub kubernetes_service: Option<MaxScaleKubernetesService>,
     /// LivenessProbe to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<MaxScaleLivenessProbe>,
     /// MariaDBRef is a reference to the MariaDB that MaxScale points to. It is used to initialize the servers field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mariaDbRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mariaDbRef")]
     pub maria_db_ref: Option<MaxScaleMariaDbRef>,
     /// Metrics configures metrics and how to scrape them.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -113,76 +80,40 @@ pub struct MaxScaleSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<MaxScaleMonitor>,
     /// NodeSelector to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodDisruptionBudget defines the budget for replica availability.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podDisruptionBudget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<MaxScalePodDisruptionBudget>,
     /// PodMetadata defines extra metadata for the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<MaxScalePodMetadata>,
     /// SecurityContext holds pod-level security attributes and common container settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<MaxScalePodSecurityContext>,
     /// PriorityClassName to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// ReadinessProbe to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<MaxScaleReadinessProbe>,
     /// Replicas indicates the number of desired instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// RequeueInterval is used to perform requeue reconciliations. If not defined, it defaults to 10s.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requeueInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueInterval")]
     pub requeue_interval: Option<String>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MaxScaleResources>,
     /// SecurityContext holds security configuration that will be applied to a container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MaxScaleSecurityContext>,
     /// Servers are the MariaDB servers to forward traffic to. It is required if 'spec.mariaDbRef' is not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<MaxScaleServers>>,
     /// ServiceAccountName is the name of the ServiceAccount to be used by the Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Services define how the traffic is forwarded to the MariaDB servers. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -195,25 +126,13 @@ pub struct MaxScaleSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<MaxScaleTolerations>>,
     /// TopologySpreadConstraints to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<MaxScaleTopologySpreadConstraints>>,
     /// UpdateStrategy defines the update strategy for the StatefulSet object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<MaxScaleUpdateStrategy>,
     /// VolumeMounts to be used in the Container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<MaxScaleVolumeMounts>>,
 }
 
@@ -221,11 +140,7 @@ pub struct MaxScaleSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAdmin {
     /// GuiEnabled indicates whether the admin GUI should be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "guiEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "guiEnabled")]
     pub gui_enabled: Option<bool>,
     /// Port where the admin REST API and GUI will be exposed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -237,54 +152,31 @@ pub struct MaxScaleAdmin {
 pub struct MaxScaleAffinity {
     /// AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "antiAffinityEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MaxScaleAffinityNodeAffinity>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MaxScaleAffinityPodAntiAffinity>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselector-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#preferredschedulingterm-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorterm-v1-core
-    pub preference:
-        MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
@@ -299,8 +191,7 @@ pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExe
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -311,8 +202,7 @@ pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExe
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -325,9 +215,7 @@ pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<
-        MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms,
-    >,
+    pub node_selector_terms: Vec<MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorterm-v1-core
@@ -341,8 +229,7 @@ pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExec
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -353,8 +240,7 @@ pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExec
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -366,20 +252,10 @@ pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExec
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityPodAntiAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#weightedpodaffinityterm-v1-core.
@@ -412,8 +288,7 @@ pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuring
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -425,14 +300,8 @@ pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuring
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
@@ -448,8 +317,7 @@ pub struct MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringE
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -461,49 +329,25 @@ pub struct MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringE
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAuth {
     /// AdminPasswordSecretKeyRef is Secret key reference to the admin password to call the admin REST API. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPasswordSecretKeyRef")]
     pub admin_password_secret_key_ref: Option<MaxScaleAuthAdminPasswordSecretKeyRef>,
     /// AdminUsername is an admin username to call the admin REST API. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
     /// ClientMaxConnections defines the maximum number of connections that the client can establish.
     /// If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
     /// It defaults to 30 times the number of MaxScale replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientMaxConnections")]
     pub client_max_connections: Option<i32>,
     /// ClientPasswordSecretKeyRef is Secret key reference to the password to connect to MaxScale. It is defaulted if not provided.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPasswordSecretKeyRef")]
     pub client_password_secret_key_ref: Option<MaxScaleAuthClientPasswordSecretKeyRef>,
     /// ClientUsername is the user to connect to MaxScale. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientUsername")]
     pub client_username: Option<String>,
     /// DeleteDefaultAdmin determines whether the default admin user should be deleted after the initial configuration. If not provided, it defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deleteDefaultAdmin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteDefaultAdmin")]
     pub delete_default_admin: Option<bool>,
     /// Generate  defies whether the operator should generate users and grants for MaxScale to work.
     /// It only supports MariaDBs specified via spec.mariaDbRef.
@@ -511,90 +355,46 @@ pub struct MaxScaleAuth {
     pub generate: Option<bool>,
     /// MetricsPasswordSecretKeyRef is Secret key reference to the metrics password to call the admib REST API. It is defaulted if metrics are enabled.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPasswordSecretKeyRef")]
     pub metrics_password_secret_key_ref: Option<MaxScaleAuthMetricsPasswordSecretKeyRef>,
     /// MetricsUsername is an metrics username to call the REST API. It is defaulted if metrics are enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsUsername")]
     pub metrics_username: Option<String>,
     /// MonitorMaxConnections defines the maximum number of connections that the monitor can establish.
     /// If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
     /// It defaults to 30 times the number of MaxScale replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitorMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorMaxConnections")]
     pub monitor_max_connections: Option<i32>,
     /// MonitorPasswordSecretKeyRef is Secret key reference to the password used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitorPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorPasswordSecretKeyRef")]
     pub monitor_password_secret_key_ref: Option<MaxScaleAuthMonitorPasswordSecretKeyRef>,
     /// MonitorUsername is the user used by MaxScale monitor to connect to MariaDB server. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitorUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorUsername")]
     pub monitor_username: Option<String>,
     /// ServerMaxConnections defines the maximum number of connections that the server can establish.
     /// If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
     /// It defaults to 30 times the number of MaxScale replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverMaxConnections")]
     pub server_max_connections: Option<i32>,
     /// ServerPasswordSecretKeyRef is Secret key reference to the password used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverPasswordSecretKeyRef")]
     pub server_password_secret_key_ref: Option<MaxScaleAuthServerPasswordSecretKeyRef>,
     /// ServerUsername is the user used by MaxScale to connect to MariaDB server. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverUsername")]
     pub server_username: Option<String>,
     /// SyncMaxConnections defines the maximum number of connections that the sync can establish.
     /// If HA is enabled, make sure to increase this value, as more MaxScale replicas implies more connections.
     /// It defaults to 30 times the number of MaxScale replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncMaxConnections")]
     pub sync_max_connections: Option<i32>,
     /// SyncPasswordSecretKeyRef is Secret key reference to the password used by MaxScale config to connect to MariaDB server. It is defaulted when HA is enabled.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncPasswordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncPasswordSecretKeyRef")]
     pub sync_password_secret_key_ref: Option<MaxScaleAuthSyncPasswordSecretKeyRef>,
     /// MonitoSyncUsernamerUsername is the user used by MaxScale config sync to connect to MariaDB server. It is defaulted when HA is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncUsername")]
     pub sync_username: Option<String>,
 }
 
@@ -681,11 +481,7 @@ pub struct MaxScaleConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<MaxScaleConfigSync>,
     /// VolumeClaimTemplate provides a template to define the PVCs for storing MaxScale runtime configuration files. It is defaulted if not provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<MaxScaleConfigVolumeClaimTemplate>,
 }
 
@@ -706,11 +502,7 @@ pub struct MaxScaleConfigSync {
 /// VolumeClaimTemplate provides a template to define the PVCs for storing MaxScale runtime configuration files. It is defaulted if not provided.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleConfigVolumeClaimTemplate {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// Metadata to be added to the PVC metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -723,11 +515,7 @@ pub struct MaxScaleConfigVolumeClaimTemplate {
     /// label selector matches no objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<MaxScaleConfigVolumeClaimTemplateSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -763,20 +551,12 @@ pub struct MaxScaleConfigVolumeClaimTemplateResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleConfigVolumeClaimTemplateSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<MaxScaleConfigVolumeClaimTemplateSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -801,11 +581,7 @@ pub struct MaxScaleConfigVolumeClaimTemplateSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleConnection {
     /// HealthCheck to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<MaxScaleConnectionHealthCheck>,
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -814,25 +590,13 @@ pub struct MaxScaleConnection {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SecretName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SecretTemplate to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
     pub secret_template: Option<MaxScaleConnectionSecretTemplate>,
     /// ServiceName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -843,11 +607,7 @@ pub struct MaxScaleConnectionHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// RetryInterval is the interval used to perform health check retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
@@ -855,11 +615,7 @@ pub struct MaxScaleConnectionHealthCheck {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleConnectionSecretTemplate {
     /// DatabaseKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseKey")]
     pub database_key: Option<String>,
     /// Format to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -874,21 +630,13 @@ pub struct MaxScaleConnectionSecretTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MaxScaleConnectionSecretTemplateMetadata>,
     /// PasswordKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// PortKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
     /// UsernameKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
@@ -919,21 +667,13 @@ pub struct MaxScaleEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvValueFrom {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#configmapkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MaxScaleEnvValueFromConfigMapKeyRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MaxScaleEnvValueFromFieldRef>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#secretkeyselector-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MaxScaleEnvValueFromSecretKeyRef>,
 }
 
@@ -948,11 +688,7 @@ pub struct MaxScaleEnvValueFromConfigMapKeyRef {
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectfieldselector-v1-core.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
@@ -970,11 +706,7 @@ pub struct MaxScaleEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvFrom {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<MaxScaleEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -1001,42 +733,22 @@ pub struct MaxScaleEnvFromSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleGuiKubernetesService {
     /// AllocateLoadBalancerNodePorts Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// ExternalTrafficPolicy Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// LoadBalancerIP Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// LoadBalancerSourceRanges Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Metadata to be added to the Service metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MaxScaleGuiKubernetesServiceMetadata>,
     /// SessionAffinity Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// Type is the Service type. One of `ClusterIP`, `NodePort` or `LoadBalancer`. If not defined, it defaults to `ClusterIP`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1093,42 +805,22 @@ pub struct MaxScaleInheritMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleKubernetesService {
     /// AllocateLoadBalancerNodePorts Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// ExternalTrafficPolicy Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// LoadBalancerIP Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// LoadBalancerSourceRanges Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Metadata to be added to the Service metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MaxScaleKubernetesServiceMetadata>,
     /// SessionAffinity Service field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// Type is the Service type. One of `ClusterIP`, `NodePort` or `LoadBalancer`. If not defined, it defaults to `ClusterIP`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1161,38 +853,18 @@ pub struct MaxScaleLivenessProbe {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MaxScaleLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MaxScaleLivenessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1238,11 +910,7 @@ pub struct MaxScaleMetrics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exporter: Option<MaxScaleMetricsExporter>,
     /// ServiceMonitor defines the ServiceMonior object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceMonitor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitor")]
     pub service_monitor: Option<MaxScaleMetricsServiceMonitor>,
 }
 
@@ -1257,59 +925,31 @@ pub struct MaxScaleMetricsExporter {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<MaxScaleMetricsExporterImagePullPolicy>,
     /// ImagePullSecrets is the list of pull Secrets to be used to pull the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<MaxScaleMetricsExporterImagePullSecrets>>,
     /// NodeSelector to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodMetadata defines extra metadata for the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<MaxScaleMetricsExporterPodMetadata>,
     /// SecurityContext holds pod-level security attributes and common container settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<MaxScaleMetricsExporterPodSecurityContext>,
     /// Port where the exporter will be listening for connections.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// PriorityClassName to be used in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Resouces describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MaxScaleMetricsExporterResources>,
     /// SecurityContext holds container-level security attributes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MaxScaleMetricsExporterSecurityContext>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1321,25 +961,13 @@ pub struct MaxScaleMetricsExporter {
 pub struct MaxScaleMetricsExporterAffinity {
     /// AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "antiAffinityEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MaxScaleMetricsExporterAffinityNodeAffinity>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MaxScaleMetricsExporterAffinityPodAntiAffinity>,
 }
 
@@ -1372,8 +1000,7 @@ pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingI
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -1384,8 +1011,7 @@ pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingI
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -1412,8 +1038,7 @@ pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIg
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -1424,8 +1049,7 @@ pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIg
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     /// A node selector operator is the set of operators that can be used in
     /// a node selector requirement.
@@ -1473,8 +1097,7 @@ pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringScheduli
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -1503,8 +1126,7 @@ pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulin
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     /// A label selector operator is the set of operators that can be used in a selector requirement.
     pub operator: String,
@@ -1542,56 +1164,28 @@ pub struct MaxScaleMetricsExporterPodMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterPodSecurityContext {
     /// AppArmorProfile defines a pod or container's AppArmor settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<MaxScaleMetricsExporterPodSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     /// PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
     /// when volume is mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// SELinuxOptions are the labels to be applied to the container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<MaxScaleMetricsExporterPodSecurityContextSeLinuxOptions>,
     /// SeccompProfile defines a pod/container's seccomp profile settings.
     /// Only one profile source may be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<MaxScaleMetricsExporterPodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
 }
 
@@ -1602,11 +1196,7 @@ pub struct MaxScaleMetricsExporterPodSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -1642,15 +1232,11 @@ pub struct MaxScaleMetricsExporterPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1672,34 +1258,18 @@ pub struct MaxScaleMetricsExporterResources {
 /// SecurityContext holds container-level security attributes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// Adds and removes POSIX capabilities from running containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<MaxScaleMetricsExporterSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
@@ -1738,11 +1308,7 @@ pub struct MaxScaleMetricsExporterTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1760,18 +1326,10 @@ pub struct MaxScaleMetricsServiceMonitor {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobLabel")]
     pub job_label: Option<String>,
     /// PrometheusRelease is the release label to add to the ServiceMonitor object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prometheusRelease"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusRelease")]
     pub prometheus_release: Option<String>,
     /// ScrapeTimeout defines the timeout for scraping metrics.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
 }
 
@@ -1779,11 +1337,7 @@ pub struct MaxScaleMetricsServiceMonitor {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMonitor {
     /// CooperativeMonitoring enables coordination between multiple MaxScale instances running monitors. It is defaulted when HA is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cooperativeMonitoring"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cooperativeMonitoring")]
     pub cooperative_monitoring: Option<MaxScaleMonitorCooperativeMonitoring>,
     /// Interval used to monitor MariaDB servers. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1821,18 +1375,10 @@ pub enum MaxScaleMonitorCooperativeMonitoring {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScalePodDisruptionBudget {
     /// MaxUnavailable defines the number of maximum unavailable Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// MinAvailable defines the number of minimum available Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
 }
 
@@ -1851,56 +1397,28 @@ pub struct MaxScalePodMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScalePodSecurityContext {
     /// AppArmorProfile defines a pod or container's AppArmor settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<MaxScalePodSecurityContextAppArmorProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     /// PodFSGroupChangePolicy holds policies that will be used for applying fsGroup to a volume
     /// when volume is mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// SELinuxOptions are the labels to be applied to the container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<MaxScalePodSecurityContextSeLinuxOptions>,
     /// SeccompProfile defines a pod/container's seccomp profile settings.
     /// Only one profile source may be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<MaxScalePodSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
 }
 
@@ -1911,11 +1429,7 @@ pub struct MaxScalePodSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -1951,15 +1465,11 @@ pub struct MaxScalePodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1973,38 +1483,18 @@ pub struct MaxScaleReadinessProbe {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MaxScaleReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MaxScaleReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2042,34 +1532,18 @@ pub struct MaxScaleResources {
 /// SecurityContext holds security configuration that will be applied to a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// Adds and removes POSIX capabilities from running containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<MaxScaleSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
@@ -2185,11 +1659,7 @@ pub struct MaxScaleTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2203,39 +1673,19 @@ pub struct MaxScaleTopologySpreadConstraints {
     /// A label selector is a label query over a set of resources. The result of matchLabels and
     /// matchExpressions are ANDed. An empty label selector matches all objects. A null
     /// label selector matches no objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MaxScaleTopologySpreadConstraintsLabelSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeInclusionPolicy defines the type of node inclusion policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeInclusionPolicy defines the type of node inclusion policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
@@ -2249,21 +1699,12 @@ pub struct MaxScaleTopologySpreadConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<MaxScaleTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<MaxScaleTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2288,11 +1729,7 @@ pub struct MaxScaleTopologySpreadConstraintsLabelSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleUpdateStrategy {
     /// RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<MaxScaleUpdateStrategyRollingUpdate>,
     /// Type indicates the type of the StatefulSetUpdateStrategy.
     /// Default is RollingUpdate.
@@ -2310,11 +1747,7 @@ pub struct MaxScaleUpdateStrategyRollingUpdate {
     /// MaxUnavailableStatefulSet feature. The field applies to all pods in the range 0 to
     /// Replicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it
     /// will be counted towards MaxUnavailable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// Partition indicates the ordinal at which the StatefulSet should be partitioned
     /// for updates. During a rolling update, all pods from ordinal Replicas-1 to
@@ -2344,11 +1777,7 @@ pub struct MaxScaleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ConfigSync is the state of config sync.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configSync"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSync")]
     pub config_sync: Option<MaxScaleStatusConfigSync>,
     /// Listeners is the state of the listeners in the MaxScale API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2357,11 +1786,7 @@ pub struct MaxScaleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<MaxScaleStatusMonitor>,
     /// PrimaryServer is the primary server in the MaxScale API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryServer")]
     pub primary_server: Option<String>,
     /// Replicas indicates the number of current instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2410,3 +1835,4 @@ pub struct MaxScaleStatusServices {
     pub name: String,
     pub state: String,
 }
+

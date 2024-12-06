@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// FakeClusterInstallSpec defines the desired state of the FakeClusterInstall.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hiveinternal.openshift.io",
-    version = "v1alpha1",
-    kind = "FakeClusterInstall",
-    plural = "fakeclusterinstalls"
-)]
+#[kube(group = "hiveinternal.openshift.io", version = "v1alpha1", kind = "FakeClusterInstall", plural = "fakeclusterinstalls")]
 #[kube(namespaced)]
 #[kube(status = "FakeClusterInstallStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FakeClusterInstallSpec {
     /// ClusterDeploymentRef is a reference to the ClusterDeployment associated with this AgentClusterInstall.
     #[serde(rename = "clusterDeploymentRef")]
     pub cluster_deployment_ref: FakeClusterInstallClusterDeploymentRef,
     /// ClusterMetadata contains metadata information about the installed cluster. It should be populated once the cluster install is completed. (it can be populated sooner if desired, but Hive will not copy back to ClusterDeployment until the Installed condition goes True.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterMetadata")]
     pub cluster_metadata: Option<FakeClusterInstallClusterMetadata>,
     /// ImageSetRef is a reference to a ClusterImageSet. The release image specified in the ClusterImageSet will be used
     /// to install the cluster.
@@ -59,11 +50,7 @@ pub struct FakeClusterInstallClusterMetadata {
     #[serde(rename = "adminKubeconfigSecretRef")]
     pub admin_kubeconfig_secret_ref: FakeClusterInstallClusterMetadataAdminKubeconfigSecretRef,
     /// AdminPasswordSecretRef references the secret containing the admin username/password which can be used to login to this cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPasswordSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPasswordSecretRef")]
     pub admin_password_secret_ref: Option<FakeClusterInstallClusterMetadataAdminPasswordSecretRef>,
     /// ClusterID is a globally unique identifier for this cluster generated during installation. Used for reporting metrics among other places.
     #[serde(rename = "clusterID")]
@@ -119,11 +106,7 @@ pub struct FakeClusterInstallClusterMetadataPlatform {
 pub struct FakeClusterInstallClusterMetadataPlatformAws {
     /// HostedZoneRole is the role to assume when performing operations
     /// on a hosted zone owned by another account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostedZoneRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostedZoneRole")]
     pub hosted_zone_role: Option<String>,
 }
 
@@ -139,11 +122,7 @@ pub struct FakeClusterInstallClusterMetadataPlatformAzure {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FakeClusterInstallClusterMetadataPlatformGcp {
     /// NetworkProjectID is used for shared VPC setups
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkProjectID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkProjectID")]
     pub network_project_id: Option<String>,
 }
 
@@ -162,3 +141,4 @@ pub struct FakeClusterInstallStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

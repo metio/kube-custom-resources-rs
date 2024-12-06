@@ -5,19 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "security-profiles-operator.x-k8s.io",
-    version = "v1alpha1",
-    kind = "SecurityProfileNodeStatus",
-    plural = "securityprofilenodestatuses"
-)]
+#[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha1", kind = "SecurityProfileNodeStatus", plural = "securityprofilenodestatuses")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct SecurityProfileNodeStatusSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct SecurityProfileNodeStatusSpec {
+}
+

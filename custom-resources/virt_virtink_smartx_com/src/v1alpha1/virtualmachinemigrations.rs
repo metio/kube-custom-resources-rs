@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "virt.virtink.smartx.com",
-    version = "v1alpha1",
-    kind = "VirtualMachineMigration",
-    plural = "virtualmachinemigrations"
-)]
+#[kube(group = "virt.virtink.smartx.com", version = "v1alpha1", kind = "VirtualMachineMigration", plural = "virtualmachinemigrations")]
 #[kube(namespaced)]
 #[kube(status = "VirtualMachineMigrationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VirtualMachineMigrationSpec {
     #[serde(rename = "vmName")]
     pub vm_name: String,
@@ -30,17 +25,9 @@ pub struct VirtualMachineMigrationSpec {
 pub struct VirtualMachineMigrationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<VirtualMachineMigrationStatusPhase>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceNodeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceNodeName")]
     pub source_node_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetNodeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNodeName")]
     pub target_node_name: Option<String>,
 }
 
@@ -55,3 +42,4 @@ pub enum VirtualMachineMigrationStatusPhase {
     Succeeded,
     Failed,
 }
+

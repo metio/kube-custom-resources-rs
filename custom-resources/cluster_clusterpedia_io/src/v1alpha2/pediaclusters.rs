@@ -4,23 +4,18 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cluster.clusterpedia.io",
-    version = "v1alpha2",
-    kind = "PediaCluster",
-    plural = "pediaclusters"
-)]
+#[kube(group = "cluster.clusterpedia.io", version = "v1alpha2", kind = "PediaCluster", plural = "pediaclusters")]
 #[kube(status = "PediaClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PediaClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub apiserver: Option<String>,
@@ -32,25 +27,13 @@ pub struct PediaClusterSpec {
     pub key_data: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubeconfig: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shardingName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingName")]
     pub sharding_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncAllCustomResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncAllCustomResources")]
     pub sync_all_custom_resources: Option<bool>,
     #[serde(rename = "syncResources")]
     pub sync_resources: Vec<PediaClusterSyncResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncResourcesRefName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncResourcesRefName")]
     pub sync_resources_ref_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenData")]
     pub token_data: Option<String>,
@@ -70,17 +53,9 @@ pub struct PediaClusterStatus {
     pub apiserver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shardingName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingName")]
     pub sharding_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncResources")]
     pub sync_resources: Option<Vec<PediaClusterStatusSyncResources>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -113,32 +88,17 @@ pub struct PediaClusterStatusSyncResourcesResourcesSyncConditions {
     pub reason: Option<String>,
     pub status: String,
     /// optional
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageResource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageResource")]
     pub storage_resource: Option<String>,
     /// optional
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageVersion")]
     pub storage_version: Option<String>,
     /// optional
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncResource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncResource")]
     pub sync_resource: Option<String>,
     /// optional
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncVersion")]
     pub sync_version: Option<String>,
     pub version: String,
 }
+

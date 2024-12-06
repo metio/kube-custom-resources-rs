@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// TestSourceSpec defines the desired state of TestSource
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tests.testkube.io",
-    version = "v1",
-    kind = "TestSource",
-    plural = "testsources"
-)]
+#[kube(group = "tests.testkube.io", version = "v1", kind = "TestSource", plural = "testsources")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TestSourceSpec {
     /// test content body
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -45,11 +40,7 @@ pub struct TestSourceRepository {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
     /// git auth certificate secret for private repositories
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateSecret")]
     pub certificate_secret: Option<String>,
     /// commit id (sha) for checkout
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -58,11 +49,7 @@ pub struct TestSourceRepository {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// SecretRef is the Testkube internal reference for secret storage in Kubernetes secrets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecret")]
     pub token_secret: Option<TestSourceRepositoryTokenSecret>,
     /// VCS repository type
     #[serde(rename = "type")]
@@ -70,18 +57,10 @@ pub struct TestSourceRepository {
     /// uri of content file or git directory
     pub uri: String,
     /// SecretRef is the Testkube internal reference for secret storage in Kubernetes secrets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameSecret")]
     pub username_secret: Option<TestSourceRepositoryUsernameSecret>,
     /// if provided we checkout the whole repository and run test from this directory
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -129,4 +108,6 @@ pub enum TestSourceType {
 
 /// TestSourceStatus defines the observed state of TestSource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestSourceStatus {}
+pub struct TestSourceStatus {
+}
+

@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired state of the CertificateRequest resource.
 /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cert-manager.io",
-    version = "v1",
-    kind = "CertificateRequest",
-    plural = "certificaterequests"
-)]
+#[kube(group = "cert-manager.io", version = "v1", kind = "CertificateRequest", plural = "certificaterequests")]
 #[kube(namespaced)]
 #[kube(status = "CertificateRequestStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CertificateRequestSpec {
     /// Requested 'duration' (i.e. lifetime) of the Certificate. Note that the
     /// issuer may choose to ignore the requested duration, just like any other
@@ -41,10 +36,10 @@ pub struct CertificateRequestSpec {
     pub groups: Option<Vec<String>>,
     /// Requested basic constraints isCA value. Note that the issuer may choose
     /// to ignore the requested isCA value, just like any other requested attribute.
-    ///
+    /// 
     /// NOTE: If the CSR in the `Request` field has a BasicConstraints extension,
     /// it must have the same isCA value as specified here.
-    ///
+    /// 
     /// If true, this will automatically add the `cert sign` usage to the list
     /// of requested `usages`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isCA")]
@@ -53,13 +48,13 @@ pub struct CertificateRequestSpec {
     /// If the issuer is namespace-scoped, it must be in the same namespace
     /// as the Certificate. If the issuer is cluster-scoped, it can be used
     /// from any namespace.
-    ///
+    /// 
     /// The `name` field of the reference must always be specified.
     #[serde(rename = "issuerRef")]
     pub issuer_ref: CertificateRequestIssuerRef,
     /// The PEM-encoded X.509 certificate signing request to be submitted to the
     /// issuer for signing.
-    ///
+    /// 
     /// If the CSR has a BasicConstraints extension, its isCA attribute must
     /// match the `isCA` value of this CertificateRequest.
     /// If the CSR has a KeyUsage extension, its key usages must match the
@@ -73,11 +68,11 @@ pub struct CertificateRequestSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
     /// Requested key usages and extended key usages.
-    ///
+    /// 
     /// NOTE: If the CSR in the `Request` field has uses the KeyUsage or
     /// ExtKeyUsage extension, these extensions must have the same values
     /// as specified here without any additional values.
-    ///
+    /// 
     /// If unset, defaults to `digital signature` and `key encipherment`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usages: Option<Vec<String>>,
@@ -91,7 +86,7 @@ pub struct CertificateRequestSpec {
 /// If the issuer is namespace-scoped, it must be in the same namespace
 /// as the Certificate. If the issuer is cluster-scoped, it can be used
 /// from any namespace.
-///
+/// 
 /// The `name` field of the reference must always be specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateRequestIssuerRef {
@@ -130,10 +125,7 @@ pub struct CertificateRequestStatus {
     pub conditions: Option<Vec<Condition>>,
     /// FailureTime stores the time that this CertificateRequest failed. This is
     /// used to influence garbage collection and back-off.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureTime")]
     pub failure_time: Option<String>,
 }
+

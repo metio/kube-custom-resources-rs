@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired behavior of a GitLab instance.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.gitlab.com",
-    version = "v1beta1",
-    kind = "GitLab",
-    plural = "gitlabs"
-)]
+#[kube(group = "apps.gitlab.com", version = "v1beta1", kind = "GitLab", plural = "gitlabs")]
 #[kube(namespaced)]
 #[kube(status = "GitLabStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GitLabSpec {
     /// The specification of GitLab Chart that is used to deploy the instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -50,3 +45,4 @@ pub struct GitLabStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
+

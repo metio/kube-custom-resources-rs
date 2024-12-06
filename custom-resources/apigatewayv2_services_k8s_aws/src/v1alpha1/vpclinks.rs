@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VpcLinkSpec defines the desired state of VpcLink.
-///
+/// 
 /// Represents a VPC link.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apigatewayv2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "VPCLink",
-    plural = "vpclinks"
-)]
+#[kube(group = "apigatewayv2.services.k8s.aws", version = "v1alpha1", kind = "VPCLink", plural = "vpclinks")]
 #[kube(namespaced)]
 #[kube(status = "VPCLinkStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VPCLinkSpec {
     pub name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
     #[serde(rename = "subnetIDs")]
     pub subnet_i_ds: Vec<String>,
@@ -46,11 +37,7 @@ pub struct VPCLinkStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<VPCLinkStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -58,31 +45,15 @@ pub struct VPCLinkStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createdDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcLinkID")]
     pub vpc_link_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcLinkStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcLinkStatus")]
     pub vpc_link_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcLinkStatusMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcLinkStatusMessage")]
     pub vpc_link_status_message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcLinkVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcLinkVersion")]
     pub vpc_link_version: Option<String>,
 }
 
@@ -107,3 +78,4 @@ pub struct VPCLinkStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

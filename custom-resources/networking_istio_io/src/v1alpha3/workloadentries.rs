@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Configuration affecting VMs onboarded into the mesh. See more details at: https://istio.io/docs/reference/config/networking/workload-entry.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "networking.istio.io",
-    version = "v1alpha3",
-    kind = "WorkloadEntry",
-    plural = "workloadentries"
-)]
+#[kube(group = "networking.istio.io", version = "v1alpha3", kind = "WorkloadEntry", plural = "workloadentries")]
 #[kube(namespaced)]
 #[kube(status = "WorkloadEntryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct WorkloadEntrySpec {
     /// Address associated with the network endpoint without the port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,11 +37,7 @@ pub struct WorkloadEntrySpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<BTreeMap<String, i64>>,
     /// The service account associated with the workload if a sidecar is present in the workload.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// The load balancing weight associated with the endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -59,32 +50,20 @@ pub struct WorkloadEntryStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Resource Generation to which the Reconciled Condition refers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<IntOrString>,
     /// Includes any errors or warnings detected by Istio's analyzers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationMessages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationMessages")]
     pub validation_messages: Option<Vec<WorkloadEntryStatusValidationMessages>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadEntryStatusValidationMessages {
     /// A url pointing to the Istio documentation for this specific error type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "documentationUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "documentationUrl")]
     pub documentation_url: Option<String>,
     /// Represents how severe a message is.
-    ///
+    /// 
     /// Valid Options: UNKNOWN, ERROR, WARNING, INFO
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<WorkloadEntryStatusValidationMessagesLevel>,
@@ -113,3 +92,4 @@ pub struct WorkloadEntryStatusValidationMessagesType {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

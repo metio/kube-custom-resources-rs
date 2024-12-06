@@ -4,66 +4,41 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec represents the desired deployment configuration of Klusterlet agent.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.open-cluster-management.io",
-    version = "v1",
-    kind = "Klusterlet",
-    plural = "klusterlets"
-)]
+#[kube(group = "operator.open-cluster-management.io", version = "v1", kind = "Klusterlet", plural = "klusterlets")]
 #[kube(status = "KlusterletStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KlusterletSpec {
     /// ClusterName is the name of the managed cluster to be created on hub.
     /// The Klusterlet agent generates a random name if it is not set, or discovers the appropriate cluster name on OpenShift.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// DeployOption contains the options of deploying a klusterlet
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deployOption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployOption")]
     pub deploy_option: Option<KlusterletDeployOption>,
     /// ExternalServerURLs represents a list of apiserver urls and ca bundles that is accessible externally
     /// If it is set empty, managed cluster has no externally accessible url that hub cluster can visit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalServerURLs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalServerURLs")]
     pub external_server_ur_ls: Option<Vec<KlusterletExternalServerUrLs>>,
     /// HubApiServerHostAlias contains the host alias for hub api server.
     /// registration-agent and work-agent will use it to communicate with hub api server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hubApiServerHostAlias"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubApiServerHostAlias")]
     pub hub_api_server_host_alias: Option<KlusterletHubApiServerHostAlias>,
     /// ImagePullSpec represents the desired image configuration of agent, it takes effect only when
     /// singleton mode is set. quay.io/open-cluster-management.io/registration-operator:latest will
     /// be used if unspecified
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSpec")]
     pub image_pull_spec: Option<String>,
     /// Namespace is the namespace to deploy the agent on the managed cluster.
     /// The namespace must have a prefix of "open-cluster-management-", and if it is not set,
@@ -75,58 +50,30 @@ pub struct KlusterletSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// NodePlacement enables explicit control over the scheduling of the deployed pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePlacement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePlacement")]
     pub node_placement: Option<KlusterletNodePlacement>,
     /// PriorityClassName is the name of the PriorityClass that will be used by the
     /// deployed klusterlet agent. It will be ignored when the PriorityClass/v1 API
     /// is not available on the managed cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// RegistrationConfiguration contains the configuration of registration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrationConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationConfiguration")]
     pub registration_configuration: Option<KlusterletRegistrationConfiguration>,
     /// RegistrationImagePullSpec represents the desired image configuration of registration agent.
     /// quay.io/open-cluster-management.io/registration:latest will be used if unspecified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrationImagePullSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationImagePullSpec")]
     pub registration_image_pull_spec: Option<String>,
     /// ResourceRequirement specify QoS classes of deployments managed by klusterlet.
     /// It applies to all the containers in the deployments.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirement")]
     pub resource_requirement: Option<KlusterletResourceRequirement>,
     /// WorkConfiguration contains the configuration of work
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workConfiguration")]
     pub work_configuration: Option<KlusterletWorkConfiguration>,
     /// WorkImagePullSpec represents the desired image configuration of work agent.
     /// quay.io/open-cluster-management.io/work:latest will be used if unspecified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workImagePullSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workImagePullSpec")]
     pub work_image_pull_spec: Option<String>,
 }
 
@@ -171,11 +118,7 @@ pub struct KlusterletHubApiServerHostAlias {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KlusterletNodePlacement {
     /// NodeSelector defines which Nodes the Pods are scheduled on. The default is an empty list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations are attached by pods to tolerate any taint that matches
     /// the triple <key,value,effect> using the matching operator <operator>.
@@ -206,11 +149,7 @@ pub struct KlusterletNodePlacementTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -222,36 +161,24 @@ pub struct KlusterletNodePlacementTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KlusterletRegistrationConfiguration {
     /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.
-    ///
-    ///
+    /// 
+    /// 
     /// When the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR
     /// is set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as "failed".
-    ///
-    ///
+    /// 
+    /// 
     /// A failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds.
     /// But if the user updates the content of a failed bootstrapkubeconfig, the "failed" mark will be cleared.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bootstrapKubeConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapKubeConfigs")]
     pub bootstrap_kube_configs: Option<KlusterletRegistrationConfigurationBootstrapKubeConfigs>,
     /// clientCertExpirationSeconds represents the seconds of a client certificate to expire. If it is not set or 0, the default
     /// duration seconds will be set by the hub cluster. If the value is larger than the max signing duration seconds set on
     /// the hub cluster, the max signing duration seconds will be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertExpirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertExpirationSeconds")]
     pub client_cert_expiration_seconds: Option<i32>,
     /// ClusterAnnotations is annotations with the reserve prefix "agent.open-cluster-management.io" set on
     /// ManagedCluster when creating only, other actors can update it afterwards.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAnnotations")]
     pub cluster_annotations: Option<BTreeMap<String, String>>,
     /// FeatureGates represents the list of feature gates for registration
     /// If it is set empty, default feature gates will be used.
@@ -260,57 +187,36 @@ pub struct KlusterletRegistrationConfiguration {
     ///   2. If featuregate/Foo exists and is false by default. It is now possible to set featuregate/Foo=[false|true]
     ///   3. If featuregate/Foo exists and is true by default. If a cluster-admin upgrading from 1 to 2 wants to continue having featuregate/Foo=false,
     ///  	he can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<Vec<KlusterletRegistrationConfigurationFeatureGates>>,
     /// KubeAPIBurst indicates the maximum burst of the throttle while talking with apiserver of hub cluster from the spoke cluster.
     /// If it is set empty, use the default value: 100
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeAPIBurst"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIBurst")]
     pub kube_api_burst: Option<i32>,
     /// KubeAPIQPS indicates the maximum QPS while talking with apiserver of hub cluster from the spoke cluster.
     /// If it is set empty, use the default value: 50
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeAPIQPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIQPS")]
     pub kube_apiqps: Option<i32>,
     /// This provides driver details required to register with hub
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrationDriver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationDriver")]
     pub registration_driver: Option<KlusterletRegistrationConfigurationRegistrationDriver>,
 }
 
 /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.
-///
-///
+/// 
+/// 
 /// When the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR
 /// is set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as "failed".
-///
-///
+/// 
+/// 
 /// A failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds.
 /// But if the user updates the content of a failed bootstrapkubeconfig, the "failed" mark will be cleared.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigs {
     /// LocalSecretsConfig include a list of secrets that contains the kubeconfigs for ordered bootstrap kubeconifigs.
     /// The secrets must be in the same namespace where the agent controller runs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localSecretsConfig"
-    )]
-    pub local_secrets_config:
-        Option<KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localSecretsConfig")]
+    pub local_secrets_config: Option<KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfig>,
     /// Type specifies the type of priority bootstrap kubeconfigs.
     /// By default, it is set to None, representing no priority bootstrap kubeconfigs are set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -332,20 +238,19 @@ pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsCo
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfigKubeConfigSecrets
-{
+pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfigKubeConfigSecrets {
     /// Name is the name of the secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.
-///
-///
+/// 
+/// 
 /// When the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR
 /// is set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as "failed".
-///
-///
+/// 
+/// 
 /// A failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds.
 /// But if the user updates the content of a failed bootstrapkubeconfig, the "failed" mark will be cleared.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -398,20 +303,12 @@ pub enum KlusterletRegistrationConfigurationRegistrationDriverAuthType {
 pub struct KlusterletRegistrationConfigurationRegistrationDriverAwsIrsa {
     /// The arn of the hub cluster (ie: an EKS cluster). This will be required to pass information to hub, which hub will use to create IAM identities for this klusterlet.
     /// Example - arn:eks:us-west-2:12345678910:cluster/hub-cluster1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hubClusterArn"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubClusterArn")]
     pub hub_cluster_arn: Option<String>,
     /// The arn of the managed cluster (ie: an EKS cluster). This will be required to generate the md5hash which will be used as a suffix to create IAM role on hub
     /// as well as used by kluslerlet-agent, to assume role suffixed with the md5hash, on startup.
     /// Example - arn:eks:us-west-2:12345678910:cluster/managed-cluster1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managedClusterArn"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedClusterArn")]
     pub managed_cluster_arn: Option<String>,
 }
 
@@ -420,11 +317,7 @@ pub struct KlusterletRegistrationConfigurationRegistrationDriverAwsIrsa {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KlusterletResourceRequirement {
     /// ResourceRequirements defines resource requests and limits when Type is ResourceQosClassResourceRequirement
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
     pub resource_requirements: Option<KlusterletResourceRequirementResourceRequirements>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<KlusterletResourceRequirementType>,
@@ -435,12 +328,12 @@ pub struct KlusterletResourceRequirement {
 pub struct KlusterletResourceRequirementResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<KlusterletResourceRequirementResourceRequirementsClaims>>,
@@ -480,11 +373,7 @@ pub struct KlusterletWorkConfiguration {
     /// AppliedManifestWorkEvictionGracePeriod is the eviction grace period the work agent will wait before
     /// evicting the AppliedManifestWorks, whose corresponding ManifestWorks are missing on the hub cluster, from
     /// the managed cluster. If not present, the default value of the work agent will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appliedManifestWorkEvictionGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedManifestWorkEvictionGracePeriod")]
     pub applied_manifest_work_eviction_grace_period: Option<String>,
     /// FeatureGates represents the list of feature gates for work
     /// If it is set empty, default feature gates will be used.
@@ -493,27 +382,15 @@ pub struct KlusterletWorkConfiguration {
     ///   2. If featuregate/Foo exists and is false by default. It is now possible to set featuregate/Foo=[false|true]
     ///   3. If featuregate/Foo exists and is true by default. If a cluster-admin upgrading from 1 to 2 wants to continue having featuregate/Foo=false,
     ///  	he can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<Vec<KlusterletWorkConfigurationFeatureGates>>,
     /// KubeAPIBurst indicates the maximum burst of the throttle while talking with apiserver of hub cluster from the spoke cluster.
     /// If it is set empty, use the default value: 100
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeAPIBurst"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIBurst")]
     pub kube_api_burst: Option<i32>,
     /// KubeAPIQPS indicates the maximum QPS while talking with apiserver of hub cluster from the spoke cluster.
     /// If it is set empty, use the default value: 50
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeAPIQPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIQPS")]
     pub kube_apiqps: Option<i32>,
 }
 
@@ -550,18 +427,10 @@ pub struct KlusterletStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generations: Option<Vec<KlusterletStatusGenerations>>,
     /// ObservedGeneration is the last generation change you've dealt with
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// RelatedResources are used to track the resources that are related to this Klusterlet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relatedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relatedResources")]
     pub related_resources: Option<Vec<KlusterletStatusRelatedResources>>,
 }
 
@@ -573,11 +442,7 @@ pub struct KlusterletStatusGenerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     /// lastGeneration is the last generation of the resource that controller applies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastGeneration")]
     pub last_generation: Option<i64>,
     /// name is the name of the resource that you're tracking
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -612,3 +477,4 @@ pub struct KlusterletStatusRelatedResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
+

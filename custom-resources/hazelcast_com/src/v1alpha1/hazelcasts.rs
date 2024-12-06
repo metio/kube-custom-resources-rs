@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Initial values will be filled with its fields' default values.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hazelcast.com",
-    version = "v1alpha1",
-    kind = "Hazelcast",
-    plural = "hazelcasts"
-)]
+#[kube(group = "hazelcast.com", version = "v1alpha1", kind = "Hazelcast", plural = "hazelcasts")]
 #[kube(namespaced)]
 #[kube(status = "HazelcastStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HazelcastSpec {
     /// Hazelcast Advanced Network configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "advancedNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "advancedNetwork")]
     pub advanced_network: Option<HazelcastAdvancedNetwork>,
     /// B&R Agent configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -39,77 +30,37 @@ pub struct HazelcastSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Name of the Hazelcast cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// Number of Hazelcast members in the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSize")]
     pub cluster_size: Option<i32>,
     /// CPSubsystem is the configuration of the Hazelcast CP Subsystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpSubsystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpSubsystem")]
     pub cp_subsystem: Option<HazelcastCpSubsystem>,
     /// Name of the ConfigMap with the Hazelcast custom configuration. This configuration from the ConfigMap might be overridden by the Hazelcast CR configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customConfigCmName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customConfigCmName")]
     pub custom_config_cm_name: Option<String>,
     /// Durable Executor Service configurations, see https://docs.hazelcast.com/hazelcast/latest/computing/durable-executor-service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "durableExecutorServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "durableExecutorServices")]
     pub durable_executor_services: Option<Vec<HazelcastDurableExecutorServices>>,
     /// Env configuration of environment variables
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<HazelcastEnv>>,
     /// Java Executor Service configurations, see https://docs.hazelcast.com/hazelcast/latest/computing/executor-service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executorServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executorServices")]
     pub executor_services: Option<Vec<HazelcastExecutorServices>>,
     /// Configuration to expose Hazelcast cluster to external clients.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposeExternally"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeExternally")]
     pub expose_externally: Option<HazelcastExposeExternally>,
     /// Configuration to create clusters resilient to node and zone failures
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "highAvailabilityMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highAvailabilityMode")]
     pub high_availability_mode: Option<HazelcastHighAvailabilityMode>,
     /// Pull policy for the Hazelcast Platform image
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Image pull secrets for the Hazelcast Platform image
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<HazelcastImagePullSecrets>>,
     /// Jet Engine configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -121,46 +72,22 @@ pub struct HazelcastSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// licenseKeySecret is a deprecated alias for licenseKeySecretName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "licenseKeySecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "licenseKeySecret")]
     pub license_key_secret: Option<String>,
     /// Name of the secret with Hazelcast Enterprise License Key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "licenseKeySecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "licenseKeySecretName")]
     pub license_key_secret_name: Option<String>,
     /// Hazelcast LocalDevice configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localDevices")]
     pub local_devices: Option<Vec<HazelcastLocalDevices>>,
     /// Logging level for Hazelcast members
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loggingLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingLevel")]
     pub logging_level: Option<HazelcastLoggingLevel>,
     /// Hazelcast Management Center Configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managementCenter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementCenter")]
     pub management_center: Option<HazelcastManagementCenter>,
     /// Hazelcast Native Memory (HD Memory) configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nativeMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeMemory")]
     pub native_memory: Option<HazelcastNativeMemory>,
     /// Persistence configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -175,11 +102,7 @@ pub struct HazelcastSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<HazelcastResources>,
     /// Scheduled Executor Service configurations, see https://docs.hazelcast.com/hazelcast/latest/computing/scheduled-executor-service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scheduledExecutorServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduledExecutorServices")]
     pub scheduled_executor_services: Option<Vec<HazelcastScheduledExecutorServices>>,
     /// Scheduling details
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -188,11 +111,7 @@ pub struct HazelcastSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub serialization: Option<HazelcastSerialization>,
     /// ServiceAccountName is the name of the ServiceAccount to use to run Hazelcast cluster. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Hazelcast SQL configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -201,18 +120,10 @@ pub struct HazelcastSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<HazelcastTls>,
     /// User Codes to Download into CLASSPATH
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userCodeDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCodeDeployment")]
     pub user_code_deployment: Option<HazelcastUserCodeDeployment>,
     /// UserCodeNamespaces provide a container for Java classpath resources, such as user code and accompanying artifacts like property files
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userCodeNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCodeNamespaces")]
     pub user_code_namespaces: Option<HazelcastUserCodeNamespaces>,
     /// Version of Hazelcast Platform.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -222,20 +133,10 @@ pub struct HazelcastSpec {
 /// Hazelcast Advanced Network configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastAdvancedNetwork {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientServerSocketEndpointConfig"
-    )]
-    pub client_server_socket_endpoint_config:
-        Option<HazelcastAdvancedNetworkClientServerSocketEndpointConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memberServerSocketEndpointConfig"
-    )]
-    pub member_server_socket_endpoint_config:
-        Option<HazelcastAdvancedNetworkMemberServerSocketEndpointConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientServerSocketEndpointConfig")]
+    pub client_server_socket_endpoint_config: Option<HazelcastAdvancedNetworkClientServerSocketEndpointConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberServerSocketEndpointConfig")]
+    pub member_server_socket_endpoint_config: Option<HazelcastAdvancedNetworkMemberServerSocketEndpointConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wan: Option<Vec<HazelcastAdvancedNetworkWan>>,
 }
@@ -261,11 +162,7 @@ pub struct HazelcastAdvancedNetworkWan {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portCount")]
     pub port_count: Option<i64>,
     /// Service Type string describes ingress methods for a service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
 }
 
@@ -286,8 +183,8 @@ pub struct HazelcastAgent {
 /// Compute Resources required by the Agent container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastAgentResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container.
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate.
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<HazelcastAgentResourcesClaims>>,
@@ -310,42 +207,22 @@ pub struct HazelcastAgentResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastCpSubsystem {
     /// DataLoadTimeoutSeconds is the timeout duration in seconds for CP members to restore their persisted data from disk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataLoadTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataLoadTimeoutSeconds")]
     pub data_load_timeout_seconds: Option<i32>,
     /// FailOnIndeterminateOperationState indicated whether CP Subsystem operations use at-least-once and at-most-once execution guarantees.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failOnIndeterminateOperationState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOnIndeterminateOperationState")]
     pub fail_on_indeterminate_operation_state: Option<bool>,
     /// MissingCpMemberAutoRemovalSeconds is the duration in seconds to wait before automatically removing a missing CP member from the CP Subsystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "missingCpMemberAutoRemovalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "missingCpMemberAutoRemovalSeconds")]
     pub missing_cp_member_auto_removal_seconds: Option<i32>,
     /// PVC is the configuration of PersistenceVolumeClaim.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pvc: Option<HazelcastCpSubsystemPvc>,
     /// SessionHeartbeatIntervalSeconds Interval in seconds for the periodically committed CP session heartbeats. Must be smaller than SessionTTLSeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionHeartbeatIntervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionHeartbeatIntervalSeconds")]
     pub session_heartbeat_interval_seconds: Option<i32>,
     /// SessionTTLSeconds is the duration for a CP session to be kept alive after the last received heartbeat. Must be greater than or equal to SessionHeartbeatIntervalSeconds and smaller than or equal to MissingCpMemberAutoRemovalSeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionTTLSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTTLSeconds")]
     pub session_ttl_seconds: Option<i32>,
 }
 
@@ -353,25 +230,13 @@ pub struct HazelcastCpSubsystem {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastCpSubsystemPvc {
     /// AccessModes contains the actual access modes of the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// A description of the PVC request capacity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestStorage")]
     pub request_storage: Option<IntOrString>,
     /// Name of StorageClass which this persistent volume belongs to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -390,11 +255,7 @@ pub struct HazelcastDurableExecutorServices {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolSize")]
     pub pool_size: Option<i32>,
     /// Name of the User Code Namespace applied to this instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userCodeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCodeNamespace")]
     pub user_code_namespace: Option<String>,
 }
 
@@ -415,28 +276,16 @@ pub struct HazelcastEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<HazelcastEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<HazelcastEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<HazelcastEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<HazelcastEnvValueFromSecretKeyRef>,
 }
 
@@ -457,11 +306,7 @@ pub struct HazelcastEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -472,11 +317,7 @@ pub struct HazelcastEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -507,18 +348,10 @@ pub struct HazelcastExecutorServices {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolSize")]
     pub pool_size: Option<i32>,
     /// Task queue capacity of the executor.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queueCapacity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueCapacity")]
     pub queue_capacity: Option<i32>,
     /// Name of the User Code Namespace applied to this instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userCodeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCodeNamespace")]
     pub user_code_namespace: Option<String>,
 }
 
@@ -526,18 +359,10 @@ pub struct HazelcastExecutorServices {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastExposeExternally {
     /// Type of the service used to discover Hazelcast cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discoveryServiceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryServiceType")]
     pub discovery_service_type: Option<String>,
     /// How each member is accessed from the external client. Only available for "Smart" client and valid values are: - "NodePortExternalIP" (default): each member is accessed by the NodePort service and the node external IP/hostname - "NodePortNodeName": each member is accessed by the NodePort service and the node name - "LoadBalancer": each member is accessed by the LoadBalancer service external address
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memberAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberAccess")]
     pub member_access: Option<HazelcastExposeExternallyMemberAccess>,
     /// Specifies how members are exposed. Valid values are: - "Smart" (default): each member pod is exposed with a separate external address - "Unisocket": all member pods are exposed with one external address
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -581,25 +406,13 @@ pub struct HazelcastImagePullSecrets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastJet {
     /// Bucket config from where the JAR files will be downloaded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketConfig")]
     pub bucket_config: Option<HazelcastJetBucketConfig>,
     /// Names of the list of ConfigMaps. Files in each ConfigMap will be downloaded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMaps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMaps")]
     pub config_maps: Option<Vec<String>>,
     /// Jet Edge Defaults Configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "edgeDefaults"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "edgeDefaults")]
     pub edge_defaults: Option<HazelcastJetEdgeDefaults>,
     /// When false, disables Jet Engine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -608,18 +421,10 @@ pub struct HazelcastJet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instance: Option<HazelcastJetInstance>,
     /// List of URLs from where the files will be downloaded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteURLs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteURLs")]
     pub remote_ur_ls: Option<Vec<String>>,
     /// When true, enables resource uploading for Jet jobs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceUploadEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceUploadEnabled")]
     pub resource_upload_enabled: Option<bool>,
 }
 
@@ -633,11 +438,7 @@ pub struct HazelcastJetBucketConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// Name of the secret with credentials for cloud providers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -645,21 +446,13 @@ pub struct HazelcastJetBucketConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastJetEdgeDefaults {
     /// Limits the size of the packet in bytes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packetSizeLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packetSizeLimit")]
     pub packet_size_limit: Option<i32>,
     /// Sets the capacity of processor-to-processor concurrent queues.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueSize")]
     pub queue_size: Option<i32>,
     /// Sets the scaling factor used by the adaptive receive window sizing function.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "receiveWindowMultiplier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "receiveWindowMultiplier")]
     pub receive_window_multiplier: Option<i64>,
 }
 
@@ -667,46 +460,22 @@ pub struct HazelcastJetEdgeDefaults {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastJetInstance {
     /// The number of synchronous backups to configure on the IMap that Jet needs internally to store job metadata and snapshots.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupCount")]
     pub backup_count: Option<i32>,
     /// The number of threads Jet creates in its cooperative multithreading pool. Its default value is the number of cores
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cooperativeThreadCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cooperativeThreadCount")]
     pub cooperative_thread_count: Option<i32>,
     /// The duration of the interval between flow-control packets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flowControlPeriodMillis"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flowControlPeriodMillis")]
     pub flow_control_period_millis: Option<i32>,
     /// Specifies whether the Lossless Cluster Restart feature is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "losslessRestartEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "losslessRestartEnabled")]
     pub lossless_restart_enabled: Option<bool>,
     /// Specifies the maximum number of records that can be accumulated by any single processor instance. Default value is Long.MAX_VALUE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxProcessorAccumulatedRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProcessorAccumulatedRecords")]
     pub max_processor_accumulated_records: Option<i64>,
     /// The delay after which the auto-scaled jobs restart if a new member joins the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scaleUpDelayMillis"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleUpDelayMillis")]
     pub scale_up_delay_millis: Option<i32>,
 }
 
@@ -747,25 +516,13 @@ pub enum HazelcastJvmGcCollector {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastJvmMemory {
     /// InitialRAMPercentage configures JVM initial heap size
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialRAMPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialRAMPercentage")]
     pub initial_ram_percentage: Option<String>,
     /// MaxRAMPercentage sets the maximum heap size for a JVM
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRAMPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRAMPercentage")]
     pub max_ram_percentage: Option<String>,
     /// MinRAMPercentage sets the minimum heap size for a JVM
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minRAMPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minRAMPercentage")]
     pub min_ram_percentage: Option<String>,
 }
 
@@ -780,18 +537,10 @@ pub struct HazelcastLocalDevices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pvc: Option<HazelcastLocalDevicesPvc>,
     /// ReadIOThreadCount is Read IO thread count.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readIOThreadCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readIOThreadCount")]
     pub read_io_thread_count: Option<i32>,
     /// WriteIOThreadCount is Write IO thread count.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeIOThreadCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOThreadCount")]
     pub write_io_thread_count: Option<i32>,
 }
 
@@ -799,25 +548,13 @@ pub struct HazelcastLocalDevices {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastLocalDevicesPvc {
     /// AccessModes contains the actual access modes of the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// A description of the PVC request capacity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestStorage")]
     pub request_storage: Option<IntOrString>,
     /// Name of StorageClass which this persistent volume belongs to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -846,25 +583,13 @@ pub enum HazelcastLoggingLevel {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastManagementCenter {
     /// Allows you to execute commands from a built-in console in the user interface.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consoleEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consoleEnabled")]
     pub console_enabled: Option<bool>,
     /// Allows you to access contents of Hazelcast data structures via SQL Browser or Map Browser.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataAccessEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataAccessEnabled")]
     pub data_access_enabled: Option<bool>,
     /// Allows you to execute scripts that can automate interactions with the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scriptingEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptingEnabled")]
     pub scripting_enabled: Option<bool>,
 }
 
@@ -872,25 +597,13 @@ pub struct HazelcastManagementCenter {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastNativeMemory {
     /// AllocatorType specifies one of 2 types of mechanism for allocating memory to HD
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocatorType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatorType")]
     pub allocator_type: Option<HazelcastNativeMemoryAllocatorType>,
     /// MetadataSpacePercentage defines percentage of the allocated native memory that is used for the metadata of other map components such as index (for predicates), offset, etc.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataSpacePercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataSpacePercentage")]
     pub metadata_space_percentage: Option<i32>,
     /// MinBlockSize is the size of smallest block that will be allocated. It is used only by the POOLED memory allocator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minBlockSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minBlockSize")]
     pub min_block_size: Option<i32>,
     /// PageSize is the size of the page in bytes to allocate memory as a block. It is used only by the POOLED memory allocator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pageSize")]
@@ -916,18 +629,10 @@ pub struct HazelcastPersistence {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseDir")]
     pub base_dir: Option<String>,
     /// Configuration of the cluster recovery strategy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterDataRecoveryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDataRecoveryPolicy")]
     pub cluster_data_recovery_policy: Option<HazelcastPersistenceClusterDataRecoveryPolicy>,
     /// DataRecoveryTimeout is timeout for each step of data recovery in seconds. Maximum timeout is equal to DataRecoveryTimeout*2 (for each step: validation and data-load).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataRecoveryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataRecoveryTimeout")]
     pub data_recovery_timeout: Option<i32>,
     /// Configuration of PersistenceVolumeClaim.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -936,11 +641,7 @@ pub struct HazelcastPersistence {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restore: Option<HazelcastPersistenceRestore>,
     /// StartupAction represents the action triggered when the cluster starts to force the cluster startup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupAction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupAction")]
     pub startup_action: Option<HazelcastPersistenceStartupAction>,
 }
 
@@ -956,25 +657,13 @@ pub enum HazelcastPersistenceClusterDataRecoveryPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastPersistencePvc {
     /// AccessModes contains the actual access modes of the volume backing the PVC has. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// A description of the PVC request capacity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestStorage")]
     pub request_storage: Option<IntOrString>,
     /// Name of StorageClass which this persistent volume belongs to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -982,25 +671,13 @@ pub struct HazelcastPersistencePvc {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastPersistenceRestore {
     /// Bucket Configuration from which the backup will be downloaded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketConfig")]
     pub bucket_config: Option<HazelcastPersistenceRestoreBucketConfig>,
     /// Name of the HotBackup resource from which backup will be fetched.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hotBackupResourceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hotBackupResourceName")]
     pub hot_backup_resource_name: Option<String>,
     /// Configuration to restore from local backup
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localConfig")]
     pub local_config: Option<HazelcastPersistenceRestoreLocalConfig>,
 }
 
@@ -1014,11 +691,7 @@ pub struct HazelcastPersistenceRestoreBucketConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// Name of the secret with credentials for cloud providers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -1029,21 +702,13 @@ pub struct HazelcastPersistenceRestoreLocalConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupDir")]
     pub backup_dir: Option<String>,
     /// Backup directory
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupFolder"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupFolder")]
     pub backup_folder: Option<String>,
     /// Persistence base directory
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseDir")]
     pub base_dir: Option<String>,
     /// PVC name prefix used in existing PVCs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvcNamePrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcNamePrefix")]
     pub pvc_name_prefix: Option<HazelcastPersistenceRestoreLocalConfigPvcNamePrefix>,
 }
 
@@ -1066,8 +731,8 @@ pub enum HazelcastPersistenceStartupAction {
 /// Compute Resources required by the Hazelcast container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container.
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate.
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<HazelcastResourcesClaims>>,
@@ -1092,11 +757,7 @@ pub struct HazelcastScheduledExecutorServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<i32>,
     /// The active policy for the capacity setting.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "capacityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityPolicy")]
     pub capacity_policy: Option<String>,
     /// Durability of the executor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1108,11 +769,7 @@ pub struct HazelcastScheduledExecutorServices {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolSize")]
     pub pool_size: Option<i32>,
     /// Name of the User Code Namespace applied to this instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userCodeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCodeNamespace")]
     pub user_code_namespace: Option<String>,
 }
 
@@ -1123,21 +780,13 @@ pub struct HazelcastScheduling {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<HazelcastSchedulingAffinity>,
     /// NodeSelector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<HazelcastSchedulingTolerations>>,
     /// TopologySpreadConstraints
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<HazelcastSchedulingTopologySpreadConstraints>>,
 }
 
@@ -1145,25 +794,13 @@ pub struct HazelcastScheduling {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastSchedulingAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<HazelcastSchedulingAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<HazelcastSchedulingAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<HazelcastSchedulingAffinityPodAntiAffinity>,
 }
 
@@ -1171,23 +808,11 @@ pub struct HazelcastSchedulingAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastSchedulingAffinityNodeAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<HazelcastSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<HazelcastSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        HazelcastSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<HazelcastSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
@@ -1212,8 +837,7 @@ pub struct HazelcastSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnor
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct HazelcastSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -1225,8 +849,7 @@ pub struct HazelcastSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnor
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct HazelcastSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -1257,8 +880,7 @@ pub struct HazelcastSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnore
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct HazelcastSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -1270,8 +892,7 @@ pub struct HazelcastSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnore
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct HazelcastSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -1285,23 +906,11 @@ pub struct HazelcastSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastSchedulingAffinityPodAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<HazelcastSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<HazelcastSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<HazelcastSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<HazelcastSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -1344,8 +953,7 @@ pub struct HazelcastSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnore
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct HazelcastSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1368,8 +976,7 @@ pub struct HazelcastSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnore
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct HazelcastSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1409,8 +1016,7 @@ pub struct HazelcastSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnored
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct HazelcastSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1433,8 +1039,7 @@ pub struct HazelcastSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnored
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct HazelcastSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1495,8 +1100,7 @@ pub struct HazelcastSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIg
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct HazelcastSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1519,8 +1123,7 @@ pub struct HazelcastSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIg
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct HazelcastSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1560,8 +1163,7 @@ pub struct HazelcastSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgn
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct HazelcastSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1584,8 +1186,7 @@ pub struct HazelcastSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgn
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HazelcastSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct HazelcastSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1608,11 +1209,7 @@ pub struct HazelcastSchedulingTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1623,47 +1220,27 @@ pub struct HazelcastSchedulingTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastSchedulingTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<HazelcastSchedulingTopologySpreadConstraintsLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot be set when LabelSelector isn't set. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector.
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which spreading will be calculated. The keys are used to lookup values from the incoming pod labels, those key-value labels are ANDed with labelSelector to select the group of existing pods over which spreading will be calculated for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot be set when LabelSelector isn't set. Keys that don't exist in the incoming pod labels will be ignored. A null or empty list means only match against labelSelector. 
     ///  This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. The global minimum is the minimum number of matching pods in an eligible domain or zero if the number of eligible domains is less than MinDomains. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 2/2/1: In this case, the global minimum is 1. | zone1 | zone2 | zone3 | |  P P  |  P P  |   P   | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2; scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed.
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    /// MinDomains indicates a minimum number of eligible domains. When the number of eligible domains with matching topology keys is less than minDomains, Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed. And when the number of eligible domains with matching topology keys equals or greater than minDomains, this value has no effect on scheduling. As a result, when the number of eligible domains is less than minDomains, scheduler won't schedule more than maxSkew Pods to those domains. If value is nil, the constraint behaves as if MinDomains is equal to 1. Valid values are integers greater than 0. When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///  For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same labelSelector spread as 2/2/2: | zone1 | zone2 | zone3 | |  P P  |  P P  |  P P  | The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0. In this situation, new pod with the same labelSelector cannot be scheduled, because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones, it will violate MaxSkew.
+    /// MinDomains indicates a minimum number of eligible domains. When the number of eligible domains with matching topology keys is less than minDomains, Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed. And when the number of eligible domains with matching topology keys equals or greater than minDomains, this value has no effect on scheduling. As a result, when the number of eligible domains is less than minDomains, scheduler won't schedule more than maxSkew Pods to those domains. If value is nil, the constraint behaves as if MinDomains is equal to 1. Valid values are integers greater than 0. When value is not nil, WhenUnsatisfiable must be DoNotSchedule. 
+    ///  For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same labelSelector spread as 2/2/2: | zone1 | zone2 | zone3 | |  P P  |  P P  |  P P  | The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0. In this situation, new pod with the same labelSelector cannot be scheduled, because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones, it will violate MaxSkew. 
     ///  This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
-    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod topology spread skew. Options are: - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations. - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
+    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector when calculating pod topology spread skew. Options are: - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations. - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations. 
     ///  If this value is nil, the behavior is equivalent to the Honor policy. This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
-    /// NodeTaintsPolicy indicates how we will treat node taints when calculating pod topology spread skew. Options are: - Honor: nodes without taints, along with tainted nodes for which the incoming pod has a toleration, are included. - Ignore: node taints are ignored. All nodes are included.
+    /// NodeTaintsPolicy indicates how we will treat node taints when calculating pod topology spread skew. Options are: - Honor: nodes without taints, along with tainted nodes for which the incoming pod has a toleration, are included. - Ignore: node taints are ignored. All nodes are included. 
     ///  If this value is nil, the behavior is equivalent to the Ignore policy. This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key and identical values are considered to be in the same topology. We consider each <key, value> as a "bucket", and try to put balanced number of pods into each bucket. We define a domain as a particular instance of a topology. Also, we define an eligible domain as a domain whose nodes meet the requirements of nodeAffinityPolicy and nodeTaintsPolicy. e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology. And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology. It's a required field.
     #[serde(rename = "topologyKey")]
@@ -1677,19 +1254,10 @@ pub struct HazelcastSchedulingTopologySpreadConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastSchedulingTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<HazelcastSchedulingTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<HazelcastSchedulingTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1709,70 +1277,34 @@ pub struct HazelcastSchedulingTopologySpreadConstraintsLabelSelectorMatchExpress
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastSerialization {
     /// Allow the usage of unsafe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowUnsafe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowUnsafe")]
     pub allow_unsafe: Option<bool>,
     /// Specifies the byte order that the serialization will use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "byteOrder")]
     pub byte_order: Option<HazelcastSerializationByteOrder>,
     /// Configuration attributes the compact serialization.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compactSerialization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compactSerialization")]
     pub compact_serialization: Option<HazelcastSerializationCompactSerialization>,
     /// Lists class implementations of Hazelcast's DataSerializableFactory.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSerializableFactories"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSerializableFactories")]
     pub data_serializable_factories: Option<Vec<String>>,
     /// Enables compression when default Java serialization is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCompression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCompression")]
     pub enable_compression: Option<bool>,
     /// Enables shared object when default Java serialization is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableSharedObject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableSharedObject")]
     pub enable_shared_object: Option<bool>,
     /// List of global serializers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalSerializer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalSerializer")]
     pub global_serializer: Option<HazelcastSerializationGlobalSerializer>,
     /// Blacklist and whitelist for deserialized classes when Java serialization is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "javaSerializationFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "javaSerializationFilter")]
     pub java_serialization_filter: Option<HazelcastSerializationJavaSerializationFilter>,
     /// Allows override of built-in default serializers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overrideDefaultSerializers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overrideDefaultSerializers")]
     pub override_default_serializers: Option<bool>,
     /// Lists class implementations of Hazelcast's PortableFactory.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portableFactories"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portableFactories")]
     pub portable_factories: Option<Vec<String>>,
     /// List of serializers (classes) that implemented using Hazelcast's StreamSerializer, ByteArraySerializer etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1805,11 +1337,7 @@ pub struct HazelcastSerializationGlobalSerializer {
     #[serde(rename = "className")]
     pub class_name: String,
     /// If set to true, will replace the internal Java serialization.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overrideJavaSerialization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overrideJavaSerialization")]
     pub override_java_serialization: Option<bool>,
 }
 
@@ -1867,18 +1395,10 @@ pub struct HazelcastSerializationSerializers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastSql {
     /// CatalogPersistenceEnabled sets whether SQL Catalog persistence is enabled for the node. With SQL Catalog persistence enabled you can restart the whole cluster without losing schema definition objects (such as MAPPINGs, TYPEs, VIEWs and DATA CONNECTIONs). The feature is implemented on top of the Hot Restart feature of Hazelcast which persists the data to disk. If enabled, you have to also configure Hot Restart. Feature is disabled by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catalogPersistenceEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catalogPersistenceEnabled")]
     pub catalog_persistence_enabled: Option<bool>,
     /// StatementTimeout defines the timeout in milliseconds that is applied to queries without an explicit timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statementTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statementTimeout")]
     pub statement_timeout: Option<i32>,
 }
 
@@ -1886,11 +1406,7 @@ pub struct HazelcastSql {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastTls {
     /// Mutual authentication configuration. It’s None by default which means the client side of connection is not authenticated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mutualAuthentication"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutualAuthentication")]
     pub mutual_authentication: Option<HazelcastTlsMutualAuthentication>,
     /// Name of the secret with TLS certificate and key.
     #[serde(rename = "secretName")]
@@ -1909,39 +1425,19 @@ pub enum HazelcastTlsMutualAuthentication {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastUserCodeDeployment {
     /// Bucket config from where the JAR files will be downloaded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketConfig")]
     pub bucket_config: Option<HazelcastUserCodeDeploymentBucketConfig>,
     /// When true, allows user code deployment from clients.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientEnabled")]
     pub client_enabled: Option<bool>,
     /// Names of the list of ConfigMaps. Files in each ConfigMap will be downloaded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMaps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMaps")]
     pub config_maps: Option<Vec<String>>,
     /// List of URLs from where the files will be downloaded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteURLs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteURLs")]
     pub remote_ur_ls: Option<Vec<String>>,
     /// A string for triggering a rolling restart for re-downloading the user code.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerSequence"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerSequence")]
     pub trigger_sequence: Option<String>,
 }
 
@@ -1955,11 +1451,7 @@ pub struct HazelcastUserCodeDeploymentBucketConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// Name of the secret with credentials for cloud providers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -1967,11 +1459,7 @@ pub struct HazelcastUserCodeDeploymentBucketConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastUserCodeNamespaces {
     /// Blacklist and whitelist for classes when User Code Namespaces is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "classFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "classFilter")]
     pub class_filter: Option<HazelcastUserCodeNamespacesClassFilter>,
 }
 
@@ -2018,18 +1506,10 @@ pub struct HazelcastUserCodeNamespacesClassFilterWhitelist {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastStatus {
     /// Number of Hazelcast members in the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSize")]
     pub cluster_size: Option<i32>,
     /// Status of the Hazelcast cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hazelcastClusterStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hazelcastClusterStatus")]
     pub hazelcast_cluster_status: Option<HazelcastStatusHazelcastClusterStatus>,
     /// Status of Hazelcast members
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2052,11 +1532,7 @@ pub struct HazelcastStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastStatusHazelcastClusterStatus {
     /// ReadyMembers represents the number of members that are connected to cluster from the desired number of members in the format <ready>/<desired>
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyMembers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyMembers")]
     pub ready_members: Option<String>,
 }
 
@@ -2079,11 +1555,7 @@ pub struct HazelcastStatusMembers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// OwnedPartitions represents the partitions count on the member.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownedPartitions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownedPartitions")]
     pub owned_partitions: Option<i32>,
     /// PodName is the name of the Hazelcast member pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podName")]
@@ -2092,11 +1564,7 @@ pub struct HazelcastStatusMembers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     /// RestartCount is the number of times the member has been restarted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartCount")]
     pub restart_count: Option<i32>,
     /// State represents the observed state of the member.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2135,18 +1603,10 @@ pub enum HazelcastStatusPhase {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HazelcastStatusRestore {
     /// RemainingDataLoadTime show the time in seconds remained for the restore data load step.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remainingDataLoadTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remainingDataLoadTime")]
     pub remaining_data_load_time: Option<i64>,
     /// RemainingValidationTime show the time in seconds remained for the restore validation step.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remainingValidationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remainingValidationTime")]
     pub remaining_validation_time: Option<i64>,
     /// State shows the current phase of the restore process of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2161,3 +1621,4 @@ pub enum HazelcastStatusRestoreState {
     InProgress,
     Succeeded,
 }
+

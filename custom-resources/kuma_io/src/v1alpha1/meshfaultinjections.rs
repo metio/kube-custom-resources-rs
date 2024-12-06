@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the Kuma MeshFaultInjection resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshFaultInjection",
-    plural = "meshfaultinjections"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshFaultInjection", plural = "meshfaultinjections")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshFaultInjectionSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -71,11 +66,7 @@ pub struct MeshFaultInjectionFromDefaultHttp {
     pub delay: Option<MeshFaultInjectionFromDefaultHttpDelay>,
     /// ResponseBandwidth defines a configuration to limit the speed of
     /// responding to the requests
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseBandwidth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseBandwidth")]
     pub response_bandwidth: Option<MeshFaultInjectionFromDefaultHttpResponseBandwidth>,
 }
 
@@ -138,19 +129,11 @@ pub struct MeshFaultInjectionFromTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -198,19 +181,11 @@ pub struct MeshFaultInjectionTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -268,11 +243,7 @@ pub struct MeshFaultInjectionToDefaultHttp {
     pub delay: Option<MeshFaultInjectionToDefaultHttpDelay>,
     /// ResponseBandwidth defines a configuration to limit the speed of
     /// responding to the requests
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseBandwidth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseBandwidth")]
     pub response_bandwidth: Option<MeshFaultInjectionToDefaultHttpResponseBandwidth>,
 }
 
@@ -335,19 +306,11 @@ pub struct MeshFaultInjectionToTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -369,3 +332,4 @@ pub enum MeshFaultInjectionToTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
 }
+

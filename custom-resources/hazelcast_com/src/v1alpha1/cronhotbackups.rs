@@ -5,30 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// CronHotBackupSpec defines the desired state of CronHotBackup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hazelcast.com",
-    version = "v1alpha1",
-    kind = "CronHotBackup",
-    plural = "cronhotbackups"
-)]
+#[kube(group = "hazelcast.com", version = "v1alpha1", kind = "CronHotBackup", plural = "cronhotbackups")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CronHotBackupSpec {
     /// The number of failed finished hot backups to retain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedHotBackupsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedHotBackupsHistoryLimit")]
     pub failed_hot_backups_history_limit: Option<i32>,
     /// Specifies the hot backup that will be created when executing a CronHotBackup.
     #[serde(rename = "hotBackupTemplate")]
@@ -36,11 +27,7 @@ pub struct CronHotBackupSpec {
     /// Schedule contains a crontab-like expression that defines the schedule in which HotBackup will be started. If the Schedule is empty the HotBackup will start only once when applied. --- Several pre-defined schedules in place of a cron expression can be used. Entry                  | Description                                | Equivalent To -----                  | -----------                                | ------------- @yearly (or @annually) | Run once a year, midnight, Jan. 1st        | 0 0 1 1 * @monthly               | Run once a month, midnight, first of month | 0 0 1 * * @weekly                | Run once a week, midnight between Sat/Sun  | 0 0 * * 0 @daily (or @midnight)  | Run once a day, midnight                   | 0 0 * * * @hourly                | Run once an hour, beginning of hour        | 0 * * * *
     pub schedule: String,
     /// The number of successful finished hot backups to retain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successfulHotBackupsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successfulHotBackupsHistoryLimit")]
     pub successful_hot_backups_history_limit: Option<i32>,
     /// When true, CronHotBackup will stop creating HotBackup CRs until it is disabled
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -70,14 +57,12 @@ pub struct CronHotBackupHotBackupTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// Name of the secret with credentials for cloud providers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
 /// CronHotBackupStatus defines the observed state of CronHotBackup
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CronHotBackupStatus {}
+pub struct CronHotBackupStatus {
+}
+

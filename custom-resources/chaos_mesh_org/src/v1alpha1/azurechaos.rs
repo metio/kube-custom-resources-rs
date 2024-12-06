@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// AzureChaosSpec is the content of the specification for an AzureChaos
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "AzureChaos",
-    plural = "azurechaos"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "AzureChaos", plural = "azurechaos")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct AzureChaosSpec {
     /// Action defines the specific azure chaos action. Supported action: vm-stop / vm-restart / disk-detach Default action: vm-stop
     pub action: AzureChaosAction,
@@ -33,21 +28,13 @@ pub struct AzureChaosSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i64>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// ResourceGroupName defines the name of ResourceGroup
     #[serde(rename = "resourceGroupName")]
     pub resource_group_name: String,
     /// SecretName defines the name of kubernetes secret. It is used for Azure credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SubscriptionID defines the id of Azure subscription.
     #[serde(rename = "subscriptionID")]
@@ -91,17 +78,9 @@ pub struct AzureChaosStatusConditions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AzureChaosStatusExperiment {
     /// Records are used to track the running status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerRecords")]
     pub container_records: Option<Vec<AzureChaosStatusExperimentContainerRecords>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredPhase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredPhase")]
     pub desired_phase: Option<AzureChaosStatusExperimentDesiredPhase>,
 }
 
@@ -142,3 +121,4 @@ pub enum AzureChaosStatusExperimentDesiredPhase {
     Run,
     Stop,
 }
+

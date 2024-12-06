@@ -4,31 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "core.kubeadmiral.io",
-    version = "v1alpha1",
-    kind = "ClusterOverridePolicy",
-    plural = "clusteroverridepolicies"
-)]
+#[kube(group = "core.kubeadmiral.io", version = "v1alpha1", kind = "ClusterOverridePolicy", plural = "clusteroverridepolicies")]
 #[kube(status = "ClusterOverridePolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterOverridePolicySpec {
     /// OverrideRules specify the override rules. Each rule specifies the overriders and the clusters these overriders should be applied to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overrideRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overrideRules")]
     pub override_rules: Option<Vec<ClusterOverridePolicyOverrideRules>>,
 }
 
@@ -38,11 +29,7 @@ pub struct ClusterOverridePolicyOverrideRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overriders: Option<ClusterOverridePolicyOverrideRulesOverriders>,
     /// TargetClusters selects the clusters in which the overriders in this rule should be applied. If multiple types of selectors are specified, the overall result is the intersection of all of them.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetClusters")]
     pub target_clusters: Option<ClusterOverridePolicyOverrideRulesTargetClusters>,
 }
 
@@ -176,32 +163,17 @@ pub struct ClusterOverridePolicyOverrideRulesOverridersEnvsValue {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -221,11 +193,7 @@ pub struct ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromConfigM
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -236,11 +204,7 @@ pub struct ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromFieldRe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -265,13 +229,9 @@ pub struct ClusterOverridePolicyOverrideRulesOverridersEnvsValueValueFromSecretK
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOverridePolicyOverrideRulesOverridersImage {
     /// ContainerNames are ignored when ImagePath is set. If empty, the image override rule applies to all containers. Otherwise, this override targets the specified container(s) or init container(s) in the pod template.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
-    /// ImagePath indicates the image path to target. For Example: /spec/template/spec/containers/0/image
+    /// ImagePath indicates the image path to target. For Example: /spec/template/spec/containers/0/image 
     ///  If empty, the system will automatically resolve the image path if the resource type is Pod, CronJob, Deployment, StatefulSet, DaemonSet or Job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePath")]
     pub image_path: Option<String>,
@@ -347,19 +307,10 @@ pub enum ClusterOverridePolicyOverrideRulesOverridersLabelsOperator {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOverridePolicyOverrideRulesTargetClusters {
     /// ClusterAffinity selects FederatedClusters by matching their labels and fields against expressions. If multiple terms are specified, their results are ORed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterAffinity"
-    )]
-    pub cluster_affinity:
-        Option<Vec<ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinity>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAffinity")]
+    pub cluster_affinity: Option<Vec<ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinity>>,
     /// ClusterSelector selects FederatedClusters by their labels. Empty labels selects all FederatedClusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSelector")]
     pub cluster_selector: Option<BTreeMap<String, String>>,
     /// Clusters selects FederatedClusters by their names. Empty Clusters selects all FederatedClusters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -369,22 +320,11 @@ pub struct ClusterOverridePolicyOverrideRulesTargetClusters {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinity {
     /// A list of cluster selector requirements by cluster labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchExpressions>>,
     /// A list of cluster selector requirements by cluster fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchFields"
-    )]
-    pub match_fields:
-        Option<Vec<ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchFields>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchFields>>,
 }
 
 /// ClusterSelectorRequirement is a selector that contains values, a key, and an operator that relates the values and keys
@@ -392,8 +332,7 @@ pub struct ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinity {
 pub struct ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchExpressions {
     pub key: String,
     /// ClusterSelectorOperator is the set of operators that can be used in a cluster selector requirement.
-    pub operator:
-        ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchExpressionsOperator,
+    pub operator: ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchExpressionsOperator,
     pub values: Vec<String>,
 }
 
@@ -413,8 +352,7 @@ pub enum ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchExp
 pub struct ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchFields {
     pub key: String,
     /// ClusterSelectorOperator is the set of operators that can be used in a cluster selector requirement.
-    pub operator:
-        ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchFieldsOperator,
+    pub operator: ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchFieldsOperator,
     pub values: Vec<String>,
 }
 
@@ -433,11 +371,7 @@ pub enum ClusterOverridePolicyOverrideRulesTargetClustersClusterAffinityMatchFie
 pub struct ClusterOverridePolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refCount")]
     pub ref_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "typedRefCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typedRefCount")]
     pub typed_ref_count: Option<Vec<ClusterOverridePolicyStatusTypedRefCount>>,
 }
 
@@ -448,3 +382,4 @@ pub struct ClusterOverridePolicyStatusTypedRefCount {
     pub group: Option<String>,
     pub resource: String,
 }
+

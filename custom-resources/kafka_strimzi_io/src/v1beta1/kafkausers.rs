@@ -4,34 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// The specification of the user.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kafka.strimzi.io",
-    version = "v1beta1",
-    kind = "KafkaUser",
-    plural = "kafkausers"
-)]
+#[kube(group = "kafka.strimzi.io", version = "v1beta1", kind = "KafkaUser", plural = "kafkausers")]
 #[kube(namespaced)]
 #[kube(status = "KafkaUserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KafkaUserSpec {
-    /// Authentication mechanism enabled for this Kafka user. The supported authentication mechanisms are `scram-sha-512`, `tls`, and `tls-external`.
-    ///
+    /// Authentication mechanism enabled for this Kafka user. The supported authentication mechanisms are `scram-sha-512`, `tls`, and `tls-external`. 
+    /// 
     /// * `scram-sha-512` generates a secret with SASL SCRAM-SHA-512 credentials.
     /// * `tls` generates a secret with user certificate for mutual TLS authentication.
     /// * `tls-external` does not generate a user certificate.   But prepares the user for using mutual TLS authentication using a user certificate generated outside the User Operator.
     ///   ACLs and quotas set for this user are configured in the `CN=<username>` format.
-    ///
+    /// 
     /// Authentication is optional. If authentication is not configured, no credentials are generated. ACLs and quotas set for the user are configured in the `<username>` format suitable for SASL authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<KafkaUserAuthentication>,
@@ -46,13 +41,13 @@ pub struct KafkaUserSpec {
     pub template: Option<KafkaUserTemplate>,
 }
 
-/// Authentication mechanism enabled for this Kafka user. The supported authentication mechanisms are `scram-sha-512`, `tls`, and `tls-external`.
-///
+/// Authentication mechanism enabled for this Kafka user. The supported authentication mechanisms are `scram-sha-512`, `tls`, and `tls-external`. 
+/// 
 /// * `scram-sha-512` generates a secret with SASL SCRAM-SHA-512 credentials.
 /// * `tls` generates a secret with user certificate for mutual TLS authentication.
 /// * `tls-external` does not generate a user certificate.   But prepares the user for using mutual TLS authentication using a user certificate generated outside the User Operator.
 ///   ACLs and quotas set for this user are configured in the `CN=<username>` format.
-///
+/// 
 /// Authentication is optional. If authentication is not configured, no credentials are generated. ACLs and quotas set for the user are configured in the `<username>` format suitable for SASL authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaUserAuthentication {
@@ -76,11 +71,7 @@ pub struct KafkaUserAuthenticationPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaUserAuthenticationPasswordValueFrom {
     /// Selects a key of a Secret in the resource's namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaUserAuthenticationPasswordValueFromSecretKeyRef>,
 }
 
@@ -95,13 +86,13 @@ pub struct KafkaUserAuthenticationPasswordValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Authentication mechanism enabled for this Kafka user. The supported authentication mechanisms are `scram-sha-512`, `tls`, and `tls-external`.
-///
+/// Authentication mechanism enabled for this Kafka user. The supported authentication mechanisms are `scram-sha-512`, `tls`, and `tls-external`. 
+/// 
 /// * `scram-sha-512` generates a secret with SASL SCRAM-SHA-512 credentials.
 /// * `tls` generates a secret with user certificate for mutual TLS authentication.
 /// * `tls-external` does not generate a user certificate.   But prepares the user for using mutual TLS authentication using a user certificate generated outside the User Operator.
 ///   ACLs and quotas set for this user are configured in the `CN=<username>` format.
-///
+/// 
 /// Authentication is optional. If authentication is not configured, no credentials are generated. ACLs and quotas set for the user are configured in the `<username>` format suitable for SASL authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaUserAuthenticationType {
@@ -163,11 +154,7 @@ pub struct KafkaUserAuthorizationAclsResource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Describes the pattern used in the resource field. The supported types are `literal` and `prefix`. With `literal` pattern type, the resource field will be used as a definition of a full name. With `prefix` pattern type, the resource name will be used only as a prefix. Default value is `literal`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "patternType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "patternType")]
     pub pattern_type: Option<KafkaUserAuthorizationAclsResourcePatternType>,
     /// Resource type. The available resource types are `topic`, `group`, `cluster`, and `transactionalId`.
     #[serde(rename = "type")]
@@ -215,32 +202,16 @@ pub enum KafkaUserAuthorizationType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaUserQuotas {
     /// A quota on the maximum bytes per-second that each client group can fetch from a broker before the clients in the group are throttled. Defined on a per-broker basis.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consumerByteRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerByteRate")]
     pub consumer_byte_rate: Option<i64>,
     /// A quota on the rate at which mutations are accepted for the create topics request, the create partitions request and the delete topics request. The rate is accumulated by the number of partitions created or deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerMutationRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerMutationRate")]
     pub controller_mutation_rate: Option<f64>,
     /// A quota on the maximum bytes per-second that each client group can publish to a broker before the clients in the group are throttled. Defined on a per-broker basis.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "producerByteRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "producerByteRate")]
     pub producer_byte_rate: Option<i64>,
     /// A quota on the maximum CPU utilization of each client group as a percentage of network and I/O threads.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestPercentage")]
     pub request_percentage: Option<i64>,
 }
 
@@ -278,11 +249,7 @@ pub struct KafkaUserStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The generation of the CRD that was last reconciled by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// The name of `Secret` where the credentials are stored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -291,3 +258,4 @@ pub struct KafkaUserStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
+

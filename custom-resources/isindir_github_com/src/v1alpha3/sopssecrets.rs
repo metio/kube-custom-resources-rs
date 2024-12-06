@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -136,17 +136,12 @@ pub struct SopsSecretSopsPgp {
 
 /// SopsSecret Spec definition
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "isindir.github.com",
-    version = "v1alpha3",
-    kind = "SopsSecret",
-    plural = "sopssecrets"
-)]
+#[kube(group = "isindir.github.com", version = "v1alpha3", kind = "SopsSecret", plural = "sopssecrets")]
 #[kube(namespaced)]
 #[kube(status = "SopsSecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SopsSecretSpec {
     /// Secrets template is a list of definitions to create Kubernetes Secrets
     #[serde(rename = "secretTemplates")]
@@ -173,11 +168,7 @@ pub struct SopsSecretSecretTemplates {
     pub name: String,
     /// stringData map to use in Kubernetes secret (equivalent to Kubernetes Secret object stringData, please see for more
     /// information: https://kubernetes.io/docs/concepts/configuration/secret/#overview-of-secrets)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stringData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stringData")]
     pub string_data: Option<BTreeMap<String, String>>,
     /// Kubernetes secret type. Default: Opauqe. Possible values: Opauqe,
     /// kubernetes.io/service-account-token, kubernetes.io/dockercfg,
@@ -194,3 +185,4 @@ pub struct SopsSecretStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
 }
+

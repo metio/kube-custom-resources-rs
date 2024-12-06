@@ -5,44 +5,27 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "databases.schemahero.io",
-    version = "v1alpha4",
-    kind = "Database",
-    plural = "databases"
-)]
+#[kube(group = "databases.schemahero.io", version = "v1alpha4", kind = "Database", plural = "databases")]
 #[kube(namespaced)]
 #[kube(status = "DatabaseStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DatabaseSpec {
     /// DatabaseConnection defines connection parameters for the database driver
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<DatabaseConnection>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploySeedData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploySeedData")]
     pub deploy_seed_data: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableShellCommand"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableShellCommand")]
     pub enable_shell_command: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "immediateDeploy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "immediateDeploy")]
     pub immediate_deploy: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schemahero: Option<DatabaseSchemahero>,
@@ -89,11 +72,7 @@ pub struct DatabaseConnectionCassandraKeyspace {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraKeyspaceValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCassandraKeyspaceValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCassandraKeyspaceValueFromSsm>,
@@ -109,26 +88,14 @@ pub struct DatabaseConnectionCassandraKeyspaceValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraKeyspaceValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCassandraKeyspaceValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCassandraKeyspaceValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -141,13 +108,8 @@ pub struct DatabaseConnectionCassandraKeyspaceValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraKeyspaceValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCassandraKeyspaceValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCassandraKeyspaceValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -165,13 +127,8 @@ pub struct DatabaseConnectionCassandraKeyspaceValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraKeyspaceValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCassandraKeyspaceValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCassandraKeyspaceValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -182,39 +139,19 @@ pub struct DatabaseConnectionCassandraKeyspaceValueFromSsmSecretAccessKeyValueFr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraKeyspaceValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -228,11 +165,7 @@ pub struct DatabaseConnectionCassandraPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCassandraPasswordValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCassandraPasswordValueFromSsm>,
@@ -248,26 +181,14 @@ pub struct DatabaseConnectionCassandraPasswordValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraPasswordValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCassandraPasswordValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCassandraPasswordValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -280,13 +201,8 @@ pub struct DatabaseConnectionCassandraPasswordValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraPasswordValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCassandraPasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCassandraPasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -304,13 +220,8 @@ pub struct DatabaseConnectionCassandraPasswordValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraPasswordValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCassandraPasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCassandraPasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -321,39 +232,19 @@ pub struct DatabaseConnectionCassandraPasswordValueFromSsmSecretAccessKeyValueFr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraPasswordValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -367,11 +258,7 @@ pub struct DatabaseConnectionCassandraUsername {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraUsernameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCassandraUsernameValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCassandraUsernameValueFromSsm>,
@@ -387,26 +274,14 @@ pub struct DatabaseConnectionCassandraUsernameValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraUsernameValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCassandraUsernameValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCassandraUsernameValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -419,13 +294,8 @@ pub struct DatabaseConnectionCassandraUsernameValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraUsernameValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCassandraUsernameValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCassandraUsernameValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -443,13 +313,8 @@ pub struct DatabaseConnectionCassandraUsernameValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraUsernameValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCassandraUsernameValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCassandraUsernameValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -460,39 +325,19 @@ pub struct DatabaseConnectionCassandraUsernameValueFromSsmSecretAccessKeyValueFr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCassandraUsernameValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -526,11 +371,7 @@ pub struct DatabaseConnectionCockroachdbDbname {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbDbnameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCockroachdbDbnameValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCockroachdbDbnameValueFromSsm>,
@@ -546,26 +387,14 @@ pub struct DatabaseConnectionCockroachdbDbnameValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbDbnameValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCockroachdbDbnameValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCockroachdbDbnameValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -578,13 +407,8 @@ pub struct DatabaseConnectionCockroachdbDbnameValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbDbnameValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbDbnameValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbDbnameValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -602,13 +426,8 @@ pub struct DatabaseConnectionCockroachdbDbnameValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbDbnameValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbDbnameValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbDbnameValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -619,39 +438,19 @@ pub struct DatabaseConnectionCockroachdbDbnameValueFromSsmSecretAccessKeyValueFr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbDbnameValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -665,11 +464,7 @@ pub struct DatabaseConnectionCockroachdbHost {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbHostValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCockroachdbHostValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCockroachdbHostValueFromSsm>,
@@ -685,26 +480,14 @@ pub struct DatabaseConnectionCockroachdbHostValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbHostValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCockroachdbHostValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCockroachdbHostValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -717,13 +500,8 @@ pub struct DatabaseConnectionCockroachdbHostValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbHostValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbHostValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbHostValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -741,13 +519,8 @@ pub struct DatabaseConnectionCockroachdbHostValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbHostValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbHostValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbHostValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -758,39 +531,19 @@ pub struct DatabaseConnectionCockroachdbHostValueFromSsmSecretAccessKeyValueFrom
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbHostValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -804,11 +557,7 @@ pub struct DatabaseConnectionCockroachdbPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCockroachdbPasswordValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCockroachdbPasswordValueFromSsm>,
@@ -824,26 +573,14 @@ pub struct DatabaseConnectionCockroachdbPasswordValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbPasswordValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCockroachdbPasswordValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCockroachdbPasswordValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -856,13 +593,8 @@ pub struct DatabaseConnectionCockroachdbPasswordValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbPasswordValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbPasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbPasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -875,20 +607,13 @@ pub struct DatabaseConnectionCockroachdbPasswordValueFromSsmAccessKeyIdValueFrom
 pub struct DatabaseConnectionCockroachdbPasswordValueFromSsmSecretAccessKey {
     pub value: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<DatabaseConnectionCockroachdbPasswordValueFromSsmSecretAccessKeyValueFrom>,
+    pub value_from: Option<DatabaseConnectionCockroachdbPasswordValueFromSsmSecretAccessKeyValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbPasswordValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        DatabaseConnectionCockroachdbPasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbPasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -899,39 +624,19 @@ pub struct DatabaseConnectionCockroachdbPasswordValueFromSsmSecretAccessKeyValue
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbPasswordValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -945,11 +650,7 @@ pub struct DatabaseConnectionCockroachdbPort {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbPortValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCockroachdbPortValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCockroachdbPortValueFromSsm>,
@@ -965,26 +666,14 @@ pub struct DatabaseConnectionCockroachdbPortValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbPortValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCockroachdbPortValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCockroachdbPortValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -997,13 +686,8 @@ pub struct DatabaseConnectionCockroachdbPortValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbPortValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbPortValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbPortValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1021,13 +705,8 @@ pub struct DatabaseConnectionCockroachdbPortValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbPortValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbPortValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbPortValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1038,39 +717,19 @@ pub struct DatabaseConnectionCockroachdbPortValueFromSsmSecretAccessKeyValueFrom
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbPortValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -1084,11 +743,7 @@ pub struct DatabaseConnectionCockroachdbSchema {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbSchemaValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCockroachdbSchemaValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCockroachdbSchemaValueFromSsm>,
@@ -1104,26 +759,14 @@ pub struct DatabaseConnectionCockroachdbSchemaValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbSchemaValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCockroachdbSchemaValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCockroachdbSchemaValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -1136,13 +779,8 @@ pub struct DatabaseConnectionCockroachdbSchemaValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbSchemaValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbSchemaValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbSchemaValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1160,13 +798,8 @@ pub struct DatabaseConnectionCockroachdbSchemaValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbSchemaValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbSchemaValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbSchemaValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1177,39 +810,19 @@ pub struct DatabaseConnectionCockroachdbSchemaValueFromSsmSecretAccessKeyValueFr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbSchemaValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -1223,11 +836,7 @@ pub struct DatabaseConnectionCockroachdbSslmode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbSslmodeValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCockroachdbSslmodeValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCockroachdbSslmodeValueFromSsm>,
@@ -1243,26 +852,14 @@ pub struct DatabaseConnectionCockroachdbSslmodeValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbSslmodeValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCockroachdbSslmodeValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCockroachdbSslmodeValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -1275,13 +872,8 @@ pub struct DatabaseConnectionCockroachdbSslmodeValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbSslmodeValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbSslmodeValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbSslmodeValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1294,20 +886,13 @@ pub struct DatabaseConnectionCockroachdbSslmodeValueFromSsmAccessKeyIdValueFromS
 pub struct DatabaseConnectionCockroachdbSslmodeValueFromSsmSecretAccessKey {
     pub value: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<DatabaseConnectionCockroachdbSslmodeValueFromSsmSecretAccessKeyValueFrom>,
+    pub value_from: Option<DatabaseConnectionCockroachdbSslmodeValueFromSsmSecretAccessKeyValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbSslmodeValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        DatabaseConnectionCockroachdbSslmodeValueFromSsmSecretAccessKeyValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbSslmodeValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1318,39 +903,19 @@ pub struct DatabaseConnectionCockroachdbSslmodeValueFromSsmSecretAccessKeyValueF
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbSslmodeValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -1364,11 +929,7 @@ pub struct DatabaseConnectionCockroachdbUri {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbUriValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCockroachdbUriValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCockroachdbUriValueFromSsm>,
@@ -1384,26 +945,14 @@ pub struct DatabaseConnectionCockroachdbUriValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbUriValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCockroachdbUriValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCockroachdbUriValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -1416,13 +965,8 @@ pub struct DatabaseConnectionCockroachdbUriValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbUriValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbUriValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbUriValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1440,13 +984,8 @@ pub struct DatabaseConnectionCockroachdbUriValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbUriValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbUriValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbUriValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1457,39 +996,19 @@ pub struct DatabaseConnectionCockroachdbUriValueFromSsmSecretAccessKeyValueFromS
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbUriValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -1503,11 +1022,7 @@ pub struct DatabaseConnectionCockroachdbUser {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbUserValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionCockroachdbUserValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionCockroachdbUserValueFromSsm>,
@@ -1523,26 +1038,14 @@ pub struct DatabaseConnectionCockroachdbUserValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbUserValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionCockroachdbUserValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionCockroachdbUserValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -1555,13 +1058,8 @@ pub struct DatabaseConnectionCockroachdbUserValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbUserValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbUserValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbUserValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1579,13 +1077,8 @@ pub struct DatabaseConnectionCockroachdbUserValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbUserValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionCockroachdbUserValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionCockroachdbUserValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1596,39 +1089,19 @@ pub struct DatabaseConnectionCockroachdbUserValueFromSsmSecretAccessKeyValueFrom
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionCockroachdbUserValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -1638,17 +1111,9 @@ pub struct DatabaseConnectionMysql {
     pub collation: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dbname: Option<DatabaseConnectionMysqlDbname>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultCharset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultCharset")]
     pub default_charset: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTLS")]
     pub disable_tls: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<DatabaseConnectionMysqlHost>,
@@ -1672,11 +1137,7 @@ pub struct DatabaseConnectionMysqlDbname {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlDbnameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionMysqlDbnameValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionMysqlDbnameValueFromSsm>,
@@ -1692,26 +1153,14 @@ pub struct DatabaseConnectionMysqlDbnameValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlDbnameValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionMysqlDbnameValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionMysqlDbnameValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -1724,13 +1173,8 @@ pub struct DatabaseConnectionMysqlDbnameValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlDbnameValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlDbnameValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlDbnameValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1748,13 +1192,8 @@ pub struct DatabaseConnectionMysqlDbnameValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlDbnameValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlDbnameValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlDbnameValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1765,39 +1204,19 @@ pub struct DatabaseConnectionMysqlDbnameValueFromSsmSecretAccessKeyValueFromSecr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlDbnameValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -1811,11 +1230,7 @@ pub struct DatabaseConnectionMysqlHost {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlHostValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionMysqlHostValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionMysqlHostValueFromSsm>,
@@ -1831,26 +1246,14 @@ pub struct DatabaseConnectionMysqlHostValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlHostValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionMysqlHostValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionMysqlHostValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -1863,13 +1266,8 @@ pub struct DatabaseConnectionMysqlHostValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlHostValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlHostValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlHostValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1887,13 +1285,8 @@ pub struct DatabaseConnectionMysqlHostValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlHostValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlHostValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlHostValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1904,39 +1297,19 @@ pub struct DatabaseConnectionMysqlHostValueFromSsmSecretAccessKeyValueFromSecret
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlHostValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -1950,11 +1323,7 @@ pub struct DatabaseConnectionMysqlPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionMysqlPasswordValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionMysqlPasswordValueFromSsm>,
@@ -1970,26 +1339,14 @@ pub struct DatabaseConnectionMysqlPasswordValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlPasswordValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionMysqlPasswordValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionMysqlPasswordValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -2002,13 +1359,8 @@ pub struct DatabaseConnectionMysqlPasswordValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlPasswordValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlPasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlPasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2026,13 +1378,8 @@ pub struct DatabaseConnectionMysqlPasswordValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlPasswordValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlPasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlPasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2043,39 +1390,19 @@ pub struct DatabaseConnectionMysqlPasswordValueFromSsmSecretAccessKeyValueFromSe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlPasswordValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -2089,11 +1416,7 @@ pub struct DatabaseConnectionMysqlPort {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlPortValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionMysqlPortValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionMysqlPortValueFromSsm>,
@@ -2109,26 +1432,14 @@ pub struct DatabaseConnectionMysqlPortValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlPortValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionMysqlPortValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionMysqlPortValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -2141,13 +1452,8 @@ pub struct DatabaseConnectionMysqlPortValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlPortValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlPortValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlPortValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2165,13 +1471,8 @@ pub struct DatabaseConnectionMysqlPortValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlPortValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlPortValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlPortValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2182,39 +1483,19 @@ pub struct DatabaseConnectionMysqlPortValueFromSsmSecretAccessKeyValueFromSecret
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlPortValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -2228,11 +1509,7 @@ pub struct DatabaseConnectionMysqlUri {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlUriValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionMysqlUriValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionMysqlUriValueFromSsm>,
@@ -2248,26 +1525,14 @@ pub struct DatabaseConnectionMysqlUriValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlUriValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionMysqlUriValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionMysqlUriValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -2280,13 +1545,8 @@ pub struct DatabaseConnectionMysqlUriValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlUriValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlUriValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlUriValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2304,13 +1564,8 @@ pub struct DatabaseConnectionMysqlUriValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlUriValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlUriValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlUriValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2321,39 +1576,19 @@ pub struct DatabaseConnectionMysqlUriValueFromSsmSecretAccessKeyValueFromSecretK
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlUriValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -2367,11 +1602,7 @@ pub struct DatabaseConnectionMysqlUser {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlUserValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionMysqlUserValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionMysqlUserValueFromSsm>,
@@ -2387,26 +1618,14 @@ pub struct DatabaseConnectionMysqlUserValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlUserValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionMysqlUserValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionMysqlUserValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -2419,13 +1638,8 @@ pub struct DatabaseConnectionMysqlUserValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlUserValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlUserValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlUserValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2443,13 +1657,8 @@ pub struct DatabaseConnectionMysqlUserValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlUserValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionMysqlUserValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionMysqlUserValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2460,39 +1669,19 @@ pub struct DatabaseConnectionMysqlUserValueFromSsmSecretAccessKeyValueFromSecret
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionMysqlUserValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -2526,11 +1715,7 @@ pub struct DatabaseConnectionPostgresDbname {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresDbnameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionPostgresDbnameValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionPostgresDbnameValueFromSsm>,
@@ -2546,26 +1731,14 @@ pub struct DatabaseConnectionPostgresDbnameValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresDbnameValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionPostgresDbnameValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionPostgresDbnameValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -2578,13 +1751,8 @@ pub struct DatabaseConnectionPostgresDbnameValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresDbnameValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresDbnameValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresDbnameValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2602,13 +1770,8 @@ pub struct DatabaseConnectionPostgresDbnameValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresDbnameValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresDbnameValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresDbnameValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2619,39 +1782,19 @@ pub struct DatabaseConnectionPostgresDbnameValueFromSsmSecretAccessKeyValueFromS
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresDbnameValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -2665,11 +1808,7 @@ pub struct DatabaseConnectionPostgresHost {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresHostValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionPostgresHostValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionPostgresHostValueFromSsm>,
@@ -2685,26 +1824,14 @@ pub struct DatabaseConnectionPostgresHostValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresHostValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionPostgresHostValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionPostgresHostValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -2717,13 +1844,8 @@ pub struct DatabaseConnectionPostgresHostValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresHostValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresHostValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresHostValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2741,13 +1863,8 @@ pub struct DatabaseConnectionPostgresHostValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresHostValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresHostValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresHostValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2758,39 +1875,19 @@ pub struct DatabaseConnectionPostgresHostValueFromSsmSecretAccessKeyValueFromSec
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresHostValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -2804,11 +1901,7 @@ pub struct DatabaseConnectionPostgresPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionPostgresPasswordValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionPostgresPasswordValueFromSsm>,
@@ -2824,26 +1917,14 @@ pub struct DatabaseConnectionPostgresPasswordValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresPasswordValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionPostgresPasswordValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionPostgresPasswordValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -2856,13 +1937,8 @@ pub struct DatabaseConnectionPostgresPasswordValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresPasswordValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresPasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresPasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2880,13 +1956,8 @@ pub struct DatabaseConnectionPostgresPasswordValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresPasswordValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresPasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresPasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2897,39 +1968,19 @@ pub struct DatabaseConnectionPostgresPasswordValueFromSsmSecretAccessKeyValueFro
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresPasswordValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -2943,11 +1994,7 @@ pub struct DatabaseConnectionPostgresPort {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresPortValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionPostgresPortValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionPostgresPortValueFromSsm>,
@@ -2963,26 +2010,14 @@ pub struct DatabaseConnectionPostgresPortValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresPortValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionPostgresPortValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionPostgresPortValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -2995,13 +2030,8 @@ pub struct DatabaseConnectionPostgresPortValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresPortValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresPortValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresPortValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3019,13 +2049,8 @@ pub struct DatabaseConnectionPostgresPortValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresPortValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresPortValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresPortValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3036,39 +2061,19 @@ pub struct DatabaseConnectionPostgresPortValueFromSsmSecretAccessKeyValueFromSec
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresPortValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -3082,11 +2087,7 @@ pub struct DatabaseConnectionPostgresSchema {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresSchemaValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionPostgresSchemaValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionPostgresSchemaValueFromSsm>,
@@ -3102,26 +2103,14 @@ pub struct DatabaseConnectionPostgresSchemaValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresSchemaValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionPostgresSchemaValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionPostgresSchemaValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -3134,13 +2123,8 @@ pub struct DatabaseConnectionPostgresSchemaValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresSchemaValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresSchemaValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresSchemaValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3158,13 +2142,8 @@ pub struct DatabaseConnectionPostgresSchemaValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresSchemaValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresSchemaValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresSchemaValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3175,39 +2154,19 @@ pub struct DatabaseConnectionPostgresSchemaValueFromSsmSecretAccessKeyValueFromS
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresSchemaValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -3221,11 +2180,7 @@ pub struct DatabaseConnectionPostgresSslmode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresSslmodeValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionPostgresSslmodeValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionPostgresSslmodeValueFromSsm>,
@@ -3241,26 +2196,14 @@ pub struct DatabaseConnectionPostgresSslmodeValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresSslmodeValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionPostgresSslmodeValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionPostgresSslmodeValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -3273,13 +2216,8 @@ pub struct DatabaseConnectionPostgresSslmodeValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresSslmodeValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresSslmodeValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresSslmodeValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3297,13 +2235,8 @@ pub struct DatabaseConnectionPostgresSslmodeValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresSslmodeValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresSslmodeValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresSslmodeValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3314,39 +2247,19 @@ pub struct DatabaseConnectionPostgresSslmodeValueFromSsmSecretAccessKeyValueFrom
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresSslmodeValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -3360,11 +2273,7 @@ pub struct DatabaseConnectionPostgresUri {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresUriValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionPostgresUriValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionPostgresUriValueFromSsm>,
@@ -3380,26 +2289,14 @@ pub struct DatabaseConnectionPostgresUriValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresUriValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionPostgresUriValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionPostgresUriValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -3412,13 +2309,8 @@ pub struct DatabaseConnectionPostgresUriValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresUriValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresUriValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresUriValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3436,13 +2328,8 @@ pub struct DatabaseConnectionPostgresUriValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresUriValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresUriValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresUriValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3453,39 +2340,19 @@ pub struct DatabaseConnectionPostgresUriValueFromSsmSecretAccessKeyValueFromSecr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresUriValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -3499,11 +2366,7 @@ pub struct DatabaseConnectionPostgresUser {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresUserValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionPostgresUserValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionPostgresUserValueFromSsm>,
@@ -3519,26 +2382,14 @@ pub struct DatabaseConnectionPostgresUserValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresUserValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionPostgresUserValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionPostgresUserValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -3551,13 +2402,8 @@ pub struct DatabaseConnectionPostgresUserValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresUserValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresUserValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresUserValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3575,13 +2421,8 @@ pub struct DatabaseConnectionPostgresUserValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresUserValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionPostgresUserValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionPostgresUserValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3592,49 +2433,25 @@ pub struct DatabaseConnectionPostgresUserValueFromSsmSecretAccessKeyValueFromSec
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionPostgresUserValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlite {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTLS")]
     pub disable_tls: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<DatabaseConnectionRqliteHost>,
@@ -3658,11 +2475,7 @@ pub struct DatabaseConnectionRqliteHost {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteHostValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionRqliteHostValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionRqliteHostValueFromSsm>,
@@ -3678,26 +2491,14 @@ pub struct DatabaseConnectionRqliteHostValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteHostValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionRqliteHostValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionRqliteHostValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -3710,13 +2511,8 @@ pub struct DatabaseConnectionRqliteHostValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteHostValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionRqliteHostValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionRqliteHostValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3734,13 +2530,8 @@ pub struct DatabaseConnectionRqliteHostValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteHostValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionRqliteHostValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionRqliteHostValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3751,39 +2542,19 @@ pub struct DatabaseConnectionRqliteHostValueFromSsmSecretAccessKeyValueFromSecre
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteHostValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -3797,11 +2568,7 @@ pub struct DatabaseConnectionRqlitePassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlitePasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionRqlitePasswordValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionRqlitePasswordValueFromSsm>,
@@ -3817,26 +2584,14 @@ pub struct DatabaseConnectionRqlitePasswordValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlitePasswordValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionRqlitePasswordValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionRqlitePasswordValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -3849,13 +2604,8 @@ pub struct DatabaseConnectionRqlitePasswordValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlitePasswordValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionRqlitePasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionRqlitePasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3873,13 +2623,8 @@ pub struct DatabaseConnectionRqlitePasswordValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlitePasswordValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionRqlitePasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionRqlitePasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3890,39 +2635,19 @@ pub struct DatabaseConnectionRqlitePasswordValueFromSsmSecretAccessKeyValueFromS
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlitePasswordValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -3936,11 +2661,7 @@ pub struct DatabaseConnectionRqlitePort {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlitePortValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionRqlitePortValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionRqlitePortValueFromSsm>,
@@ -3956,26 +2677,14 @@ pub struct DatabaseConnectionRqlitePortValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlitePortValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionRqlitePortValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionRqlitePortValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -3988,13 +2697,8 @@ pub struct DatabaseConnectionRqlitePortValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlitePortValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionRqlitePortValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionRqlitePortValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4012,13 +2716,8 @@ pub struct DatabaseConnectionRqlitePortValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlitePortValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionRqlitePortValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionRqlitePortValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4029,39 +2728,19 @@ pub struct DatabaseConnectionRqlitePortValueFromSsmSecretAccessKeyValueFromSecre
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqlitePortValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -4075,11 +2754,7 @@ pub struct DatabaseConnectionRqliteUri {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteUriValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionRqliteUriValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionRqliteUriValueFromSsm>,
@@ -4095,26 +2770,14 @@ pub struct DatabaseConnectionRqliteUriValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteUriValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionRqliteUriValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionRqliteUriValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -4127,13 +2790,8 @@ pub struct DatabaseConnectionRqliteUriValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteUriValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionRqliteUriValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionRqliteUriValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4151,13 +2809,8 @@ pub struct DatabaseConnectionRqliteUriValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteUriValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionRqliteUriValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionRqliteUriValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4168,39 +2821,19 @@ pub struct DatabaseConnectionRqliteUriValueFromSsmSecretAccessKeyValueFromSecret
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteUriValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -4214,11 +2847,7 @@ pub struct DatabaseConnectionRqliteUser {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteUserValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionRqliteUserValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionRqliteUserValueFromSsm>,
@@ -4234,26 +2863,14 @@ pub struct DatabaseConnectionRqliteUserValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteUserValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionRqliteUserValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionRqliteUserValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -4266,13 +2883,8 @@ pub struct DatabaseConnectionRqliteUserValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteUserValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionRqliteUserValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionRqliteUserValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4290,13 +2902,8 @@ pub struct DatabaseConnectionRqliteUserValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteUserValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionRqliteUserValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionRqliteUserValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4307,39 +2914,19 @@ pub struct DatabaseConnectionRqliteUserValueFromSsmSecretAccessKeyValueFromSecre
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionRqliteUserValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -4378,11 +2965,7 @@ pub struct DatabaseConnectionTimescaledbDbname {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbDbnameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionTimescaledbDbnameValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionTimescaledbDbnameValueFromSsm>,
@@ -4398,26 +2981,14 @@ pub struct DatabaseConnectionTimescaledbDbnameValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbDbnameValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionTimescaledbDbnameValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionTimescaledbDbnameValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -4430,13 +3001,8 @@ pub struct DatabaseConnectionTimescaledbDbnameValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbDbnameValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbDbnameValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbDbnameValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4454,13 +3020,8 @@ pub struct DatabaseConnectionTimescaledbDbnameValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbDbnameValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbDbnameValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbDbnameValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4471,39 +3032,19 @@ pub struct DatabaseConnectionTimescaledbDbnameValueFromSsmSecretAccessKeyValueFr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbDbnameValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -4517,11 +3058,7 @@ pub struct DatabaseConnectionTimescaledbHost {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbHostValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionTimescaledbHostValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionTimescaledbHostValueFromSsm>,
@@ -4537,26 +3074,14 @@ pub struct DatabaseConnectionTimescaledbHostValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbHostValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionTimescaledbHostValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionTimescaledbHostValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -4569,13 +3094,8 @@ pub struct DatabaseConnectionTimescaledbHostValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbHostValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbHostValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbHostValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4593,13 +3113,8 @@ pub struct DatabaseConnectionTimescaledbHostValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbHostValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbHostValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbHostValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4610,39 +3125,19 @@ pub struct DatabaseConnectionTimescaledbHostValueFromSsmSecretAccessKeyValueFrom
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbHostValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -4656,11 +3151,7 @@ pub struct DatabaseConnectionTimescaledbPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionTimescaledbPasswordValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionTimescaledbPasswordValueFromSsm>,
@@ -4676,26 +3167,14 @@ pub struct DatabaseConnectionTimescaledbPasswordValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbPasswordValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionTimescaledbPasswordValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionTimescaledbPasswordValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -4708,13 +3187,8 @@ pub struct DatabaseConnectionTimescaledbPasswordValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbPasswordValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbPasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbPasswordValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4727,20 +3201,13 @@ pub struct DatabaseConnectionTimescaledbPasswordValueFromSsmAccessKeyIdValueFrom
 pub struct DatabaseConnectionTimescaledbPasswordValueFromSsmSecretAccessKey {
     pub value: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<DatabaseConnectionTimescaledbPasswordValueFromSsmSecretAccessKeyValueFrom>,
+    pub value_from: Option<DatabaseConnectionTimescaledbPasswordValueFromSsmSecretAccessKeyValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbPasswordValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        DatabaseConnectionTimescaledbPasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbPasswordValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4751,39 +3218,19 @@ pub struct DatabaseConnectionTimescaledbPasswordValueFromSsmSecretAccessKeyValue
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbPasswordValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -4797,11 +3244,7 @@ pub struct DatabaseConnectionTimescaledbPort {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbPortValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionTimescaledbPortValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionTimescaledbPortValueFromSsm>,
@@ -4817,26 +3260,14 @@ pub struct DatabaseConnectionTimescaledbPortValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbPortValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionTimescaledbPortValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionTimescaledbPortValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -4849,13 +3280,8 @@ pub struct DatabaseConnectionTimescaledbPortValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbPortValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbPortValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbPortValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4873,13 +3299,8 @@ pub struct DatabaseConnectionTimescaledbPortValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbPortValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbPortValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbPortValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4890,39 +3311,19 @@ pub struct DatabaseConnectionTimescaledbPortValueFromSsmSecretAccessKeyValueFrom
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbPortValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -4936,11 +3337,7 @@ pub struct DatabaseConnectionTimescaledbSchema {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbSchemaValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionTimescaledbSchemaValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionTimescaledbSchemaValueFromSsm>,
@@ -4956,26 +3353,14 @@ pub struct DatabaseConnectionTimescaledbSchemaValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbSchemaValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionTimescaledbSchemaValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionTimescaledbSchemaValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -4988,13 +3373,8 @@ pub struct DatabaseConnectionTimescaledbSchemaValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbSchemaValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbSchemaValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbSchemaValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5012,13 +3392,8 @@ pub struct DatabaseConnectionTimescaledbSchemaValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbSchemaValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbSchemaValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbSchemaValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5029,39 +3404,19 @@ pub struct DatabaseConnectionTimescaledbSchemaValueFromSsmSecretAccessKeyValueFr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbSchemaValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -5075,11 +3430,7 @@ pub struct DatabaseConnectionTimescaledbSslmode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbSslmodeValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionTimescaledbSslmodeValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionTimescaledbSslmodeValueFromSsm>,
@@ -5095,26 +3446,14 @@ pub struct DatabaseConnectionTimescaledbSslmodeValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbSslmodeValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionTimescaledbSslmodeValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionTimescaledbSslmodeValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -5127,13 +3466,8 @@ pub struct DatabaseConnectionTimescaledbSslmodeValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbSslmodeValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbSslmodeValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbSslmodeValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5146,20 +3480,13 @@ pub struct DatabaseConnectionTimescaledbSslmodeValueFromSsmAccessKeyIdValueFromS
 pub struct DatabaseConnectionTimescaledbSslmodeValueFromSsmSecretAccessKey {
     pub value: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<DatabaseConnectionTimescaledbSslmodeValueFromSsmSecretAccessKeyValueFrom>,
+    pub value_from: Option<DatabaseConnectionTimescaledbSslmodeValueFromSsmSecretAccessKeyValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbSslmodeValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        DatabaseConnectionTimescaledbSslmodeValueFromSsmSecretAccessKeyValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbSslmodeValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5170,39 +3497,19 @@ pub struct DatabaseConnectionTimescaledbSslmodeValueFromSsmSecretAccessKeyValueF
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbSslmodeValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -5216,11 +3523,7 @@ pub struct DatabaseConnectionTimescaledbUri {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbUriValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionTimescaledbUriValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionTimescaledbUriValueFromSsm>,
@@ -5236,26 +3539,14 @@ pub struct DatabaseConnectionTimescaledbUriValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbUriValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionTimescaledbUriValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionTimescaledbUriValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -5268,13 +3559,8 @@ pub struct DatabaseConnectionTimescaledbUriValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbUriValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbUriValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbUriValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5292,13 +3578,8 @@ pub struct DatabaseConnectionTimescaledbUriValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbUriValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbUriValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbUriValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5309,39 +3590,19 @@ pub struct DatabaseConnectionTimescaledbUriValueFromSsmSecretAccessKeyValueFromS
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbUriValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -5355,11 +3616,7 @@ pub struct DatabaseConnectionTimescaledbUser {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbUserValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatabaseConnectionTimescaledbUserValueFromSecretKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssm: Option<DatabaseConnectionTimescaledbUserValueFromSsm>,
@@ -5375,26 +3632,14 @@ pub struct DatabaseConnectionTimescaledbUserValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbUserValueFromSsm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
     pub access_key_id: Option<DatabaseConnectionTimescaledbUserValueFromSsmAccessKeyId>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
     pub secret_access_key: Option<DatabaseConnectionTimescaledbUserValueFromSsmSecretAccessKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withDecryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withDecryption")]
     pub with_decryption: Option<bool>,
 }
 
@@ -5407,13 +3652,8 @@ pub struct DatabaseConnectionTimescaledbUserValueFromSsmAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbUserValueFromSsmAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbUserValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbUserValueFromSsmAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5431,13 +3671,8 @@ pub struct DatabaseConnectionTimescaledbUserValueFromSsmSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbUserValueFromSsmSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<DatabaseConnectionTimescaledbUserValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatabaseConnectionTimescaledbUserValueFromSsmSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5448,39 +3683,19 @@ pub struct DatabaseConnectionTimescaledbUserValueFromSsmSecretAccessKeyValueFrom
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseConnectionTimescaledbUserValueFromVault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentInject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentInject")]
     pub agent_inject: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTemplate")]
     pub connection_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuthEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthEndpoint")]
     pub kubernetes_auth_endpoint: Option<String>,
     pub role: String,
     pub secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountNamespace")]
     pub service_account_namespace: Option<String>,
 }
 
@@ -5488,11 +3703,7 @@ pub struct DatabaseConnectionTimescaledbUserValueFromVault {
 pub struct DatabaseSchemahero {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<DatabaseSchemaheroTolerations>>,
@@ -5538,3 +3749,4 @@ pub struct DatabaseStatus {
     #[serde(rename = "lastPing")]
     pub last_ping: String,
 }
+

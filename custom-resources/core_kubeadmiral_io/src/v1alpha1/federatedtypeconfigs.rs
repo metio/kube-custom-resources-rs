@@ -5,54 +5,33 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "core.kubeadmiral.io",
-    version = "v1alpha1",
-    kind = "FederatedTypeConfig",
-    plural = "federatedtypeconfigs"
-)]
+#[kube(group = "core.kubeadmiral.io", version = "v1alpha1", kind = "FederatedTypeConfig", plural = "federatedtypeconfigs")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FederatedTypeConfigSpec {
     /// Configuration for AutoMigration. If left empty, the AutoMigration feature will be disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoMigration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMigration")]
     pub auto_migration: Option<FederatedTypeConfigAutoMigration>,
     /// The controllers that must run before the source object can be propagated to member clusters. Each inner slice specifies a step. Step T must complete before step T+1 can commence. Controllers within each step can execute in parallel.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controllers: Option<Vec<String>>,
     /// Defines the paths to various fields in the target object's schema.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathDefinition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathDefinition")]
     pub path_definition: Option<FederatedTypeConfigPathDefinition>,
     /// The API resource type to be federated.
     #[serde(rename = "sourceType")]
     pub source_type: FederatedTypeConfigSourceType,
     /// Configuration for StatusAggregation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusAggregation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusAggregation")]
     pub status_aggregation: Option<FederatedTypeConfigStatusAggregation>,
     /// Configuration for StatusCollection. If left empty, the StatusCollection feature will be disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCollection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCollection")]
     pub status_collection: Option<FederatedTypeConfigStatusCollection>,
 }
 
@@ -67,39 +46,19 @@ pub struct FederatedTypeConfigAutoMigration {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedTypeConfigPathDefinition {
     /// Path to a numeric field that reflects the number of available replicas that the object currently has. E.g. `status.availableReplicas` for Deployment and ReplicaSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicasStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicasStatus")]
     pub available_replicas_status: Option<String>,
     /// Path to a metav1.LabelSelector field that selects the replicas for this object. E.g. `spec.selector` for Deployment and ReplicaSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<String>,
     /// Path to a numeric field that reflects the number of ready replicas that the object currently has. E.g. `status.readyReplicas` for Deployment and ReplicaSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicasStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicasStatus")]
     pub ready_replicas_status: Option<String>,
     /// Path to a numeric field that indicates the number of replicas that an object can be divided into. E.g. `spec.replicas` for Deployment and ReplicaSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasSpec")]
     pub replicas_spec: Option<String>,
     /// Path to a numeric field that reflects the number of replicas that the object currently has. E.g. `status.replicas` for Deployment and ReplicaSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasStatus")]
     pub replicas_status: Option<String>,
 }
 
@@ -136,3 +95,4 @@ pub struct FederatedTypeConfigStatusCollection {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fields: Option<Vec<String>>,
 }
+

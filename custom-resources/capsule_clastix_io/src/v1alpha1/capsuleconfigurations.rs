@@ -5,41 +5,25 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// CapsuleConfigurationSpec defines the Capsule configuration.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "capsule.clastix.io",
-    version = "v1alpha1",
-    kind = "CapsuleConfiguration",
-    plural = "capsuleconfigurations"
-)]
+#[kube(group = "capsule.clastix.io", version = "v1alpha1", kind = "CapsuleConfiguration", plural = "capsuleconfigurations")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CapsuleConfigurationSpec {
     /// Enforces the Tenant owner, during Namespace creation, to name it using the selected Tenant name as prefix, separated by a dash. This is useful to avoid Namespace name collision in a public CaaS environment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forceTenantPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceTenantPrefix")]
     pub force_tenant_prefix: Option<bool>,
     /// Disallow creation of namespaces, whose name matches this regexp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectedNamespaceRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectedNamespaceRegex")]
     pub protected_namespace_regex: Option<String>,
     /// Names of the groups for Capsule users.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userGroups")]
     pub user_groups: Option<Vec<String>>,
 }
+

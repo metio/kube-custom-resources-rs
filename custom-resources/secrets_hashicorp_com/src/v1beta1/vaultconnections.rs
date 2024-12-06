@@ -5,33 +5,24 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VaultConnectionSpec defines the desired state of VaultConnection
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "secrets.hashicorp.com",
-    version = "v1beta1",
-    kind = "VaultConnection",
-    plural = "vaultconnections"
-)]
+#[kube(group = "secrets.hashicorp.com", version = "v1beta1", kind = "VaultConnection", plural = "vaultconnections")]
 #[kube(namespaced)]
 #[kube(status = "VaultConnectionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VaultConnectionSpec {
     /// Address of the Vault server
     pub address: String,
     /// CACertSecretRef is the name of a Kubernetes secret containing the trusted PEM encoded CA certificate chain as `ca.crt`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertSecretRef")]
     pub ca_cert_secret_ref: Option<String>,
     /// Headers to be included in all Vault requests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -44,11 +35,7 @@ pub struct VaultConnectionSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
     /// TLSServerName to use as the SNI host for TLS connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsServerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsServerName")]
     pub tls_server_name: Option<String>,
 }
 
@@ -58,3 +45,4 @@ pub struct VaultConnectionStatus {
     /// Valid auth mechanism.
     pub valid: bool,
 }
+

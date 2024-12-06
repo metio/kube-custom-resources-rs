@@ -5,59 +5,34 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// KubeControllersConfigurationSpec contains the values of the Kubernetes controllers configuration.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "crd.projectcalico.org",
-    version = "v1",
-    kind = "KubeControllersConfiguration",
-    plural = "kubecontrollersconfigurations"
-)]
+#[kube(group = "crd.projectcalico.org", version = "v1", kind = "KubeControllersConfiguration", plural = "kubecontrollersconfigurations")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KubeControllersConfigurationSpec {
     /// Controllers enables and configures individual Kubernetes controllers
     pub controllers: KubeControllersConfigurationControllers,
     /// DebugProfilePort configures the port to serve memory and cpu profiles on. If not specified, profiling is disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "debugProfilePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugProfilePort")]
     pub debug_profile_port: Option<i32>,
     /// EtcdV3CompactionPeriod is the period between etcdv3 compaction requests. Set to 0 to disable. [Default: 10m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "etcdV3CompactionPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "etcdV3CompactionPeriod")]
     pub etcd_v3_compaction_period: Option<String>,
     /// HealthChecks enables or disables support for health checks [Default: Enabled]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthChecks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthChecks")]
     pub health_checks: Option<String>,
     /// LogSeverityScreen is the log severity above which logs are sent to the stdout. [Default: Info]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logSeverityScreen"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSeverityScreen")]
     pub log_severity_screen: Option<String>,
     /// PrometheusMetricsPort is the TCP port that the Prometheus metrics server should bind to. Set to 0 to disable. [Default: 9094]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prometheusMetricsPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusMetricsPort")]
     pub prometheus_metrics_port: Option<i64>,
 }
 
@@ -74,18 +49,10 @@ pub struct KubeControllersConfigurationControllers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<KubeControllersConfigurationControllersPolicy>,
     /// ServiceAccount enables and configures the service account controller. Enabled by default, set to nil to disable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KubeControllersConfigurationControllersServiceAccount>,
     /// WorkloadEndpoint enables and configures the workload endpoint controller. Enabled by default, set to nil to disable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workloadEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadEndpoint")]
     pub workload_endpoint: Option<KubeControllersConfigurationControllersWorkloadEndpoint>,
 }
 
@@ -93,11 +60,7 @@ pub struct KubeControllersConfigurationControllers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationControllersNamespace {
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcilerPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
 }
 
@@ -105,32 +68,16 @@ pub struct KubeControllersConfigurationControllersNamespace {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationControllersNode {
     /// HostEndpoint controls syncing nodes to host endpoints. Disabled by default, set to nil to disable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostEndpoint")]
     pub host_endpoint: Option<KubeControllersConfigurationControllersNodeHostEndpoint>,
     /// LeakGracePeriod is the period used by the controller to determine if an IP address has been leaked. Set to 0 to disable IP garbage collection. [Default: 15m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "leakGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "leakGracePeriod")]
     pub leak_grace_period: Option<String>,
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcilerPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
     /// SyncLabels controls whether to copy Kubernetes node labels to Calico nodes. [Default: Enabled]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncLabels")]
     pub sync_labels: Option<String>,
 }
 
@@ -138,11 +85,7 @@ pub struct KubeControllersConfigurationControllersNode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationControllersNodeHostEndpoint {
     /// AutoCreate enables automatic creation of host endpoints for every node. [Default: Disabled]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoCreate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoCreate")]
     pub auto_create: Option<String>,
 }
 
@@ -150,11 +93,7 @@ pub struct KubeControllersConfigurationControllersNodeHostEndpoint {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationControllersPolicy {
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcilerPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
 }
 
@@ -162,11 +101,7 @@ pub struct KubeControllersConfigurationControllersPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationControllersServiceAccount {
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcilerPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
 }
 
@@ -174,11 +109,7 @@ pub struct KubeControllersConfigurationControllersServiceAccount {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationControllersWorkloadEndpoint {
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcilerPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
 }
 
@@ -186,18 +117,10 @@ pub struct KubeControllersConfigurationControllersWorkloadEndpoint {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatus {
     /// EnvironmentVars contains the environment variables on the kube-controllers that influenced the RunningConfig.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "environmentVars"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "environmentVars")]
     pub environment_vars: Option<BTreeMap<String, String>>,
     /// RunningConfig contains the effective config that is running in the kube-controllers pod, after merging the API resource with any environment variables.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runningConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningConfig")]
     pub running_config: Option<KubeControllersConfigurationStatusRunningConfig>,
 }
 
@@ -207,39 +130,19 @@ pub struct KubeControllersConfigurationStatusRunningConfig {
     /// Controllers enables and configures individual Kubernetes controllers
     pub controllers: KubeControllersConfigurationStatusRunningConfigControllers,
     /// DebugProfilePort configures the port to serve memory and cpu profiles on. If not specified, profiling is disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "debugProfilePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugProfilePort")]
     pub debug_profile_port: Option<i32>,
     /// EtcdV3CompactionPeriod is the period between etcdv3 compaction requests. Set to 0 to disable. [Default: 10m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "etcdV3CompactionPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "etcdV3CompactionPeriod")]
     pub etcd_v3_compaction_period: Option<String>,
     /// HealthChecks enables or disables support for health checks [Default: Enabled]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthChecks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthChecks")]
     pub health_checks: Option<String>,
     /// LogSeverityScreen is the log severity above which logs are sent to the stdout. [Default: Info]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logSeverityScreen"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSeverityScreen")]
     pub log_severity_screen: Option<String>,
     /// PrometheusMetricsPort is the TCP port that the Prometheus metrics server should bind to. Set to 0 to disable. [Default: 9094]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prometheusMetricsPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusMetricsPort")]
     pub prometheus_metrics_port: Option<i64>,
 }
 
@@ -256,32 +159,18 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<KubeControllersConfigurationStatusRunningConfigControllersPolicy>,
     /// ServiceAccount enables and configures the service account controller. Enabled by default, set to nil to disable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
-    pub service_account:
-        Option<KubeControllersConfigurationStatusRunningConfigControllersServiceAccount>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<KubeControllersConfigurationStatusRunningConfigControllersServiceAccount>,
     /// WorkloadEndpoint enables and configures the workload endpoint controller. Enabled by default, set to nil to disable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workloadEndpoint"
-    )]
-    pub workload_endpoint:
-        Option<KubeControllersConfigurationStatusRunningConfigControllersWorkloadEndpoint>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadEndpoint")]
+    pub workload_endpoint: Option<KubeControllersConfigurationStatusRunningConfigControllersWorkloadEndpoint>,
 }
 
 /// Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatusRunningConfigControllersNamespace {
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcilerPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
 }
 
@@ -289,33 +178,16 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllersNamespace {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatusRunningConfigControllersNode {
     /// HostEndpoint controls syncing nodes to host endpoints. Disabled by default, set to nil to disable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostEndpoint"
-    )]
-    pub host_endpoint:
-        Option<KubeControllersConfigurationStatusRunningConfigControllersNodeHostEndpoint>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostEndpoint")]
+    pub host_endpoint: Option<KubeControllersConfigurationStatusRunningConfigControllersNodeHostEndpoint>,
     /// LeakGracePeriod is the period used by the controller to determine if an IP address has been leaked. Set to 0 to disable IP garbage collection. [Default: 15m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "leakGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "leakGracePeriod")]
     pub leak_grace_period: Option<String>,
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcilerPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
     /// SyncLabels controls whether to copy Kubernetes node labels to Calico nodes. [Default: Enabled]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncLabels")]
     pub sync_labels: Option<String>,
 }
 
@@ -323,11 +195,7 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllersNode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatusRunningConfigControllersNodeHostEndpoint {
     /// AutoCreate enables automatic creation of host endpoints for every node. [Default: Disabled]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoCreate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoCreate")]
     pub auto_create: Option<String>,
 }
 
@@ -335,11 +203,7 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllersNodeHostEnd
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatusRunningConfigControllersPolicy {
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcilerPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
 }
 
@@ -347,11 +211,7 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllersPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatusRunningConfigControllersServiceAccount {
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcilerPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
 }
 
@@ -359,10 +219,7 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllersServiceAcco
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatusRunningConfigControllersWorkloadEndpoint {
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconcilerPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
 }
+

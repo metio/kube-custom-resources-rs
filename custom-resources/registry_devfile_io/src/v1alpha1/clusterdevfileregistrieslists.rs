@@ -4,31 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DevfileRegistriesListSpec defines the desired state of DevfileRegistriesList
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "registry.devfile.io",
-    version = "v1alpha1",
-    kind = "ClusterDevfileRegistriesList",
-    plural = "clusterdevfileregistrieslists"
-)]
+#[kube(group = "registry.devfile.io", version = "v1alpha1", kind = "ClusterDevfileRegistriesList", plural = "clusterdevfileregistrieslists")]
 #[kube(status = "ClusterDevfileRegistriesListStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterDevfileRegistriesListSpec {
     /// DevfileRegistries is a list of devfile registry services
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "devfileRegistries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "devfileRegistries")]
     pub devfile_registries: Option<Vec<ClusterDevfileRegistriesListDevfileRegistries>>,
 }
 
@@ -38,11 +29,7 @@ pub struct ClusterDevfileRegistriesListDevfileRegistries {
     /// Name is the unique Name of the devfile registry.
     pub name: String,
     /// SkipTLSVerify defaults to false.  Set to true in a non-production environment to bypass certificate checking
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipTLSVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTLSVerify")]
     pub skip_tls_verify: Option<bool>,
     /// URL is the unique URL of the devfile registry.
     pub url: String,
@@ -55,3 +42,4 @@ pub struct ClusterDevfileRegistriesListStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

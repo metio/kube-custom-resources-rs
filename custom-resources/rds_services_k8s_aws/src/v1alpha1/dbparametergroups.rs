@@ -4,31 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DBParameterGroupSpec defines the desired state of DBParameterGroup.
-///
+/// 
 /// Contains the details of an Amazon RDS DB parameter group.
-///
+/// 
 /// This data type is used as a response element in the DescribeDBParameterGroups
 /// action.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "rds.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "DBParameterGroup",
-    plural = "dbparametergroups"
-)]
+#[kube(group = "rds.services.k8s.aws", version = "v1alpha1", kind = "DBParameterGroup", plural = "dbparametergroups")]
 #[kube(namespaced)]
 #[kube(status = "DBParameterGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DBParameterGroupSpec {
     /// The description for the DB parameter group.
     pub description: String,
@@ -36,68 +31,64 @@ pub struct DBParameterGroupSpec {
     /// with one and only one DB parameter group family, and can be applied only
     /// to a DB instance running a database engine and engine version compatible
     /// with that DB parameter group family.
-    ///
+    /// 
     /// To list all of the available parameter group families for a DB engine, use
     /// the following command:
-    ///
+    /// 
     /// aws rds describe-db-engine-versions --query "DBEngineVersions[].DBParameterGroupFamily"
     /// --engine <engine>
-    ///
+    /// 
     /// For example, to list all of the available parameter group families for the
     /// MySQL DB engine, use the following command:
-    ///
+    /// 
     /// aws rds describe-db-engine-versions --query "DBEngineVersions[].DBParameterGroupFamily"
     /// --engine mysql
-    ///
+    /// 
     /// The output contains duplicates.
-    ///
+    /// 
     /// The following are the valid DB engine values:
-    ///
+    /// 
     ///    * aurora (for MySQL 5.6-compatible Aurora)
-    ///
+    /// 
     ///    * aurora-mysql (for MySQL 5.7-compatible and MySQL 8.0-compatible Aurora)
-    ///
+    /// 
     ///    * aurora-postgresql
-    ///
+    /// 
     ///    * mariadb
-    ///
+    /// 
     ///    * mysql
-    ///
+    /// 
     ///    * oracle-ee
-    ///
+    /// 
     ///    * oracle-ee-cdb
-    ///
+    /// 
     ///    * oracle-se2
-    ///
+    /// 
     ///    * oracle-se2-cdb
-    ///
+    /// 
     ///    * postgres
-    ///
+    /// 
     ///    * sqlserver-ee
-    ///
+    /// 
     ///    * sqlserver-se
-    ///
+    /// 
     ///    * sqlserver-ex
-    ///
+    /// 
     ///    * sqlserver-web
     pub family: String,
     /// The name of the DB parameter group.
-    ///
+    /// 
     /// Constraints:
-    ///
+    /// 
     ///    * Must be 1 to 255 letters, numbers, or hyphens.
-    ///
+    /// 
     ///    * First character must be a letter
-    ///
+    /// 
     ///    * Can't end with a hyphen or contain two consecutive hyphens
-    ///
+    /// 
     /// This value is stored as a lowercase string.
     pub name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterOverrides")]
     pub parameter_overrides: Option<BTreeMap<String, String>>,
     /// Tags to assign to the DB parameter group.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -105,7 +96,7 @@ pub struct DBParameterGroupSpec {
 }
 
 /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
-///
+/// 
 /// For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
 /// in the Amazon RDS User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -122,11 +113,7 @@ pub struct DBParameterGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<DBParameterGroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -135,11 +122,7 @@ pub struct DBParameterGroupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// A list of Parameter values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterOverrideStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterOverrideStatuses")]
     pub parameter_override_statuses: Option<Vec<DBParameterGroupStatusParameterOverrideStatuses>>,
 }
 
@@ -167,22 +150,14 @@ pub struct DBParameterGroupStatusAckResourceMetadata {
 
 /// This data type is used as a request parameter in the ModifyDBParameterGroup
 /// and ResetDBParameterGroup actions.
-///
+/// 
 /// This data type is used as a response element in the DescribeEngineDefaultParameters
 /// and DescribeDBParameters actions.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBParameterGroupStatusParameterOverrideStatuses {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedValues")]
     pub allowed_values: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applyMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyMethod")]
     pub apply_method: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyType")]
     pub apply_type: Option<String>,
@@ -190,36 +165,17 @@ pub struct DBParameterGroupStatusParameterOverrideStatuses {
     pub data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isModifiable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isModifiable")]
     pub is_modifiable: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumEngineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumEngineVersion")]
     pub minimum_engine_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterName")]
     pub parameter_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterValue")]
     pub parameter_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportedEngineModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedEngineModes")]
     pub supported_engine_modes: Option<Vec<String>>,
 }
+

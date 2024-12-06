@@ -5,74 +5,45 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Specification of the desired behavior of NodeUpgradeJob.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operations.kubeedge.io",
-    version = "v1alpha1",
-    kind = "NodeUpgradeJob",
-    plural = "nodeupgradejobs"
-)]
+#[kube(group = "operations.kubeedge.io", version = "v1alpha1", kind = "NodeUpgradeJob", plural = "nodeupgradejobs")]
 #[kube(status = "NodeUpgradeJobStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeUpgradeJobSpec {
     /// CheckItems specifies the items need to be checked before the task is executed. The default CheckItems value is nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checkItems"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkItems")]
     pub check_items: Option<Vec<String>>,
     /// Concurrency specifies the max number of edge nodes that can be upgraded at the same time. The default Concurrency value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub concurrency: Option<i32>,
     /// FailureTolerate specifies the task tolerance failure ratio. The default FailureTolerate value is 0.1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureTolerate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureTolerate")]
     pub failure_tolerate: Option<String>,
     /// Image specifies a container image name, the image contains: keadm and edgecore. keadm is used as upgradetool, to install the new version of edgecore. The image name consists of registry hostname and repository name, if it includes the tag or digest, the tag or digest will be overwritten by Version field above. If the registry hostname is empty, docker.io will be used as default. The default image name is: kubeedge/installation-package.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImageDigestGatter define registry v2 interface access configuration. As a transition, it is not required at first, and the image digest is checked when this field is set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigestGatter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigestGatter")]
     pub image_digest_gatter: Option<NodeUpgradeJobImageDigestGatter>,
     /// LabelSelector is a filter to select member clusters by labels. It must match a node's labels for the NodeUpgradeJob to be operated on that node. Please note that sets of NodeNames and LabelSelector are ORed. Users must set one and can only set one.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<NodeUpgradeJobLabelSelector>,
     /// NodeNames is a request to select some specific nodes. If it is non-empty, the upgrade job simply select these edge nodes to do upgrade operation. Please note that sets of NodeNames and LabelSelector are ORed. Users must set one and can only set one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeNames")]
     pub node_names: Option<Vec<String>>,
     /// RequireConfirmation specifies whether you need to confirm the upgrade. The default RequireConfirmation value is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireConfirmation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireConfirmation")]
     pub require_confirmation: Option<bool>,
     /// TimeoutSeconds limits the duration of the node upgrade job. Default to 300. If set to 0, we'll use the default value 300.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -82,11 +53,7 @@ pub struct NodeUpgradeJobSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeUpgradeJobImageDigestGatter {
     /// RegistryAPI define registry v2 interface access configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registryAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryAPI")]
     pub registry_api: Option<NodeUpgradeJobImageDigestGatterRegistryApi>,
     /// Value used to directly set a value to check image
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -104,18 +71,10 @@ pub struct NodeUpgradeJobImageDigestGatterRegistryApi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeUpgradeJobLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<NodeUpgradeJobLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -138,28 +97,16 @@ pub struct NodeUpgradeJobStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<String>,
     /// CurrentVersion represents for the current status of the EdgeCore.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVersion")]
     pub current_version: Option<String>,
     /// Event represents for the event of the ImagePrePullJob. There are six possible event values: Init, Check, BackUp, Upgrade, TimeOut, Rollback.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub event: Option<String>,
     /// HistoricVersion represents for the historic status of the EdgeCore.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "historicVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "historicVersion")]
     pub historic_version: Option<String>,
     /// Status contains upgrade Status for each edge node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStatus")]
     pub node_status: Option<Vec<NodeUpgradeJobStatusNodeStatus>>,
     /// Reason represents for the reason of the ImagePrePullJob.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -194,3 +141,4 @@ pub struct NodeUpgradeJobStatusNodeStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time: Option<String>,
 }
+

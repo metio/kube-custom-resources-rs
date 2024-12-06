@@ -4,30 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// LogicalVolumeSpec defines the desired state of LogicalVolume
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "topolvm.cybozu.com",
-    version = "v1",
-    kind = "LogicalVolume",
-    plural = "logicalvolumes"
-)]
+#[kube(group = "topolvm.cybozu.com", version = "v1", kind = "LogicalVolume", plural = "logicalvolumes")]
 #[kube(status = "LogicalVolumeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct LogicalVolumeSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceClass")]
     pub device_class: Option<String>,
     pub name: String,
     #[serde(rename = "nodeName")]
@@ -41,11 +32,7 @@ pub struct LogicalVolumeStatus {
     /// A Code is an unsigned 32-bit error code as defined in the gRPC spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentSize")]
     pub current_size: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -53,3 +40,4 @@ pub struct LogicalVolumeStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeID")]
     pub volume_id: Option<String>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// IntentsSpec defines the desired state of ClientIntents
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.otterize.com",
-    version = "v1alpha3",
-    kind = "ClientIntents",
-    plural = "clientintents"
-)]
+#[kube(group = "k8s.otterize.com", version = "v1alpha3", kind = "ClientIntents", plural = "clientintents")]
 #[kube(namespaced)]
 #[kube(status = "ClientIntentsStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClientIntentsSpec {
     pub calls: Vec<ClientIntentsCalls>,
     pub service: ClientIntentsService,
@@ -29,49 +24,21 @@ pub struct ClientIntentsSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClientIntentsCalls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "HTTPResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "HTTPResources")]
     pub http_resources: Option<Vec<ClientIntentsCallsHttpResources>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsActions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsActions")]
     pub aws_actions: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "azureKeyVaultPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureKeyVaultPolicy")]
     pub azure_key_vault_policy: Option<ClientIntentsCallsAzureKeyVaultPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "azureRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureRoles")]
     pub azure_roles: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseResources")]
     pub database_resources: Option<Vec<ClientIntentsCallsDatabaseResources>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcpPermissions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcpPermissions")]
     pub gcp_permissions: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub internet: Option<ClientIntentsCallsInternet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafkaTopics"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaTopics")]
     pub kafka_topics: Option<Vec<ClientIntentsCallsKafkaTopics>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -87,29 +54,13 @@ pub struct ClientIntentsCallsHttpResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClientIntentsCallsAzureKeyVaultPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificatePermissions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatePermissions")]
     pub certificate_permissions: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyPermissions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPermissions")]
     pub key_permissions: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretPermissions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretPermissions")]
     pub secret_permissions: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePermissions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePermissions")]
     pub storage_permissions: Option<Vec<String>>,
 }
 
@@ -166,17 +117,9 @@ pub struct ClientIntentsService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClientIntentsStatus {
     /// The last generation of the intents that was successfully reconciled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolvedIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvedIPs")]
     pub resolved_i_ps: Option<Vec<ClientIntentsStatusResolvedIPs>>,
     /// upToDate field reflects whether the client intents have successfully been applied
     /// to the cluster to the state specified
@@ -191,3 +134,4 @@ pub struct ClientIntentsStatusResolvedIPs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ips: Option<Vec<String>>,
 }
+

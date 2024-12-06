@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// LokiStack CR spec field.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "loki.grafana.com",
-    version = "v1",
-    kind = "LokiStack",
-    plural = "lokistacks"
-)]
+#[kube(group = "loki.grafana.com", version = "v1", kind = "LokiStack", plural = "lokistacks")]
 #[kube(namespaced)]
 #[kube(status = "LokiStackStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct LokiStackSpec {
     /// HashRing defines the spec for the distributed hash ring configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashRing")]
@@ -32,11 +27,7 @@ pub struct LokiStackSpec {
     pub limits: Option<LokiStackLimits>,
     /// ManagementState defines if the CR should be managed by the operator or not.
     /// Default is managed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managementState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementState")]
     pub management_state: Option<LokiStackManagementState>,
     /// Proxy defines the spec for the object proxy to configure cluster proxy information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -46,11 +37,7 @@ pub struct LokiStackSpec {
     pub replication: Option<LokiStackReplication>,
     /// Deprecated: Please use replication.factor instead. This field will be removed in future versions of this CRD.
     /// ReplicationFactor defines the policy for log stream replication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationFactor")]
     pub replication_factor: Option<i32>,
     /// Rules defines the spec for the ruler component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -85,24 +72,16 @@ pub struct LokiStackHashRing {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackHashRingMemberlist {
     /// EnableIPv6 enables IPv6 support for the memberlist based hash ring.
-    ///
+    /// 
     /// Currently this also forces the instanceAddrType to podIP to avoid local address lookup
     /// for the memberlist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableIPv6"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableIPv6")]
     pub enable_i_pv6: Option<bool>,
     /// InstanceAddrType defines the type of address to use to advertise to the ring.
     /// Defaults to the first address from any private network interfaces of the current pod.
     /// Alternatively the public pod IP can be used in case private networks (RFC 1918 and RFC 6598)
     /// are not available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceAddrType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceAddrType")]
     pub instance_addr_type: Option<LokiStackHashRingMemberlistInstanceAddrType>,
 }
 
@@ -140,7 +119,7 @@ pub struct LokiStackLimitsGlobal {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingestion: Option<LokiStackLimitsGlobalIngestion>,
     /// OTLP to configure which resource, scope and log attributes are stored as stream labels or structured metadata.
-    ///
+    /// 
     /// Tenancy modes can provide a default OTLP configuration, when no custom OTLP configuration is set or even
     /// enforce the use of some required attributes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -159,101 +138,53 @@ pub struct LokiStackLimitsGlobalIngestion {
     /// IngestionBurstSize defines the local rate-limited sample size per
     /// distributor replica. It should be set to the set at least to the
     /// maximum logs size expected in a single push request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionBurstSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionBurstSize")]
     pub ingestion_burst_size: Option<i32>,
     /// IngestionRate defines the sample size per second. Units MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionRate")]
     pub ingestion_rate: Option<i32>,
     /// MaxGlobalStreamsPerTenant defines the maximum number of active streams
     /// per tenant, across the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxGlobalStreamsPerTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxGlobalStreamsPerTenant")]
     pub max_global_streams_per_tenant: Option<i32>,
     /// MaxLabelNameLength defines the maximum number of characters allowed
     /// for label keys in log streams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelNameLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelNameLength")]
     pub max_label_name_length: Option<i32>,
     /// MaxLabelNamesPerSeries defines the maximum number of label names per series
     /// in each log stream.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelNamesPerSeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelNamesPerSeries")]
     pub max_label_names_per_series: Option<i32>,
     /// MaxLabelValueLength defines the maximum number of characters allowed
     /// for label values in log streams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelValueLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelValueLength")]
     pub max_label_value_length: Option<i32>,
     /// MaxLineSize defines the maximum line size on ingestion path. Units in Bytes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLineSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLineSize")]
     pub max_line_size: Option<i32>,
     /// PerStreamDesiredRate defines the desired ingestion rate per second that LokiStack should
     /// target applying automatic stream sharding. Units MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perStreamDesiredRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perStreamDesiredRate")]
     pub per_stream_desired_rate: Option<i32>,
     /// PerStreamRateLimit defines the maximum byte rate per second per stream. Units MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perStreamRateLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perStreamRateLimit")]
     pub per_stream_rate_limit: Option<i32>,
     /// PerStreamRateLimitBurst defines the maximum burst bytes per stream. Units MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perStreamRateLimitBurst"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perStreamRateLimitBurst")]
     pub per_stream_rate_limit_burst: Option<i32>,
 }
 
 /// OTLP to configure which resource, scope and log attributes are stored as stream labels or structured metadata.
-///
+/// 
 /// Tenancy modes can provide a default OTLP configuration, when no custom OTLP configuration is set or even
 /// enforce the use of some required attributes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsGlobalOtlp {
     /// StreamLabels configures which resource attributes are converted to Loki stream labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "streamLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamLabels")]
     pub stream_labels: Option<LokiStackLimitsGlobalOtlpStreamLabels>,
     /// StructuredMetadata configures which attributes are saved in structured metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "structuredMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "structuredMetadata")]
     pub structured_metadata: Option<LokiStackLimitsGlobalOtlpStructuredMetadata>,
 }
 
@@ -261,11 +192,7 @@ pub struct LokiStackLimitsGlobalOtlp {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsGlobalOtlpStreamLabels {
     /// ResourceAttributes lists the names of the resource attributes that should be converted into Loki stream labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
     pub resource_attributes: Option<Vec<LokiStackLimitsGlobalOtlpStreamLabelsResourceAttributes>>,
 }
 
@@ -282,26 +209,13 @@ pub struct LokiStackLimitsGlobalOtlpStreamLabelsResourceAttributes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsGlobalOtlpStructuredMetadata {
     /// LogAttributes lists the names of log attributes that should be included in structured metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logAttributes")]
     pub log_attributes: Option<Vec<LokiStackLimitsGlobalOtlpStructuredMetadataLogAttributes>>,
     /// ResourceAttributes lists the names of resource attributes that should be included in structured metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceAttributes"
-    )]
-    pub resource_attributes:
-        Option<Vec<LokiStackLimitsGlobalOtlpStructuredMetadataResourceAttributes>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
+    pub resource_attributes: Option<Vec<LokiStackLimitsGlobalOtlpStructuredMetadataResourceAttributes>>,
     /// ScopeAttributes lists the names of scope attributes that should be included in structured metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scopeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeAttributes")]
     pub scope_attributes: Option<Vec<LokiStackLimitsGlobalOtlpStructuredMetadataScopeAttributes>>,
 }
 
@@ -336,49 +250,25 @@ pub struct LokiStackLimitsGlobalOtlpStructuredMetadataScopeAttributes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsGlobalQueries {
     /// CardinalityLimit defines the cardinality limit for index queries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cardinalityLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cardinalityLimit")]
     pub cardinality_limit: Option<i32>,
     /// MaxChunksPerQuery defines the maximum number of chunks
     /// that can be fetched by a single query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxChunksPerQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxChunksPerQuery")]
     pub max_chunks_per_query: Option<i32>,
     /// MaxEntriesLimitsPerQuery defines the maximum number of log entries
     /// that will be returned for a query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEntriesLimitPerQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEntriesLimitPerQuery")]
     pub max_entries_limit_per_query: Option<i32>,
     /// MaxQuerySeries defines the maximum of unique series
     /// that is returned by a metric query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxQuerySeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxQuerySeries")]
     pub max_query_series: Option<i32>,
     /// MaxVolumeSeries defines the maximum number of aggregated series in a log-volume response
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVolumeSeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVolumeSeries")]
     pub max_volume_series: Option<i32>,
     /// Timeout when querying ingesters or storage during the execution of a query request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryTimeout")]
     pub query_timeout: Option<String>,
 }
 
@@ -411,10 +301,10 @@ pub struct LokiStackLimitsTenants {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingestion: Option<LokiStackLimitsTenantsIngestion>,
     /// OTLP to configure which resource, scope and log attributes are stored as stream labels or structured metadata.
-    ///
+    /// 
     /// Tenancy modes can provide a default OTLP configuration, when no custom OTLP configuration is set or even
     /// enforce the use of some required attributes.
-    ///
+    /// 
     /// The per-tenant configuration for OTLP attributes will be merged with the global configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub otlp: Option<LokiStackLimitsTenantsOtlp>,
@@ -432,103 +322,55 @@ pub struct LokiStackLimitsTenantsIngestion {
     /// IngestionBurstSize defines the local rate-limited sample size per
     /// distributor replica. It should be set to the set at least to the
     /// maximum logs size expected in a single push request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionBurstSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionBurstSize")]
     pub ingestion_burst_size: Option<i32>,
     /// IngestionRate defines the sample size per second. Units MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionRate")]
     pub ingestion_rate: Option<i32>,
     /// MaxGlobalStreamsPerTenant defines the maximum number of active streams
     /// per tenant, across the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxGlobalStreamsPerTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxGlobalStreamsPerTenant")]
     pub max_global_streams_per_tenant: Option<i32>,
     /// MaxLabelNameLength defines the maximum number of characters allowed
     /// for label keys in log streams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelNameLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelNameLength")]
     pub max_label_name_length: Option<i32>,
     /// MaxLabelNamesPerSeries defines the maximum number of label names per series
     /// in each log stream.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelNamesPerSeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelNamesPerSeries")]
     pub max_label_names_per_series: Option<i32>,
     /// MaxLabelValueLength defines the maximum number of characters allowed
     /// for label values in log streams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelValueLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelValueLength")]
     pub max_label_value_length: Option<i32>,
     /// MaxLineSize defines the maximum line size on ingestion path. Units in Bytes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLineSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLineSize")]
     pub max_line_size: Option<i32>,
     /// PerStreamDesiredRate defines the desired ingestion rate per second that LokiStack should
     /// target applying automatic stream sharding. Units MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perStreamDesiredRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perStreamDesiredRate")]
     pub per_stream_desired_rate: Option<i32>,
     /// PerStreamRateLimit defines the maximum byte rate per second per stream. Units MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perStreamRateLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perStreamRateLimit")]
     pub per_stream_rate_limit: Option<i32>,
     /// PerStreamRateLimitBurst defines the maximum burst bytes per stream. Units MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perStreamRateLimitBurst"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perStreamRateLimitBurst")]
     pub per_stream_rate_limit_burst: Option<i32>,
 }
 
 /// OTLP to configure which resource, scope and log attributes are stored as stream labels or structured metadata.
-///
+/// 
 /// Tenancy modes can provide a default OTLP configuration, when no custom OTLP configuration is set or even
 /// enforce the use of some required attributes.
-///
+/// 
 /// The per-tenant configuration for OTLP attributes will be merged with the global configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsTenantsOtlp {
     /// StreamLabels configures which resource attributes are converted to Loki stream labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "streamLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamLabels")]
     pub stream_labels: Option<LokiStackLimitsTenantsOtlpStreamLabels>,
     /// StructuredMetadata configures which attributes are saved in structured metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "structuredMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "structuredMetadata")]
     pub structured_metadata: Option<LokiStackLimitsTenantsOtlpStructuredMetadata>,
 }
 
@@ -536,11 +378,7 @@ pub struct LokiStackLimitsTenantsOtlp {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsTenantsOtlpStreamLabels {
     /// ResourceAttributes lists the names of the resource attributes that should be converted into Loki stream labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
     pub resource_attributes: Option<Vec<LokiStackLimitsTenantsOtlpStreamLabelsResourceAttributes>>,
 }
 
@@ -557,26 +395,13 @@ pub struct LokiStackLimitsTenantsOtlpStreamLabelsResourceAttributes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsTenantsOtlpStructuredMetadata {
     /// LogAttributes lists the names of log attributes that should be included in structured metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logAttributes")]
     pub log_attributes: Option<Vec<LokiStackLimitsTenantsOtlpStructuredMetadataLogAttributes>>,
     /// ResourceAttributes lists the names of resource attributes that should be included in structured metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceAttributes"
-    )]
-    pub resource_attributes:
-        Option<Vec<LokiStackLimitsTenantsOtlpStructuredMetadataResourceAttributes>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
+    pub resource_attributes: Option<Vec<LokiStackLimitsTenantsOtlpStructuredMetadataResourceAttributes>>,
     /// ScopeAttributes lists the names of scope attributes that should be included in structured metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scopeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeAttributes")]
     pub scope_attributes: Option<Vec<LokiStackLimitsTenantsOtlpStructuredMetadataScopeAttributes>>,
 }
 
@@ -614,49 +439,25 @@ pub struct LokiStackLimitsTenantsQueries {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub blocked: Option<Vec<LokiStackLimitsTenantsQueriesBlocked>>,
     /// CardinalityLimit defines the cardinality limit for index queries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cardinalityLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cardinalityLimit")]
     pub cardinality_limit: Option<i32>,
     /// MaxChunksPerQuery defines the maximum number of chunks
     /// that can be fetched by a single query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxChunksPerQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxChunksPerQuery")]
     pub max_chunks_per_query: Option<i32>,
     /// MaxEntriesLimitsPerQuery defines the maximum number of log entries
     /// that will be returned for a query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEntriesLimitPerQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEntriesLimitPerQuery")]
     pub max_entries_limit_per_query: Option<i32>,
     /// MaxQuerySeries defines the maximum of unique series
     /// that is returned by a metric query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxQuerySeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxQuerySeries")]
     pub max_query_series: Option<i32>,
     /// MaxVolumeSeries defines the maximum number of aggregated series in a log-volume response
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVolumeSeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVolumeSeries")]
     pub max_volume_series: Option<i32>,
     /// Timeout when querying ingesters or storage during the execution of a query request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryTimeout")]
     pub query_timeout: Option<String>,
 }
 
@@ -713,11 +514,7 @@ pub struct LokiStackProxy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
     /// HTTPSProxy configures the HTTPS_PROXY/https_proxy env variable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpsProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsProxy")]
     pub https_proxy: Option<String>,
     /// NoProxy configures the NO_PROXY/no_proxy env variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
@@ -754,11 +551,7 @@ pub struct LokiStackRules {
     pub enabled: bool,
     /// Namespaces to be selected for PrometheusRules discovery. If unspecified, only
     /// the same namespace as the LokiStack object is in is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<LokiStackRulesNamespaceSelector>,
     /// A selector to select which LokiRules to mount for loading alerting/recording
     /// rules from.
@@ -771,20 +564,12 @@ pub struct LokiStackRules {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackRulesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<LokiStackRulesNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -810,20 +595,12 @@ pub struct LokiStackRulesNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackRulesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<LokiStackRulesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -877,7 +654,7 @@ pub struct LokiStackStorage {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LokiStackStorageSchemas {
     /// EffectiveDate contains a date in YYYY-MM-DD format which is interpreted in the UTC time zone.
-    ///
+    /// 
     /// The configuration always needs at least one schema that is currently valid. This means that when creating a new
     /// LokiStack it is recommended to add a schema with the latest available version and an effective date of "yesterday".
     /// New schema versions added to the configuration always needs to be placed "in the future", so that Loki can start
@@ -906,11 +683,7 @@ pub struct LokiStackStorageSecret {
     /// CredentialMode can be used to set the desired credential mode for authenticating with the object storage.
     /// If this is not set, then the operator tries to infer the credential mode from the provided secret and its
     /// own configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialMode")]
     pub credential_mode: Option<LokiStackStorageSecretCredentialMode>,
     /// Name of a secret in the namespace configured for object storage secrets.
     pub name: String,
@@ -974,11 +747,7 @@ pub struct LokiStackTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<LokiStackTemplateGateway>,
     /// IndexGateway defines the index gateway component spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "indexGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexGateway")]
     pub index_gateway: Option<LokiStackTemplateIndexGateway>,
     /// Ingester defines the ingester component spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -987,11 +756,7 @@ pub struct LokiStackTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub querier: Option<LokiStackTemplateQuerier>,
     /// QueryFrontend defines the query frontend component spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryFrontend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryFrontend")]
     pub query_frontend: Option<LokiStackTemplateQueryFrontend>,
     /// Ruler defines the ruler component spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1003,19 +768,11 @@ pub struct LokiStackTemplate {
 pub struct LokiStackTemplateCompactor {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodAntiAffinity defines the pod anti affinity scheduling rules to schedule pods
     /// of a component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<LokiStackTemplateCompactorPodAntiAffinity>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1107,8 +864,7 @@ pub struct LokiStackTemplateCompactorPodAntiAffinityPreferredDuringSchedulingIgn
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateCompactorPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateCompactorPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1142,8 +898,7 @@ pub struct LokiStackTemplateCompactorPodAntiAffinityPreferredDuringSchedulingIgn
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateCompactorPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateCompactorPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1206,8 +961,7 @@ pub struct LokiStackTemplateCompactorPodAntiAffinityRequiredDuringSchedulingIgno
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateCompactorPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateCompactorPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1241,8 +995,7 @@ pub struct LokiStackTemplateCompactorPodAntiAffinityRequiredDuringSchedulingIgno
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateCompactorPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateCompactorPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1278,11 +1031,7 @@ pub struct LokiStackTemplateCompactorTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1295,19 +1044,11 @@ pub struct LokiStackTemplateCompactorTolerations {
 pub struct LokiStackTemplateDistributor {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodAntiAffinity defines the pod anti affinity scheduling rules to schedule pods
     /// of a component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<LokiStackTemplateDistributorPodAntiAffinity>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1399,8 +1140,7 @@ pub struct LokiStackTemplateDistributorPodAntiAffinityPreferredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateDistributorPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateDistributorPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1434,8 +1174,7 @@ pub struct LokiStackTemplateDistributorPodAntiAffinityPreferredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateDistributorPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateDistributorPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1498,8 +1237,7 @@ pub struct LokiStackTemplateDistributorPodAntiAffinityRequiredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateDistributorPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateDistributorPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1533,8 +1271,7 @@ pub struct LokiStackTemplateDistributorPodAntiAffinityRequiredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateDistributorPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateDistributorPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1570,11 +1307,7 @@ pub struct LokiStackTemplateDistributorTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1587,19 +1320,11 @@ pub struct LokiStackTemplateDistributorTolerations {
 pub struct LokiStackTemplateGateway {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodAntiAffinity defines the pod anti affinity scheduling rules to schedule pods
     /// of a component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<LokiStackTemplateGatewayPodAntiAffinity>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1623,14 +1348,8 @@ pub struct LokiStackTemplateGatewayPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<LokiStackTemplateGatewayPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<LokiStackTemplateGatewayPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -1638,14 +1357,8 @@ pub struct LokiStackTemplateGatewayPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<LokiStackTemplateGatewayPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<LokiStackTemplateGatewayPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -1703,8 +1416,7 @@ pub struct LokiStackTemplateGatewayPodAntiAffinityPreferredDuringSchedulingIgnor
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateGatewayPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateGatewayPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1738,8 +1450,7 @@ pub struct LokiStackTemplateGatewayPodAntiAffinityPreferredDuringSchedulingIgnor
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateGatewayPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateGatewayPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1802,8 +1513,7 @@ pub struct LokiStackTemplateGatewayPodAntiAffinityRequiredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateGatewayPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateGatewayPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1837,8 +1547,7 @@ pub struct LokiStackTemplateGatewayPodAntiAffinityRequiredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateGatewayPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateGatewayPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1874,11 +1583,7 @@ pub struct LokiStackTemplateGatewayTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1891,19 +1596,11 @@ pub struct LokiStackTemplateGatewayTolerations {
 pub struct LokiStackTemplateIndexGateway {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodAntiAffinity defines the pod anti affinity scheduling rules to schedule pods
     /// of a component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<LokiStackTemplateIndexGatewayPodAntiAffinity>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1995,8 +1692,7 @@ pub struct LokiStackTemplateIndexGatewayPodAntiAffinityPreferredDuringScheduling
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateIndexGatewayPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateIndexGatewayPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2030,8 +1726,7 @@ pub struct LokiStackTemplateIndexGatewayPodAntiAffinityPreferredDuringScheduling
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateIndexGatewayPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateIndexGatewayPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2094,8 +1789,7 @@ pub struct LokiStackTemplateIndexGatewayPodAntiAffinityRequiredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateIndexGatewayPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateIndexGatewayPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2129,8 +1823,7 @@ pub struct LokiStackTemplateIndexGatewayPodAntiAffinityRequiredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateIndexGatewayPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateIndexGatewayPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2166,11 +1859,7 @@ pub struct LokiStackTemplateIndexGatewayTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2183,19 +1872,11 @@ pub struct LokiStackTemplateIndexGatewayTolerations {
 pub struct LokiStackTemplateIngester {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodAntiAffinity defines the pod anti affinity scheduling rules to schedule pods
     /// of a component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<LokiStackTemplateIngesterPodAntiAffinity>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2219,16 +1900,8 @@ pub struct LokiStackTemplateIngesterPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<
-            LokiStackTemplateIngesterPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<LokiStackTemplateIngesterPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -2236,14 +1909,8 @@ pub struct LokiStackTemplateIngesterPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<LokiStackTemplateIngesterPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<LokiStackTemplateIngesterPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -2301,8 +1968,7 @@ pub struct LokiStackTemplateIngesterPodAntiAffinityPreferredDuringSchedulingIgno
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateIngesterPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateIngesterPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2336,8 +2002,7 @@ pub struct LokiStackTemplateIngesterPodAntiAffinityPreferredDuringSchedulingIgno
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateIngesterPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateIngesterPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2400,8 +2065,7 @@ pub struct LokiStackTemplateIngesterPodAntiAffinityRequiredDuringSchedulingIgnor
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateIngesterPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateIngesterPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2435,8 +2099,7 @@ pub struct LokiStackTemplateIngesterPodAntiAffinityRequiredDuringSchedulingIgnor
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateIngesterPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateIngesterPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2472,11 +2135,7 @@ pub struct LokiStackTemplateIngesterTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2489,19 +2148,11 @@ pub struct LokiStackTemplateIngesterTolerations {
 pub struct LokiStackTemplateQuerier {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodAntiAffinity defines the pod anti affinity scheduling rules to schedule pods
     /// of a component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<LokiStackTemplateQuerierPodAntiAffinity>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2525,14 +2176,8 @@ pub struct LokiStackTemplateQuerierPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<LokiStackTemplateQuerierPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<LokiStackTemplateQuerierPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -2540,14 +2185,8 @@ pub struct LokiStackTemplateQuerierPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<LokiStackTemplateQuerierPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<LokiStackTemplateQuerierPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -2605,8 +2244,7 @@ pub struct LokiStackTemplateQuerierPodAntiAffinityPreferredDuringSchedulingIgnor
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateQuerierPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateQuerierPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2640,8 +2278,7 @@ pub struct LokiStackTemplateQuerierPodAntiAffinityPreferredDuringSchedulingIgnor
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateQuerierPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateQuerierPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2704,8 +2341,7 @@ pub struct LokiStackTemplateQuerierPodAntiAffinityRequiredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateQuerierPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateQuerierPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2739,8 +2375,7 @@ pub struct LokiStackTemplateQuerierPodAntiAffinityRequiredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateQuerierPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateQuerierPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2776,11 +2411,7 @@ pub struct LokiStackTemplateQuerierTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2793,19 +2424,11 @@ pub struct LokiStackTemplateQuerierTolerations {
 pub struct LokiStackTemplateQueryFrontend {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodAntiAffinity defines the pod anti affinity scheduling rules to schedule pods
     /// of a component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<LokiStackTemplateQueryFrontendPodAntiAffinity>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2897,8 +2520,7 @@ pub struct LokiStackTemplateQueryFrontendPodAntiAffinityPreferredDuringSchedulin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateQueryFrontendPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateQueryFrontendPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2932,8 +2554,7 @@ pub struct LokiStackTemplateQueryFrontendPodAntiAffinityPreferredDuringSchedulin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateQueryFrontendPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateQueryFrontendPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2996,8 +2617,7 @@ pub struct LokiStackTemplateQueryFrontendPodAntiAffinityRequiredDuringScheduling
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateQueryFrontendPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateQueryFrontendPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3031,8 +2651,7 @@ pub struct LokiStackTemplateQueryFrontendPodAntiAffinityRequiredDuringScheduling
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateQueryFrontendPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateQueryFrontendPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3068,11 +2687,7 @@ pub struct LokiStackTemplateQueryFrontendTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -3085,19 +2700,11 @@ pub struct LokiStackTemplateQueryFrontendTolerations {
 pub struct LokiStackTemplateRuler {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodAntiAffinity defines the pod anti affinity scheduling rules to schedule pods
     /// of a component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<LokiStackTemplateRulerPodAntiAffinity>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3121,14 +2728,8 @@ pub struct LokiStackTemplateRulerPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<LokiStackTemplateRulerPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<LokiStackTemplateRulerPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -3136,14 +2737,8 @@ pub struct LokiStackTemplateRulerPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<LokiStackTemplateRulerPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<LokiStackTemplateRulerPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -3201,8 +2796,7 @@ pub struct LokiStackTemplateRulerPodAntiAffinityPreferredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateRulerPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateRulerPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3236,8 +2830,7 @@ pub struct LokiStackTemplateRulerPodAntiAffinityPreferredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateRulerPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateRulerPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3300,8 +2893,7 @@ pub struct LokiStackTemplateRulerPodAntiAffinityRequiredDuringSchedulingIgnoredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateRulerPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct LokiStackTemplateRulerPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3335,8 +2927,7 @@ pub struct LokiStackTemplateRulerPodAntiAffinityRequiredDuringSchedulingIgnoredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackTemplateRulerPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct LokiStackTemplateRulerPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3372,11 +2963,7 @@ pub struct LokiStackTemplateRulerTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -3442,11 +3029,7 @@ pub struct LokiStackTenantsAuthenticationMTlsCa {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackTenantsAuthenticationOidc {
     /// Group claim field from ID Token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupClaim")]
     pub group_claim: Option<String>,
     /// IssuerCA defines the spec for the issuer CA for tenant's authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerCA")]
@@ -3455,20 +3038,12 @@ pub struct LokiStackTenantsAuthenticationOidc {
     #[serde(rename = "issuerURL")]
     pub issuer_url: String,
     /// RedirectURL defines the URL for redirect.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redirectURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectURL")]
     pub redirect_url: Option<String>,
     /// Secret defines the spec for the clientID and clientSecret for tenant's authentication.
     pub secret: LokiStackTenantsAuthenticationOidcSecret,
     /// User claim field from ID Token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameClaim")]
     pub username_claim: Option<String>,
 }
 
@@ -3500,11 +3075,7 @@ pub struct LokiStackTenantsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opa: Option<LokiStackTenantsAuthorizationOpa>,
     /// RoleBindings defines configuration to bind a set of roles to a set of subjects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleBindings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleBindings")]
     pub role_bindings: Option<Vec<LokiStackTenantsAuthorizationRoleBindings>>,
     /// Roles defines a set of permissions to interact with a tenant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3570,16 +3141,12 @@ pub enum LokiStackTenantsMode {
 pub struct LokiStackTenantsOpenshift {
     /// AdminGroups defines a list of groups, whose members are considered to have admin-privileges by the Loki Operator.
     /// Setting this to an empty array disables admin groups.
-    ///
+    /// 
     /// By default the following groups are considered admin-groups:
     ///  - system:cluster-admins
     ///  - cluster-admin
     ///  - dedicated-admin
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminGroups")]
     pub admin_groups: Option<Vec<String>>,
     /// OTLP contains settings for ingesting data using OTLP in the OpenShift tenancy mode.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3591,21 +3158,17 @@ pub struct LokiStackTenantsOpenshift {
 pub struct LokiStackTenantsOpenshiftOtlp {
     /// DisableRecommendedAttributes can be used to reduce the number of attributes used for stream labels and structured
     /// metadata.
-    ///
+    /// 
     /// Enabling this setting removes the "recommended attributes" from the generated Loki configuration. This will cause
     /// meta information to not be available as stream labels or structured metadata, potentially making queries more
     /// expensive and less performant.
-    ///
+    /// 
     /// Note that there is a set of "required attributes", needed for OpenShift Logging to work properly. Those will be
     /// added to the configuration, even if this field is set to true.
-    ///
+    /// 
     /// This option is supposed to be combined with a custom label configuration customizing the labels for the specific
     /// usecase.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableRecommendedAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableRecommendedAttributes")]
     pub disable_recommended_attributes: Option<bool>,
 }
 
@@ -3639,11 +3202,7 @@ pub struct LokiStackStatusComponents {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<BTreeMap<String, String>>,
     /// IndexGateway is a map to the per pod status of the index gateway statefulset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "indexGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexGateway")]
     pub index_gateway: Option<BTreeMap<String, String>>,
     /// Ingester is a map to the per pod status of the ingester statefulset
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3652,11 +3211,7 @@ pub struct LokiStackStatusComponents {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub querier: Option<BTreeMap<String, String>>,
     /// QueryFrontend is a map to the per pod status of the query frontend deployment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryFrontend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryFrontend")]
     pub query_frontend: Option<BTreeMap<String, String>>,
     /// Ruler is a map to the per pod status of the lokistack ruler statefulset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3668,11 +3223,7 @@ pub struct LokiStackStatusComponents {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackStatusStorage {
     /// CredentialMode contains the authentication mode used for accessing the object storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialMode")]
     pub credential_mode: Option<LokiStackStatusStorageCredentialMode>,
     /// Schemas is a list of schemas which have been applied
     /// to the LokiStack.
@@ -3696,7 +3247,7 @@ pub enum LokiStackStatusStorageCredentialMode {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LokiStackStatusStorageSchemas {
     /// EffectiveDate contains a date in YYYY-MM-DD format which is interpreted in the UTC time zone.
-    ///
+    /// 
     /// The configuration always needs at least one schema that is currently valid. This means that when creating a new
     /// LokiStack it is recommended to add a schema with the latest available version and an effective date of "yesterday".
     /// New schema versions added to the configuration always needs to be placed "in the future", so that Loki can start
@@ -3717,3 +3268,4 @@ pub enum LokiStackStatusStorageSchemasVersion {
     #[serde(rename = "v13")]
     V13,
 }
+

@@ -4,81 +4,44 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ReplicaSpec defines the desired state of the Longhorn replica
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "Replica",
-    plural = "replicas"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "Replica", plural = "replicas")]
 #[kube(namespaced)]
 #[kube(status = "ReplicaStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ReplicaSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
     /// Deprecated:Replaced by field `dataEngine`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendStoreDriver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backingImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
     pub backing_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataDirectoryName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataDirectoryName")]
     pub data_directory_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataEngine"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
     pub data_engine: Option<ReplicaDataEngine>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desireState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desireState")]
     pub desire_state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskID")]
     pub disk_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskPath")]
     pub disk_path: Option<String>,
     /// Deprecated: Replaced by field `image`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "engineImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineImage")]
     pub engine_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "engineName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineName")]
     pub engine_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionRequested"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
     pub eviction_requested: Option<bool>,
     /// FailedAt is set when a running replica fails or when a running engine is unable to use a replica for any reason.
     /// FailedAt indicates the time the failure occurred. When FailedAt is set, a replica is likely to have useful
@@ -88,11 +51,7 @@ pub struct ReplicaSpec {
     /// controller acknowledges the change.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedAt")]
     pub failed_at: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardNodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardNodeAffinity")]
     pub hard_node_affinity: Option<String>,
     /// HealthyAt is set the first time a replica becomes read/write in an engine after creation or rebuild. HealthyAt
     /// indicates the time the last successful rebuild occurred. When HealthyAt is set, a replica is likely to have
@@ -109,11 +68,7 @@ pub struct ReplicaSpec {
     /// LastHealthyAt to help prevent dangerous replica deletion in some corner cases. LastFailedAt may be later than the
     /// corresponding entry in an engine's replicaTransitionTimeMap because it is set when the volume controller
     /// acknowledges the change.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastFailedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastFailedAt")]
     pub last_failed_at: Option<String>,
     /// LastHealthyAt is set every time a replica becomes read/write in an engine. Unlike HealthyAt, LastHealthyAt is
     /// never cleared. LastHealthyAt is not a reliable indicator of the state of a replica's data. For example, a
@@ -121,67 +76,27 @@ pub struct ReplicaSpec {
     /// compared to LastFailedAt to help prevent dangerous replica deletion in some corner cases. LastHealthyAt may be
     /// later than the corresponding entry in an engine's replicaTransitionTimeMap because it is set when the volume
     /// controller acknowledges the change.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHealthyAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHealthyAt")]
     pub last_healthy_at: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logRequested"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logRequested")]
     pub log_requested: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeID")]
     pub node_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rebuildRetryCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebuildRetryCount")]
     pub rebuild_retry_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revisionCounterDisabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionCounterDisabled")]
     pub revision_counter_disabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "salvageRequested"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "salvageRequested")]
     pub salvage_requested: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotMaxCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxCount")]
     pub snapshot_max_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotMaxSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxSize")]
     pub snapshot_max_size: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unmapMarkDiskChainRemovedEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmapMarkDiskChainRemovedEnabled")]
     pub unmap_mark_disk_chain_removed_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSize")]
     pub volume_size: Option<String>,
 }
 
@@ -199,51 +114,28 @@ pub enum ReplicaDataEngine {
 pub struct ReplicaStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentImage")]
     pub current_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentState")]
     pub current_state: Option<String>,
     /// Deprecated: Replaced by field `spec.evictionRequested`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionRequested"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
     pub eviction_requested: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceManagerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceManagerName")]
     pub instance_manager_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFetched"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFetched")]
     pub log_fetched: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "salvageExecuted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "salvageExecuted")]
     pub salvage_executed: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageIP")]
     pub storage_ip: Option<String>,
 }
+

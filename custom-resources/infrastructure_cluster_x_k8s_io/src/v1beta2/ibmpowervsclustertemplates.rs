@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// IBMPowerVSClusterTemplateSpec defines the desired state of IBMPowerVSClusterTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta2",
-    kind = "IBMPowerVSClusterTemplate",
-    plural = "ibmpowervsclustertemplates"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "IBMPowerVSClusterTemplate", plural = "ibmpowervsclustertemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMPowerVSClusterTemplateSpec {
     /// IBMPowerVSClusterTemplateResource describes the data needed to create an IBMPowerVSCluster from a template.
     pub template: IBMPowerVSClusterTemplateTemplate,
@@ -60,11 +55,7 @@ pub struct IBMPowerVSClusterTemplateTemplateMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<IBMPowerVSClusterTemplateTemplateSpecControlPlaneEndpoint>,
     /// cosInstance contains options to configure a supporting IBM Cloud COS bucket for this
     /// cluster - currently used for nodes requiring Ignition
@@ -74,20 +65,12 @@ pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// 1. CosInstance.Name should be set not setting will result in webhook error.
     /// 2. CosInstance.BucketName should be set not setting will result in webhook error.
     /// 3. CosInstance.BucketRegion should be set not setting will result in webhook error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cosInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosInstance")]
     pub cos_instance: Option<IBMPowerVSClusterTemplateTemplateSpecCosInstance>,
     /// dhcpServer is contains the configuration to be used while creating a new DHCP server in PowerVS workspace.
     /// when the field is omitted, CLUSTER_NAME will be used as DHCPServer.Name and DHCP server will be created.
     /// it will automatically create network with name DHCPSERVER<DHCPServer.Name>_Private in PowerVS workspace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dhcpServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpServer")]
     pub dhcp_server: Option<IBMPowerVSClusterTemplateTemplateSpecDhcpServer>,
     /// Ignition defined options related to the bootstrapping systems where Ignition is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -99,11 +82,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// when LoadBalancers[].ID is set, its expected that there exist a loadbalancer with ID or else system will give error.
     /// when LoadBalancers[].Name is set, system will first check for loadbalancer with Name, if not exist system will create new loadbalancer.
     /// For each loadbalancer a default backed pool and front listener will be configured with port 6443.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecLoadBalancers>>,
     /// Network is the reference to the Network to use for this cluster.
     /// when the field is omitted, A DHCP service will be created in the Power VS workspace and its private network will be used.
@@ -118,11 +97,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
     /// 1. it is expected to set the ResourceGroup.Name, not setting will result in webhook error.
     /// ResourceGroup.ID and ResourceGroup.Regex is not yet supported and system will ignore the value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<IBMPowerVSClusterTemplateTemplateSpecResourceGroup>,
     /// serviceInstance is the reference to the Power VS server workspace on which the server instance(VM) will be created.
     /// Power VS server workspace is a container for all Power VS instances at a specific geographic region.
@@ -135,11 +110,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// when ServiceInstance.Name is set, system will first check for service instance with Name in PowerVS workspace, if not exist system will create new instance.
     /// if there are more than one service instance exist with the ServiceInstance.Name in given Zone, installation fails with an error. Use ServiceInstance.ID in those situations to use the specific service instance.
     /// ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IBMPowerVSClusterTemplateTemplateSpecServiceInstance>,
     /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.
     /// Deprecated: use ServiceInstance instead
@@ -150,11 +121,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// more information about TransitGateway can be found here https://www.ibm.com/products/transit-gateway.
     /// when TransitGateway.ID is set, its expected that there exist a TransitGateway with ID or else system will give error.
     /// when TransitGateway.Name is set, system will first check for TransitGateway with Name, if not exist system will create new TransitGateway.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transitGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGateway")]
     pub transit_gateway: Option<IBMPowerVSClusterTemplateTemplateSpecTransitGateway>,
     /// vpc contains information about IBM Cloud VPC resources.
     /// when omitted system will dynamically create the VPC with name CLUSTER_NAME-vpc.
@@ -165,11 +132,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMPowerVSClusterTemplateTemplateSpecVpc>,
     /// VPCSecurityGroups to attach it to the VPC resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcSecurityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcSecurityGroups")]
     pub vpc_security_groups: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroups>>,
     /// vpcSubnets contains information about IBM Cloud VPC Subnet resources.
     /// when omitted system will create the subnets in all the zone corresponding to VPC.Region, with name CLUSTER_NAME-vpcsubnet-ZONE_NAME.
@@ -178,11 +141,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// when VPCSubnets[].Zone is not set, a random zone is picked from available zones of VPC.Region.
     /// when VPCSubnets[].Name is not set, system will set name as CLUSTER_NAME-vpcsubnet-INDEX.
     /// if subnet with name VPCSubnets[].Name not found, system will create new subnet in VPCSubnets[].Zone.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcSubnets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcSubnets")]
     pub vpc_subnets: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecVpcSubnets>>,
     /// zone is the name of Power VS zone where the cluster will be created
     /// possible values can be found here https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server.
@@ -213,18 +172,10 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecControlPlaneEndpoint {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecCosInstance {
     /// bucketName is IBM cloud COS bucket name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketName")]
     pub bucket_name: Option<String>,
     /// bucketRegion is IBM cloud COS bucket region
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketRegion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketRegion")]
     pub bucket_region: Option<String>,
     /// name defines name of IBM cloud COS instance to be created.
     /// when IBMPowerVSCluster.Ignition is set
@@ -285,19 +236,10 @@ pub enum IBMPowerVSClusterTemplateTemplateSpecIgnitionVersion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecLoadBalancers {
     /// AdditionalListeners sets the additional listeners for the control plane load balancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalListeners"
-    )]
-    pub additional_listeners:
-        Option<Vec<IBMPowerVSClusterTemplateTemplateSpecLoadBalancersAdditionalListeners>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalListeners")]
+    pub additional_listeners: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecLoadBalancersAdditionalListeners>>,
     /// backendPools defines the load balancer's backend pools.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendPools"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendPools")]
     pub backend_pools: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecLoadBalancersBackendPools>>,
     /// id of the loadbalancer
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -310,13 +252,8 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecLoadBalancers {
     pub public: Option<bool>,
     /// securityGroups defines the Security Groups to attach to the load balancer.
     /// Security Groups defined here are expected to already exist when the load balancer is reconciled (these do not get created when reconciling the load balancer).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
-    pub security_groups:
-        Option<Vec<IBMPowerVSClusterTemplateTemplateSpecLoadBalancersSecurityGroups>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
+    pub security_groups: Option<Vec<IBMPowerVSClusterTemplateTemplateSpecLoadBalancersSecurityGroups>>,
     /// subnets defines the VPC Subnets to attach to the load balancer.
     /// Subnets defiens here are expected to already exist when the load balancer is reconciled (these do not get created when reconciling the load balancer).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -328,19 +265,14 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecLoadBalancers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecLoadBalancersAdditionalListeners {
     /// defaultPoolName defines the name of a VPC Load Balancer Backend Pool to use for the VPC Load Balancer Listener.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultPoolName")]
     pub default_pool_name: Option<String>,
     /// Port sets the port for the additional listener.
     pub port: i64,
     /// protocol defines the protocol to use for the VPC Load Balancer Listener.
     /// Will default to TCP protocol if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub protocol:
-        Option<IBMPowerVSClusterTemplateTemplateSpecLoadBalancersAdditionalListenersProtocol>,
+    pub protocol: Option<IBMPowerVSClusterTemplateTemplateSpecLoadBalancersAdditionalListenersProtocol>,
 }
 
 /// AdditionalListenerSpec defines the desired state of an
@@ -524,11 +456,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecTransitGateway {
     /// globalRouting indicates whether to set global routing true or not while creating the transit gateway.
     /// set this field to true only when PowerVS and VPC are from different regions, if they are same it's suggested to use local routing by setting the field to false.
     /// when the field is omitted,  based on PowerVS region (region associated with IBMPowerVSCluster.Spec.Zone) and VPC region(IBMPowerVSCluster.Spec.VPC.Region) system will decide whether to enable globalRouting or not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalRouting"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalRouting")]
     pub global_routing: Option<bool>,
     /// id of resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -588,11 +516,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRules {
     /// direction defines whether the traffic is inbound or outbound for the Security Group Rule.
     pub direction: IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesDirection,
     /// securityGroupID is the ID of the Security Group for the Security Group Rule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupID")]
     pub security_group_id: Option<String>,
     /// source is a VPCSecurityGroupRulePrototype which defines the source of inbound traffic for the Security Group Rule.
     /// Only used when direction is VPCSecurityGroupRuleDirectionInbound.
@@ -623,8 +547,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesDestinatio
     pub icmp_type: Option<i64>,
     /// portRange is a range of ports allowed for the Rule's remote.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portRange")]
-    pub port_range:
-        Option<IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesDestinationPortRange>,
+    pub port_range: Option<IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesDestinationPortRange>,
     /// protocol defines the traffic protocol used for the Security Group Rule.
     pub protocol: IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesDestinationProtocol,
     /// remotes is a set of VPCSecurityGroupRuleRemote's that define the traffic allowed by the Rule's remote.
@@ -637,18 +560,10 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesDestinatio
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesDestinationPortRange {
     /// maximumPort is the inclusive upper range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumPort")]
     pub maximum_port: Option<i64>,
     /// minimumPort is the inclusive lower range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumPort")]
     pub minimum_port: Option<i64>,
 }
 
@@ -676,23 +591,14 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesDestinatio
     pub address: Option<String>,
     /// cidrSubnetName is the name of the VPC Subnet to retrieve the CIDR from, to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeCIDR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrSubnetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrSubnetName")]
     pub cidr_subnet_name: Option<String>,
     /// remoteType defines the type of filter to define for the remote's destination/source.
     #[serde(rename = "remoteType")]
-    pub remote_type:
-        IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesDestinationRemotesRemoteType,
+    pub remote_type: IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesDestinationRemotesRemoteType,
     /// securityGroupName is the name of the VPC Security Group to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeSG
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupName")]
     pub security_group_name: Option<String>,
 }
 
@@ -733,8 +639,7 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesSource {
     pub icmp_type: Option<i64>,
     /// portRange is a range of ports allowed for the Rule's remote.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portRange")]
-    pub port_range:
-        Option<IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesSourcePortRange>,
+    pub port_range: Option<IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesSourcePortRange>,
     /// protocol defines the traffic protocol used for the Security Group Rule.
     pub protocol: IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesSourceProtocol,
     /// remotes is a set of VPCSecurityGroupRuleRemote's that define the traffic allowed by the Rule's remote.
@@ -747,18 +652,10 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesSource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesSourcePortRange {
     /// maximumPort is the inclusive upper range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumPort")]
     pub maximum_port: Option<i64>,
     /// minimumPort is the inclusive lower range of ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumPort")]
     pub minimum_port: Option<i64>,
 }
 
@@ -786,23 +683,14 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesSourceRemo
     pub address: Option<String>,
     /// cidrSubnetName is the name of the VPC Subnet to retrieve the CIDR from, to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeCIDR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrSubnetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrSubnetName")]
     pub cidr_subnet_name: Option<String>,
     /// remoteType defines the type of filter to define for the remote's destination/source.
     #[serde(rename = "remoteType")]
-    pub remote_type:
-        IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesSourceRemotesRemoteType,
+    pub remote_type: IBMPowerVSClusterTemplateTemplateSpecVpcSecurityGroupsRulesSourceRemotesRemoteType,
     /// securityGroupName is the name of the VPC Security Group to use for the remote's destination/source.
     /// Only used when remoteType is VPCSecurityGroupRuleRemoteTypeSG
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupName")]
     pub security_group_name: Option<String>,
 }
 
@@ -832,3 +720,4 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecVpcSubnets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
 }
+

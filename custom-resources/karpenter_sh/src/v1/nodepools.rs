@@ -4,11 +4,11 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -17,16 +17,11 @@ use self::prelude::*;
 /// is capable of managing a diverse set of nodes. Node properties are determined
 /// from a combination of nodepool and pod scheduling constraints.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "karpenter.sh",
-    version = "v1",
-    kind = "NodePool",
-    plural = "nodepools"
-)]
+#[kube(group = "karpenter.sh", version = "v1", kind = "NodePool", plural = "nodepools")]
 #[kube(status = "NodePoolStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodePoolSpec {
     /// Disruption contains the parameters that relate to Karpenter's disruption logic
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -61,11 +56,7 @@ pub struct NodePoolDisruption {
     pub consolidate_after: String,
     /// ConsolidationPolicy describes which nodes Karpenter can disrupt through its consolidation
     /// algorithm. This policy defaults to "WhenEmptyOrUnderutilized" if not specified
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consolidationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolidationPolicy")]
     pub consolidation_policy: Option<NodePoolDisruptionConsolidationPolicy>,
 }
 
@@ -146,11 +137,7 @@ pub struct NodePoolTemplateSpec {
     /// before terminating a node, measured from when the node is created. This
     /// is useful to implement features like eventually consistent node upgrade,
     /// memory leak protection, and disruption testing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expireAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expireAfter")]
     pub expire_after: Option<String>,
     /// NodeClassRef is a reference to an object that defines provider specific configuration
     #[serde(rename = "nodeClassRef")]
@@ -161,33 +148,25 @@ pub struct NodePoolTemplateSpec {
     /// within a short period of time, typically by a DaemonSet that tolerates the taint. These are commonly used by
     /// daemonsets to allow initialization and enforce startup ordering.  StartupTaints are ignored for provisioning
     /// purposes in that pods are not required to tolerate a StartupTaint in order to have nodes provisioned for them.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupTaints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupTaints")]
     pub startup_taints: Option<Vec<NodePoolTemplateSpecStartupTaints>>,
     /// Taints will be applied to the NodeClaim's node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<NodePoolTemplateSpecTaints>>,
     /// TerminationGracePeriod is the maximum duration the controller will wait before forcefully deleting the pods on a node, measured from when deletion is first initiated.
-    ///
+    /// 
     /// Warning: this feature takes precedence over a Pod's terminationGracePeriodSeconds value, and bypasses any blocked PDBs or the karpenter.sh/do-not-disrupt annotation.
-    ///
+    /// 
     /// This field is intended to be used by cluster administrators to enforce that nodes can be cycled within a given time period.
     /// When set, drifted nodes will begin draining even if there are pods blocking eviction. Draining will respect PDBs and the do-not-disrupt annotation until the TGP is reached.
-    ///
+    /// 
     /// Karpenter will preemptively delete pods so their terminationGracePeriodSeconds align with the node's terminationGracePeriod.
     /// If a pod would be terminated without being granted its full terminationGracePeriodSeconds prior to the node timeout,
     /// that pod will be deleted at T = node timeout - pod terminationGracePeriodSeconds.
-    ///
+    /// 
     /// The feature can also be used to allow maximum time limits for long-running jobs which can delay node termination with preStop hooks.
     /// If left undefined, the controller will wait indefinitely for pods to be drained.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriod")]
     pub termination_grace_period: Option<String>,
 }
 
@@ -302,3 +281,4 @@ pub struct NodePoolStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BTreeMap<String, IntOrString>>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// HotBackupSpec defines the Spec of HotBackup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hazelcast.com",
-    version = "v1alpha1",
-    kind = "HotBackup",
-    plural = "hotbackups"
-)]
+#[kube(group = "hazelcast.com", version = "v1alpha1", kind = "HotBackup", plural = "hotbackups")]
 #[kube(namespaced)]
 #[kube(status = "HotBackupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HotBackupSpec {
     /// URL of the bucket to download HotBackup folders. AWS S3, GCP Bucket and Azure Blob storage buckets are supported. Example bucket URIs: - AWS S3     -> s3://bucket-name/path/to/folder - GCP Bucket -> gs://bucket-name/path/to/folder - Azure Blob -> azblob://bucket-name/path/to/folder
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketURI")]
@@ -33,22 +28,14 @@ pub struct HotBackupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// Name of the secret with credentials for cloud providers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
 /// HotBackupStatus defines the observed state of HotBackup
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HotBackupStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupUUIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupUUIDs")]
     pub backup_uui_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -66,3 +53,4 @@ pub enum HotBackupStatusState {
     Failure,
     Success,
 }
+

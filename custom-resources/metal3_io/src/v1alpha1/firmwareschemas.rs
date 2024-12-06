@@ -5,37 +5,24 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// FirmwareSchemaSpec defines the desired state of FirmwareSchema.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "metal3.io",
-    version = "v1alpha1",
-    kind = "FirmwareSchema",
-    plural = "firmwareschemas"
-)]
+#[kube(group = "metal3.io", version = "v1alpha1", kind = "FirmwareSchema", plural = "firmwareschemas")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FirmwareSchemaSpec {
     /// The hardware model associated with this schema
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardwareModel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareModel")]
     pub hardware_model: Option<String>,
     /// The hardware vendor associated with this schema
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardwareVendor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareVendor")]
     pub hardware_vendor: Option<String>,
     /// Map of firmware name to schema
     pub schema: BTreeMap<String, FirmwareSchemaSchema>,
@@ -80,3 +67,4 @@ pub enum FirmwareSchemaSchemaAttributeType {
     Boolean,
     Password,
 }
+

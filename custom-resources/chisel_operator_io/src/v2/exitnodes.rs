@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ExitNode is a custom resource that represents a Chisel exit node. It will be used as the reverse proxy for all services in the cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "chisel-operator.io",
-    version = "v2",
-    kind = "ExitNode",
-    plural = "exitnodes"
-)]
+#[kube(group = "chisel-operator.io", version = "v2", kind = "ExitNode", plural = "exitnodes")]
 #[kube(namespaced)]
 #[kube(status = "ExitNodeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ExitNodeSpec {
     /// Optional authentication secret name to connect to the control plane
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -59,3 +54,4 @@ pub struct ExitNodeStatusServiceBinding {
     pub name: String,
     pub namespace: String,
 }
+

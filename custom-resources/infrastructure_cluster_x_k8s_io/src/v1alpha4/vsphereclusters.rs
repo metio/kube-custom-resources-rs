@@ -4,41 +4,28 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VSphereClusterSpec defines the desired state of VSphereCluster
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1alpha4",
-    kind = "VSphereCluster",
-    plural = "vsphereclusters"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1alpha4", kind = "VSphereCluster", plural = "vsphereclusters")]
 #[kube(namespaced)]
 #[kube(status = "VSphereClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VSphereClusterSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<VSphereClusterControlPlaneEndpoint>,
     /// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains
     /// the identity to use when reconciling the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityRef")]
     pub identity_ref: Option<VSphereClusterIdentityRef>,
     /// Server is the address of the vSphere endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -82,11 +69,7 @@ pub struct VSphereClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// FailureDomains is a list of failure domain objects synced from the infrastructure provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<BTreeMap<String, VSphereClusterStatusFailureDomains>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
@@ -99,10 +82,7 @@ pub struct VSphereClusterStatusFailureDomains {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// ControlPlane determines if this failure domain is suitable for use by control plane machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
 }
+

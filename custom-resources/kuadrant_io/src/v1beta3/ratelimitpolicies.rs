@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuadrant.io",
-    version = "v1beta3",
-    kind = "RateLimitPolicy",
-    plural = "ratelimitpolicies"
-)]
+#[kube(group = "kuadrant.io", version = "v1beta3", kind = "RateLimitPolicy", plural = "ratelimitpolicies")]
 #[kube(namespaced)]
 #[kube(status = "RateLimitPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RateLimitPolicySpec {
     /// Rules to apply as defaults. Can be overridden by more specific policiy rules lower in the hierarchy and by less specific policy overrides.
     /// Use one of: defaults, overrides, or bare set of policy rules (implicit defaults).
@@ -249,21 +244,17 @@ pub struct RateLimitPolicyTargetRef {
     /// SectionName is the name of a section within the target resource. When
     /// unspecified, this targetRef targets the entire resource. In the following
     /// resources, SectionName is interpreted as the following:
-    ///
-    ///
+    /// 
+    /// 
     /// * Gateway: Listener name
     /// * HTTPRoute: HTTPRouteRule name
     /// * Service: Port name
-    ///
-    ///
+    /// 
+    /// 
     /// If a SectionName is specified, but does not exist on the targeted object,
     /// the Policy must fail to attach, and the policy implementation should record
     /// a `ResolvedRefs` or similar Condition in the Policy's status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
 }
 
@@ -280,10 +271,7 @@ pub struct RateLimitPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration reflects the generation of the most recently observed spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

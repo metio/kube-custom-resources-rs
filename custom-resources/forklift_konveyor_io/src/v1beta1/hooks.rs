@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Hook specification.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "forklift.konveyor.io",
-    version = "v1beta1",
-    kind = "Hook",
-    plural = "hooks"
-)]
+#[kube(group = "forklift.konveyor.io", version = "v1beta1", kind = "Hook", plural = "hooks")]
 #[kube(namespaced)]
 #[kube(status = "HookStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HookSpec {
     /// Hook deadline in seconds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33,11 +28,7 @@ pub struct HookSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub playbook: Option<String>,
     /// Service account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
 }
 
@@ -48,10 +39,7 @@ pub struct HookStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The most recent generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

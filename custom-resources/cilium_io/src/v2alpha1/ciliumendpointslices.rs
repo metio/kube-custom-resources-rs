@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -23,13 +23,9 @@ pub struct CiliumEndpointSliceEndpoints {
     pub name: Option<String>,
     /// NamedPorts List of named Layer 4 port and protocol pairs which will be used in Network
     /// Policy specs.
-    ///
+    /// 
     /// swagger:model NamedPorts
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "named-ports"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "named-ports")]
     pub named_ports: Option<Vec<CiliumEndpointSliceEndpointsNamedPorts>>,
     /// EndpointNetworking is the addressing information of an endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -46,7 +42,7 @@ pub struct CiliumEndpointSliceEndpointsEncryption {
 }
 
 /// Port Layer 4 port / protocol pair
-///
+/// 
 /// swagger:model Port
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumEndpointSliceEndpointsNamedPorts {
@@ -81,3 +77,4 @@ pub struct CiliumEndpointSliceEndpointsNetworkingAddressing {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipv6: Option<String>,
 }
+

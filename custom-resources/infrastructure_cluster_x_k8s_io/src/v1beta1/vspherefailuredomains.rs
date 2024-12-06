@@ -5,20 +5,15 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// VSphereFailureDomainSpec defines the desired state of VSphereFailureDomain.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "VSphereFailureDomain",
-    plural = "vspherefailuredomains"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta1", kind = "VSphereFailureDomain", plural = "vspherefailuredomains")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct VSphereFailureDomainSpec {
     /// Region defines the name and type of a region
     pub region: VSphereFailureDomainRegion,
@@ -32,13 +27,9 @@ pub struct VSphereFailureDomainSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereFailureDomainRegion {
     /// AutoConfigure tags the Type which is specified in the Topology
-    ///
+    /// 
     /// Deprecated: This field is going to be removed in a future release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoConfigure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoConfigure")]
     pub auto_configure: Option<bool>,
     /// Name is the name of the tag that represents this failure domain
     pub name: String,
@@ -62,11 +53,7 @@ pub enum VSphereFailureDomainRegionType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereFailureDomainTopology {
     /// ComputeCluster as the failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "computeCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "computeCluster")]
     pub compute_cluster: Option<String>,
     /// Datacenter as the failure domain.
     pub datacenter: String,
@@ -97,13 +84,9 @@ pub struct VSphereFailureDomainTopologyHosts {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereFailureDomainZone {
     /// AutoConfigure tags the Type which is specified in the Topology
-    ///
+    /// 
     /// Deprecated: This field is going to be removed in a future release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoConfigure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoConfigure")]
     pub auto_configure: Option<bool>,
     /// Name is the name of the tag that represents this failure domain
     pub name: String,
@@ -122,3 +105,4 @@ pub enum VSphereFailureDomainZoneType {
     ComputeCluster,
     HostGroup,
 }
+

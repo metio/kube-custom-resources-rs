@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ModelBiasJobDefinitionSpec defines the desired state of ModelBiasJobDefinition.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sagemaker.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "ModelBiasJobDefinition",
-    plural = "modelbiasjobdefinitions"
-)]
+#[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "ModelBiasJobDefinition", plural = "modelbiasjobdefinitions")]
 #[kube(namespaced)]
 #[kube(status = "ModelBiasJobDefinitionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ModelBiasJobDefinitionSpec {
     /// The name of the bias job definition. The name must be unique within an Amazon
     /// Web Services Region in the Amazon Web Services account.
@@ -36,11 +31,7 @@ pub struct ModelBiasJobDefinitionSpec {
     #[serde(rename = "modelBiasAppSpecification")]
     pub model_bias_app_specification: ModelBiasJobDefinitionModelBiasAppSpecification,
     /// The baseline configuration for a model bias job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelBiasBaselineConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelBiasBaselineConfig")]
     pub model_bias_baseline_config: Option<ModelBiasJobDefinitionModelBiasBaselineConfig>,
     /// Inputs for the model bias job.
     #[serde(rename = "modelBiasJobInput")]
@@ -49,22 +40,14 @@ pub struct ModelBiasJobDefinitionSpec {
     #[serde(rename = "modelBiasJobOutputConfig")]
     pub model_bias_job_output_config: ModelBiasJobDefinitionModelBiasJobOutputConfig,
     /// Networking options for a model bias job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkConfig")]
     pub network_config: Option<ModelBiasJobDefinitionNetworkConfig>,
     /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
     /// to perform tasks on your behalf.
     #[serde(rename = "roleARN")]
     pub role_arn: String,
     /// A time limit for how long the monitoring job is allowed to run before stopping.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stoppingCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stoppingCondition")]
     pub stopping_condition: Option<ModelBiasJobDefinitionStoppingCondition>,
     /// (Optional) An array of key-value pairs. For more information, see Using Cost
     /// Allocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-whatURL)
@@ -77,40 +60,20 @@ pub struct ModelBiasJobDefinitionSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelBiasJobDefinitionJobResources {
     /// Configuration for the cluster used to run model monitoring jobs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterConfig")]
     pub cluster_config: Option<ModelBiasJobDefinitionJobResourcesClusterConfig>,
 }
 
 /// Configuration for the cluster used to run model monitoring jobs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelBiasJobDefinitionJobResourcesClusterConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
     pub instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeKMSKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
     pub volume_kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSizeInGB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSizeInGB")]
     pub volume_size_in_gb: Option<i64>,
 }
 
@@ -128,20 +91,11 @@ pub struct ModelBiasJobDefinitionModelBiasAppSpecification {
 /// The baseline configuration for a model bias job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelBiasJobDefinitionModelBiasBaselineConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseliningJobName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseliningJobName")]
     pub baselining_job_name: Option<String>,
     /// The constraints resource for a monitoring job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "constraintsResource"
-    )]
-    pub constraints_resource:
-        Option<ModelBiasJobDefinitionModelBiasBaselineConfigConstraintsResource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintsResource")]
+    pub constraints_resource: Option<ModelBiasJobDefinitionModelBiasBaselineConfigConstraintsResource>,
 }
 
 /// The constraints resource for a monitoring job.
@@ -155,85 +109,37 @@ pub struct ModelBiasJobDefinitionModelBiasBaselineConfigConstraintsResource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelBiasJobDefinitionModelBiasJobInput {
     /// Input object for the endpoint
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointInput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointInput")]
     pub endpoint_input: Option<ModelBiasJobDefinitionModelBiasJobInputEndpointInput>,
     /// The ground truth labels for the dataset used for the monitoring job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groundTruthS3Input"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groundTruthS3Input")]
     pub ground_truth_s3_input: Option<ModelBiasJobDefinitionModelBiasJobInputGroundTruthS3Input>,
 }
 
 /// Input object for the endpoint
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelBiasJobDefinitionModelBiasJobInputEndpointInput {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endTimeOffset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTimeOffset")]
     pub end_time_offset: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointName")]
     pub endpoint_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeFeaturesAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeFeaturesAttribute")]
     pub exclude_features_attribute: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featuresAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featuresAttribute")]
     pub features_attribute: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inferenceAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferenceAttribute")]
     pub inference_attribute: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPath")]
     pub local_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "probabilityAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probabilityAttribute")]
     pub probability_attribute: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "probabilityThresholdAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probabilityThresholdAttribute")]
     pub probability_threshold_attribute: Option<f64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataDistributionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataDistributionType")]
     pub s3_data_distribution_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3InputMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3InputMode")]
     pub s3_input_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startTimeOffset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimeOffset")]
     pub start_time_offset: Option<String>,
 }
 
@@ -249,13 +155,8 @@ pub struct ModelBiasJobDefinitionModelBiasJobInputGroundTruthS3Input {
 pub struct ModelBiasJobDefinitionModelBiasJobOutputConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitoringOutputs"
-    )]
-    pub monitoring_outputs:
-        Option<Vec<ModelBiasJobDefinitionModelBiasJobOutputConfigMonitoringOutputs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitoringOutputs")]
+    pub monitoring_outputs: Option<Vec<ModelBiasJobDefinitionModelBiasJobOutputConfigMonitoringOutputs>>,
 }
 
 /// The output object for a monitoring job.
@@ -275,28 +176,16 @@ pub struct ModelBiasJobDefinitionModelBiasJobOutputConfigMonitoringOutputsS3Outp
     pub local_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3UploadMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3UploadMode")]
     pub s3_upload_mode: Option<String>,
 }
 
 /// Networking options for a model bias job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelBiasJobDefinitionNetworkConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableInterContainerTrafficEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInterContainerTrafficEncryption")]
     pub enable_inter_container_traffic_encryption: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableNetworkIsolation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
     /// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
     /// hosted models, and compute resources have access to. You can control access
@@ -312,11 +201,7 @@ pub struct ModelBiasJobDefinitionNetworkConfig {
 /// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelBiasJobDefinitionNetworkConfigVpcConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<String>>,
@@ -325,24 +210,20 @@ pub struct ModelBiasJobDefinitionNetworkConfigVpcConfig {
 /// A time limit for how long the monitoring job is allowed to run before stopping.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelBiasJobDefinitionStoppingCondition {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRuntimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRuntimeInSeconds")]
     pub max_runtime_in_seconds: Option<i64>,
 }
 
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
-///
-///
+/// 
+/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-///
-///
+/// 
+/// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
 /// For advice on best practices for managing Amazon Web Services resources with
@@ -362,11 +243,7 @@ pub struct ModelBiasJobDefinitionStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ModelBiasJobDefinitionStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -398,3 +275,4 @@ pub struct ModelBiasJobDefinitionStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

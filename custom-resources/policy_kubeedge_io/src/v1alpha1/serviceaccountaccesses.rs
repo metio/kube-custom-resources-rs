@@ -4,54 +4,33 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// Spec represents the specification of rbac.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "policy.kubeedge.io",
-    version = "v1alpha1",
-    kind = "ServiceAccountAccess",
-    plural = "serviceaccountaccesses"
-)]
+#[kube(group = "policy.kubeedge.io", version = "v1alpha1", kind = "ServiceAccountAccess", plural = "serviceaccountaccesses")]
 #[kube(namespaced)]
 #[kube(status = "ServiceAccountAccessStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ServiceAccountAccessSpec {
     /// AccessClusterRoleBinding represents rbac ClusterRoleBinding plus detailed ClusterRole info.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessClusterRoleBinding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessClusterRoleBinding")]
     pub access_cluster_role_binding: Option<Vec<ServiceAccountAccessAccessClusterRoleBinding>>,
     /// AccessRoleBinding represents rbac rolebinding plus detailed role info.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessRoleBinding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessRoleBinding")]
     pub access_role_binding: Option<Vec<ServiceAccountAccessAccessRoleBinding>>,
     /// ServiceAccount is one-to-one corresponding relations with the serviceaccountaccess.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<ServiceAccountAccessServiceAccount>,
     /// ServiceAccountUID is the uid of serviceaccount.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountUid"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountUid")]
     pub service_account_uid: Option<String>,
 }
 
@@ -59,13 +38,8 @@ pub struct ServiceAccountAccessSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceAccountAccessAccessClusterRoleBinding {
     /// ClusterRoleBinding represents rbac ClusterRoleBinding.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRoleBinding"
-    )]
-    pub cluster_role_binding:
-        Option<ServiceAccountAccessAccessClusterRoleBindingClusterRoleBinding>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoleBinding")]
+    pub cluster_role_binding: Option<ServiceAccountAccessAccessClusterRoleBindingClusterRoleBinding>,
     /// Rules contains role rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<ServiceAccountAccessAccessClusterRoleBindingRules>>,
@@ -75,11 +49,7 @@ pub struct ServiceAccountAccessAccessClusterRoleBinding {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceAccountAccessAccessClusterRoleBindingClusterRoleBinding {
     /// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -92,8 +62,7 @@ pub struct ServiceAccountAccessAccessClusterRoleBindingClusterRoleBinding {
     pub role_ref: ServiceAccountAccessAccessClusterRoleBindingClusterRoleBindingRoleRef,
     /// Subjects holds references to the objects the role applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub subjects:
-        Option<Vec<ServiceAccountAccessAccessClusterRoleBindingClusterRoleBindingSubjects>>,
+    pub subjects: Option<Vec<ServiceAccountAccessAccessClusterRoleBindingClusterRoleBindingSubjects>>,
 }
 
 /// Standard object's metadata.
@@ -145,18 +114,10 @@ pub struct ServiceAccountAccessAccessClusterRoleBindingRules {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroups")]
     pub api_groups: Option<Vec<String>>,
     /// NonResourceURLs is a set of partial urls that a user should have access to.  *s are allowed, but only as the full, final step in the path Since non-resource URLs are not namespaced, this field is only applicable for ClusterRoles referenced from a ClusterRoleBinding. Rules can either apply to API resources (such as "pods" or "secrets") or non-resource URL paths (such as "/api"),  but not both.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonResourceURLs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonResourceURLs")]
     pub non_resource_ur_ls: Option<Vec<String>>,
     /// ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceNames")]
     pub resource_names: Option<Vec<String>>,
     /// Resources is a list of resources this rule applies to. '*' represents all resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -169,11 +130,7 @@ pub struct ServiceAccountAccessAccessClusterRoleBindingRules {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceAccountAccessAccessRoleBinding {
     /// RoleBinding represents rbac rolebinding.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleBinding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleBinding")]
     pub role_binding: Option<ServiceAccountAccessAccessRoleBindingRoleBinding>,
     /// Rules contains role rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -184,11 +141,7 @@ pub struct ServiceAccountAccessAccessRoleBinding {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceAccountAccessAccessRoleBindingRoleBinding {
     /// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -253,18 +206,10 @@ pub struct ServiceAccountAccessAccessRoleBindingRules {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroups")]
     pub api_groups: Option<Vec<String>>,
     /// NonResourceURLs is a set of partial urls that a user should have access to.  *s are allowed, but only as the full, final step in the path Since non-resource URLs are not namespaced, this field is only applicable for ClusterRoles referenced from a ClusterRoleBinding. Rules can either apply to API resources (such as "pods" or "secrets") or non-resource URL paths (such as "/api"),  but not both.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonResourceURLs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonResourceURLs")]
     pub non_resource_ur_ls: Option<Vec<String>>,
     /// ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceNames")]
     pub resource_names: Option<Vec<String>>,
     /// Resources is a list of resources this rule applies to. '*' represents all resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -277,25 +222,13 @@ pub struct ServiceAccountAccessAccessRoleBindingRules {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceAccountAccessServiceAccount {
     /// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// AutomountServiceAccountToken indicates whether pods running as this service account should have an API token automatically mounted. Can be overridden at the pod level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     /// ImagePullSecrets is a list of references to secrets in the same namespace to use for pulling any images in pods that reference this ServiceAccount. ImagePullSecrets are distinct from Secrets because Secrets can be mounted in the pod, but ImagePullSecrets are only accessed by the kubelet. More info: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<ServiceAccountAccessServiceAccountImagePullSecrets>>,
     /// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -338,3 +271,4 @@ pub struct ServiceAccountAccessStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeList")]
     pub node_list: Option<Vec<String>>,
 }
+

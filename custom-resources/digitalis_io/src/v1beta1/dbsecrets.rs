@@ -5,34 +5,25 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DbSecretSpec defines the desired state of DbSecret
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "digitalis.io",
-    version = "v1beta1",
-    kind = "DbSecret",
-    plural = "dbsecrets"
-)]
+#[kube(group = "digitalis.io", version = "v1beta1", kind = "DbSecret", plural = "dbsecrets")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DbSecretSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub renew: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rollout: Option<Vec<DbSecretRollout>>,
     /// Name can override the secret name, defaults to manifests.name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<BTreeMap<String, String>>,
@@ -57,4 +48,6 @@ pub struct DbSecretVault {
 
 /// DbSecretStatus defines the observed state of DbSecret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DbSecretStatus {}
+pub struct DbSecretStatus {
+}
+

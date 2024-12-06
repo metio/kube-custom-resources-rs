@@ -5,33 +5,24 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ClusterResourceSetBindingSpec defines the desired state of ClusterResourceSetBinding.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "addons.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "ClusterResourceSetBinding",
-    plural = "clusterresourcesetbindings"
-)]
+#[kube(group = "addons.cluster.x-k8s.io", version = "v1beta1", kind = "ClusterResourceSetBinding", plural = "clusterresourcesetbindings")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterResourceSetBindingSpec {
     /// bindings is a list of ClusterResourceSets and their resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bindings: Option<Vec<ClusterResourceSetBindingBindings>>,
     /// clusterName is the name of the Cluster this binding applies to.
     /// Note: this field mandatory in v1beta2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
 }
 
@@ -58,11 +49,7 @@ pub struct ClusterResourceSetBindingBindingsResources {
     /// kind of the resource. Supported kinds are: Secrets and ConfigMaps.
     pub kind: ClusterResourceSetBindingBindingsResourcesKind,
     /// lastAppliedTime identifies when this resource was last applied to the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAppliedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedTime")]
     pub last_applied_time: Option<String>,
     /// name of the resource that is in the same namespace with ClusterResourceSet object.
     pub name: String,
@@ -74,3 +61,4 @@ pub enum ClusterResourceSetBindingBindingsResourcesKind {
     Secret,
     ConfigMap,
 }
+

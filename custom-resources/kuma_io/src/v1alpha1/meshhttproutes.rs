@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the Kuma MeshHTTPRoute resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshHTTPRoute",
-    plural = "meshhttproutes"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshHTTPRoute", plural = "meshhttproutes")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshHTTPRouteSpec {
     /// TargetRef is a reference to the resource the policy takes an effect on.
     /// The resource could be either a real store object or virtual resource
@@ -59,19 +54,11 @@ pub struct MeshHTTPRouteTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -127,11 +114,7 @@ pub struct MeshHTTPRouteToRules {
 /// policies.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendRefs")]
     pub backend_refs: Option<Vec<MeshHTTPRouteToRulesDefaultBackendRefs>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<MeshHTTPRouteToRulesDefaultFilters>>,
@@ -163,19 +146,11 @@ pub struct MeshHTTPRouteToRulesDefaultBackendRefs {
     pub port: Option<i32>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -204,40 +179,20 @@ pub struct MeshHTTPRouteToRulesDefaultFilters {
     /// Only one action is supported per header name.
     /// Configuration to set or add multiple values for a header must use RFC 7230
     /// header value formatting, separating each value with a comma.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaderModifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaderModifier")]
     pub request_header_modifier: Option<MeshHTTPRouteToRulesDefaultFiltersRequestHeaderModifier>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestMirror"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMirror")]
     pub request_mirror: Option<MeshHTTPRouteToRulesDefaultFiltersRequestMirror>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestRedirect"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestRedirect")]
     pub request_redirect: Option<MeshHTTPRouteToRulesDefaultFiltersRequestRedirect>,
     /// Only one action is supported per header name.
     /// Configuration to set or add multiple values for a header must use RFC 7230
     /// header value formatting, separating each value with a comma.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeaderModifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaderModifier")]
     pub response_header_modifier: Option<MeshHTTPRouteToRulesDefaultFiltersResponseHeaderModifier>,
     #[serde(rename = "type")]
     pub r#type: MeshHTTPRouteToRulesDefaultFiltersType,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "urlRewrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlRewrite")]
     pub url_rewrite: Option<MeshHTTPRouteToRulesDefaultFiltersUrlRewrite>,
 }
 
@@ -303,19 +258,11 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     pub port: Option<i32>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -344,7 +291,7 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestRedirect {
     /// PreciseHostname is the fully qualified domain name of a network host. This
     /// matches the RFC 1123 definition of a hostname with 1 notable exception that
     /// numeric IP addresses are not allowed.
-    ///
+    /// 
     /// Note that as per RFC1035 and RFC1123, a *label* must consist of lower case
     /// alphanumeric characters or '-', and must start and end with an alphanumeric
     /// character. No other punctuation is allowed.
@@ -363,11 +310,7 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestRedirect {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<MeshHTTPRouteToRulesDefaultFiltersRequestRedirectScheme>,
     /// StatusCode is the HTTP status code to be used in response.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCode")]
     pub status_code: Option<i64>,
 }
 
@@ -376,17 +319,9 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestRedirect {
 /// When empty, the request path is used as-is.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersRequestRedirectPath {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replaceFullPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceFullPath")]
     pub replace_full_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replacePrefixMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replacePrefixMatch")]
     pub replace_prefix_match: Option<String>,
     #[serde(rename = "type")]
     pub r#type: MeshHTTPRouteToRulesDefaultFiltersRequestRedirectPathType,
@@ -462,11 +397,7 @@ pub enum MeshHTTPRouteToRulesDefaultFiltersType {
 pub struct MeshHTTPRouteToRulesDefaultFiltersUrlRewrite {
     /// HostToBackendHostname rewrites the hostname to the hostname of the
     /// upstream host. This option is only available when targeting MeshGateways.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostToBackendHostname"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostToBackendHostname")]
     pub host_to_backend_hostname: Option<bool>,
     /// Hostname is the value to be used to replace the host header value during forwarding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -479,17 +410,9 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersUrlRewrite {
 /// Path defines a path rewrite.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersUrlRewritePath {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replaceFullPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceFullPath")]
     pub replace_full_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replacePrefixMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replacePrefixMatch")]
     pub replace_prefix_match: Option<String>,
     #[serde(rename = "type")]
     pub r#type: MeshHTTPRouteToRulesDefaultFiltersUrlRewritePathType,
@@ -512,11 +435,7 @@ pub struct MeshHTTPRouteToRulesMatches {
     pub path: Option<MeshHTTPRouteToRulesMatchesPath>,
     /// QueryParams matches based on HTTP URL query parameters. Multiple matches
     /// are ANDed together such that all listed matches must succeed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParams")]
     pub query_params: Option<Vec<MeshHTTPRouteToRulesMatchesQueryParams>>,
 }
 
@@ -622,19 +541,11 @@ pub struct MeshHTTPRouteToTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -656,3 +567,4 @@ pub enum MeshHTTPRouteToTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
 }
+

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec defines the desired state of ClusterImpairment
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.redhat.com",
-    version = "v1alpha1",
-    kind = "ClusterImpairment",
-    plural = "clusterimpairments"
-)]
+#[kube(group = "apps.redhat.com", version = "v1alpha1", kind = "ClusterImpairment", plural = "clusterimpairments")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterImpairmentSpec {
     /// The duration of the impairment in seconds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -35,25 +30,13 @@ pub struct ClusterImpairmentSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interfaces: Option<Vec<String>>,
     /// The configuration section that specifies the link flapping impairments.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linkFlapping"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linkFlapping")]
     pub link_flapping: Option<ClusterImpairmentLinkFlapping>,
     /// The configuration section that specifies the node selector that should be applied to the daemonset. Default: worker nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<ClusterImpairmentNodeSelector>,
     /// The delay (in seconds) before starting the impairments. At least 5 seconds recommended for Kubernetes and for synchronization of the impairments.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDelay")]
     pub start_delay: Option<i64>,
 }
 
@@ -67,41 +50,25 @@ pub struct ClusterImpairmentEgress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub corruption: Option<f64>,
     /// Advanced corruption options
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "corruptionOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "corruptionOptions")]
     pub corruption_options: Option<ClusterImpairmentEgressCorruptionOptions>,
     /// The percent of packets duplicated
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duplication: Option<f64>,
     /// Advanced duplication options
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "duplicationOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "duplicationOptions")]
     pub duplication_options: Option<ClusterImpairmentEgressDuplicationOptions>,
     /// The latency applied in ms
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency: Option<f64>,
     /// Advanced latency options. Example: jitter
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latencyOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latencyOptions")]
     pub latency_options: Option<ClusterImpairmentEgressLatencyOptions>,
     /// The packet loss in percent
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loss: Option<f64>,
     /// Advanced packet loss options
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lossOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lossOptions")]
     pub loss_options: Option<ClusterImpairmentEgressLossOptions>,
 }
 
@@ -131,21 +98,13 @@ pub struct ClusterImpairmentEgressLatencyOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jitter: Option<f64>,
     /// The correlation between sequential jitter values
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jitterCorrelation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jitterCorrelation")]
     pub jitter_correlation: Option<f64>,
     /// The percentage of packets that are not delayed, causing reordering
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reorder: Option<f64>,
     /// The correlation between sequential reorder values
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reorderCorrelation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reorderCorrelation")]
     pub reorder_correlation: Option<f64>,
 }
 
@@ -167,41 +126,25 @@ pub struct ClusterImpairmentIngress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub corruption: Option<f64>,
     /// Advanced corruption options
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "corruptionOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "corruptionOptions")]
     pub corruption_options: Option<ClusterImpairmentIngressCorruptionOptions>,
     /// The percent of packets duplicated
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duplication: Option<f64>,
     /// Advanced duplication options
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "duplicationOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "duplicationOptions")]
     pub duplication_options: Option<ClusterImpairmentIngressDuplicationOptions>,
     /// The latency applied in ms
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency: Option<f64>,
     /// Advanced latency options. Example: jitter
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latencyOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latencyOptions")]
     pub latency_options: Option<ClusterImpairmentIngressLatencyOptions>,
     /// The packet loss in percent
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loss: Option<f64>,
     /// Advanced packet loss options
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lossOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lossOptions")]
     pub loss_options: Option<ClusterImpairmentIngressLossOptions>,
 }
 
@@ -231,21 +174,13 @@ pub struct ClusterImpairmentIngressLatencyOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jitter: Option<f64>,
     /// The correlation between sequential jitter values
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jitterCorrelation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jitterCorrelation")]
     pub jitter_correlation: Option<f64>,
     /// The percentage of packets that are not delayed, causing reordering
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reorder: Option<f64>,
     /// The correlation between sequential reorder values
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reorderCorrelation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reorderCorrelation")]
     pub reorder_correlation: Option<f64>,
 }
 
@@ -281,3 +216,4 @@ pub struct ClusterImpairmentNodeSelector {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
+

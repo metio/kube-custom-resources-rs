@@ -4,40 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// LayerVersionSpec defines the desired state of LayerVersion.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "lambda.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "LayerVersion",
-    plural = "layerversions"
-)]
+#[kube(group = "lambda.services.k8s.aws", version = "v1alpha1", kind = "LayerVersion", plural = "layerversions")]
 #[kube(namespaced)]
 #[kube(status = "LayerVersionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct LayerVersionSpec {
     /// A list of compatible instruction set architectures (https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compatibleArchitectures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compatibleArchitectures")]
     pub compatible_architectures: Option<Vec<String>>,
     /// A list of compatible function runtimes (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).
     /// Used for filtering with ListLayers and ListLayerVersions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compatibleRuntimes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compatibleRuntimes")]
     pub compatible_runtimes: Option<Vec<String>>,
     /// The function layer archive.
     pub content: LayerVersionContent,
@@ -48,18 +35,14 @@ pub struct LayerVersionSpec {
     #[serde(rename = "layerName")]
     pub layer_name: String,
     /// The layer's software license. It can be any of the following:
-    ///
+    /// 
     ///    * An SPDX license identifier (https://spdx.org/licenses/). For example,
     ///    MIT.
-    ///
+    /// 
     ///    * The URL of a license hosted on the internet. For example, https://opensource.org/licenses/MIT.
-    ///
+    /// 
     ///    * The full text of the license.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "licenseInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "licenseInfo")]
     pub license_info: Option<String>,
 }
 
@@ -70,11 +53,7 @@ pub struct LayerVersionContent {
     pub s3_bucket: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Key")]
     pub s3_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3ObjectVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3ObjectVersion")]
     pub s3_object_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zipFile")]
     pub zip_file: Option<String>,
@@ -86,11 +65,7 @@ pub struct LayerVersionStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<LayerVersionStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -100,21 +75,13 @@ pub struct LayerVersionStatus {
     pub conditions: Option<Vec<Condition>>,
     /// The date that the layer version was created, in ISO-8601 format (https://www.w3.org/TR/NOTE-datetime)
     /// (YYYY-MM-DDThh:mm:ss.sTZD).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createdDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<String>,
     /// The ARN of the layer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "layerARN")]
     pub layer_arn: Option<String>,
     /// The version number.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "versionNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionNumber")]
     pub version_number: Option<i64>,
 }
 
@@ -139,3 +106,4 @@ pub struct LayerVersionStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

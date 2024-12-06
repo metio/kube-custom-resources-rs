@@ -4,43 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BackupSpec defines the desired state of Backup.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "oracle.db.anthosapis.com",
-    version = "v1alpha1",
-    kind = "Backup",
-    plural = "backups"
-)]
+#[kube(group = "oracle.db.anthosapis.com", version = "v1alpha1", kind = "Backup", plural = "backups")]
 #[kube(namespaced)]
 #[kube(status = "BackupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackupSpec {
     /// For a Physical backup this slice can be used to indicate what PDBs, schemas, tablespaces or tables to back up.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupItems"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupItems")]
     pub backup_items: Option<Vec<String>>,
     /// For a Physical backup the choices are Backupset and Image Copies. Backupset is the default, but if Image Copies are required, flip this flag to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backupset: Option<bool>,
     /// For a Physical backup, optionally turn on an additional "check logical" option. The default is off.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checkLogical"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkLogical")]
     pub check_logical: Option<bool>,
     /// For a Physical backup, optionally turn on compression, by flipping this flag to true. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -61,11 +48,7 @@ pub struct BackupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instance: Option<String>,
     /// KeepDataOnDeletion defines whether to keep backup data when backup resource is removed. The default value is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepDataOnDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepDataOnDeletion")]
     pub keep_data_on_deletion: Option<bool>,
     /// For a Physical backup, optionally specify an incremental level. The default is 0 (the whole database).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -77,31 +60,19 @@ pub struct BackupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<BackupMode>,
     /// For a Physical backup, optionally specify a section size in various units (K M G).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionSize")]
     pub section_size: Option<IntOrString>,
     /// Backup sub-type, which is only relevant for a Physical backup type (e.g. RMAN). If omitted, the default of Instance(Level) is assumed. Supported options at this point are: Instance or Database level backups.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subType")]
     pub sub_type: Option<BackupSubType>,
     /// For a Physical backup, optionally specify the time threshold. If a threshold is reached, the backup request would time out and error out. The threshold is expressed in minutes. Don't include the unit (minutes), just the integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeLimitMinutes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeLimitMinutes")]
     pub time_limit_minutes: Option<i32>,
     /// Type describes a type of a backup to take. Immutable. Available options are: - Snapshot: storage level disk snapshot. - Physical: database engine specific backup that relies on a redo stream / continuous archiving (WAL) and may allow a PITR. Examples include pg_backup, pgBackRest, mysqlbackup. A Physical backup may be file based or database block based (e.g. Oracle RMAN). - Logical: database engine specific backup that relies on running SQL statements, e.g. mysqldump, pg_dump, expdp. If not specified, the default of Snapshot is assumed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<BackupType>,
     /// VolumeSnapshotClass points to a particular CSI driver and is used for taking a volume snapshot. If requested here at the Backup level, this setting overrides the platform default as well as the default set via the Config (global user preferences).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClass")]
     pub volume_snapshot_class: Option<String>,
 }
 
@@ -148,3 +119,4 @@ pub struct BackupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
 }
+

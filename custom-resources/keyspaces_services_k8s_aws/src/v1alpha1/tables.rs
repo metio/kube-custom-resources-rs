@@ -4,139 +4,114 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TableSpec defines the desired state of Table.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "keyspaces.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Table",
-    plural = "tables"
-)]
+#[kube(group = "keyspaces.services.k8s.aws", version = "v1alpha1", kind = "Table", plural = "tables")]
 #[kube(namespaced)]
 #[kube(status = "TableStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TableSpec {
     /// Specifies the read/write throughput capacity mode for the table. The options
     /// are:
-    ///
+    /// 
     ///    * throughputMode:PAY_PER_REQUEST and
-    ///
+    /// 
     ///    * throughputMode:PROVISIONED - Provisioned capacity mode requires readCapacityUnits
     ///    and writeCapacityUnits as input.
-    ///
+    /// 
     /// The default is throughput_mode:PAY_PER_REQUEST.
-    ///
+    /// 
     /// For more information, see Read/write capacity modes (https://docs.aws.amazon.com/keyspaces/latest/devguide/ReadWriteCapacityMode.html)
     /// in the Amazon Keyspaces Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "capacitySpecification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacitySpecification")]
     pub capacity_specification: Option<TableCapacitySpecification>,
     /// Enables client-side timestamps for the table. By default, the setting is
     /// disabled. You can enable client-side timestamps with the following option:
-    ///
+    /// 
     ///    * status: "enabled"
-    ///
+    /// 
     /// Once client-side timestamps are enabled for a table, this setting cannot
     /// be disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSideTimestamps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSideTimestamps")]
     pub client_side_timestamps: Option<TableClientSideTimestamps>,
     /// This parameter allows to enter a description of the table.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub comment: Option<TableComment>,
     /// The default Time to Live setting in seconds for the table.
-    ///
+    /// 
     /// For more information, see Setting the default TTL value for a table (https://docs.aws.amazon.com/keyspaces/latest/devguide/TTL-how-it-works.html#ttl-howitworks_default_ttl)
     /// in the Amazon Keyspaces Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultTimeToLive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTimeToLive")]
     pub default_time_to_live: Option<i64>,
     /// Specifies how the encryption key for encryption at rest is managed for the
     /// table. You can choose one of the following KMS key (KMS key):
-    ///
+    /// 
     ///    * type:AWS_OWNED_KMS_KEY - This key is owned by Amazon Keyspaces.
-    ///
+    /// 
     ///    * type:CUSTOMER_MANAGED_KMS_KEY - This key is stored in your account and
     ///    is created, owned, and managed by you. This option requires the kms_key_identifier
     ///    of the KMS key in Amazon Resource Name (ARN) format as input.
-    ///
+    /// 
     /// The default is type:AWS_OWNED_KMS_KEY.
-    ///
+    /// 
     /// For more information, see Encryption at rest (https://docs.aws.amazon.com/keyspaces/latest/devguide/EncryptionAtRest.html)
     /// in the Amazon Keyspaces Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionSpecification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionSpecification")]
     pub encryption_specification: Option<TableEncryptionSpecification>,
     /// The name of the keyspace that the table is going to be created in.
     #[serde(rename = "keyspaceName")]
     pub keyspace_name: String,
     /// Specifies if pointInTimeRecovery is enabled or disabled for the table. The
     /// options are:
-    ///
+    /// 
     ///    * status=ENABLED
-    ///
+    /// 
     ///    * status=DISABLED
-    ///
+    /// 
     /// If it's not specified, the default is status=DISABLED.
-    ///
+    /// 
     /// For more information, see Point-in-time recovery (https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery.html)
     /// in the Amazon Keyspaces Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pointInTimeRecovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pointInTimeRecovery")]
     pub point_in_time_recovery: Option<TablePointInTimeRecovery>,
     /// The schemaDefinition consists of the following parameters.
-    ///
+    /// 
     /// For each column to be created:
-    ///
+    /// 
     ///    * name - The name of the column.
-    ///
+    /// 
     ///    * type - An Amazon Keyspaces data type. For more information, see Data
     ///    types (https://docs.aws.amazon.com/keyspaces/latest/devguide/cql.elements.html#cql.data-types)
     ///    in the Amazon Keyspaces Developer Guide.
-    ///
+    /// 
     /// The primary key of the table consists of the following columns:
-    ///
+    /// 
     ///    * partitionKeys - The partition key can be a single column, or it can
     ///    be a compound value composed of two or more columns. The partition key
     ///    portion of the primary key is required and determines how Amazon Keyspaces
     ///    stores your data.
-    ///
+    /// 
     ///    * name - The name of each partition key column.
-    ///
+    /// 
     ///    * clusteringKeys - The optional clustering column portion of your primary
     ///    key determines how the data is clustered and sorted within each partition.
-    ///
+    /// 
     ///    * name - The name of the clustering column.
-    ///
+    /// 
     ///    * orderBy - Sets the ascendant (ASC) or descendant (DESC) order modifier.
     ///    To define a column as static use staticColumns - Static columns store
     ///    values that are shared by all rows in the same partition:
-    ///
+    /// 
     ///    * name - The name of the column.
-    ///
+    /// 
     ///    * type - An Amazon Keyspaces data type.
     #[serde(rename = "schemaDefinition")]
     pub schema_definition: TableSchemaDefinition,
@@ -144,21 +119,21 @@ pub struct TableSpec {
     #[serde(rename = "tableName")]
     pub table_name: String,
     /// A list of key-value pair tags to be attached to the resource.
-    ///
+    /// 
     /// For more information, see Adding tags and labels to Amazon Keyspaces resources
     /// (https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html)
     /// in the Amazon Keyspaces Developer Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<TableTags>>,
     /// Enables Time to Live custom settings for the table. The options are:
-    ///
+    /// 
     ///    * status:enabled
-    ///
+    /// 
     ///    * status:disabled
-    ///
+    /// 
     /// The default is status:disabled. After ttl is enabled, you can't disable it
     /// for the table.
-    ///
+    /// 
     /// For more information, see Expiring data by using Amazon Keyspaces Time to
     /// Live (TTL) (https://docs.aws.amazon.com/keyspaces/latest/devguide/TTL.html)
     /// in the Amazon Keyspaces Developer Guide.
@@ -168,43 +143,31 @@ pub struct TableSpec {
 
 /// Specifies the read/write throughput capacity mode for the table. The options
 /// are:
-///
+/// 
 ///    * throughputMode:PAY_PER_REQUEST and
-///
+/// 
 ///    * throughputMode:PROVISIONED - Provisioned capacity mode requires readCapacityUnits
 ///    and writeCapacityUnits as input.
-///
+/// 
 /// The default is throughput_mode:PAY_PER_REQUEST.
-///
+/// 
 /// For more information, see Read/write capacity modes (https://docs.aws.amazon.com/keyspaces/latest/devguide/ReadWriteCapacityMode.html)
 /// in the Amazon Keyspaces Developer Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableCapacitySpecification {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readCapacityUnits"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readCapacityUnits")]
     pub read_capacity_units: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "throughputMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throughputMode")]
     pub throughput_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeCapacityUnits"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeCapacityUnits")]
     pub write_capacity_units: Option<i64>,
 }
 
 /// Enables client-side timestamps for the table. By default, the setting is
 /// disabled. You can enable client-side timestamps with the following option:
-///
+/// 
 ///    * status: "enabled"
-///
+/// 
 /// Once client-side timestamps are enabled for a table, this setting cannot
 /// be disabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -222,24 +185,20 @@ pub struct TableComment {
 
 /// Specifies how the encryption key for encryption at rest is managed for the
 /// table. You can choose one of the following KMS key (KMS key):
-///
+/// 
 ///    * type:AWS_OWNED_KMS_KEY - This key is owned by Amazon Keyspaces.
-///
+/// 
 ///    * type:CUSTOMER_MANAGED_KMS_KEY - This key is stored in your account and
 ///    is created, owned, and managed by you. This option requires the kms_key_identifier
 ///    of the KMS key in Amazon Resource Name (ARN) format as input.
-///
+/// 
 /// The default is type:AWS_OWNED_KMS_KEY.
-///
+/// 
 /// For more information, see Encryption at rest (https://docs.aws.amazon.com/keyspaces/latest/devguide/EncryptionAtRest.html)
 /// in the Amazon Keyspaces Developer Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableEncryptionSpecification {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kmsKeyIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyIdentifier")]
     pub kms_key_identifier: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
     pub r#type: Option<String>,
@@ -247,13 +206,13 @@ pub struct TableEncryptionSpecification {
 
 /// Specifies if pointInTimeRecovery is enabled or disabled for the table. The
 /// options are:
-///
+/// 
 ///    * status=ENABLED
-///
+/// 
 ///    * status=DISABLED
-///
+/// 
 /// If it's not specified, the default is status=DISABLED.
-///
+/// 
 /// For more information, see Point-in-time recovery (https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery.html)
 /// in the Amazon Keyspaces Developer Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -263,61 +222,45 @@ pub struct TablePointInTimeRecovery {
 }
 
 /// The schemaDefinition consists of the following parameters.
-///
+/// 
 /// For each column to be created:
-///
+/// 
 ///    * name - The name of the column.
-///
+/// 
 ///    * type - An Amazon Keyspaces data type. For more information, see Data
 ///    types (https://docs.aws.amazon.com/keyspaces/latest/devguide/cql.elements.html#cql.data-types)
 ///    in the Amazon Keyspaces Developer Guide.
-///
+/// 
 /// The primary key of the table consists of the following columns:
-///
+/// 
 ///    * partitionKeys - The partition key can be a single column, or it can
 ///    be a compound value composed of two or more columns. The partition key
 ///    portion of the primary key is required and determines how Amazon Keyspaces
 ///    stores your data.
-///
+/// 
 ///    * name - The name of each partition key column.
-///
+/// 
 ///    * clusteringKeys - The optional clustering column portion of your primary
 ///    key determines how the data is clustered and sorted within each partition.
-///
+/// 
 ///    * name - The name of the clustering column.
-///
+/// 
 ///    * orderBy - Sets the ascendant (ASC) or descendant (DESC) order modifier.
 ///    To define a column as static use staticColumns - Static columns store
 ///    values that are shared by all rows in the same partition:
-///
+/// 
 ///    * name - The name of the column.
-///
+/// 
 ///    * type - An Amazon Keyspaces data type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaDefinition {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allColumns"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allColumns")]
     pub all_columns: Option<Vec<TableSchemaDefinitionAllColumns>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusteringKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusteringKeys")]
     pub clustering_keys: Option<Vec<TableSchemaDefinitionClusteringKeys>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "partitionKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "partitionKeys")]
     pub partition_keys: Option<Vec<TableSchemaDefinitionPartitionKeys>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticColumns"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticColumns")]
     pub static_columns: Option<Vec<TableSchemaDefinitionStaticColumns>>,
 }
 
@@ -359,13 +302,13 @@ pub struct TableSchemaDefinitionStaticColumns {
 
 /// Describes a tag. A tag is a key-value pair. You can add up to 50 tags to
 /// a single Amazon Keyspaces resource.
-///
+/// 
 /// Amazon Web Services-assigned tag names and values are automatically assigned
 /// the aws: prefix, which the user cannot assign. Amazon Web Services-assigned
 /// tag names do not count towards the tag limit of 50. User-assigned tag names
 /// have the prefix user: in the Cost Allocation Report. You cannot backdate
 /// the application of a tag.
-///
+/// 
 /// For more information, see Adding tags and labels to Amazon Keyspaces resources
 /// (https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html)
 /// in the Amazon Keyspaces Developer Guide.
@@ -378,14 +321,14 @@ pub struct TableTags {
 }
 
 /// Enables Time to Live custom settings for the table. The options are:
-///
+/// 
 ///    * status:enabled
-///
+/// 
 ///    * status:disabled
-///
+/// 
 /// The default is status:disabled. After ttl is enabled, you can't disable it
 /// for the table.
-///
+/// 
 /// For more information, see Expiring data by using Amazon Keyspaces Time to
 /// Live (TTL) (https://docs.aws.amazon.com/keyspaces/latest/devguide/TTL.html)
 /// in the Amazon Keyspaces Developer Guide.
@@ -401,11 +344,7 @@ pub struct TableStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<TableStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -438,3 +377,4 @@ pub struct TableStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

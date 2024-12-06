@@ -4,45 +4,32 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// AccessPointSpec defines the desired state of AccessPoint.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "efs.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "AccessPoint",
-    plural = "accesspoints"
-)]
+#[kube(group = "efs.services.k8s.aws", version = "v1alpha1", kind = "AccessPoint", plural = "accesspoints")]
 #[kube(namespaced)]
 #[kube(status = "AccessPointStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AccessPointSpec {
     /// The ID of the EFS file system that the access point provides access to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
     pub file_system_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemRef")]
     pub file_system_ref: Option<AccessPointFileSystemRef>,
     /// The operating system user and group applied to all file system requests made
     /// using the access point.
@@ -55,16 +42,12 @@ pub struct AccessPointSpec {
     /// creates it and applies the CreationInfo settings when a client connects to
     /// an access point. When specifying a RootDirectory, you must provide the Path,
     /// and the CreationInfo.
-    ///
+    /// 
     /// Amazon EFS creates a root directory only if you have provided the CreationInfo:
     /// OwnUid, OwnGID, and permissions for the directory. If you do not provide
     /// this information, Amazon EFS does not create the root directory. If the root
     /// directory does not exist, attempts to mount using the access point will fail.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootDirectory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootDirectory")]
     pub root_directory: Option<AccessPointRootDirectory>,
     /// Creates tags associated with the access point. Each tag is a key-value pair,
     /// each key must be unique. For more information, see Tagging Amazon Web Services
@@ -78,7 +61,7 @@ pub struct AccessPointSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -105,11 +88,7 @@ pub struct AccessPointFileSystemRefFrom {
 pub struct AccessPointPosixUser {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gid: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryGIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryGIDs")]
     pub secondary_gi_ds: Option<Vec<i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<i64>,
@@ -122,7 +101,7 @@ pub struct AccessPointPosixUser {
 /// creates it and applies the CreationInfo settings when a client connects to
 /// an access point. When specifying a RootDirectory, you must provide the Path,
 /// and the CreationInfo.
-///
+/// 
 /// Amazon EFS creates a root directory only if you have provided the CreationInfo:
 /// OwnUid, OwnGID, and permissions for the directory. If you do not provide
 /// this information, Amazon EFS does not create the root directory. If the root
@@ -134,19 +113,15 @@ pub struct AccessPointRootDirectory {
     /// > Path. If the access point root directory does not exist, EFS creates it
     /// with these settings when a client connects to the access point. When specifying
     /// CreationInfo, you must include values for all properties.
-    ///
+    /// 
     /// Amazon EFS creates a root directory only if you have provided the CreationInfo:
     /// OwnUid, OwnGID, and permissions for the directory. If you do not provide
     /// this information, Amazon EFS does not create the root directory. If the root
     /// directory does not exist, attempts to mount using the access point will fail.
-    ///
+    /// 
     /// If you do not provide CreationInfo and the specified RootDirectory does not
     /// exist, attempts to mount the file system using the access point will fail.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationInfo")]
     pub creation_info: Option<AccessPointRootDirectoryCreationInfo>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -157,12 +132,12 @@ pub struct AccessPointRootDirectory {
 /// > Path. If the access point root directory does not exist, EFS creates it
 /// with these settings when a client connects to the access point. When specifying
 /// CreationInfo, you must include values for all properties.
-///
+/// 
 /// Amazon EFS creates a root directory only if you have provided the CreationInfo:
 /// OwnUid, OwnGID, and permissions for the directory. If you do not provide
 /// this information, Amazon EFS does not create the root directory. If the root
 /// directory does not exist, attempts to mount using the access point will fail.
-///
+/// 
 /// If you do not provide CreationInfo and the specified RootDirectory does not
 /// exist, attempts to mount the file system using the access point will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -190,20 +165,12 @@ pub struct AccessPointTags {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AccessPointStatus {
     /// The ID of the access point, assigned by Amazon EFS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessPointID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessPointID")]
     pub access_point_id: Option<String>,
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<AccessPointStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -212,11 +179,7 @@ pub struct AccessPointStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Identifies the lifecycle phase of the access point.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifeCycleState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifeCycleState")]
     pub life_cycle_state: Option<String>,
     /// The name of the access point. This is the value of the Name tag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -247,3 +210,4 @@ pub struct AccessPointStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

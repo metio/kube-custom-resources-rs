@@ -4,53 +4,36 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ConnectionSpec defines the desired state of Connection
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.mariadb.com",
-    version = "v1alpha1",
-    kind = "Connection",
-    plural = "connections"
-)]
+#[kube(group = "k8s.mariadb.com", version = "v1alpha1", kind = "Connection", plural = "connections")]
 #[kube(namespaced)]
 #[kube(status = "ConnectionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ConnectionSpec {
     /// Database to use when configuring the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<String>,
     /// HealthCheck to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<ConnectionHealthCheck>,
     /// Host to connect to. If not provided, it defaults to the MariaDB host or to the MaxScale host.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// MariaDBRef is a reference to the MariaDB to connect to. Either MariaDBRef or MaxScaleRef must be provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mariaDbRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mariaDbRef")]
     pub maria_db_ref: Option<ConnectionMariaDbRef>,
     /// MaxScaleRef is a reference to the MaxScale to connect to. Either MariaDBRef or MaxScaleRef must be provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxScaleRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxScaleRef")]
     pub max_scale_ref: Option<ConnectionMaxScaleRef>,
     /// Params to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -63,25 +46,13 @@ pub struct ConnectionSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SecretName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SecretTemplate to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
     pub secret_template: Option<ConnectionSecretTemplate>,
     /// ServiceName to be used in the Connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
     /// Username to use for configuring the Connection.
     pub username: String,
@@ -94,11 +65,7 @@ pub struct ConnectionHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// RetryInterval is the interval used to perform health check retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
@@ -136,11 +103,7 @@ pub struct ConnectionPasswordSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConnectionSecretTemplate {
     /// DatabaseKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseKey")]
     pub database_key: Option<String>,
     /// Format to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -155,21 +118,13 @@ pub struct ConnectionSecretTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ConnectionSecretTemplateMetadata>,
     /// PasswordKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// PortKey to be used in the Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
     pub port_key: Option<String>,
     /// UsernameKey to be used in the Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
@@ -191,3 +146,4 @@ pub struct ConnectionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

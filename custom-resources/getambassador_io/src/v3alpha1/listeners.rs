@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ListenerSpec defines the desired state of this Port
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "getambassador.io",
-    version = "v3alpha1",
-    kind = "Listener",
-    plural = "listeners"
-)]
+#[kube(group = "getambassador.io", version = "v3alpha1", kind = "Listener", plural = "listeners")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct ListenerSpec {
-    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is:
+    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is: 
     ///  ambassador_id: - "default"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ambassador_id: Option<Vec<String>>,
@@ -38,21 +33,13 @@ pub struct ListenerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<ListenerProtocol>,
     /// ProtocolStack explicitly specifies the protocol stack to set up. Exactly one of Protocol or ProtocolStack must be supplied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolStack"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolStack")]
     pub protocol_stack: Option<Vec<String>>,
     /// SecurityModel specifies how to determine whether connections to this port are secure or insecure.
     #[serde(rename = "securityModel")]
     pub security_model: ListenerSecurityModel,
     /// StatsPrefix specifies the prefix for statistics sent by Envoy about this Listener. The default depends on the protocol: "ingress-http", "ingress-https", "ingress-tls-$port", or "ingress-$port".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statsPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statsPrefix")]
     pub stats_prefix: Option<String>,
 }
 
@@ -90,18 +77,10 @@ pub enum ListenerHostBindingNamespaceFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ListenerHostBindingSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ListenerHostBindingSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -146,3 +125,4 @@ pub enum ListenerSecurityModel {
     #[serde(rename = "INSECURE")]
     Insecure,
 }
+

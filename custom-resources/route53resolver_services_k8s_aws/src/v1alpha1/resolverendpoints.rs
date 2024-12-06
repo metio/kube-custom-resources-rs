@@ -4,14 +4,14 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ResolverEndpointSpec defines the desired state of ResolverEndpoint.
-///
+/// 
 /// In the response to a CreateResolverEndpoint (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html),
 /// DeleteResolverEndpoint (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverEndpoint.html),
 /// GetResolverEndpoint (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html),
@@ -20,23 +20,18 @@ use self::prelude::*;
 /// request, a complex type that contains settings for an existing inbound or
 /// outbound Resolver endpoint.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "route53resolver.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "ResolverEndpoint",
-    plural = "resolverendpoints"
-)]
+#[kube(group = "route53resolver.services.k8s.aws", version = "v1alpha1", kind = "ResolverEndpoint", plural = "resolverendpoints")]
 #[kube(namespaced)]
 #[kube(status = "ResolverEndpointStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ResolverEndpointSpec {
     /// Specify the applicable value:
-    ///
+    /// 
     ///    * INBOUND: Resolver forwards DNS queries to the DNS service for a VPC
     ///    from your network
-    ///
+    /// 
     ///    * OUTBOUND: Resolver forwards DNS queries from the DNS service for a VPC
     ///    to your network
     pub direction: String,
@@ -52,11 +47,7 @@ pub struct ResolverEndpointSpec {
     /// For the endpoint type you can choose either IPv4, IPv6. or dual-stack. A
     /// dual-stack endpoint means that it will resolve via both IPv4 and IPv6. This
     /// endpoint type is applied to all IP addresses.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolverEndpointType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolverEndpointType")]
     pub resolver_endpoint_type: Option<String>,
     /// The ID of one or more security groups that you want to use to control access
     /// to this VPC. The security group that you specify must include one or more
@@ -64,17 +55,9 @@ pub struct ResolverEndpointSpec {
     /// Resolver endpoints). Inbound and outbound rules must allow TCP and UDP access.
     /// For inbound access, open port 53. For outbound access, open the port that
     /// you're using for DNS queries on your network.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupRefs")]
     pub security_group_refs: Option<Vec<ResolverEndpointSecurityGroupRefs>>,
     /// A list of the tag keys and values that you want to associate with the endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -121,7 +104,7 @@ pub struct ResolverEndpointIpAddressesSubnetRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -158,11 +141,7 @@ pub struct ResolverEndpointStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ResolverEndpointStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -172,20 +151,12 @@ pub struct ResolverEndpointStatus {
     pub conditions: Option<Vec<Condition>>,
     /// The date and time that the endpoint was created, in Unix time format and
     /// Coordinated Universal Time (UTC).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     /// A unique string that identifies the request that created the Resolver endpoint.
     /// The CreatorRequestId allows failed requests to be retried without the risk
     /// of running the operation twice.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creatorRequestID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creatorRequestID")]
     pub creator_request_id: Option<String>,
     /// The ID of the VPC that you want to create the Resolver endpoint in.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostVPCID")]
@@ -194,39 +165,31 @@ pub struct ResolverEndpointStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// The number of IP addresses that the Resolver endpoint can use for DNS queries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipAddressCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressCount")]
     pub ip_address_count: Option<i64>,
     /// The date and time that the endpoint was last modified, in Unix time format
     /// and Coordinated Universal Time (UTC).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modificationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modificationTime")]
     pub modification_time: Option<String>,
     /// A code that specifies the current status of the Resolver endpoint. Valid
     /// values include the following:
-    ///
+    /// 
     ///    * CREATING: Resolver is creating and configuring one or more Amazon VPC
     ///    network interfaces for this endpoint.
-    ///
+    /// 
     ///    * OPERATIONAL: The Amazon VPC network interfaces for this endpoint are
     ///    correctly configured and able to pass inbound or outbound DNS queries
     ///    between your network and Resolver.
-    ///
+    /// 
     ///    * UPDATING: Resolver is associating or disassociating one or more network
     ///    interfaces with this endpoint.
-    ///
+    /// 
     ///    * AUTO_RECOVERING: Resolver is trying to recover one or more of the network
     ///    interfaces that are associated with this endpoint. During the recovery
     ///    process, the endpoint functions with limited capacity because of the limit
     ///    on the number of DNS queries per IP address (per network interface). For
     ///    the current limit, see Limits on Route 53 Resolver (https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html#limits-api-entities-resolver).
-    ///
+    /// 
     ///    * ACTION_NEEDED: This endpoint is unhealthy, and Resolver can't automatically
     ///    recover it. To resolve the problem, we recommend that you check each IP
     ///    address that you associated with the endpoint. For each IP address that
@@ -237,17 +200,13 @@ pub struct ResolverEndpointStatus {
     ///    associated with the endpoint were deleted using Amazon VPC. The network
     ///    interface couldn't be created for some reason that's outside the control
     ///    of Resolver.
-    ///
+    /// 
     ///    * DELETING: Resolver is deleting this endpoint and the associated network
     ///    interfaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// A detailed description of the status of the Resolver endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMessage")]
     pub status_message: Option<String>,
 }
 
@@ -272,3 +231,4 @@ pub struct ResolverEndpointStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

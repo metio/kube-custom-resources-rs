@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// AlertingRuleSpec defines the desired state of AlertingRule
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "loki.grafana.com",
-    version = "v1beta1",
-    kind = "AlertingRule",
-    plural = "alertingrules"
-)]
+#[kube(group = "loki.grafana.com", version = "v1beta1", kind = "AlertingRule", plural = "alertingrules")]
 #[kube(namespaced)]
 #[kube(status = "AlertingRuleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AlertingRuleSpec {
     /// List of groups for alerting rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -78,3 +73,4 @@ pub struct AlertingRuleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

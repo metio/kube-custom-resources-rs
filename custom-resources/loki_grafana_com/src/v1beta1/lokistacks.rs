@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// LokiStackSpec defines the desired state of LokiStack
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "loki.grafana.com",
-    version = "v1beta1",
-    kind = "LokiStack",
-    plural = "lokistacks"
-)]
+#[kube(group = "loki.grafana.com", version = "v1beta1", kind = "LokiStack", plural = "lokistacks")]
 #[kube(namespaced)]
 #[kube(status = "LokiStackStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct LokiStackSpec {
     /// Limits defines the per-tenant limits to be applied to log stream processing and the per-tenant the config overrides.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -32,11 +27,7 @@ pub struct LokiStackSpec {
     #[serde(rename = "managementState")]
     pub management_state: LokiStackManagementState,
     /// ReplicationFactor defines the policy for log stream replication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationFactor")]
     pub replication_factor: Option<i32>,
     /// Rules defines the spec for the ruler component
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -84,57 +75,29 @@ pub struct LokiStackLimitsGlobalIngestion {
     /// IngestionBurstSize defines the local rate-limited sample size per
     /// distributor replica. It should be set to the set at least to the
     /// maximum logs size expected in a single push request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionBurstSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionBurstSize")]
     pub ingestion_burst_size: Option<i32>,
     /// IngestionRate defines the sample size per second. Units MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionRate")]
     pub ingestion_rate: Option<i32>,
     /// MaxGlobalStreamsPerTenant defines the maximum number of active streams
     /// per tenant, across the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxGlobalStreamsPerTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxGlobalStreamsPerTenant")]
     pub max_global_streams_per_tenant: Option<i32>,
     /// MaxLabelNameLength defines the maximum number of characters allowed
     /// for label keys in log streams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelNameLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelNameLength")]
     pub max_label_name_length: Option<i32>,
     /// MaxLabelNamesPerSeries defines the maximum number of label names per series
     /// in each log stream.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelNamesPerSeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelNamesPerSeries")]
     pub max_label_names_per_series: Option<i32>,
     /// MaxLabelValueLength defines the maximum number of characters allowed
     /// for label values in log streams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelValueLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelValueLength")]
     pub max_label_value_length: Option<i32>,
     /// MaxLineSize defines the maximum line size on ingestion path. Units in Bytes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLineSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLineSize")]
     pub max_line_size: Option<i32>,
 }
 
@@ -143,27 +106,15 @@ pub struct LokiStackLimitsGlobalIngestion {
 pub struct LokiStackLimitsGlobalQueries {
     /// MaxChunksPerQuery defines the maximum number of chunks
     /// that can be fetched by a single query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxChunksPerQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxChunksPerQuery")]
     pub max_chunks_per_query: Option<i32>,
     /// MaxEntriesLimitsPerQuery defines the maximum number of log entries
     /// that will be returned for a query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEntriesLimitPerQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEntriesLimitPerQuery")]
     pub max_entries_limit_per_query: Option<i32>,
     /// MaxQuerySeries defines the maximum of unique series
     /// that is returned by a metric query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxQuerySeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxQuerySeries")]
     pub max_query_series: Option<i32>,
 }
 
@@ -184,57 +135,29 @@ pub struct LokiStackLimitsTenantsIngestion {
     /// IngestionBurstSize defines the local rate-limited sample size per
     /// distributor replica. It should be set to the set at least to the
     /// maximum logs size expected in a single push request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionBurstSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionBurstSize")]
     pub ingestion_burst_size: Option<i32>,
     /// IngestionRate defines the sample size per second. Units MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionRate")]
     pub ingestion_rate: Option<i32>,
     /// MaxGlobalStreamsPerTenant defines the maximum number of active streams
     /// per tenant, across the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxGlobalStreamsPerTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxGlobalStreamsPerTenant")]
     pub max_global_streams_per_tenant: Option<i32>,
     /// MaxLabelNameLength defines the maximum number of characters allowed
     /// for label keys in log streams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelNameLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelNameLength")]
     pub max_label_name_length: Option<i32>,
     /// MaxLabelNamesPerSeries defines the maximum number of label names per series
     /// in each log stream.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelNamesPerSeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelNamesPerSeries")]
     pub max_label_names_per_series: Option<i32>,
     /// MaxLabelValueLength defines the maximum number of characters allowed
     /// for label values in log streams.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLabelValueLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLabelValueLength")]
     pub max_label_value_length: Option<i32>,
     /// MaxLineSize defines the maximum line size on ingestion path. Units in Bytes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLineSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLineSize")]
     pub max_line_size: Option<i32>,
 }
 
@@ -243,27 +166,15 @@ pub struct LokiStackLimitsTenantsIngestion {
 pub struct LokiStackLimitsTenantsQueries {
     /// MaxChunksPerQuery defines the maximum number of chunks
     /// that can be fetched by a single query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxChunksPerQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxChunksPerQuery")]
     pub max_chunks_per_query: Option<i32>,
     /// MaxEntriesLimitsPerQuery defines the maximum number of log entries
     /// that will be returned for a query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEntriesLimitPerQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEntriesLimitPerQuery")]
     pub max_entries_limit_per_query: Option<i32>,
     /// MaxQuerySeries defines the maximum of unique series
     /// that is returned by a metric query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxQuerySeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxQuerySeries")]
     pub max_query_series: Option<i32>,
 }
 
@@ -281,11 +192,7 @@ pub struct LokiStackRules {
     pub enabled: bool,
     /// Namespaces to be selected for PrometheusRules discovery. If unspecified, only
     /// the same namespace as the LokiStack object is in is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<LokiStackRulesNamespaceSelector>,
     /// A selector to select which LokiRules to mount for loading alerting/recording
     /// rules from.
@@ -298,20 +205,12 @@ pub struct LokiStackRules {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackRulesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<LokiStackRulesNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -337,20 +236,12 @@ pub struct LokiStackRulesNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackRulesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<LokiStackRulesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -466,11 +357,7 @@ pub struct LokiStackTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<LokiStackTemplateGateway>,
     /// IndexGateway defines the index gateway component spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "indexGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexGateway")]
     pub index_gateway: Option<LokiStackTemplateIndexGateway>,
     /// Ingester defines the ingester component spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -479,11 +366,7 @@ pub struct LokiStackTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub querier: Option<LokiStackTemplateQuerier>,
     /// QueryFrontend defines the query frontend component spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryFrontend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryFrontend")]
     pub query_frontend: Option<LokiStackTemplateQueryFrontend>,
     /// Ruler defines the ruler component spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -495,11 +378,7 @@ pub struct LokiStackTemplate {
 pub struct LokiStackTemplateCompactor {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -532,11 +411,7 @@ pub struct LokiStackTemplateCompactorTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -549,11 +424,7 @@ pub struct LokiStackTemplateCompactorTolerations {
 pub struct LokiStackTemplateDistributor {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -586,11 +457,7 @@ pub struct LokiStackTemplateDistributorTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -603,11 +470,7 @@ pub struct LokiStackTemplateDistributorTolerations {
 pub struct LokiStackTemplateGateway {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -640,11 +503,7 @@ pub struct LokiStackTemplateGatewayTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -657,11 +516,7 @@ pub struct LokiStackTemplateGatewayTolerations {
 pub struct LokiStackTemplateIndexGateway {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -694,11 +549,7 @@ pub struct LokiStackTemplateIndexGatewayTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -711,11 +562,7 @@ pub struct LokiStackTemplateIndexGatewayTolerations {
 pub struct LokiStackTemplateIngester {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -748,11 +595,7 @@ pub struct LokiStackTemplateIngesterTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -765,11 +608,7 @@ pub struct LokiStackTemplateIngesterTolerations {
 pub struct LokiStackTemplateQuerier {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -802,11 +641,7 @@ pub struct LokiStackTemplateQuerierTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -819,11 +654,7 @@ pub struct LokiStackTemplateQuerierTolerations {
 pub struct LokiStackTemplateQueryFrontend {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -856,11 +687,7 @@ pub struct LokiStackTemplateQueryFrontendTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -873,11 +700,7 @@ pub struct LokiStackTemplateQueryFrontendTolerations {
 pub struct LokiStackTemplateRuler {
     /// NodeSelector defines the labels required by a node to schedule
     /// the component onto it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Replicas defines the number of replica pods of the component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -910,11 +733,7 @@ pub struct LokiStackTemplateRulerTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -952,30 +771,18 @@ pub struct LokiStackTenantsAuthentication {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackTenantsAuthenticationOidc {
     /// Group claim field from ID Token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupClaim")]
     pub group_claim: Option<String>,
     /// IssuerURL defines the URL for issuer.
     #[serde(rename = "issuerURL")]
     pub issuer_url: String,
     /// RedirectURL defines the URL for redirect.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redirectURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectURL")]
     pub redirect_url: Option<String>,
     /// Secret defines the spec for the clientID, clientSecret and issuerCAPath for tenant's authentication.
     pub secret: LokiStackTenantsAuthenticationOidcSecret,
     /// User claim field from ID Token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameClaim")]
     pub username_claim: Option<String>,
 }
 
@@ -993,11 +800,7 @@ pub struct LokiStackTenantsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opa: Option<LokiStackTenantsAuthorizationOpa>,
     /// RoleBindings defines configuration to bind a set of roles to a set of subjects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleBindings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleBindings")]
     pub role_bindings: Option<Vec<LokiStackTenantsAuthorizationRoleBindings>>,
     /// Roles defines a set of permissions to interact with a tenant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1086,11 +889,7 @@ pub struct LokiStackStatusComponents {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<BTreeMap<String, String>>,
     /// IndexGateway is a map to the per pod status of the index gateway statefulset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "indexGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexGateway")]
     pub index_gateway: Option<BTreeMap<String, String>>,
     /// Ingester is a map to the per pod status of the ingester statefulset
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1099,11 +898,7 @@ pub struct LokiStackStatusComponents {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub querier: Option<BTreeMap<String, String>>,
     /// QueryFrontend is a map to the per pod status of the query frontend deployment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryFrontend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryFrontend")]
     pub query_frontend: Option<BTreeMap<String, String>>,
     /// Ruler is a map to the per pod status of the lokistack ruler statefulset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1142,3 +937,4 @@ pub enum LokiStackStatusStorageSchemasVersion {
     #[serde(rename = "v12")]
     V12,
 }
+

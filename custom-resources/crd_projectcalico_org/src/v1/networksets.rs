@@ -5,24 +5,20 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// NetworkSetSpec contains the specification for a NetworkSet resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "crd.projectcalico.org",
-    version = "v1",
-    kind = "NetworkSet",
-    plural = "networksets"
-)]
+#[kube(group = "crd.projectcalico.org", version = "v1", kind = "NetworkSet", plural = "networksets")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NetworkSetSpec {
     /// The list of IP networks that belong to this set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nets: Option<Vec<String>>,
 }
+

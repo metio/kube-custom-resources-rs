@@ -5,47 +5,38 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Informs users about Listeners that are bound by a given Pod.
-///
+/// 
 /// This is not expected to be created or modified by users. It will be created by the Stackable Listener Operator when mounting the listener volume, and is always named `pod-{pod.metadata.uid}`.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "listeners.stackable.tech",
-    version = "v1alpha1",
-    kind = "PodListeners",
-    plural = "podlisteners"
-)]
+#[kube(group = "listeners.stackable.tech", version = "v1alpha1", kind = "PodListeners", plural = "podlisteners")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PodListenersSpec {
     /// All Listeners currently bound by the Pod.
-    ///
+    /// 
     /// Indexed by Volume name (not PersistentVolume or PersistentVolumeClaim).
     pub listeners: BTreeMap<String, PodListenersListeners>,
 }
 
 /// All Listeners currently bound by the Pod.
-///
+/// 
 /// Indexed by Volume name (not PersistentVolume or PersistentVolumeClaim).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodListenersListeners {
     /// Addresses allowing access to this Pod.
-    ///
+    /// 
     /// Compared to `ingress_addresses` on the Listener status, this list is restricted to addresses that can access this Pod.
-    ///
+    /// 
     /// This field is intended to be equivalent to the files mounted into the Listener volume.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressAddresses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressAddresses")]
     pub ingress_addresses: Option<Vec<PodListenersListenersIngressAddresses>>,
     /// `Node` if this address only allows access to Pods hosted on a specific Kubernetes Node, otherwise `Cluster`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -73,10 +64,11 @@ pub enum PodListenersListenersIngressAddressesAddressType {
 }
 
 /// All Listeners currently bound by the Pod.
-///
+/// 
 /// Indexed by Volume name (not PersistentVolume or PersistentVolumeClaim).
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PodListenersListenersScope {
     Node,
     Cluster,
 }
+

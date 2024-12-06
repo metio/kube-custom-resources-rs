@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// HelmChartSpec defines the spec of HelmChart
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.clusternet.io",
-    version = "v1alpha1",
-    kind = "HelmChart",
-    plural = "helmcharts"
-)]
+#[kube(group = "apps.clusternet.io", version = "v1alpha1", kind = "HelmChart", plural = "helmcharts")]
 #[kube(namespaced)]
 #[kube(status = "HelmChartStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HelmChartSpec {
     /// Atomic, for install case, if true, will uninstall failed release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -29,25 +24,13 @@ pub struct HelmChartSpec {
     /// Chart is the name of a Helm Chart in the Repository.
     pub chart: String,
     /// ChartPullSecret is the name of the secret that contains the auth information for the chart repository.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chartPullSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chartPullSecret")]
     pub chart_pull_secret: Option<HelmChartChartPullSecret>,
     /// CreateNamespace create namespace when install helm release
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createNamespace")]
     pub create_namespace: Option<bool>,
     /// DisableHooks disables hook processing if set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableHooks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHooks")]
     pub disable_hooks: Option<bool>,
     /// Force will, if set to `true`, ignore certain warnings and perform the upgrade anyway.
     /// This should be used with caution.
@@ -58,11 +41,7 @@ pub struct HelmChartSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replace: Option<bool>,
     /// ReplaceCRDs replace all crds in chart and sub charts before upgrade and install, not working when SkipCRDs true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replaceCRDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceCRDs")]
     pub replace_cr_ds: Option<bool>,
     /// a Helm Repository to be used.
     /// OCI-based registries are also supported.
@@ -75,18 +54,10 @@ pub struct HelmChartSpec {
     #[serde(rename = "targetNamespace")]
     pub target_namespace: String,
     /// TimeoutSeconds is the timeout of the chart to be install/upgrade/rollback/uninstall
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
     /// UpgradeAtomic, for upgrade case, if true, will roll back failed release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upgradeAtomic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeAtomic")]
     pub upgrade_atomic: Option<bool>,
     /// ChartVersion is the version of the chart to be deployed.
     /// It will be defaulted with current latest version if empty.
@@ -96,11 +67,7 @@ pub struct HelmChartSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wait: Option<bool>,
     /// WaitForJobs determines whether the wait operation for the Jobs should be performed after the upgrade is requested.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitForJob"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForJob")]
     pub wait_for_job: Option<bool>,
 }
 
@@ -130,3 +97,4 @@ pub enum HelmChartStatusPhase {
     Found,
     NotFound,
 }
+

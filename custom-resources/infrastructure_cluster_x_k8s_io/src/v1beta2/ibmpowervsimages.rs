@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// IBMPowerVSImageSpec defines the desired state of IBMPowerVSImage.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta2",
-    kind = "IBMPowerVSImage",
-    plural = "ibmpowervsimages"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "IBMPowerVSImage", plural = "ibmpowervsimages")]
 #[kube(namespaced)]
 #[kube(status = "IBMPowerVSImageStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMPowerVSImageSpec {
     /// Cloud Object Storage bucket name; bucket-name[/optional/folder]
     pub bucket: String,
@@ -30,11 +25,7 @@ pub struct IBMPowerVSImageSpec {
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
     /// DeletePolicy defines the policy used to identify images to be preserved beyond the lifecycle of associated cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
     pub delete_policy: Option<IBMPowerVSImageDeletePolicy>,
     /// Cloud Object Storage image filename.
     pub object: String,
@@ -47,22 +38,14 @@ pub struct IBMPowerVSImageSpec {
     /// More detail about Power VS service instance.
     /// https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server
     /// when omitted system will dynamically create the service instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IBMPowerVSImageServiceInstance>,
     /// ServiceInstanceID is the id of the power cloud instance where the image will get imported.
     /// Deprecated: use ServiceInstance instead
     #[serde(rename = "serviceInstanceID")]
     pub service_instance_id: String,
     /// Type of storage, storage pool with the most available space will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageType")]
     pub storage_type: Option<IBMPowerVSImageStorageType>,
 }
 
@@ -115,11 +98,7 @@ pub struct IBMPowerVSImageStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageID")]
     pub image_id: Option<String>,
     /// ImageState is the status of the imported image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageState")]
     pub image_state: Option<String>,
     /// JobID is the job ID of an import operation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobID")]
@@ -128,3 +107,4 @@ pub struct IBMPowerVSImageStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
 }
+

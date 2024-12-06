@@ -5,49 +5,32 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// SubscriptionSpec defines the desired state of Subscription
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.clusternet.io",
-    version = "v1alpha1",
-    kind = "Subscription",
-    plural = "subscriptions"
-)]
+#[kube(group = "apps.clusternet.io", version = "v1alpha1", kind = "Subscription", plural = "subscriptions")]
 #[kube(namespaced)]
 #[kube(status = "SubscriptionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SubscriptionSpec {
     /// ClusterTolerations tolerates any matched taints of ManagedCluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTolerations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTolerations")]
     pub cluster_tolerations: Option<Vec<SubscriptionClusterTolerations>>,
     /// Dividing scheduling config params. Present only if SchedulingStrategy = Dividing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dividingScheduling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dividingScheduling")]
     pub dividing_scheduling: Option<SubscriptionDividingScheduling>,
     /// Feeds
     pub feeds: Vec<SubscriptionFeeds>,
     /// PreemptionPolicy is the Policy for preempting subscriptions with lower priority.
     /// One of Never, PreemptLowerPriority.
     /// Defaults to PreemptLowerPriority if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
     pub preemption_policy: Option<SubscriptionPreemptionPolicy>,
     /// The priority value. clusternet-scheduler use this field to find the
     /// priority of the subscription.
@@ -56,28 +39,16 @@ pub struct SubscriptionSpec {
     pub priority: Option<i32>,
     /// If specified, the Subscription will be handled by specified scheduler.
     /// If not specified, the Subscription will be handled by default scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// If specified, the Subscription will be handled with SchedulingBySubGroup.
     /// Used together with SubGroupStrategy in every Subscriber.
     /// Can work with all supported SchedulingStrategy, such as Replication, Dividing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingBySubGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingBySubGroup")]
     pub scheduling_by_sub_group: Option<bool>,
     /// If specified, the Subscription will be handled with specified SchedulingStrategy.
     /// Otherwise, with generic SchedulingStrategy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingStrategy")]
     pub scheduling_strategy: Option<SubscriptionSchedulingStrategy>,
     /// Subscribers subscribes
     pub subscribers: Vec<SubscriptionSubscribers>,
@@ -105,11 +76,7 @@ pub struct SubscriptionClusterTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -121,11 +88,7 @@ pub struct SubscriptionClusterTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SubscriptionDividingScheduling {
     /// DynamicDividing describes how to divide replicas into target clusters dynamically.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dynamicDividing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicDividing")]
     pub dynamic_dividing: Option<SubscriptionDividingSchedulingDynamicDividing>,
     /// Type of dividing replica scheduling.
     #[serde(rename = "type")]
@@ -136,42 +99,24 @@ pub struct SubscriptionDividingScheduling {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct SubscriptionDividingSchedulingDynamicDividing {
     /// MaxClusters describes the upper bound number of target clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxClusters")]
     pub max_clusters: Option<i32>,
     /// MinClusters describes the lower bound number of target clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minClusters")]
     pub min_clusters: Option<i32>,
     /// PreferredClusters describes the assigning preference. If we have a preference for cluster group A
     /// compared to cluster group B (i.e., group A has a larger Weight), desired replicas will be assigned
     /// to cluster group A as many as possible, while the rest ones will be assigned to cluster group B.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredClusters"
-    )]
-    pub preferred_clusters:
-        Option<Vec<SubscriptionDividingSchedulingDynamicDividingPreferredClusters>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredClusters")]
+    pub preferred_clusters: Option<Vec<SubscriptionDividingSchedulingDynamicDividingPreferredClusters>>,
     /// Type of dynamic dividing replica strategy.
     pub strategy: SubscriptionDividingSchedulingDynamicDividingStrategy,
     /// TopologySpreadConstraints describes how a group of replicas ought to spread across topology
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
     /// Present only for spread divided scheduling.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraints>>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -198,8 +143,7 @@ pub struct SubscriptionDividingSchedulingDynamicDividingPreferredClustersPrefere
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SubscriptionDividingSchedulingDynamicDividingPreferredClustersPreferenceMatchExpressions
-{
+pub struct SubscriptionDividingSchedulingDynamicDividingPreferredClustersPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -245,13 +189,8 @@ pub struct SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraint
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -260,14 +199,10 @@ pub struct SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraint
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -298,8 +233,8 @@ pub struct SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraint
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -308,40 +243,28 @@ pub struct SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraint
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -395,8 +318,7 @@ pub struct SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraint
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct SubscriptionDividingSchedulingDynamicDividingTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -457,11 +379,7 @@ pub struct SubscriptionSubscribers {
     /// During the scheduling, all the matching clusters will be treated as a subgroup instead of individual clusters.
     /// With subgroup, we can describe clusters with different regions, zones, etc.
     /// Present only when SchedulingBySubGroup is set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subGroupStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupStrategy")]
     pub sub_group_strategy: Option<SubscriptionSubscribersSubGroupStrategy>,
     /// Static weight of subscriber when dividing replicas.
     /// Present only for static divided scheduling.
@@ -473,20 +391,12 @@ pub struct SubscriptionSubscribers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubscriptionSubscribersClusterAffinity {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<SubscriptionSubscribersClusterAffinityMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -515,11 +425,7 @@ pub struct SubscriptionSubscribersClusterAffinityMatchExpressions {
 pub struct SubscriptionSubscribersSubGroupStrategy {
     /// MinClusters is the minimum number of clusters to be selected in this subgroup.
     /// If this value is more than the total number of clusters in this subgroup, then all clusters will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minClusters")]
     pub min_clusters: Option<i32>,
 }
 
@@ -527,32 +433,16 @@ pub struct SubscriptionSubscribersSubGroupStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubscriptionStatus {
     /// AggregatedStatuses shows the aggregated statuses of feeds that are running in each child cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aggregatedStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aggregatedStatuses")]
     pub aggregated_statuses: Option<Vec<SubscriptionStatusAggregatedStatuses>>,
     /// Namespaced names of targeted clusters that Subscription binds to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bindingClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindingClusters")]
     pub binding_clusters: Option<Vec<String>>,
     /// Total number of completed releases targeted by this Subscription.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completedReleases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completedReleases")]
     pub completed_releases: Option<i64>,
     /// Total number of Helm releases desired by this Subscription.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredReleases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredReleases")]
     pub desired_releases: Option<i64>,
     /// Desired replicas of targeted clusters for each feed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -569,18 +459,10 @@ pub struct SubscriptionStatusAggregatedStatuses {
     #[serde(rename = "apiVersion")]
     pub api_version: String,
     /// FeedStatusDetails shows the feed statuses in each child cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "feedStatusDetails"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "feedStatusDetails")]
     pub feed_status_details: Option<Vec<SubscriptionStatusAggregatedStatusesFeedStatusDetails>>,
     /// FeedStatusSummary aggregates the feed statuses from each child cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "feedStatusSummary"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "feedStatusSummary")]
     pub feed_status_summary: Option<SubscriptionStatusAggregatedStatusesFeedStatusSummary>,
     /// Kind is a string value representing the REST resource this object represents.
     /// In CamelCase.
@@ -602,18 +484,10 @@ pub struct SubscriptionStatusAggregatedStatusesFeedStatusDetails {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterId")]
     pub cluster_id: Option<String>,
     /// ClusterName is the cluster name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// ReplicaStatus indicates the replica status of workload-type feed, such as Deployment/StatefulSet/Job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaStatus")]
     pub replica_status: Option<SubscriptionStatusAggregatedStatusesFeedStatusDetailsReplicaStatus>,
 }
 
@@ -624,36 +498,20 @@ pub struct SubscriptionStatusAggregatedStatusesFeedStatusDetailsReplicaStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<i32>,
     /// Total number of available pods (ready for at least minReadySeconds) targeted by this workload.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// currentReplicas is the number of Pods created by the workload controller from the StatefulSet version
     /// indicated by currentRevision.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentReplicas")]
     pub current_replicas: Option<i32>,
     /// The number of pods which reached phase Failed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failed: Option<i32>,
     /// The generation observed by the workload controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// readyReplicas is the number of pods targeted by this workload with a Ready Condition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this workload (their labels match the selector).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -664,18 +522,10 @@ pub struct SubscriptionStatusAggregatedStatusesFeedStatusDetailsReplicaStatus {
     /// Total number of unavailable pods targeted by this workload. This is the total number of
     /// pods that are still required for the workload to have 100% available capacity. They may
     /// either be pods that are running but not yet available or pods that still have not been created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unavailableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this workload that have the desired template spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
 }
 
@@ -686,11 +536,7 @@ pub struct SubscriptionStatusAggregatedStatusesFeedStatusSummary {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub available: Option<bool>,
     /// ReplicaStatus indicates the replica status of workload-type feed, such as Deployment/StatefulSet/Job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaStatus")]
     pub replica_status: Option<SubscriptionStatusAggregatedStatusesFeedStatusSummaryReplicaStatus>,
 }
 
@@ -701,36 +547,20 @@ pub struct SubscriptionStatusAggregatedStatusesFeedStatusSummaryReplicaStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<i32>,
     /// Total number of available pods (ready for at least minReadySeconds) targeted by this workload.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// currentReplicas is the number of Pods created by the workload controller from the StatefulSet version
     /// indicated by currentRevision.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentReplicas")]
     pub current_replicas: Option<i32>,
     /// The number of pods which reached phase Failed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failed: Option<i32>,
     /// The generation observed by the workload controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// readyReplicas is the number of pods targeted by this workload with a Ready Condition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this workload (their labels match the selector).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -741,17 +571,10 @@ pub struct SubscriptionStatusAggregatedStatusesFeedStatusSummaryReplicaStatus {
     /// Total number of unavailable pods targeted by this workload. This is the total number of
     /// pods that are still required for the workload to have 100% available capacity. They may
     /// either be pods that are running but not yet available or pods that still have not been created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unavailableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this workload that have the desired template spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
 }
+

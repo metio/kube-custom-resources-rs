@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BucketSpec defines the desired state of an S3 compatible bucket
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "source.toolkit.fluxcd.io",
-    version = "v1beta1",
-    kind = "Bucket",
-    plural = "buckets"
-)]
+#[kube(group = "source.toolkit.fluxcd.io", version = "v1beta1", kind = "Bucket", plural = "buckets")]
 #[kube(namespaced)]
 #[kube(status = "BucketStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BucketSpec {
     /// AccessFrom defines an Access Control List for allowing cross-namespace references to this object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessFrom")]
     pub access_from: Option<BucketAccessFrom>,
     /// The bucket name.
     #[serde(rename = "bucketName")]
@@ -81,11 +72,7 @@ pub struct BucketAccessFromNamespaceSelectors {
     /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -120,18 +107,10 @@ pub struct BucketStatus {
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// URL is the download link for the artifact output of the last Bucket sync.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -158,3 +137,4 @@ pub struct BucketStatusArtifact {
     /// URL is the HTTP address of this artifact.
     pub url: String,
 }
+

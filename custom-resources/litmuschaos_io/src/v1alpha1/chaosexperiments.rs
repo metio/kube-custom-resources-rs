@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "litmuschaos.io",
-    version = "v1alpha1",
-    kind = "ChaosExperiment",
-    plural = "chaosexperiments"
-)]
+#[kube(group = "litmuschaos.io", version = "v1alpha1", kind = "ChaosExperiment", plural = "chaosexperiments")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ChaosExperimentSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub definition: Option<ChaosExperimentDefinition>,
@@ -33,29 +28,17 @@ pub struct ChaosExperimentDefinition {
     pub args: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMaps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMaps")]
     pub config_maps: Option<Vec<ChaosExperimentDefinitionConfigMaps>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ChaosExperimentDefinitionEnv>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostFileVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostFileVolumes")]
     pub host_file_volumes: Option<Vec<ChaosExperimentDefinitionHostFileVolumes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPID")]
     pub host_pid: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -65,11 +48,7 @@ pub struct ChaosExperimentDefinition {
     pub scope: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<ChaosExperimentDefinitionSecrets>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<BTreeMap<String, serde_json::Value>>,
 }
 
@@ -98,28 +77,16 @@ pub struct ChaosExperimentDefinitionEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosExperimentDefinitionEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ChaosExperimentDefinitionEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, metadata.labels, metadata.annotations, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ChaosExperimentDefinitionEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ChaosExperimentDefinitionEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ChaosExperimentDefinitionEnvValueFromSecretKeyRef>,
 }
 
@@ -140,11 +107,7 @@ pub struct ChaosExperimentDefinitionEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosExperimentDefinitionEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -155,11 +118,7 @@ pub struct ChaosExperimentDefinitionEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChaosExperimentDefinitionEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -195,17 +154,9 @@ pub struct ChaosExperimentDefinitionHostFileVolumes {
 pub struct ChaosExperimentDefinitionPermissions {
     #[serde(rename = "apiGroups")]
     pub api_groups: Vec<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonResourceURLs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonResourceURLs")]
     pub non_resource_ur_ls: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceNames")]
     pub resource_names: Option<Vec<String>>,
     pub resources: Vec<String>,
     pub verbs: Vec<String>,
@@ -218,3 +169,4 @@ pub struct ChaosExperimentDefinitionSecrets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

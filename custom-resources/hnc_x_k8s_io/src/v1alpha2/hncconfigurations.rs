@@ -4,23 +4,18 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// HNCConfigurationSpec defines the desired state of HNC configuration.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hnc.x-k8s.io",
-    version = "v1alpha2",
-    kind = "HNCConfiguration",
-    plural = "hncconfigurations"
-)]
+#[kube(group = "hnc.x-k8s.io", version = "v1alpha2", kind = "HNCConfiguration", plural = "hncconfigurations")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HNCConfigurationSpec {
     /// Resources defines the cluster-wide settings for resource synchronization. Note that 'roles' and 'rolebindings' are pre-configured by HNC with 'Propagate' mode and are omitted in the spec. Any configuration of 'roles' or 'rolebindings' are not allowed. To learn more, see https://github.com/kubernetes-sigs/hierarchical-namespaces/blob/master/docs/user-guide/how-to.md#admin-types
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -69,21 +64,14 @@ pub struct HNCConfigurationStatusResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
     /// Tracks the number of objects that are being propagated to descendant namespaces. The propagated objects are created by HNC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numPropagatedObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numPropagatedObjects")]
     pub num_propagated_objects: Option<i64>,
     /// Tracks the number of objects that are created by users.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numSourceObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numSourceObjects")]
     pub num_source_objects: Option<i64>,
     /// The resource being synchronized.
     pub resource: String,
     /// The API version used by HNC when propagating this resource.
     pub version: String,
 }
+

@@ -5,83 +5,46 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// BackingImageSpec defines the desired state of the Longhorn backing image
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "BackingImage",
-    plural = "backingimages"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "BackingImage", plural = "backingimages")]
 #[kube(namespaced)]
 #[kube(status = "BackingImageStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackingImageSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "diskFileSpecMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskFileSpecMap")]
     pub disk_file_spec_map: Option<BTreeMap<String, BackingImageDiskFileSpecMap>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "diskSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSelector")]
     pub disk_selector: Option<Vec<String>>,
     /// Deprecated. We are now using DiskFileSpecMap to assign different spec to the file on different disks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disks: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minNumberOfCopies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minNumberOfCopies")]
     pub min_number_of_copies: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
     pub secret_namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceParameters")]
     pub source_parameters: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<BackingImageSourceType>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackingImageDiskFileSpecMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionRequested"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
     pub eviction_requested: Option<bool>,
 }
 
@@ -105,17 +68,9 @@ pub enum BackingImageSourceType {
 pub struct BackingImageStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "diskFileStatusMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskFileStatusMap")]
     pub disk_file_status_map: Option<BTreeMap<String, BackingImageStatusDiskFileStatusMap>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "diskLastRefAtMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskLastRefAtMap")]
     pub disk_last_ref_at_map: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
@@ -127,21 +82,13 @@ pub struct BackingImageStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
     /// Virtual size of image in bytes, which may be larger than physical size. Will be zero until known (e.g. while a backing image is uploading)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualSize")]
     pub virtual_size: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackingImageStatusDiskFileStatusMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastStateTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStateTransitionTime")]
     pub last_state_transition_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -150,3 +97,4 @@ pub struct BackingImageStatusDiskFileStatusMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

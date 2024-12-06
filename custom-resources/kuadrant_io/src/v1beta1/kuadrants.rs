@@ -4,26 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// KuadrantSpec defines the desired state of Kuadrant
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuadrant.io",
-    version = "v1beta1",
-    kind = "Kuadrant",
-    plural = "kuadrants"
-)]
+#[kube(group = "kuadrant.io", version = "v1beta1", kind = "Kuadrant", plural = "kuadrants")]
 #[kube(namespaced)]
 #[kube(status = "KuadrantStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct KuadrantSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct KuadrantSpec {
+}
 
 /// KuadrantStatus defines the observed state of Kuadrant
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -33,10 +29,7 @@ pub struct KuadrantStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration reflects the generation of the most recently observed spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

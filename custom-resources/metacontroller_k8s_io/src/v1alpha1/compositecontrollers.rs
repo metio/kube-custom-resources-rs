@@ -5,43 +5,26 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "metacontroller.k8s.io",
-    version = "v1alpha1",
-    kind = "CompositeController",
-    plural = "compositecontrollers"
-)]
+#[kube(group = "metacontroller.k8s.io", version = "v1alpha1", kind = "CompositeController", plural = "compositecontrollers")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CompositeControllerSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "childResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "childResources")]
     pub child_resources: Option<Vec<CompositeControllerChildResources>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateSelector")]
     pub generate_selector: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hooks: Option<CompositeControllerHooks>,
     #[serde(rename = "parentResource")]
     pub parent_resource: CompositeControllerParentResource,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resyncPeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriodSeconds")]
     pub resync_period_seconds: Option<i32>,
 }
 
@@ -50,11 +33,7 @@ pub struct CompositeControllerChildResources {
     #[serde(rename = "apiVersion")]
     pub api_version: String,
     pub resource: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<CompositeControllerChildResourcesUpdateStrategy>,
 }
 
@@ -62,11 +41,7 @@ pub struct CompositeControllerChildResources {
 pub struct CompositeControllerChildResourcesUpdateStrategy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<CompositeControllerChildResourcesUpdateStrategyMethod>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusChecks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusChecks")]
     pub status_checks: Option<CompositeControllerChildResourcesUpdateStrategyStatusChecks>,
 }
 
@@ -82,8 +57,7 @@ pub enum CompositeControllerChildResourcesUpdateStrategyMethod {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeControllerChildResourcesUpdateStrategyStatusChecks {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions:
-        Option<Vec<CompositeControllerChildResourcesUpdateStrategyStatusChecksConditions>>,
+    pub conditions: Option<Vec<CompositeControllerChildResourcesUpdateStrategyStatusChecksConditions>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -102,17 +76,9 @@ pub struct CompositeControllerHooks {
     pub customize: Option<CompositeControllerHooksCustomize>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finalize: Option<CompositeControllerHooksFinalize>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postUpdateChild"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postUpdateChild")]
     pub post_update_child: Option<CompositeControllerHooksPostUpdateChild>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preUpdateChild"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preUpdateChild")]
     pub pre_update_child: Option<CompositeControllerHooksPreUpdateChild>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<CompositeControllerHooksSync>,
@@ -141,13 +107,8 @@ pub struct CompositeControllerHooksCustomizeWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Sets the json unmarshall mode. One of the 'loose' or 'strict'. In 'strict' mode additional checks are performed to detect unknown and duplicated fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseUnMarshallMode"
-    )]
-    pub response_un_marshall_mode:
-        Option<CompositeControllerHooksCustomizeWebhookResponseUnMarshallMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseUnMarshallMode")]
+    pub response_un_marshall_mode: Option<CompositeControllerHooksCustomizeWebhookResponseUnMarshallMode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<CompositeControllerHooksCustomizeWebhookService>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -158,17 +119,9 @@ pub struct CompositeControllerHooksCustomizeWebhook {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeControllerHooksCustomizeWebhookEtag {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheCleanupSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheCleanupSeconds")]
     pub cache_cleanup_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheTimeoutSeconds")]
     pub cache_timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -215,13 +168,8 @@ pub struct CompositeControllerHooksFinalizeWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Sets the json unmarshall mode. One of the 'loose' or 'strict'. In 'strict' mode additional checks are performed to detect unknown and duplicated fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseUnMarshallMode"
-    )]
-    pub response_un_marshall_mode:
-        Option<CompositeControllerHooksFinalizeWebhookResponseUnMarshallMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseUnMarshallMode")]
+    pub response_un_marshall_mode: Option<CompositeControllerHooksFinalizeWebhookResponseUnMarshallMode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<CompositeControllerHooksFinalizeWebhookService>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -232,17 +180,9 @@ pub struct CompositeControllerHooksFinalizeWebhook {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeControllerHooksFinalizeWebhookEtag {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheCleanupSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheCleanupSeconds")]
     pub cache_cleanup_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheTimeoutSeconds")]
     pub cache_timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -289,13 +229,8 @@ pub struct CompositeControllerHooksPostUpdateChildWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Sets the json unmarshall mode. One of the 'loose' or 'strict'. In 'strict' mode additional checks are performed to detect unknown and duplicated fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseUnMarshallMode"
-    )]
-    pub response_un_marshall_mode:
-        Option<CompositeControllerHooksPostUpdateChildWebhookResponseUnMarshallMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseUnMarshallMode")]
+    pub response_un_marshall_mode: Option<CompositeControllerHooksPostUpdateChildWebhookResponseUnMarshallMode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<CompositeControllerHooksPostUpdateChildWebhookService>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -306,17 +241,9 @@ pub struct CompositeControllerHooksPostUpdateChildWebhook {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeControllerHooksPostUpdateChildWebhookEtag {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheCleanupSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheCleanupSeconds")]
     pub cache_cleanup_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheTimeoutSeconds")]
     pub cache_timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -363,13 +290,8 @@ pub struct CompositeControllerHooksPreUpdateChildWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Sets the json unmarshall mode. One of the 'loose' or 'strict'. In 'strict' mode additional checks are performed to detect unknown and duplicated fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseUnMarshallMode"
-    )]
-    pub response_un_marshall_mode:
-        Option<CompositeControllerHooksPreUpdateChildWebhookResponseUnMarshallMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseUnMarshallMode")]
+    pub response_un_marshall_mode: Option<CompositeControllerHooksPreUpdateChildWebhookResponseUnMarshallMode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<CompositeControllerHooksPreUpdateChildWebhookService>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -380,17 +302,9 @@ pub struct CompositeControllerHooksPreUpdateChildWebhook {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeControllerHooksPreUpdateChildWebhookEtag {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheCleanupSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheCleanupSeconds")]
     pub cache_cleanup_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheTimeoutSeconds")]
     pub cache_timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -437,13 +351,8 @@ pub struct CompositeControllerHooksSyncWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Sets the json unmarshall mode. One of the 'loose' or 'strict'. In 'strict' mode additional checks are performed to detect unknown and duplicated fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseUnMarshallMode"
-    )]
-    pub response_un_marshall_mode:
-        Option<CompositeControllerHooksSyncWebhookResponseUnMarshallMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseUnMarshallMode")]
+    pub response_un_marshall_mode: Option<CompositeControllerHooksSyncWebhookResponseUnMarshallMode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<CompositeControllerHooksSyncWebhookService>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -454,17 +363,9 @@ pub struct CompositeControllerHooksSyncWebhook {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeControllerHooksSyncWebhookEtag {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheCleanupSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheCleanupSeconds")]
     pub cache_cleanup_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheTimeoutSeconds")]
     pub cache_timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -493,18 +394,10 @@ pub struct CompositeControllerParentResource {
     #[serde(rename = "apiVersion")]
     pub api_version: String,
     /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CompositeControllerParentResourceLabelSelector>,
     pub resource: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revisionHistory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionHistory")]
     pub revision_history: Option<CompositeControllerParentResourceRevisionHistory>,
 }
 
@@ -512,19 +405,10 @@ pub struct CompositeControllerParentResource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeControllerParentResourceLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CompositeControllerParentResourceLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CompositeControllerParentResourceLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -542,13 +426,11 @@ pub struct CompositeControllerParentResourceLabelSelectorMatchExpressions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CompositeControllerParentResourceRevisionHistory {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldPaths"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPaths")]
     pub field_paths: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CompositeControllerStatus {}
+pub struct CompositeControllerStatus {
+}
+

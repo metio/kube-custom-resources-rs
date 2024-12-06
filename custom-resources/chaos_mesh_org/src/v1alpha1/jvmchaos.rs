@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// JVMChaosSpec defines the desired state of JVMChaos
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "JVMChaos",
-    plural = "jvmchaos"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "JVMChaos", plural = "jvmchaos")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct JVMChaosSpec {
     /// Action defines the specific jvm chaos action. Supported action: latency;return;exception;stress;gc;ruleData
     pub action: JVMChaosAction,
@@ -28,11 +23,7 @@ pub struct JVMChaosSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// the CPU core number needs to use, only set it when action is stress
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuCount")]
@@ -58,11 +49,7 @@ pub struct JVMChaosSpec {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: JVMChaosMode,
     /// the version of mysql-connector-java, only support 5.X.X(set to "5") and 8.X.X(set to "8") now
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mysqlConnectorVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlConnectorVersion")]
     pub mysql_connector_version: Option<String>,
     /// byteman rule name, should be unique, and will generate one if not set
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -74,11 +61,7 @@ pub struct JVMChaosSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// the byteman rule's data for action 'ruleData'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleData")]
@@ -134,52 +117,28 @@ pub enum JVMChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JVMChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<JVMChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -221,17 +180,9 @@ pub struct JVMChaosStatusConditions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JVMChaosStatusExperiment {
     /// Records are used to track the running status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerRecords")]
     pub container_records: Option<Vec<JVMChaosStatusExperimentContainerRecords>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredPhase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredPhase")]
     pub desired_phase: Option<JVMChaosStatusExperimentDesiredPhase>,
 }
 
@@ -272,3 +223,4 @@ pub enum JVMChaosStatusExperimentDesiredPhase {
     Run,
     Stop,
 }
+

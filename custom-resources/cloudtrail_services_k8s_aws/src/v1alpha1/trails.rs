@@ -4,48 +4,35 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TrailSpec defines the desired state of Trail.
-///
+/// 
 /// The settings for a trail.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cloudtrail.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Trail",
-    plural = "trails"
-)]
+#[kube(group = "cloudtrail.services.k8s.aws", version = "v1alpha1", kind = "Trail", plural = "trails")]
 #[kube(namespaced)]
 #[kube(status = "TrailStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TrailSpec {
     /// Specifies a log group name using an Amazon Resource Name (ARN), a unique
     /// identifier that represents the log group to which CloudTrail logs will be
     /// delivered. Not required unless you specify CloudWatchLogsRoleArn.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudWatchLogsLogGroupARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudWatchLogsLogGroupARN")]
     pub cloud_watch_logs_log_group_arn: Option<String>,
     /// Specifies the role for the CloudWatch Logs endpoint to assume to write to
     /// a user's log group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudWatchLogsRoleARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudWatchLogsRoleARN")]
     pub cloud_watch_logs_role_arn: Option<String>,
     /// Specifies whether log file integrity validation is enabled. The default is
     /// false.
-    ///
+    /// 
     /// When you disable log file integrity validation, the chain of digest files
     /// is broken after one hour. CloudTrail does not create digest files for log
     /// files that were delivered during a period in which log file integrity validation
@@ -54,72 +41,56 @@ pub struct TrailSpec {
     /// on January 10, digest files will not be created for the log files delivered
     /// from noon on January 2 to noon on January 10. The same applies whenever you
     /// stop CloudTrail logging or delete a trail.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableLogFileValidation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableLogFileValidation")]
     pub enable_log_file_validation: Option<bool>,
     /// Specifies whether the trail is publishing events from global services such
     /// as IAM to the log files.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeGlobalServiceEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeGlobalServiceEvents")]
     pub include_global_service_events: Option<bool>,
     /// Specifies whether the trail is created in the current region or in all regions.
     /// The default is false, which creates a trail only in the region where you
     /// are signed in. As a best practice, consider creating trails that log events
     /// in all regions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isMultiRegionTrail"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isMultiRegionTrail")]
     pub is_multi_region_trail: Option<bool>,
     /// Specifies whether the trail is created for all accounts in an organization
     /// in Organizations, or only for the current Amazon Web Services account. The
     /// default is false, and cannot be true unless the call is made on behalf of
     /// an Amazon Web Services account that is the management account for an organization
     /// in Organizations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isOrganizationTrail"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isOrganizationTrail")]
     pub is_organization_trail: Option<bool>,
     /// Specifies the KMS key ID to use to encrypt the logs delivered by CloudTrail.
     /// The value can be an alias name prefixed by "alias/", a fully specified ARN
     /// to an alias, a fully specified ARN to a key, or a globally unique identifier.
-    ///
+    /// 
     /// CloudTrail also supports KMS multi-Region keys. For more information about
     /// multi-Region keys, see Using multi-Region keys (https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html)
     /// in the Key Management Service Developer Guide.
-    ///
+    /// 
     /// Examples:
-    ///
+    /// 
     ///    * alias/MyAliasName
-    ///
+    /// 
     ///    * arn:aws:kms:us-east-2:123456789012:alias/MyAliasName
-    ///
+    /// 
     ///    * arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012
-    ///
+    /// 
     ///    * 12345678-1234-1234-1234-123456789012
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     /// Specifies the name of the trail. The name must meet the following requirements:
-    ///
+    /// 
     ///    * Contain only ASCII letters (a-z, A-Z), numbers (0-9), periods (.), underscores
     ///    (_), or dashes (-)
-    ///
+    /// 
     ///    * Start with a letter or number, and end with a letter or number
-    ///
+    /// 
     ///    * Be between 3 and 128 characters
-    ///
+    /// 
     ///    * Have no adjacent periods, underscores or dashes. Names like my-_namespace
     ///    and my--namespace are not valid.
-    ///
+    /// 
     ///    * Not be in IP address format (for example, 192.168.5.4)
     pub name: String,
     /// Specifies the name of the Amazon S3 bucket designated for publishing log
@@ -130,19 +101,11 @@ pub struct TrailSpec {
     /// you have designated for log file delivery. For more information, see Finding
     /// Your CloudTrail Log Files (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-find-log-files.html).
     /// The maximum length is 200 characters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3KeyPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3KeyPrefix")]
     pub s3_key_prefix: Option<String>,
     /// Specifies the name of the Amazon SNS topic defined for notification of log
     /// file delivery. The maximum length is 256 characters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snsTopicName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snsTopicName")]
     pub sns_topic_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<TrailTags>>,
@@ -163,11 +126,7 @@ pub struct TrailStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<TrailStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -176,21 +135,13 @@ pub struct TrailStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Specifies whether log file integrity validation is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFileValidationEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFileValidationEnabled")]
     pub log_file_validation_enabled: Option<bool>,
     /// Specifies the ARN of the Amazon SNS topic that CloudTrail uses to send notifications
     /// when log files are delivered. The format of a topic ARN is:
-    ///
+    /// 
     /// arn:aws:sns:us-east-2:123456789012:MyTopic
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snsTopicARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snsTopicARN")]
     pub sns_topic_arn: Option<String>,
 }
 
@@ -215,3 +166,4 @@ pub struct TrailStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

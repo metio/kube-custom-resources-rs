@@ -4,68 +4,42 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired state for Tigera intrusion detection.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "IntrusionDetection",
-    plural = "intrusiondetections"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "IntrusionDetection", plural = "intrusiondetections")]
 #[kube(status = "IntrusionDetectionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IntrusionDetectionSpec {
     /// AnomalyDetection is now deprecated, and configuring it has no effect.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "anomalyDetection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "anomalyDetection")]
     pub anomaly_detection: Option<IntrusionDetectionAnomalyDetection>,
     /// ComponentResources can be used to customize the resource requirements for each component.
     /// Only DeepPacketInspection is supported for this spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentResources")]
     pub component_resources: Option<Vec<IntrusionDetectionComponentResources>>,
     /// DeepPacketInspectionDaemonset configures the DPI Daemonset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deepPacketInspectionDaemonset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deepPacketInspectionDaemonset")]
     pub deep_packet_inspection_daemonset: Option<IntrusionDetectionDeepPacketInspectionDaemonset>,
     /// IntrusionDetectionControllerDeployment configures the IntrusionDetection Controller Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intrusionDetectionControllerDeployment"
-    )]
-    pub intrusion_detection_controller_deployment:
-        Option<IntrusionDetectionIntrusionDetectionControllerDeployment>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intrusionDetectionControllerDeployment")]
+    pub intrusion_detection_controller_deployment: Option<IntrusionDetectionIntrusionDetectionControllerDeployment>,
 }
 
 /// AnomalyDetection is now deprecated, and configuring it has no effect.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntrusionDetectionAnomalyDetection {
     /// StorageClassName is now deprecated, and configuring it has no effect.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -145,13 +119,8 @@ pub struct IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpec {
     /// List of DPI Daemonset Init containers definitions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitContainers>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -164,9 +133,7 @@ pub struct IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitCo
     /// If specified, this overrides the init container's resources.
     /// If omitted, the default values will be used for the init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitContainersResources,
-    >,
+    pub resources: Option<IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitContainersResources>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -201,8 +168,7 @@ pub struct IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitCo
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitContainersResourcesClaims
-{
+pub struct IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -240,20 +206,12 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
     /// If specified, this overrides the specified IntrusionDetectionController Deployment containers.
     /// If omitted, the IntrusionDetectionController Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers: Option<
-        Vec<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainers>,
-    >,
+    pub containers: Option<Vec<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainers>>,
     /// InitContainers is a list of IntrusionDetectionController init containers.
     /// If specified, this overrides the specified IntrusionDetectionController Deployment init containers.
     /// If omitted, the IntrusionDetectionController Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers: Option<
-        Vec<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainers>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainers>>,
 }
 
 /// IntrusionDetectionControllerDeploymentContainer is a IntrusionDetectionController Deployment container.
@@ -261,15 +219,12 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainers {
     /// Name is an enum which identifies the IntrusionDetectionController Deployment container by name.
     /// Supported values are: controller, webhooks-processor
-    pub name:
-        IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersName,
+    pub name: IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named IntrusionDetectionController Deployment container's resources.
     /// If omitted, the IntrusionDetection Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersResources,
-    >,
+    pub resources: Option<IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersResources>,
 }
 
 /// IntrusionDetectionControllerDeploymentContainer is a IntrusionDetectionController Deployment container.
@@ -307,8 +262,7 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersResourcesClaims
-{
+pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -330,8 +284,7 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
 
 /// IntrusionDetectionControllerDeploymentInitContainer is a IntrusionDetectionController Deployment init container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersName
-{
+pub enum IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersName {
     #[serde(rename = "intrusion-detection-tls-key-cert-provisioner")]
     IntrusionDetectionTlsKeyCertProvisioner,
 }
@@ -362,8 +315,7 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersResourcesClaims
-{
+pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -381,3 +333,4 @@ pub struct IntrusionDetectionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

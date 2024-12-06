@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ProviderSpec defines the desired state of the Provider.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "notification.toolkit.fluxcd.io",
-    version = "v1beta3",
-    kind = "Provider",
-    plural = "providers"
-)]
+#[kube(group = "notification.toolkit.fluxcd.io", version = "v1beta3", kind = "Provider", plural = "providers")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct ProviderSpec {
     /// Address specifies the endpoint, in a generic sense, to where alerts are sent.
     /// What kind of endpoint depends on the specific Provider type being used.
@@ -29,14 +24,10 @@ pub struct ProviderSpec {
     pub address: Option<String>,
     /// CertSecretRef specifies the Secret containing
     /// a PEM-encoded CA certificate (in the `ca.crt` key).
-    ///
+    /// 
     /// Note: Support for the `caFile` key has
     /// been deprecated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<ProviderCertSecretRef>,
     /// Channel specifies the destination channel where events should be posted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -69,7 +60,7 @@ pub struct ProviderSpec {
 
 /// CertSecretRef specifies the Secret containing
 /// a PEM-encoded CA certificate (in the `ca.crt` key).
-///
+/// 
 /// Note: Support for the `caFile` key has
 /// been deprecated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -144,3 +135,4 @@ pub enum ProviderType {
     #[serde(rename = "nats")]
     Nats,
 }
+

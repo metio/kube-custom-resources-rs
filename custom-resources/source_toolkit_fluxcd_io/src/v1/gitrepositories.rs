@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// GitRepositorySpec specifies the required configuration to produce an
 /// Artifact for a Git repository.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "source.toolkit.fluxcd.io",
-    version = "v1",
-    kind = "GitRepository",
-    plural = "gitrepositories"
-)]
+#[kube(group = "source.toolkit.fluxcd.io", version = "v1", kind = "GitRepository", plural = "gitrepositories")]
 #[kube(namespaced)]
 #[kube(status = "GitRepositoryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GitRepositorySpec {
     /// Ignore overrides the set of excluded patterns in the .sourceignore format
     /// (which is the same as .gitignore). If not provided, a default will be used,
@@ -45,19 +40,11 @@ pub struct GitRepositorySpec {
     pub provider: Option<GitRepositoryProvider>,
     /// ProxySecretRef specifies the Secret containing the proxy configuration
     /// to use while communicating with the Git server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxySecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySecretRef")]
     pub proxy_secret_ref: Option<GitRepositoryProxySecretRef>,
     /// RecurseSubmodules enables the initialization of all submodules within
     /// the GitRepository as cloned from the URL, using their default settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recurseSubmodules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recurseSubmodules")]
     pub recurse_submodules: Option<bool>,
     /// Reference specifies the Git reference to resolve and monitor for
     /// changes, defaults to the 'master' branch.
@@ -137,13 +124,13 @@ pub struct GitRepositoryRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
     /// Commit SHA to check out, takes precedence over all reference fields.
-    ///
+    /// 
     /// This can be combined with Branch to shallow clone the branch, in which
     /// the commit is expected to exist.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commit: Option<String>,
     /// Name of the reference to check out; takes precedence over Branch, Tag and SemVer.
-    ///
+    /// 
     /// It must be a valid Git reference: https://git-scm.com/docs/git-check-ref-format#_description
     /// Examples: "refs/heads/main", "refs/tags/v0.1.0", "refs/pull/420/head", "refs/merge-requests/1/head"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -173,7 +160,7 @@ pub struct GitRepositorySecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GitRepositoryVerify {
     /// Mode specifies which Git object(s) should be verified.
-    ///
+    /// 
     /// The variants "head" and "HEAD" both imply the same thing, i.e. verify
     /// the commit that the HEAD of the Git repository points to. The variant
     /// "head" solely exists to ensure backwards compatibility.
@@ -217,60 +204,32 @@ pub struct GitRepositoryStatus {
     pub conditions: Option<Vec<Condition>>,
     /// IncludedArtifacts contains a list of the last successfully included
     /// Artifacts as instructed by GitRepositorySpec.Include.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includedArtifacts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedArtifacts")]
     pub included_artifacts: Option<Vec<GitRepositoryStatusIncludedArtifacts>>,
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation of the GitRepository
     /// object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ObservedIgnore is the observed exclusion patterns used for constructing
     /// the source artifact.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedIgnore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedIgnore")]
     pub observed_ignore: Option<String>,
     /// ObservedInclude is the observed list of GitRepository resources used to
     /// produce the current Artifact.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedInclude"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedInclude")]
     pub observed_include: Option<Vec<GitRepositoryStatusObservedInclude>>,
     /// ObservedRecurseSubmodules is the observed resource submodules
     /// configuration used to produce the current Artifact.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedRecurseSubmodules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedRecurseSubmodules")]
     pub observed_recurse_submodules: Option<bool>,
     /// SourceVerificationMode is the last used verification mode indicating
     /// which Git object(s) have been verified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceVerificationMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceVerificationMode")]
     pub source_verification_mode: Option<String>,
 }
 
@@ -356,3 +315,4 @@ pub struct GitRepositoryStatusObservedIncludeRepository {
     /// Name of the referent.
     pub name: String,
 }
+

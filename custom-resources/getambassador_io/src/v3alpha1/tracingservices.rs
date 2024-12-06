@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// TracingServiceSpec defines the desired state of TracingService
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "getambassador.io",
-    version = "v3alpha1",
-    kind = "TracingService",
-    plural = "tracingservices"
-)]
+#[kube(group = "getambassador.io", version = "v3alpha1", kind = "TracingService", plural = "tracingservices")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct TracingServiceSpec {
-    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is:
+    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is: 
     ///  ambassador_id: - "default"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ambassador_id: Option<Vec<String>>,
@@ -131,3 +126,4 @@ pub struct TracingServiceSampling {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub random: Option<i64>,
 }
+

@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// MachineSpec defines desired machine state.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "bmc.tinkerbell.org",
-    version = "v1alpha1",
-    kind = "Machine",
-    plural = "machines"
-)]
+#[kube(group = "bmc.tinkerbell.org", version = "v1alpha1", kind = "Machine", plural = "machines")]
 #[kube(namespaced)]
 #[kube(status = "MachineStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MachineSpec {
     /// Connection contains connection data for a Baseboard Management Controller.
     pub connection: MachineConnection,
@@ -34,11 +29,7 @@ pub struct MachineConnection {
     /// AuthSecretRef is the SecretReference that contains authentication information of the Machine.
     /// The Secret must contain username and password keys. This is optional as it is not required when using
     /// the RPC provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authSecretRef")]
     pub auth_secret_ref: Option<MachineConnectionAuthSecretRef>,
     /// Host is the host IP address or hostname of the Machine.
     pub host: String,
@@ -49,11 +40,7 @@ pub struct MachineConnection {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// ProviderOptions contains provider specific options.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerOptions")]
     pub provider_options: Option<MachineConnectionProviderOptions>,
 }
 
@@ -83,11 +70,7 @@ pub struct MachineConnectionProviderOptions {
     /// Providers added to this list will be moved to the front of the default order.
     /// Provider names are case insensitive.
     /// The default order is: ipmitool, asrockrack, gofish, intelamt, dell, supermicro, openbmc.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredOrder"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredOrder")]
     pub preferred_order: Option<Vec<String>>,
     /// Redfish contains the options to customize the Redfish provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -101,11 +84,7 @@ pub struct MachineConnectionProviderOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineConnectionProviderOptionsIntelAmt {
     /// HostScheme determines whether to use http or https for intelAMT calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostScheme"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostScheme")]
     pub host_scheme: Option<MachineConnectionProviderOptionsIntelAmtHostScheme>,
     /// Port that intelAMT will use for calls.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -125,11 +104,7 @@ pub enum MachineConnectionProviderOptionsIntelAmtHostScheme {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineConnectionProviderOptionsIpmitool {
     /// CipherSuite that ipmitool will use for calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipherSuite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuite")]
     pub cipher_suite: Option<String>,
     /// Port that ipmitool will use for calls.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -144,18 +119,10 @@ pub struct MachineConnectionProviderOptionsRedfish {
     pub port: Option<i64>,
     /// SystemName is the name of the system to use for redfish calls.
     /// With redfish implementations that manage multiple systems via a single endpoint, this allows for specifying the system to manage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemName")]
     pub system_name: Option<String>,
     /// UseBasicAuth for redfish calls. The default is false which means token based auth is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useBasicAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useBasicAuth")]
     pub use_basic_auth: Option<bool>,
 }
 
@@ -173,11 +140,7 @@ pub struct MachineConnectionProviderOptionsRpc {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hmac: Option<MachineConnectionProviderOptionsRpcHmac>,
     /// LogNotificationsDisabled determines whether responses from rpc consumer/listeners will be logged or not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logNotificationsDisabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logNotificationsDisabled")]
     pub log_notifications_disabled: Option<bool>,
     /// Request is the options used to create the rpc HTTP request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -191,11 +154,7 @@ pub struct MachineConnectionProviderOptionsRpc {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineConnectionProviderOptionsRpcExperimental {
     /// CustomRequestPayload must be in json.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customRequestPayload"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customRequestPayload")]
     pub custom_request_payload: Option<String>,
     /// DotPath is the path to the json object where the bmclib RequestPayload{} struct will be embedded. For example: object.data.body
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dotPath")]
@@ -206,11 +165,7 @@ pub struct MachineConnectionProviderOptionsRpcExperimental {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineConnectionProviderOptionsRpcHmac {
     /// PrefixSigDisabled determines whether the algorithm will be prefixed to the signature. Example: sha256=abc123
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prefixSigDisabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixSigDisabled")]
     pub prefix_sig_disabled: Option<bool>,
     /// Secrets are a map of algorithms to secrets used for signing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -233,39 +188,19 @@ pub struct MachineConnectionProviderOptionsRpcHmacSecrets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineConnectionProviderOptionsRpcRequest {
     /// HTTPContentType is the content type to use for the rpc request notification.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpContentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpContentType")]
     pub http_content_type: Option<String>,
     /// HTTPMethod is the HTTP method to use for the rpc request notification.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpMethod")]
     pub http_method: Option<String>,
     /// StaticHeaders are predefined headers that will be added to every request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticHeaders")]
     pub static_headers: Option<BTreeMap<String, String>>,
     /// TimestampFormat is the time format for the timestamp header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timestampFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timestampFormat")]
     pub timestamp_format: Option<String>,
     /// TimestampHeader is the header name that should contain the timestamp. Example: X-BMCLIB-Timestamp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timestampHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timestampHeader")]
     pub timestamp_header: Option<String>,
 }
 
@@ -275,26 +210,14 @@ pub struct MachineConnectionProviderOptionsRpcSignature {
     /// AppendAlgoToHeaderDisabled decides whether to append the algorithm to the signature header or not.
     /// Example: X-BMCLIB-Signature becomes X-BMCLIB-Signature-256
     /// When set to true, a header will be added for each algorithm. Example: X-BMCLIB-Signature-256 and X-BMCLIB-Signature-512
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appendAlgoToHeaderDisabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appendAlgoToHeaderDisabled")]
     pub append_algo_to_header_disabled: Option<bool>,
     /// HeaderName is the header name that should contain the signature(s). Example: X-BMCLIB-Signature
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerName")]
     pub header_name: Option<String>,
     /// IncludedPayloadHeaders are headers whose values will be included in the signature payload. Example: X-BMCLIB-My-Custom-Header
     /// All headers will be deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includedPayloadHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedPayloadHeaders")]
     pub included_payload_headers: Option<Vec<String>>,
 }
 
@@ -305,11 +228,7 @@ pub struct MachineStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<MachineStatusConditions>>,
     /// Power is the current power state of the Machine.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "powerState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerState")]
     pub power_state: Option<MachineStatusPowerState>,
 }
 
@@ -317,11 +236,7 @@ pub struct MachineStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineStatusConditions {
     /// LastUpdateTime of the condition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdateTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
     pub last_update_time: Option<String>,
     /// Message is a human readable message indicating with details of the last transition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -343,3 +258,4 @@ pub enum MachineStatusPowerState {
     #[serde(rename = "unknown")]
     Unknown,
 }
+

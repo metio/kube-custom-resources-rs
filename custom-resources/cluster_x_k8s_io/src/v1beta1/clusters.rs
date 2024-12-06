@@ -4,67 +4,42 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// ClusterSpec defines the desired state of Cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "Cluster",
-    plural = "clusters"
-)]
+#[kube(group = "cluster.x-k8s.io", version = "v1beta1", kind = "Cluster", plural = "clusters")]
 #[kube(namespaced)]
 #[kube(status = "ClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterSpec {
     /// availabilityGates specifies additional conditions to include when evaluating Cluster Available condition.
-    ///
+    /// 
     /// NOTE: this field is considered only for computing v1beta2 conditions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityGates")]
     pub availability_gates: Option<Vec<ClusterAvailabilityGates>>,
     /// Cluster network configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetwork")]
     pub cluster_network: Option<ClusterClusterNetwork>,
     /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<ClusterControlPlaneEndpoint>,
     /// controlPlaneRef is an optional reference to a provider-specific resource that holds
     /// the details for provisioning the Control Plane for a Cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneRef")]
     pub control_plane_ref: Option<ObjectReference>,
     /// infrastructureRef is a reference to a provider-specific resource that holds the details
     /// for provisioning infrastructure for a cluster in said provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "infrastructureRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureRef")]
     pub infrastructure_ref: Option<ObjectReference>,
     /// paused can be used to prevent controllers from processing the Cluster and all its associated objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -92,21 +67,13 @@ pub struct ClusterAvailabilityGates {
 pub struct ClusterClusterNetwork {
     /// apiServerPort specifies the port the API Server should bind to.
     /// Defaults to 6443.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiServerPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerPort")]
     pub api_server_port: Option<i32>,
     /// The network ranges from which Pod networks are allocated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<ClusterClusterNetworkPods>,
     /// Domain name for services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDomain")]
     pub service_domain: Option<String>,
     /// The network ranges from which service VIPs are allocated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -141,11 +108,7 @@ pub struct ClusterControlPlaneEndpoint {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -170,11 +133,7 @@ pub struct ClusterControlPlaneRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -187,11 +146,7 @@ pub struct ClusterControlPlaneRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInfrastructureRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -216,11 +171,7 @@ pub struct ClusterInfrastructureRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -237,21 +188,13 @@ pub struct ClusterTopology {
     /// The name of the ClusterClass object to create the topology.
     pub class: String,
     /// controlPlane describes the cluster control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterTopologyControlPlane>,
     /// rolloutAfter performs a rollout of the entire cluster one component at a time,
     /// control plane first and then machine deployments.
-    ///
+    /// 
     /// Deprecated: This field has no function and is going to be removed in the next apiVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rolloutAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutAfter")]
     pub rollout_after: Option<String>,
     /// variables can be used to customize the Cluster through
     /// patches. They must comply to the corresponding
@@ -271,11 +214,7 @@ pub struct ClusterTopology {
 pub struct ClusterTopologyControlPlane {
     /// machineHealthCheck allows to enable, disable and override
     /// the MachineHealthCheck configuration in the ClusterClass for this control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterTopologyControlPlaneMachineHealthCheck>,
     /// metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane
     /// if the ControlPlaneTemplate referenced by the ClusterClass is machine based. If not, it
@@ -286,28 +225,16 @@ pub struct ClusterTopologyControlPlane {
     /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDeletionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
     /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
     /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDrainTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
     /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeVolumeDetachTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
     /// replicas is the number of control plane nodes.
     /// If the value is nil, the ControlPlane object is created without the number of Replicas
@@ -325,91 +252,66 @@ pub struct ClusterTopologyControlPlane {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// enable controls if a MachineHealthCheck should be created for the target machines.
-    ///
+    /// 
     /// If false: No MachineHealthCheck will be created.
-    ///
+    /// 
     /// If not set(default): A MachineHealthCheck will be created if it is defined here or
     ///  in the associated ClusterClass. If no MachineHealthCheck is defined then none will be created.
-    ///
+    /// 
     /// If true: A MachineHealthCheck is guaranteed to be created. Cluster validation will
     /// block if `enable` is true and no MachineHealthCheck definition is available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
     /// "selector" are not healthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnhealthy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
     /// nodeStartupTimeout allows to set the maximum time for MachineHealthCheck
     /// to consider a Machine unhealthy if a corresponding Node isn't associated
     /// through a `Spec.ProviderID` field.
-    ///
+    /// 
     /// The duration set in this field is compared to the greatest of:
     /// - Cluster's infrastructure ready condition timestamp (if and when available)
     /// - Control Plane's initialized condition timestamp (if and when available)
     /// - Machine's infrastructure ready condition timestamp (if and when available)
     /// - Machine's metadata creation timestamp
-    ///
+    /// 
     /// Defaults to 10 minutes.
     /// If you wish to disable this feature, set the value explicitly to 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeStartupTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
     /// remediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
-    ///
+    /// 
     /// This field is completely optional, when filled, the MachineHealthCheck controller
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remediationTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
     /// unhealthyConditions contains a list of the conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyConditions"
-    )]
-    pub unhealthy_conditions:
-        Option<Vec<ClusterTopologyControlPlaneMachineHealthCheckUnhealthyConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
+    pub unhealthy_conditions: Option<Vec<ClusterTopologyControlPlaneMachineHealthCheckUnhealthyConditions>>,
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
     /// is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy.
     /// Eg. "[3-5]" - This means that remediation will be allowed only when:
     /// (a) there are at least 3 unhealthy machines (and)
     /// (b) there are at most 5 unhealthy machines
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyRange"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyRange")]
     pub unhealthy_range: Option<String>,
 }
 
 /// remediationTemplate is a reference to a remediation template
 /// provided by an infrastructure provider.
-///
+/// 
 /// This field is completely optional, when filled, the MachineHealthCheck controller
 /// creates a new object from the template referenced and hands off remediation of the machine to
 /// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneMachineHealthCheckRemediationTemplate {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -434,11 +336,7 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheckRemediationTemplate {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -490,13 +388,9 @@ pub struct ClusterTopologyControlPlaneVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneVariablesOverrides {
     /// definitionFrom specifies where the definition of this Variable is from.
-    ///
+    /// 
     /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "definitionFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
     /// name of the variable.
     pub name: String,
@@ -515,13 +409,9 @@ pub struct ClusterTopologyControlPlaneVariablesOverrides {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyVariables {
     /// definitionFrom specifies where the definition of this Variable is from.
-    ///
+    /// 
     /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "definitionFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
     /// name of the variable.
     pub name: String,
@@ -540,18 +430,10 @@ pub struct ClusterTopologyVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkers {
     /// machineDeployments is a list of machine deployments in the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineDeployments"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineDeployments")]
     pub machine_deployments: Option<Vec<ClusterTopologyWorkersMachineDeployments>>,
     /// machinePools is a list of machine pools in the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machinePools"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machinePools")]
     pub machine_pools: Option<Vec<ClusterTopologyWorkersMachinePools>>,
 }
 
@@ -565,19 +447,11 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     pub class: String,
     /// failureDomain is the failure domain the machines will be created in.
     /// Must match a key in the FailureDomains map stored on the cluster object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// machineHealthCheck allows to enable, disable and override
     /// the MachineHealthCheck configuration in the ClusterClass for this MachineDeployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck>,
     /// metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
@@ -587,11 +461,7 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// be ready.
     /// Defaults to 0 (machine will be considered available as soon as it
     /// is ready)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// name is the unique identifier for this MachineDeploymentTopology.
     /// The value is used with other unique identifiers to create a MachineDeployment's Name
@@ -601,28 +471,16 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDeletionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
     /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
     /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDrainTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
     /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeVolumeDetachTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
     /// replicas is the number of worker nodes belonging to this set.
     /// If the value is nil, the MachineDeployment is created without the number of Replicas (defaulting to 1)
@@ -644,91 +502,66 @@ pub struct ClusterTopologyWorkersMachineDeployments {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// enable controls if a MachineHealthCheck should be created for the target machines.
-    ///
+    /// 
     /// If false: No MachineHealthCheck will be created.
-    ///
+    /// 
     /// If not set(default): A MachineHealthCheck will be created if it is defined here or
     ///  in the associated ClusterClass. If no MachineHealthCheck is defined then none will be created.
-    ///
+    /// 
     /// If true: A MachineHealthCheck is guaranteed to be created. Cluster validation will
     /// block if `enable` is true and no MachineHealthCheck definition is available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
     /// "selector" are not healthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnhealthy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
     /// nodeStartupTimeout allows to set the maximum time for MachineHealthCheck
     /// to consider a Machine unhealthy if a corresponding Node isn't associated
     /// through a `Spec.ProviderID` field.
-    ///
+    /// 
     /// The duration set in this field is compared to the greatest of:
     /// - Cluster's infrastructure ready condition timestamp (if and when available)
     /// - Control Plane's initialized condition timestamp (if and when available)
     /// - Machine's infrastructure ready condition timestamp (if and when available)
     /// - Machine's metadata creation timestamp
-    ///
+    /// 
     /// Defaults to 10 minutes.
     /// If you wish to disable this feature, set the value explicitly to 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeStartupTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
     /// remediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
-    ///
+    /// 
     /// This field is completely optional, when filled, the MachineHealthCheck controller
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remediationTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
     /// unhealthyConditions contains a list of the conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyConditions"
-    )]
-    pub unhealthy_conditions:
-        Option<Vec<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
+    pub unhealthy_conditions: Option<Vec<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions>>,
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
     /// is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy.
     /// Eg. "[3-5]" - This means that remediation will be allowed only when:
     /// (a) there are at least 3 unhealthy machines (and)
     /// (b) there are at most 5 unhealthy machines
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyRange"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyRange")]
     pub unhealthy_range: Option<String>,
 }
 
 /// remediationTemplate is a reference to a remediation template
 /// provided by an infrastructure provider.
-///
+/// 
 /// This field is completely optional, when filled, the MachineHealthCheck controller
 /// creates a new object from the template referenced and hands off remediation of the machine to
 /// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -753,11 +586,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckRemediation
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -804,11 +633,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategy {
     pub remediation: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRemediation>,
     /// Rolling update config params. Present only if
     /// MachineDeploymentStrategyType = RollingUpdate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate>,
     /// type of deployment. Allowed values are RollingUpdate and OnDelete.
     /// The default is RollingUpdate.
@@ -821,24 +646,20 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRemediation {
     /// maxInFlight determines how many in flight remediations should happen at the same time.
-    ///
+    /// 
     /// Remediation only happens on the MachineSet with the most current revision, while
     /// older MachineSets (usually present during rollout operations) aren't allowed to remediate.
-    ///
+    /// 
     /// Note: In general (independent of remediations), unhealthy machines are always
     /// prioritized during scale down operations over healthy ones.
-    ///
+    /// 
     /// MaxInFlight can be set to a fixed number or a percentage.
     /// Example: when this is set to 20%, the MachineSet controller deletes at most 20% of
     /// the desired replicas.
-    ///
+    /// 
     /// If not set, remediation is limited to all machines (bounded by replicas)
     /// under the active MachineSet's management.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxInFlight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInFlight")]
     pub max_in_flight: Option<IntOrString>,
 }
 
@@ -849,13 +670,8 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate {
     /// deletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling.
     /// Valid values are "Random, "Newest", "Oldest"
     /// When no value is supplied, the default DeletePolicy of MachineSet is used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletePolicy"
-    )]
-    pub delete_policy:
-        Option<ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
+    pub delete_policy: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy>,
     /// The maximum number of machines that can be scheduled above the
     /// desired number of machines.
     /// Value can be an absolute number (ex: 5) or a percentage of
@@ -883,11 +699,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate {
     /// down further, followed by scaling up the new MachineSet, ensuring
     /// that the total number of machines available at all times
     /// during the update is at least 70% of desired machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -921,13 +733,9 @@ pub struct ClusterTopologyWorkersMachineDeploymentsVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsVariablesOverrides {
     /// definitionFrom specifies where the definition of this Variable is from.
-    ///
+    /// 
     /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "definitionFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
     /// name of the variable.
     pub name: String,
@@ -951,11 +759,7 @@ pub struct ClusterTopologyWorkersMachinePools {
     pub class: String,
     /// failureDomains is the list of failure domains the machine pool will be created in.
     /// Must match a key in the FailureDomains map stored on the cluster object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<Vec<String>>,
     /// metadata is the metadata applied to the MachinePool.
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
@@ -965,11 +769,7 @@ pub struct ClusterTopologyWorkersMachinePools {
     /// be ready.
     /// Defaults to 0 (machine will be considered available as soon as it
     /// is ready)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// name is the unique identifier for this MachinePoolTopology.
     /// The value is used with other unique identifiers to create a MachinePool's Name
@@ -979,28 +779,16 @@ pub struct ClusterTopologyWorkersMachinePools {
     /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the MachinePool
     /// hosts after the MachinePool is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDeletionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
     /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
     /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDrainTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
     /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeVolumeDetachTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
     /// replicas is the number of nodes belonging to this pool.
     /// If the value is nil, the MachinePool is created without the number of Replicas (defaulting to 1)
@@ -1044,13 +832,9 @@ pub struct ClusterTopologyWorkersMachinePoolsVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachinePoolsVariablesOverrides {
     /// definitionFrom specifies where the definition of this Variable is from.
-    ///
+    /// 
     /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "definitionFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
     /// name of the variable.
     pub name: String,
@@ -1075,53 +859,29 @@ pub struct ClusterStatus {
     /// NOTE: this field is part of the Cluster API contract and it is used to orchestrate provisioning.
     /// The value of this field is never updated after provisioning is completed. Please use conditions
     /// to check the operational state of the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneReady"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReady")]
     pub control_plane_ready: Option<bool>,
     /// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<BTreeMap<String, ClusterStatusFailureDomains>>,
     /// failureMessage indicates that there is a fatal problem reconciling the
     /// state, and will be set to a descriptive error message.
-    ///
+    /// 
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// failureReason indicates that there is a fatal problem reconciling the
     /// state, and will be set to a token value suitable for
     /// programmatic interpretation.
-    ///
+    /// 
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// infrastructureReady is the state of the infrastructure provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "infrastructureReady"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
     pub infrastructure_ready: Option<bool>,
     /// observedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// phase represents the current phase of cluster actuation.
     /// E.g. Pending, Running, Terminating, Failed etc.
@@ -1139,11 +899,7 @@ pub struct ClusterStatusFailureDomains {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// controlPlane determines if this failure domain is suitable for use by control plane machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
 }
 
@@ -1157,11 +913,7 @@ pub struct ClusterStatusV1beta2 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// controlPlane groups all the observations about Cluster's ControlPlane current state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterStatusV1beta2ControlPlane>,
     /// workers groups all the observations about Cluster's Workers current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1172,36 +924,20 @@ pub struct ClusterStatusV1beta2 {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusV1beta2ControlPlane {
     /// availableReplicas is the total number of available control plane machines in this cluster. A machine is considered available when Machine's Available condition is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// desiredReplicas is the total number of desired control plane machines in this cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredReplicas")]
     pub desired_replicas: Option<i32>,
     /// readyReplicas is the total number of ready control plane machines in this cluster. A machine is considered ready when Machine's Ready condition is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// replicas is the total number of control plane machines in this cluster.
     /// NOTE: replicas also includes machines still being provisioned or being deleted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// upToDateReplicas is the number of up-to-date control plane machines in this cluster. A machine is considered up-to-date when Machine's UpToDate condition is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upToDateReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
     pub up_to_date_replicas: Option<i32>,
 }
 
@@ -1209,35 +945,20 @@ pub struct ClusterStatusV1beta2ControlPlane {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusV1beta2Workers {
     /// availableReplicas is the total number of available worker machines in this cluster. A machine is considered available when Machine's Available condition is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// desiredReplicas is the total number of desired worker machines in this cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredReplicas")]
     pub desired_replicas: Option<i32>,
     /// readyReplicas is the total number of ready worker machines in this cluster. A machine is considered ready when Machine's Ready condition is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// replicas is the total number of worker machines in this cluster.
     /// NOTE: replicas also includes machines still being provisioned or being deleted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// upToDateReplicas is the number of up-to-date worker machines in this cluster. A machine is considered up-to-date when Machine's UpToDate condition is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upToDateReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
     pub up_to_date_replicas: Option<i32>,
 }
+

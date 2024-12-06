@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// APDosPolicySpec defines the desired state of APDosPolicy
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appprotectdos.f5.com",
-    version = "v1beta1",
-    kind = "APDosPolicy",
-    plural = "apdospolicies"
-)]
+#[kube(group = "appprotectdos.f5.com", version = "v1beta1", kind = "APDosPolicy", plural = "apdospolicies")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct APDosPolicySpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub automation_tools_detection: Option<APDosPolicyAutomationToolsDetection>,
@@ -80,3 +75,4 @@ pub enum APDosPolicyTlsFingerprint {
     #[serde(rename = "off")]
     Off,
 }
+

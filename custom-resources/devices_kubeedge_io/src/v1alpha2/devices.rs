@@ -5,47 +5,30 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DeviceSpec represents a single device instance. It is an instantation of a device model.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "devices.kubeedge.io",
-    version = "v1alpha2",
-    kind = "Device",
-    plural = "devices"
-)]
+#[kube(group = "devices.kubeedge.io", version = "v1alpha2", kind = "Device", plural = "devices")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DeviceSpec {
     /// Data section describe a list of time-series properties which should be processed on edge node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<DeviceData>,
     /// Required: DeviceModelRef is reference to the device model used as a template to create the device instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceModelRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceModelRef")]
     pub device_model_ref: Option<DeviceDeviceModelRef>,
     /// NodeSelector indicates the binding preferences between devices and nodes. Refer to k8s.io/kubernetes/pkg/apis/core NodeSelector for more details
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<DeviceNodeSelector>,
     /// List of property visitors which describe how to access the device properties. PropertyVisitors must unique by propertyVisitor.propertyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propertyVisitors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyVisitors")]
     pub property_visitors: Option<Vec<DevicePropertyVisitors>>,
     /// Required: The protocol configuration used to connect to the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -56,11 +39,7 @@ pub struct DeviceSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceData {
     /// Required: A list of data properties, which are not required to be processed by edgecore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataProperties")]
     pub data_properties: Option<Vec<DeviceDataDataProperties>>,
     /// Topic used by mapper, all data collected from dataProperties should be published to this topic, the default value is $ke/events/device/+/data/update
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataTopic")]
@@ -74,11 +53,7 @@ pub struct DeviceDataDataProperties {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BTreeMap<String, String>>,
     /// Required: The property name for which should be processed by external apps. This property should be present in the device model.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propertyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyName")]
     pub property_name: Option<String>,
 }
 
@@ -102,18 +77,10 @@ pub struct DeviceNodeSelector {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceNodeSelectorNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<DeviceNodeSelectorNodeSelectorTermsMatchExpressions>>,
     /// A list of node selector requirements by node's fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
     pub match_fields: Option<Vec<DeviceNodeSelectorNodeSelectorTermsMatchFields>>,
 }
 
@@ -148,25 +115,13 @@ pub struct DevicePropertyVisitors {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bluetooth: Option<DevicePropertyVisitorsBluetooth>,
     /// Define how frequent mapper will collect from device.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectCycle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectCycle")]
     pub collect_cycle: Option<i64>,
     /// CustomizedProtocol represents a set of visitor config fields of bluetooth protocol.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customizedProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customizedProtocol")]
     pub customized_protocol: Option<DevicePropertyVisitorsCustomizedProtocol>,
     /// Customized values for visitor of provided protocols
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customizedValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customizedValues")]
     pub customized_values: Option<BTreeMap<String, serde_json::Value>>,
     /// Modbus represents a set of additional visitor config fields of modbus protocol.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -175,18 +130,10 @@ pub struct DevicePropertyVisitors {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opcua: Option<DevicePropertyVisitorsOpcua>,
     /// Required: The device property name to be accessed. This should refer to one of the device properties defined in the device model.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propertyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyName")]
     pub property_name: Option<String>,
     /// Define how frequent mapper will report the value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reportCycle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportCycle")]
     pub report_cycle: Option<i64>,
 }
 
@@ -194,18 +141,10 @@ pub struct DevicePropertyVisitors {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertyVisitorsBluetooth {
     /// Required: Unique ID of the corresponding operation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "characteristicUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "characteristicUUID")]
     pub characteristic_uuid: Option<String>,
     /// Responsible for converting the data being read from the bluetooth device into a form that is understandable by the platform
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataConverter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataConverter")]
     pub data_converter: Option<DevicePropertyVisitorsBluetoothDataConverter>,
     /// Responsible for converting the data coming from the platform into a form that is understood by the bluetooth device For example: "ON":[1], "OFF":[0]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataWrite")]
@@ -219,29 +158,16 @@ pub struct DevicePropertyVisitorsBluetoothDataConverter {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endIndex")]
     pub end_index: Option<i64>,
     /// Specifies in what order the operations(which are required to be performed to convert incoming data into understandable form) are performed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderOfOperations"
-    )]
-    pub order_of_operations:
-        Option<Vec<DevicePropertyVisitorsBluetoothDataConverterOrderOfOperations>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderOfOperations")]
+    pub order_of_operations: Option<Vec<DevicePropertyVisitorsBluetoothDataConverterOrderOfOperations>>,
     /// Refers to the number of bits to shift left, if left-shift operation is necessary for conversion
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shiftLeft")]
     pub shift_left: Option<i64>,
     /// Refers to the number of bits to shift right, if right-shift operation is necessary for conversion
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shiftRight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shiftRight")]
     pub shift_right: Option<i64>,
     /// Required: Specifies the start index of the incoming byte stream to be considered to convert the data. For example: start-index:2, end-index:3 concatenates the value present at second and third index of the incoming byte stream. If we want to reverse the order we can give it as start-index:3, end-index:2
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startIndex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startIndex")]
     pub start_index: Option<i64>,
 }
 
@@ -249,18 +175,10 @@ pub struct DevicePropertyVisitorsBluetoothDataConverter {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertyVisitorsBluetoothDataConverterOrderOfOperations {
     /// Required: Specifies the operation to be performed to convert incoming data
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operationType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operationType")]
     pub operation_type: Option<String>,
     /// Required: Specifies with what value the operation is to be performed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operationValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operationValue")]
     pub operation_value: Option<f64>,
 }
 
@@ -268,18 +186,10 @@ pub struct DevicePropertyVisitorsBluetoothDataConverterOrderOfOperations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertyVisitorsCustomizedProtocol {
     /// Required: The configData of customized protocol
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
     pub config_data: Option<BTreeMap<String, serde_json::Value>>,
     /// Required: name of customized protocol
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolName")]
     pub protocol_name: Option<String>,
 }
 
@@ -287,11 +197,7 @@ pub struct DevicePropertyVisitorsCustomizedProtocol {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertyVisitorsModbus {
     /// Indicates whether the high and low register swapped. Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isRegisterSwap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isRegisterSwap")]
     pub is_register_swap: Option<bool>,
     /// Indicates whether the high and low byte swapped. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isSwap")]
@@ -323,11 +229,7 @@ pub enum DevicePropertyVisitorsModbusRegister {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertyVisitorsOpcua {
     /// The name of opc-ua node
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "browseName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "browseName")]
     pub browse_name: Option<String>,
     /// Required: The ID of opc-ua node, e.g. "ns=1,i=1005"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeID")]
@@ -344,11 +246,7 @@ pub struct DeviceProtocol {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub common: Option<DeviceProtocolCommon>,
     /// Configuration for customized protocol
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customizedProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customizedProtocol")]
     pub customized_protocol: Option<DeviceProtocolCustomizedProtocol>,
     /// Protocol configuration for modbus
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -362,11 +260,7 @@ pub struct DeviceProtocol {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceProtocolBluetooth {
     /// Unique identifier assigned to the device.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "macAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "macAddress")]
     pub mac_address: Option<String>,
 }
 
@@ -374,25 +268,13 @@ pub struct DeviceProtocolBluetooth {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceProtocolCommon {
     /// Define retry times of mapper will collect from device.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectRetryTimes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectRetryTimes")]
     pub collect_retry_times: Option<i64>,
     /// Define timeout of mapper collect from device.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectTimeout")]
     pub collect_timeout: Option<i64>,
     /// Define collect type, sync or async.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectType")]
     pub collect_type: Option<DeviceProtocolCommonCollectType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub com: Option<DeviceProtocolCommonCom>,
@@ -400,25 +282,13 @@ pub struct DeviceProtocolCommon {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commType")]
     pub comm_type: Option<String>,
     /// Customized values for provided protocol
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customizedValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customizedValues")]
     pub customized_values: Option<BTreeMap<String, serde_json::Value>>,
     /// Reconnecting retry times
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconnRetryTimes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconnRetryTimes")]
     pub reconn_retry_times: Option<i64>,
     /// Reconnection timeout
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconnTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconnTimeout")]
     pub reconn_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tcp: Option<DeviceProtocolCommonTcp>,
@@ -445,11 +315,7 @@ pub struct DeviceProtocolCommonCom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parity: Option<DeviceProtocolCommonComParity>,
     /// Required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serialPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serialPort")]
     pub serial_port: Option<String>,
     /// Required. Bit that stops 1|2
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopBits")]
@@ -538,18 +404,10 @@ pub struct DeviceProtocolCommonTcp {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceProtocolCustomizedProtocol {
     /// Any config data
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
     pub config_data: Option<BTreeMap<String, serde_json::Value>>,
     /// Unique protocol name Required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolName")]
     pub protocol_name: Option<String>,
 }
 
@@ -571,25 +429,13 @@ pub struct DeviceProtocolOpcua {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// PrivateKey for access opc server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityMode")]
     pub security_mode: Option<String>,
     /// Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityPolicy")]
     pub security_policy: Option<String>,
     /// Timeout seconds for the opc server connection.???
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -617,11 +463,7 @@ pub struct DeviceStatusTwins {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub desired: Option<DeviceStatusTwinsDesired>,
     /// Required: The property name for which the desired/reported values are specified. This property should be present in the device model.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propertyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyName")]
     pub property_name: Option<String>,
     /// Required: the reported property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -647,3 +489,4 @@ pub struct DeviceStatusTwinsReported {
     /// Required: The value for this property.
     pub value: String,
 }
+

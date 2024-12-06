@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ProviderSpec defines the desired state of Provider
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "notification.toolkit.fluxcd.io",
-    version = "v1beta1",
-    kind = "Provider",
-    plural = "providers"
-)]
+#[kube(group = "notification.toolkit.fluxcd.io", version = "v1beta1", kind = "Provider", plural = "providers")]
 #[kube(namespaced)]
 #[kube(status = "ProviderStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct ProviderSpec {
     /// HTTP/S webhook address of this provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
     /// CertSecretRef can be given the name of a secret containing
     /// a PEM-encoded CA certificate (`caFile`)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<ProviderCertSecretRef>,
     /// Alert channel for this provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -128,10 +119,7 @@ pub struct ProviderStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration is the last reconciled generation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

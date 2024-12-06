@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// IBMPowerVSMachineTemplateSpec defines the desired state of IBMPowerVSMachineTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta2",
-    kind = "IBMPowerVSMachineTemplate",
-    plural = "ibmpowervsmachinetemplates"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "IBMPowerVSMachineTemplate", plural = "ibmpowervsmachinetemplates")]
 #[kube(namespaced)]
 #[kube(status = "IBMPowerVSMachineTemplateStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMPowerVSMachineTemplateSpec {
     /// IBMPowerVSMachineTemplateResource holds the IBMPowerVSMachine spec.
     pub template: IBMPowerVSMachineTemplateTemplate,
@@ -68,11 +63,7 @@ pub struct IBMPowerVSMachineTemplateTemplateSpec {
     /// if the processorType is selected as Dedicated, then processors value cannot be fractional.
     /// When omitted, this means that the user has no opinion and the platform is left to choose a
     /// reasonable default, which is subject to change over time. The current default is Shared.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "processorType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "processorType")]
     pub processor_type: Option<IBMPowerVSMachineTemplateTemplateSpecProcessorType>,
     /// processors is the number of virtual processors in a virtual machine.
     /// when the processorType is selected as Dedicated the processors value cannot be fractional.
@@ -89,11 +80,7 @@ pub struct IBMPowerVSMachineTemplateTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub processors: Option<IntOrString>,
     /// ProviderID is the unique identifier as specified by the cloud provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
     /// serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created.
     /// Power VS workspace is a container for all Power VS instances at a specific geographic region.
@@ -102,11 +89,7 @@ pub struct IBMPowerVSMachineTemplateTemplateSpec {
     /// More detail about Power VS service instance.
     /// https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server
     /// when omitted system will dynamically create the service instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IBMPowerVSMachineTemplateTemplateSpecServiceInstance>,
     /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.
     /// Deprecated: use ServiceInstance instead
@@ -122,11 +105,7 @@ pub struct IBMPowerVSMachineTemplateTemplateSpec {
     /// e980 systemType available in Datacenters except Dallas and Washington.
     /// When omitted, this means that the user has no opinion and the platform is left to choose a
     /// reasonable default, which is subject to change over time. The current default is s922 which is generally available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemType")]
     pub system_type: Option<IBMPowerVSMachineTemplateTemplateSpecSystemType>,
 }
 
@@ -232,3 +211,4 @@ pub struct IBMPowerVSMachineTemplateStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<BTreeMap<String, IntOrString>>,
 }
+

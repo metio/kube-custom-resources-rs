@@ -4,36 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// EnvoyConfigRevisionSpec defines the desired state of EnvoyConfigRevision
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "marin3r.3scale.net",
-    version = "v1alpha1",
-    kind = "EnvoyConfigRevision",
-    plural = "envoyconfigrevisions"
-)]
+#[kube(group = "marin3r.3scale.net", version = "v1alpha1", kind = "EnvoyConfigRevision", plural = "envoyconfigrevisions")]
 #[kube(namespaced)]
 #[kube(status = "EnvoyConfigRevisionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EnvoyConfigRevisionSpec {
     /// EnvoyAPI is the version of envoy's API to use. Defaults to v3.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyAPI")]
     pub envoy_api: Option<EnvoyConfigRevisionEnvoyApi>,
     /// EnvoyResources holds the different types of resources suported by the envoy discovery service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyResources")]
     pub envoy_resources: Option<EnvoyConfigRevisionEnvoyResources>,
     /// NodeID holds the envoy identifier for the discovery service to know which set
     /// of resources to send to each of the envoy clients that connect to it.
@@ -70,11 +61,7 @@ pub struct EnvoyConfigRevisionEnvoyResources {
     pub endpoints: Option<Vec<EnvoyConfigRevisionEnvoyResourcesEndpoints>>,
     /// ExtensionConfigs is a list of the envoy ExtensionConfig resource type
     /// API V3 reference: https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/extension.proto
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extensionConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extensionConfigs")]
     pub extension_configs: Option<Vec<EnvoyConfigRevisionEnvoyResourcesExtensionConfigs>>,
     /// Listeners is a list of the envoy Listener resource type.
     /// API V3 reference: https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/listener/v3/listener.proto
@@ -90,11 +77,7 @@ pub struct EnvoyConfigRevisionEnvoyResources {
     pub runtimes: Option<Vec<EnvoyConfigRevisionEnvoyResourcesRuntimes>>,
     /// ScopedRoutes is a list of the envoy ScopeRoute resource type.
     /// API V3 reference: https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/route/v3/scoped_route.proto
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scopedRoutes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopedRoutes")]
     pub scoped_routes: Option<Vec<EnvoyConfigRevisionEnvoyResourcesScopedRoutes>>,
     /// Secrets is a list of references to Kubernetes Secret objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -242,27 +225,14 @@ pub struct EnvoyConfigRevisionResources {
     pub blueprint: Option<EnvoyConfigRevisionResourcesBlueprint>,
     /// Specifies a label selector to watch for EndpointSlices that will
     /// be used to generate the endpoint resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateFromEndpointSlices"
-    )]
-    pub generate_from_endpoint_slices:
-        Option<EnvoyConfigRevisionResourcesGenerateFromEndpointSlices>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateFromEndpointSlices")]
+    pub generate_from_endpoint_slices: Option<EnvoyConfigRevisionResourcesGenerateFromEndpointSlices>,
     /// The name of a Kubernetes Secret of type "Opaque". It will generate an
     /// envoy "generic secret" proto.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateFromOpaqueSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateFromOpaqueSecret")]
     pub generate_from_opaque_secret: Option<EnvoyConfigRevisionResourcesGenerateFromOpaqueSecret>,
     /// The name of a Kubernetes Secret of type "kubernetes.io/tls"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateFromTlsSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateFromTlsSecret")]
     pub generate_from_tls_secret: Option<String>,
     /// Type is the type url for the protobuf message
     #[serde(rename = "type")]
@@ -304,21 +274,12 @@ pub struct EnvoyConfigRevisionResourcesGenerateFromEndpointSlices {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyConfigRevisionResourcesGenerateFromEndpointSlicesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<EnvoyConfigRevisionResourcesGenerateFromEndpointSlicesSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<EnvoyConfigRevisionResourcesGenerateFromEndpointSlicesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -392,19 +353,11 @@ pub struct EnvoyConfigRevisionStatus {
     pub conditions: Option<Vec<Condition>>,
     /// LastPublishedAt indicates the last time this config review transitioned to
     /// published
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPublishedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPublishedAt")]
     pub last_published_at: Option<String>,
     /// ProvidesVersions keeps track of the version that this revision
     /// publishes in the xDS server for each resource type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providesVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providesVersions")]
     pub provides_versions: Option<EnvoyConfigRevisionStatusProvidesVersions>,
     /// Published signals if the EnvoyConfigRevision is the one currently published
     /// in the xds server cache
@@ -424,11 +377,7 @@ pub struct EnvoyConfigRevisionStatusProvidesVersions {
     pub clusters: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extensionConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extensionConfigs")]
     pub extension_configs: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listeners: Option<String>,
@@ -436,12 +385,9 @@ pub struct EnvoyConfigRevisionStatusProvidesVersions {
     pub routes: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub runtimes: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scopedRoutes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopedRoutes")]
     pub scoped_routes: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<String>,
 }
+

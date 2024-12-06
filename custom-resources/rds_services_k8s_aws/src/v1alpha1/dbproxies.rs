@@ -4,29 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DBProxySpec defines the desired state of DBProxy.
-///
+/// 
 /// The data structure representing a proxy managed by the RDS Proxy.
-///
+/// 
 /// This data type is used as a response element in the DescribeDBProxies action.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "rds.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "DBProxy",
-    plural = "dbproxies"
-)]
+#[kube(group = "rds.services.k8s.aws", version = "v1alpha1", kind = "DBProxy", plural = "dbproxies")]
 #[kube(namespaced)]
 #[kube(status = "DBProxyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DBProxySpec {
     /// The authorization mechanism that the proxy uses.
     pub auth: Vec<DBProxyAuth>,
@@ -37,11 +32,7 @@ pub struct DBProxySpec {
     /// only enable this setting when needed for debugging, and only when you have
     /// security measures in place to safeguard any sensitive information that appears
     /// in the logs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "debugLogging"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugLogging")]
     pub debug_logging: Option<bool>,
     /// The kinds of databases that the proxy can connect to. This value determines
     /// which database network protocol the proxy recognizes when it interprets network
@@ -54,11 +45,7 @@ pub struct DBProxySpec {
     /// The number of seconds that a connection to the proxy can be inactive before
     /// the proxy disconnects it. You can set this value higher or lower than the
     /// connection timeout limit for the associated database.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleClientTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleClientTimeout")]
     pub idle_client_timeout: Option<i64>,
     /// The identifier for the proxy. This name must be unique for all proxies owned
     /// by your Amazon Web Services account in the specified Amazon Web Services
@@ -69,11 +56,7 @@ pub struct DBProxySpec {
     /// A Boolean parameter that specifies whether Transport Layer Security (TLS)
     /// encryption is required for connections to the proxy. By enabling this setting,
     /// you can enforce encrypted TLS connections to the proxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireTLS")]
     pub require_tls: Option<bool>,
     /// The Amazon Resource Name (ARN) of the IAM role that the proxy uses to access
     /// secrets in Amazon Web Services Secrets Manager.
@@ -84,11 +67,7 @@ pub struct DBProxySpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<DBProxyTags>>,
     /// One or more VPC security group IDs to associate with the new proxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcSecurityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcSecurityGroupIDs")]
     pub vpc_security_group_i_ds: Option<Vec<String>>,
     /// One or more VPC subnet IDs to associate with the new proxy.
     #[serde(rename = "vpcSubnetIDs")]
@@ -99,17 +78,9 @@ pub struct DBProxySpec {
 /// database user.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBProxyAuth {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authScheme"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authScheme")]
     pub auth_scheme: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientPasswordAuthType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPasswordAuthType")]
     pub client_password_auth_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -122,7 +93,7 @@ pub struct DBProxyAuth {
 }
 
 /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
-///
+/// 
 /// For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
 /// in the Amazon RDS User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -139,11 +110,7 @@ pub struct DBProxyStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<DBProxyStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -152,11 +119,7 @@ pub struct DBProxyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The date and time when the proxy was first created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createdDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<String>,
     /// The endpoint that you can use to connect to the DB proxy. You include the
     /// endpoint value in the connection string for a database client application.
@@ -168,11 +131,7 @@ pub struct DBProxyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// The date and time when the proxy was last updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedDate")]
     pub updated_date: Option<String>,
     /// Provides the VPC ID of the DB proxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
@@ -200,3 +159,4 @@ pub struct DBProxyStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

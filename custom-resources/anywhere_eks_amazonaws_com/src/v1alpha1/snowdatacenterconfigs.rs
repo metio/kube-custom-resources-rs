@@ -5,29 +5,20 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// SnowDatacenterConfigSpec defines the desired state of SnowDatacenterConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "anywhere.eks.amazonaws.com",
-    version = "v1alpha1",
-    kind = "SnowDatacenterConfig",
-    plural = "snowdatacenterconfigs"
-)]
+#[kube(group = "anywhere.eks.amazonaws.com", version = "v1alpha1", kind = "SnowDatacenterConfig", plural = "snowdatacenterconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SnowDatacenterConfigSpec {
     /// IdentityRef is a reference to an identity for the Snow API to be used when reconciling this cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityRef")]
     pub identity_ref: Option<SnowDatacenterConfigIdentityRef>,
 }
 
@@ -42,4 +33,6 @@ pub struct SnowDatacenterConfigIdentityRef {
 
 /// SnowDatacenterConfigStatus defines the observed state of SnowDatacenterConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SnowDatacenterConfigStatus {}
+pub struct SnowDatacenterConfigStatus {
+}
+

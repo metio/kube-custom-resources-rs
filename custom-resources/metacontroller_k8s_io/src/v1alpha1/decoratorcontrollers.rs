@@ -5,32 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "metacontroller.k8s.io",
-    version = "v1alpha1",
-    kind = "DecoratorController",
-    plural = "decoratorcontrollers"
-)]
+#[kube(group = "metacontroller.k8s.io", version = "v1alpha1", kind = "DecoratorController", plural = "decoratorcontrollers")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DecoratorControllerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attachments: Option<Vec<DecoratorControllerAttachments>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hooks: Option<DecoratorControllerHooks>,
     pub resources: Vec<DecoratorControllerResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resyncPeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriodSeconds")]
     pub resync_period_seconds: Option<i32>,
 }
 
@@ -39,11 +30,7 @@ pub struct DecoratorControllerAttachments {
     #[serde(rename = "apiVersion")]
     pub api_version: String,
     pub resource: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<DecoratorControllerAttachmentsUpdateStrategy>,
 }
 
@@ -95,13 +82,8 @@ pub struct DecoratorControllerHooksCustomizeWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Sets the json unmarshall mode. One of the 'loose' or 'strict'. In 'strict' mode additional checks are performed to detect unknown and duplicated fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseUnMarshallMode"
-    )]
-    pub response_un_marshall_mode:
-        Option<DecoratorControllerHooksCustomizeWebhookResponseUnMarshallMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseUnMarshallMode")]
+    pub response_un_marshall_mode: Option<DecoratorControllerHooksCustomizeWebhookResponseUnMarshallMode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<DecoratorControllerHooksCustomizeWebhookService>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -112,17 +94,9 @@ pub struct DecoratorControllerHooksCustomizeWebhook {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DecoratorControllerHooksCustomizeWebhookEtag {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheCleanupSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheCleanupSeconds")]
     pub cache_cleanup_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheTimeoutSeconds")]
     pub cache_timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -169,13 +143,8 @@ pub struct DecoratorControllerHooksFinalizeWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Sets the json unmarshall mode. One of the 'loose' or 'strict'. In 'strict' mode additional checks are performed to detect unknown and duplicated fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseUnMarshallMode"
-    )]
-    pub response_un_marshall_mode:
-        Option<DecoratorControllerHooksFinalizeWebhookResponseUnMarshallMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseUnMarshallMode")]
+    pub response_un_marshall_mode: Option<DecoratorControllerHooksFinalizeWebhookResponseUnMarshallMode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<DecoratorControllerHooksFinalizeWebhookService>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -186,17 +155,9 @@ pub struct DecoratorControllerHooksFinalizeWebhook {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DecoratorControllerHooksFinalizeWebhookEtag {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheCleanupSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheCleanupSeconds")]
     pub cache_cleanup_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheTimeoutSeconds")]
     pub cache_timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -243,13 +204,8 @@ pub struct DecoratorControllerHooksSyncWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Sets the json unmarshall mode. One of the 'loose' or 'strict'. In 'strict' mode additional checks are performed to detect unknown and duplicated fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseUnMarshallMode"
-    )]
-    pub response_un_marshall_mode:
-        Option<DecoratorControllerHooksSyncWebhookResponseUnMarshallMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseUnMarshallMode")]
+    pub response_un_marshall_mode: Option<DecoratorControllerHooksSyncWebhookResponseUnMarshallMode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<DecoratorControllerHooksSyncWebhookService>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -260,17 +216,9 @@ pub struct DecoratorControllerHooksSyncWebhook {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DecoratorControllerHooksSyncWebhookEtag {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheCleanupSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheCleanupSeconds")]
     pub cache_cleanup_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheTimeoutSeconds")]
     pub cache_timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -296,39 +244,22 @@ pub struct DecoratorControllerHooksSyncWebhookService {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DecoratorControllerResources {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
     pub annotation_selector: Option<DecoratorControllerResourcesAnnotationSelector>,
     #[serde(rename = "apiVersion")]
     pub api_version: String,
     /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<DecoratorControllerResourcesLabelSelector>,
     pub resource: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DecoratorControllerResourcesAnnotationSelector {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchAnnotations")]
     pub match_annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<DecoratorControllerResourcesAnnotationSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<DecoratorControllerResourcesAnnotationSelectorMatchExpressions>>,
 }
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
@@ -347,18 +278,10 @@ pub struct DecoratorControllerResourcesAnnotationSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DecoratorControllerResourcesLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<DecoratorControllerResourcesLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -375,4 +298,6 @@ pub struct DecoratorControllerResourcesLabelSelectorMatchExpressions {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DecoratorControllerStatus {}
+pub struct DecoratorControllerStatus {
+}
+

@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ProxyConfigPromoteSpec defines the desired state of ProxyConfigPromote
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "capabilities.3scale.net",
-    version = "v1beta1",
-    kind = "ProxyConfigPromote",
-    plural = "proxyconfigpromotes"
-)]
+#[kube(group = "capabilities.3scale.net", version = "v1beta1", kind = "ProxyConfigPromote", plural = "proxyconfigpromotes")]
 #[kube(namespaced)]
 #[kube(status = "ProxyConfigPromoteStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ProxyConfigPromoteSpec {
     /// deleteCR  deletes this CR when it has successfully completed the promotion
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteCR")]
@@ -42,20 +37,13 @@ pub struct ProxyConfigPromoteStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The latest Version in production
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latestProductionVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestProductionVersion")]
     pub latest_production_version: Option<i64>,
     /// The latest Version in staging
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latestStagingVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestStagingVersion")]
     pub latest_staging_version: Option<i64>,
     /// The id of the product that has been promoted
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "productId")]
     pub product_id: Option<String>,
 }
+

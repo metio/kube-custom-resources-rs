@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// GithubConnector resource definition v3 from Teleport
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "resources.teleport.dev",
-    version = "v3",
-    kind = "TeleportGithubConnector",
-    plural = "teleportgithubconnectors"
-)]
+#[kube(group = "resources.teleport.dev", version = "v3", kind = "TeleportGithubConnector", plural = "teleportgithubconnectors")]
 #[kube(namespaced)]
 #[kube(status = "TeleportGithubConnectorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TeleportGithubConnectorSpec {
     /// APIEndpointURL is the URL of the API endpoint of the Github instance this connector is for.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -80,10 +75,7 @@ pub struct TeleportGithubConnectorStatus {
     /// Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "teleportResourceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "teleportResourceID")]
     pub teleport_resource_id: Option<i64>,
 }
+

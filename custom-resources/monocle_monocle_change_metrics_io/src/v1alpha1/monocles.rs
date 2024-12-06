@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// MonocleSpec defines the desired state of Monocle
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "monocle.monocle.change-metrics.io",
-    version = "v1alpha1",
-    kind = "Monocle",
-    plural = "monocles"
-)]
+#[kube(group = "monocle.monocle.change-metrics.io", version = "v1alpha1", kind = "Monocle", plural = "monocles")]
 #[kube(namespaced)]
 #[kube(status = "MonocleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MonocleSpec {
     /// Monocle container image
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -34,18 +29,10 @@ pub struct MonocleSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<MonocleRoute>,
     /// Storage class name when creating the PVC
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// Initial Storage Size for the database storage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageSize")]
     pub storage_size: Option<String>,
 }
 
@@ -63,22 +50,11 @@ pub struct MonocleRoute {
 /// MonocleStatus defines the observed state of Monocle
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MonocleStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monocle-api"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monocle-api")]
     pub monocle_api: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monocle-crawler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monocle-crawler")]
     pub monocle_crawler: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monocle-elastic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monocle-elastic")]
     pub monocle_elastic: Option<String>,
 }
+

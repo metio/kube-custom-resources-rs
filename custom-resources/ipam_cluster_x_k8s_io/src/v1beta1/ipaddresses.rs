@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// IPAddressSpec is the desired state of an IPAddress.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ipam.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "IPAddress",
-    plural = "ipaddresses"
-)]
+#[kube(group = "ipam.cluster.x-k8s.io", version = "v1beta1", kind = "IPAddress", plural = "ipaddresses")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IPAddressSpec {
     /// address is the IP address.
     pub address: String,
@@ -62,3 +57,4 @@ pub struct IPAddressPoolRef {
     /// Name is the name of resource being referenced
     pub name: String,
 }
+

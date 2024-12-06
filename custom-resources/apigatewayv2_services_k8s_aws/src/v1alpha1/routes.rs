@@ -4,108 +4,63 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// RouteSpec defines the desired state of Route.
-///
+/// 
 /// Represents a route.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apigatewayv2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Route",
-    plural = "routes"
-)]
+#[kube(group = "apigatewayv2.services.k8s.aws", version = "v1alpha1", kind = "Route", plural = "routes")]
 #[kube(namespaced)]
 #[kube(status = "RouteStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RouteSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiID")]
     pub api_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiKeyRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKeyRequired")]
     pub api_key_required: Option<bool>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiRef")]
     pub api_ref: Option<RouteApiRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizationScopes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizationScopes")]
     pub authorization_scopes: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizationType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizationType")]
     pub authorization_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizerID")]
     pub authorizer_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizerRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizerRef")]
     pub authorizer_ref: Option<RouteAuthorizerRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelSelectionExpression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelSelectionExpression")]
     pub model_selection_expression: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operationName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operationName")]
     pub operation_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestModels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestModels")]
     pub request_models: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestParameters")]
     pub request_parameters: Option<BTreeMap<String, RouteRequestParameters>>,
     #[serde(rename = "routeKey")]
     pub route_key: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeResponseSelectionExpression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeResponseSelectionExpression")]
     pub route_response_selection_expression: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<String>,
@@ -113,7 +68,7 @@ pub struct RouteSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
@@ -124,7 +79,7 @@ pub struct RouteSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -149,7 +104,7 @@ pub struct RouteApiRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -180,7 +135,7 @@ pub struct RouteRequestParameters {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -207,17 +162,9 @@ pub struct RouteStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<RouteStatusAckResourceMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiGatewayManaged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGatewayManaged")]
     pub api_gateway_managed: Option<bool>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -250,3 +197,4 @@ pub struct RouteStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

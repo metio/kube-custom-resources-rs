@@ -4,34 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// IngressRouteTCPSpec defines the desired state of IngressRouteTCP.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "traefik.io",
-    version = "v1alpha1",
-    kind = "IngressRouteTCP",
-    plural = "ingressroutetcps"
-)]
+#[kube(group = "traefik.io", version = "v1alpha1", kind = "IngressRouteTCP", plural = "ingressroutetcps")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IngressRouteTCPSpec {
     /// EntryPoints defines the list of entry point names to bind to.
     /// Entry points have to be configured in the static configuration.
     /// More info: https://doc.traefik.io/traefik/v3.2/routing/entrypoints/
     /// Default: all.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "entryPoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoints")]
     pub entry_points: Option<Vec<String>>,
     /// Routes defines the list of routes.
     pub routes: Vec<IngressRouteTCPRoutes>,
@@ -92,31 +83,19 @@ pub struct IngressRouteTCPRoutesServices {
     /// whether the LB's children are directly the nodes internal IPs using the nodePort when the service type is NodePort.
     /// It allows services to be reachable when Traefik runs externally from the Kubernetes cluster but within the same network of the nodes.
     /// By default, NodePortLB is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePortLB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePortLB")]
     pub node_port_lb: Option<bool>,
     /// Port defines the port of a Kubernetes Service.
     /// This can be a reference to a named port.
     pub port: IntOrString,
     /// ProxyProtocol defines the PROXY protocol configuration.
     /// More info: https://doc.traefik.io/traefik/v3.2/routing/services/#proxy-protocol
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyProtocol")]
     pub proxy_protocol: Option<IngressRouteTCPRoutesServicesProxyProtocol>,
     /// ServersTransport defines the name of ServersTransportTCP resource to use.
     /// It allows to configure the transport between Traefik and your servers.
     /// Can only be used on a Kubernetes Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serversTransport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversTransport")]
     pub servers_transport: Option<String>,
     /// TerminationDelay defines the deadline that the proxy sets, after one of its connected peers indicates
     /// it has closed the writing capability of its connection, to close the reading capability as well,
@@ -124,11 +103,7 @@ pub struct IngressRouteTCPRoutesServices {
     /// It is a duration in milliseconds, defaulting to 100.
     /// A negative value means an infinite deadline (i.e. the reading capability is never closed).
     /// Deprecated: TerminationDelay will not be supported in future APIVersions, please use ServersTransport to configure the TerminationDelay instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationDelay")]
     pub termination_delay: Option<i64>,
     /// TLS determines whether to use TLS when dialing with the backend.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -154,11 +129,7 @@ pub struct IngressRouteTCPTls {
     /// CertResolver defines the name of the certificate resolver to use.
     /// Cert resolvers have to be configured in the static configuration.
     /// More info: https://doc.traefik.io/traefik/v3.2/https/acme/#certificate-resolvers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certResolver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certResolver")]
     pub cert_resolver: Option<String>,
     /// Domains defines the list of domains that will be used to issue certificates.
     /// More info: https://doc.traefik.io/traefik/v3.2/routing/routers/#domains
@@ -173,11 +144,7 @@ pub struct IngressRouteTCPTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub passthrough: Option<bool>,
     /// SecretName is the name of the referenced Kubernetes Secret to specify the certificate details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// Store defines the reference to the TLSStore, that will be used to store certificates.
     /// Please note that only `default` TLSStore can be used.
@@ -218,3 +185,4 @@ pub struct IngressRouteTCPTlsStore {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
+

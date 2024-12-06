@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -13,11 +13,7 @@ use self::prelude::*;
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPropagatedVersionStatus {
     /// The last versions produced in each cluster for this resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersions")]
     pub cluster_versions: Option<Vec<ClusterPropagatedVersionStatusClusterVersions>>,
     /// The observed version of the overrides for this resource.
     #[serde(rename = "overridesVersion")]
@@ -35,3 +31,4 @@ pub struct ClusterPropagatedVersionStatusClusterVersions {
     /// The last version produced for the resource by a KubeAdmiral operation.
     pub version: String,
 }
+

@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// KeycloakUserSpec defines the desired state of KeycloakUser.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "keycloak.org",
-    version = "v1alpha1",
-    kind = "KeycloakUser",
-    plural = "keycloakusers"
-)]
+#[kube(group = "keycloak.org", version = "v1alpha1", kind = "KeycloakUser", plural = "keycloakusers")]
 #[kube(namespaced)]
 #[kube(status = "KeycloakUserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KeycloakUserSpec {
     /// Selector for looking up KeycloakRealm Custom Resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "realmSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmSelector")]
     pub realm_selector: Option<KeycloakUserRealmSelector>,
     /// Keycloak User REST object.
     pub user: KeycloakUserUser,
@@ -39,18 +30,10 @@ pub struct KeycloakUserSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakUserRealmSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KeycloakUserRealmSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -73,11 +56,7 @@ pub struct KeycloakUserUser {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// A set of Client Roles.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
     pub client_roles: Option<BTreeMap<String, String>>,
     /// A set of Credentials.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -86,21 +65,13 @@ pub struct KeycloakUserUser {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     /// True if email has already been verified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emailVerified"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailVerified")]
     pub email_verified: Option<bool>,
     /// User enabled flag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// A set of Federated Identities.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "federatedIdentities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "federatedIdentities")]
     pub federated_identities: Option<Vec<KeycloakUserUserFederatedIdentities>>,
     /// First Name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstName")]
@@ -115,18 +86,10 @@ pub struct KeycloakUserUser {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastName")]
     pub last_name: Option<String>,
     /// A set of Realm Roles.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "realmRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
     pub realm_roles: Option<Vec<String>>,
     /// A set of Required Actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredActions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredActions")]
     pub required_actions: Option<Vec<String>>,
     /// User Name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -149,11 +112,7 @@ pub struct KeycloakUserUserCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakUserUserFederatedIdentities {
     /// Federated Identity Provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityProvider")]
     pub identity_provider: Option<String>,
     /// Federated Identity User ID.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userId")]
@@ -171,3 +130,4 @@ pub struct KeycloakUserStatus {
     /// Current phase of the operator.
     pub phase: String,
 }
+

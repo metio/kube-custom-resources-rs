@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SecretStoreSpec defines the desired state of SecretStore.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "external-secrets.io",
-    version = "v1alpha1",
-    kind = "ClusterSecretStore",
-    plural = "clustersecretstores"
-)]
+#[kube(group = "external-secrets.io", version = "v1alpha1", kind = "ClusterSecretStore", plural = "clustersecretstores")]
 #[kube(status = "ClusterSecretStoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterSecretStoreSpec {
     /// Used to select the correct ESO controller (think: ingress.ingressClassName)
     /// The ESO controller is instantiated with a specific controller name and filters ES based on this property
@@ -31,11 +26,7 @@ pub struct ClusterSecretStoreSpec {
     /// Used to configure the provider. Only one provider may be set
     pub provider: ClusterSecretStoreProvider,
     /// Used to configure http retries if failed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retrySettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retrySettings")]
     pub retry_settings: Option<ClusterSecretStoreRetrySettings>,
 }
 
@@ -101,11 +92,7 @@ pub struct ClusterSecretStoreProviderAkeyless {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
     /// The provider for the CA bundle to use to validate Akeyless Gateway certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
     pub ca_provider: Option<ClusterSecretStoreProviderAkeylessCaProvider>,
 }
 
@@ -114,11 +101,7 @@ pub struct ClusterSecretStoreProviderAkeyless {
 pub struct ClusterSecretStoreProviderAkeylessAuthSecretRef {
     /// Kubernetes authenticates with Akeyless by passing the ServiceAccount
     /// token stored in the named Secret resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuth")]
     pub kubernetes_auth: Option<ClusterSecretStoreProviderAkeylessAuthSecretRefKubernetesAuth>,
     /// Reference to a Secret that contains the details
     /// to authenticate with Akeyless.
@@ -146,13 +129,8 @@ pub struct ClusterSecretStoreProviderAkeylessAuthSecretRefKubernetesAuth {
     /// If the service account is specified, the service account secret token JWT will be used
     /// for authenticating with Akeyless. If the service account selector is not supplied,
     /// the secretRef will be used instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountRef"
-    )]
-    pub service_account_ref:
-        Option<ClusterSecretStoreProviderAkeylessAuthSecretRefKubernetesAuthServiceAccountRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
+    pub service_account_ref: Option<ClusterSecretStoreProviderAkeylessAuthSecretRefKubernetesAuthServiceAccountRef>,
 }
 
 /// Optional secret field containing a Kubernetes ServiceAccount JWT used
@@ -202,21 +180,12 @@ pub struct ClusterSecretStoreProviderAkeylessAuthSecretRefSecretRef {
     pub access_id: Option<ClusterSecretStoreProviderAkeylessAuthSecretRefSecretRefAccessId>,
     /// A reference to a specific 'key' within a Secret resource,
     /// In some instances, `key` is a required field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessType")]
     pub access_type: Option<ClusterSecretStoreProviderAkeylessAuthSecretRefSecretRefAccessType>,
     /// A reference to a specific 'key' within a Secret resource,
     /// In some instances, `key` is a required field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTypeParam"
-    )]
-    pub access_type_param:
-        Option<ClusterSecretStoreProviderAkeylessAuthSecretRefSecretRefAccessTypeParam>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTypeParam")]
+    pub access_type_param: Option<ClusterSecretStoreProviderAkeylessAuthSecretRefSecretRefAccessTypeParam>,
 }
 
 /// The SecretAccessID is used for authentication
@@ -331,12 +300,10 @@ pub struct ClusterSecretStoreProviderAlibabaAuthRrsa {
 pub struct ClusterSecretStoreProviderAlibabaAuthSecretRef {
     /// The AccessKeyID is used for authentication
     #[serde(rename = "accessKeyIDSecretRef")]
-    pub access_key_id_secret_ref:
-        ClusterSecretStoreProviderAlibabaAuthSecretRefAccessKeyIdSecretRef,
+    pub access_key_id_secret_ref: ClusterSecretStoreProviderAlibabaAuthSecretRefAccessKeyIdSecretRef,
     /// The AccessKeySecret is used for authentication
     #[serde(rename = "accessKeySecretSecretRef")]
-    pub access_key_secret_secret_ref:
-        ClusterSecretStoreProviderAlibabaAuthSecretRefAccessKeySecretSecretRef,
+    pub access_key_secret_secret_ref: ClusterSecretStoreProviderAlibabaAuthSecretRefAccessKeySecretSecretRef,
 }
 
 /// The AccessKeyID is used for authentication
@@ -406,11 +373,7 @@ pub struct ClusterSecretStoreProviderAwsAuth {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderAwsAuthJwt {
     /// A reference to a ServiceAccount resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<ClusterSecretStoreProviderAwsAuthJwtServiceAccountRef>,
 }
 
@@ -435,21 +398,11 @@ pub struct ClusterSecretStoreProviderAwsAuthJwtServiceAccountRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderAwsAuthSecretRef {
     /// The AccessKeyID is used for authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessKeyIDSecretRef"
-    )]
-    pub access_key_id_secret_ref:
-        Option<ClusterSecretStoreProviderAwsAuthSecretRefAccessKeyIdSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyIDSecretRef")]
+    pub access_key_id_secret_ref: Option<ClusterSecretStoreProviderAwsAuthSecretRefAccessKeyIdSecretRef>,
     /// The SecretAccessKey is used for authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKeySecretRef"
-    )]
-    pub secret_access_key_secret_ref:
-        Option<ClusterSecretStoreProviderAwsAuthSecretRefSecretAccessKeySecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKeySecretRef")]
+    pub secret_access_key_secret_ref: Option<ClusterSecretStoreProviderAwsAuthSecretRefSecretAccessKeySecretRef>,
 }
 
 /// The AccessKeyID is used for authentication
@@ -495,11 +448,7 @@ pub enum ClusterSecretStoreProviderAwsService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderAzurekv {
     /// Auth configures how the operator authenticates with Azure. Required for ServicePrincipal auth type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authSecretRef")]
     pub auth_secret_ref: Option<ClusterSecretStoreProviderAzurekvAuthSecretRef>,
     /// Auth type defines how to authenticate to the keyvault service.
     /// Valid values are:
@@ -508,19 +457,11 @@ pub struct ClusterSecretStoreProviderAzurekv {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authType")]
     pub auth_type: Option<ClusterSecretStoreProviderAzurekvAuthType>,
     /// If multiple Managed Identity is assigned to the pod, you can select the one to be used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityId")]
     pub identity_id: Option<String>,
     /// ServiceAccountRef specified the service account
     /// that should be used when authenticating with WorkloadIdentity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<ClusterSecretStoreProviderAzurekvServiceAccountRef>,
     /// TenantID configures the Azure Tenant to send requests to. Required for ServicePrincipal auth type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantId")]
@@ -537,11 +478,7 @@ pub struct ClusterSecretStoreProviderAzurekvAuthSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
     pub client_id: Option<ClusterSecretStoreProviderAzurekvAuthSecretRefClientId>,
     /// The Azure ClientSecret of the service principle used for authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<ClusterSecretStoreProviderAzurekvAuthSecretRefClientSecret>,
 }
 
@@ -635,24 +572,15 @@ pub struct ClusterSecretStoreProviderGcpsm {
 pub struct ClusterSecretStoreProviderGcpsmAuth {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ClusterSecretStoreProviderGcpsmAuthSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workloadIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadIdentity")]
     pub workload_identity: Option<ClusterSecretStoreProviderGcpsmAuthWorkloadIdentity>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderGcpsmAuthSecretRef {
     /// The SecretAccessKey is used for authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretAccessKeySecretRef"
-    )]
-    pub secret_access_key_secret_ref:
-        Option<ClusterSecretStoreProviderGcpsmAuthSecretRefSecretAccessKeySecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKeySecretRef")]
+    pub secret_access_key_secret_ref: Option<ClusterSecretStoreProviderGcpsmAuthSecretRefSecretAccessKeySecretRef>,
 }
 
 /// The SecretAccessKey is used for authentication
@@ -677,11 +605,7 @@ pub struct ClusterSecretStoreProviderGcpsmAuthWorkloadIdentity {
     pub cluster_location: String,
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterProjectID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProjectID")]
     pub cluster_project_id: Option<String>,
     /// A reference to a ServiceAccount resource.
     #[serde(rename = "serviceAccountRef")]
@@ -727,11 +651,7 @@ pub struct ClusterSecretStoreProviderGitlabAuth {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderGitlabAuthSecretRef {
     /// AccessToken is used for authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
     pub access_token: Option<ClusterSecretStoreProviderGitlabAuthSecretRefAccessToken>,
 }
 
@@ -757,11 +677,7 @@ pub struct ClusterSecretStoreProviderIbm {
     /// Auth configures how secret-manager authenticates with the IBM secrets manager.
     pub auth: ClusterSecretStoreProviderIbmAuth,
     /// ServiceURL is the Endpoint URL that is specific to the Secrets Manager service instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceUrl")]
     pub service_url: Option<String>,
 }
 
@@ -775,13 +691,8 @@ pub struct ClusterSecretStoreProviderIbmAuth {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderIbmAuthSecretRef {
     /// The SecretAccessKey is used for authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretApiKeySecretRef"
-    )]
-    pub secret_api_key_secret_ref:
-        Option<ClusterSecretStoreProviderIbmAuthSecretRefSecretApiKeySecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretApiKeySecretRef")]
+    pub secret_api_key_secret_ref: Option<ClusterSecretStoreProviderIbmAuthSecretRefSecretApiKeySecretRef>,
 }
 
 /// The SecretAccessKey is used for authentication
@@ -806,11 +717,7 @@ pub struct ClusterSecretStoreProviderKubernetes {
     /// Auth configures how secret-manager authenticates with a Kubernetes instance.
     pub auth: ClusterSecretStoreProviderKubernetesAuth,
     /// Remote namespace to fetch the secrets from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteNamespace")]
     pub remote_namespace: Option<String>,
     /// configures the Kubernetes server Address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -824,11 +731,7 @@ pub struct ClusterSecretStoreProviderKubernetesAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ClusterSecretStoreProviderKubernetesAuthCert>,
     /// points to a service account that should be used for authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<ClusterSecretStoreProviderKubernetesAuthServiceAccount>,
     /// use static token to authenticate with
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -840,11 +743,7 @@ pub struct ClusterSecretStoreProviderKubernetesAuth {
 pub struct ClusterSecretStoreProviderKubernetesAuthCert {
     /// A reference to a specific 'key' within a Secret resource,
     /// In some instances, `key` is a required field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<ClusterSecretStoreProviderKubernetesAuthCertClientCert>,
     /// A reference to a specific 'key' within a Secret resource,
     /// In some instances, `key` is a required field.
@@ -890,13 +789,8 @@ pub struct ClusterSecretStoreProviderKubernetesAuthCertClientKey {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderKubernetesAuthServiceAccount {
     /// A reference to a ServiceAccount resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
-    pub service_account:
-        Option<ClusterSecretStoreProviderKubernetesAuthServiceAccountServiceAccount>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
+    pub service_account: Option<ClusterSecretStoreProviderKubernetesAuthServiceAccountServiceAccount>,
 }
 
 /// A reference to a ServiceAccount resource.
@@ -920,11 +814,7 @@ pub struct ClusterSecretStoreProviderKubernetesAuthServiceAccountServiceAccount 
 pub struct ClusterSecretStoreProviderKubernetesAuthToken {
     /// A reference to a specific 'key' within a Secret resource,
     /// In some instances, `key` is a required field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<ClusterSecretStoreProviderKubernetesAuthTokenBearerToken>,
 }
 
@@ -952,11 +842,7 @@ pub struct ClusterSecretStoreProviderKubernetesServer {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
     /// see: https://external-secrets.io/v0.4.1/spec/#external-secrets.io/v1alpha1.CAProvider
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
     pub ca_provider: Option<ClusterSecretStoreProviderKubernetesServerCaProvider>,
     /// configures the Kubernetes server Address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1000,30 +886,18 @@ pub struct ClusterSecretStoreProviderOracle {
     pub compartment: Option<String>,
     /// EncryptionKey is the OCID of the encryption key within the vault.
     /// Required for PushSecret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKey")]
     pub encryption_key: Option<String>,
     /// The type of principal to use for authentication. If left blank, the Auth struct will
     /// determine the principal type. This optional field must be specified if using
     /// workload identity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "principalType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "principalType")]
     pub principal_type: Option<ClusterSecretStoreProviderOraclePrincipalType>,
     /// Region is the region where vault is located.
     pub region: String,
     /// ServiceAccountRef specified the service account
     /// that should be used when authenticating with WorkloadIdentity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<ClusterSecretStoreProviderOracleServiceAccountRef>,
     /// Vault is the vault's OCID of the specific vault where secret is located.
     pub vault: String,
@@ -1164,21 +1038,13 @@ pub struct ClusterSecretStoreProviderVault {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
     /// The provider for the CA bundle to use to validate Vault server certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
     pub ca_provider: Option<ClusterSecretStoreProviderVaultCaProvider>,
     /// ForwardInconsistent tells Vault to forward read-after-write requests to the Vault
     /// leader instead of simply retrying within a loop. This can increase performance if
     /// the option is enabled serverside.
     /// https://www.vaultproject.io/docs/configuration/replication#allow_forwarding_via_header
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardInconsistent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardInconsistent")]
     pub forward_inconsistent: Option<bool>,
     /// Name of the vault namespace. Namespaces is a set of features within Vault Enterprise that allows
     /// Vault environments to support Secure Multi-tenancy. e.g: "ns1".
@@ -1195,11 +1061,7 @@ pub struct ClusterSecretStoreProviderVault {
     /// providing discovered cluster replication states in each request.
     /// More information about eventual consistency in Vault can be found here
     /// https://www.vaultproject.io/docs/enterprise/consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readYourWrites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readYourWrites")]
     pub read_your_writes: Option<bool>,
     /// Server is the connection address for the Vault server, e.g: "https://vault.example.com:8200".
     pub server: String,
@@ -1233,11 +1095,7 @@ pub struct ClusterSecretStoreProviderVaultAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ldap: Option<ClusterSecretStoreProviderVaultAuthLdap>,
     /// TokenSecretRef authenticates with Vault by presenting a token.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecretRef")]
     pub token_secret_ref: Option<ClusterSecretStoreProviderVaultAuthTokenSecretRef>,
 }
 
@@ -1285,11 +1143,7 @@ pub struct ClusterSecretStoreProviderVaultAuthAppRoleSecretRef {
 pub struct ClusterSecretStoreProviderVaultAuthCert {
     /// ClientCert is a certificate to authenticate using the Cert Vault
     /// authentication method
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<ClusterSecretStoreProviderVaultAuthCertClientCert>,
     /// SecretRef to a key in a Secret resource containing client private key to
     /// authenticate with Vault using the Cert authentication method
@@ -1337,13 +1191,8 @@ pub struct ClusterSecretStoreProviderVaultAuthCertSecretRef {
 pub struct ClusterSecretStoreProviderVaultAuthJwt {
     /// Optional ServiceAccountToken specifies the Kubernetes service account for which to request
     /// a token for with the `TokenRequest` API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesServiceAccountToken"
-    )]
-    pub kubernetes_service_account_token:
-        Option<ClusterSecretStoreProviderVaultAuthJwtKubernetesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesServiceAccountToken")]
+    pub kubernetes_service_account_token: Option<ClusterSecretStoreProviderVaultAuthJwtKubernetesServiceAccountToken>,
     /// Path where the JWT authentication backend is mounted
     /// in Vault, e.g: "jwt"
     pub path: String,
@@ -1370,16 +1219,11 @@ pub struct ClusterSecretStoreProviderVaultAuthJwtKubernetesServiceAccountToken {
     /// Kubernetes service account token for the service account referenced by
     /// `serviceAccountRef`.
     /// Defaults to 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// Service account field containing the name of a kubernetes ServiceAccount.
     #[serde(rename = "serviceAccountRef")]
-    pub service_account_ref:
-        ClusterSecretStoreProviderVaultAuthJwtKubernetesServiceAccountTokenServiceAccountRef,
+    pub service_account_ref: ClusterSecretStoreProviderVaultAuthJwtKubernetesServiceAccountTokenServiceAccountRef,
 }
 
 /// Service account field containing the name of a kubernetes ServiceAccount.
@@ -1436,11 +1280,7 @@ pub struct ClusterSecretStoreProviderVaultAuthKubernetes {
     /// If the service account is specified, the service account secret token JWT will be used
     /// for authenticating with Vault. If the service account selector is not supplied,
     /// the secretRef will be used instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<ClusterSecretStoreProviderVaultAuthKubernetesServiceAccountRef>,
 }
 
@@ -1578,11 +1418,7 @@ pub struct ClusterSecretStoreProviderWebhook {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
     /// The provider for the CA bundle to use to validate webhook server certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
     pub ca_provider: Option<ClusterSecretStoreProviderWebhookCaProvider>,
     /// Headers
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1663,20 +1499,12 @@ pub struct ClusterSecretStoreProviderWebhookSecretsSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderYandexlockbox {
     /// Yandex.Cloud API endpoint (e.g. 'api.cloud.yandex.net:443')
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiEndpoint")]
     pub api_endpoint: Option<String>,
     /// Auth defines the information necessary to authenticate against Yandex Lockbox
     pub auth: ClusterSecretStoreProviderYandexlockboxAuth,
     /// The provider for the CA bundle to use to validate Yandex.Cloud server certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
     pub ca_provider: Option<ClusterSecretStoreProviderYandexlockboxCaProvider>,
 }
 
@@ -1684,13 +1512,8 @@ pub struct ClusterSecretStoreProviderYandexlockbox {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderYandexlockboxAuth {
     /// The authorized key used for authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizedKeySecretRef"
-    )]
-    pub authorized_key_secret_ref:
-        Option<ClusterSecretStoreProviderYandexlockboxAuthAuthorizedKeySecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizedKeySecretRef")]
+    pub authorized_key_secret_ref: Option<ClusterSecretStoreProviderYandexlockboxAuthAuthorizedKeySecretRef>,
 }
 
 /// The authorized key used for authentication
@@ -1714,11 +1537,7 @@ pub struct ClusterSecretStoreProviderYandexlockboxAuthAuthorizedKeySecretRef {
 pub struct ClusterSecretStoreProviderYandexlockboxCaProvider {
     /// A reference to a specific 'key' within a Secret resource,
     /// In some instances, `key` is a required field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<ClusterSecretStoreProviderYandexlockboxCaProviderCertSecretRef>,
 }
 
@@ -1742,17 +1561,9 @@ pub struct ClusterSecretStoreProviderYandexlockboxCaProviderCertSecretRef {
 /// Used to configure http retries if failed
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreRetrySettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
@@ -1762,3 +1573,4 @@ pub struct ClusterSecretStoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

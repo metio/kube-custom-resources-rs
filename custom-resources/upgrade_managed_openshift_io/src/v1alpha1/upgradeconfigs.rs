@@ -4,34 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// UpgradeConfigSpec defines the desired state of UpgradeConfig and upgrade window and freeze window
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "upgrade.managed.openshift.io",
-    version = "v1alpha1",
-    kind = "UpgradeConfig",
-    plural = "upgradeconfigs"
-)]
+#[kube(group = "upgrade.managed.openshift.io", version = "v1alpha1", kind = "UpgradeConfig", plural = "upgradeconfigs")]
 #[kube(namespaced)]
 #[kube(status = "UpgradeConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct UpgradeConfigSpec {
     /// The maximum grace period granted to a node whose drain is blocked by a Pod Disruption Budget, before that drain is forced. Measured in minutes. The minimum accepted value is 0 and in this case it will trigger force drain after the expectedNodeDrainTime lapsed.
     #[serde(rename = "PDBForceDrainTimeout")]
     pub pdb_force_drain_timeout: i32,
     /// Specify if scaling up an extra node for capacity reservation before upgrade starts is needed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "capacityReservation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityReservation")]
     pub capacity_reservation: Option<bool>,
     /// Specify the desired OpenShift release
     pub desired: UpgradeConfigDesired,
@@ -77,11 +68,7 @@ pub struct UpgradeConfigStatus {
 /// UpgradeHistory record history of upgrade
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct UpgradeConfigStatusHistory {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completeTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completeTime")]
     pub complete_time: Option<String>,
     /// Conditions is a set of Condition instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -89,28 +76,16 @@ pub struct UpgradeConfigStatusHistory {
     /// This describe the status of the upgrade process
     pub phase: UpgradeConfigStatusHistoryPhase,
     /// Version preceding this upgrade
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "precedingVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "precedingVersion")]
     pub preceding_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
     /// Desired version of this upgrade
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerCompleteTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerCompleteTime")]
     pub worker_complete_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerStartTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerStartTime")]
     pub worker_start_time: Option<String>,
 }
 
@@ -123,3 +98,4 @@ pub enum UpgradeConfigStatusHistoryPhase {
     Upgraded,
     Failed,
 }
+

@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DNSEndpointSpec holds information about endpoints.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "externaldns.nginx.org",
-    version = "v1",
-    kind = "DNSEndpoint",
-    plural = "dnsendpoints"
-)]
+#[kube(group = "externaldns.nginx.org", version = "v1", kind = "DNSEndpoint", plural = "dnsendpoints")]
 #[kube(namespaced)]
 #[kube(status = "DNSEndpointStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DNSEndpointSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<DNSEndpointEndpoints>>,
@@ -38,21 +33,13 @@ pub struct DNSEndpointEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// ProviderSpecific stores provider specific config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerSpecific"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerSpecific")]
     pub provider_specific: Option<Vec<DNSEndpointEndpointsProviderSpecific>>,
     /// TTL for the record
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordTTL")]
     pub record_ttl: Option<i64>,
     /// RecordType type of record, e.g. CNAME, A, SRV, TXT, MX
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordType")]
     pub record_type: Option<String>,
     /// The targets the DNS service points to
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -74,10 +61,7 @@ pub struct DNSEndpointEndpointsProviderSpecific {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSEndpointStatus {
     /// The generation observed by by the external-dns controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SnapshotScheduleSpec defines the desired state of SnapshotSchedule
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "snapscheduler.backube",
-    version = "v1",
-    kind = "SnapshotSchedule",
-    plural = "snapshotschedules"
-)]
+#[kube(group = "snapscheduler.backube", version = "v1", kind = "SnapshotSchedule", plural = "snapshotschedules")]
 #[kube(namespaced)]
 #[kube(status = "SnapshotScheduleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SnapshotScheduleSpec {
     /// A filter to select which PVCs to snapshot via this schedule
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "claimSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimSelector")]
     pub claim_selector: Option<SnapshotScheduleClaimSelector>,
     /// Indicates that this schedule should be temporarily disabled
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -43,11 +34,7 @@ pub struct SnapshotScheduleSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<String>,
     /// A template to customize the Snapshots.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotTemplate")]
     pub snapshot_template: Option<SnapshotScheduleSnapshotTemplate>,
 }
 
@@ -55,20 +42,12 @@ pub struct SnapshotScheduleSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotScheduleClaimSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<SnapshotScheduleClaimSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -109,11 +88,7 @@ pub struct SnapshotScheduleSnapshotTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// The name of the VolumeSnapshotClass to be used when creating Snapshots.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotClassName")]
     pub snapshot_class_name: Option<String>,
 }
 
@@ -124,17 +99,10 @@ pub struct SnapshotScheduleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The time of the most recent snapshot taken by this schedule
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSnapshotTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSnapshotTime")]
     pub last_snapshot_time: Option<String>,
     /// The time of the next scheduled snapshot
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nextSnapshotTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextSnapshotTime")]
     pub next_snapshot_time: Option<String>,
 }
+

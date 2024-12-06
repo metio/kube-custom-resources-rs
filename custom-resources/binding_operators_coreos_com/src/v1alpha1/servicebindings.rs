@@ -4,42 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ServiceBindingSpec defines the desired state of ServiceBinding.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "binding.operators.coreos.com",
-    version = "v1alpha1",
-    kind = "ServiceBinding",
-    plural = "servicebindings"
-)]
+#[kube(group = "binding.operators.coreos.com", version = "v1alpha1", kind = "ServiceBinding", plural = "servicebindings")]
 #[kube(namespaced)]
 #[kube(status = "ServiceBindingStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ServiceBindingSpec {
     /// Application identifies the application connecting to the backing service.
     pub application: ServiceBindingApplication,
     /// BindAsFiles makes the binding values available as files in the application's container.  By default, values are mounted under the path "/bindings"; this can be changed by setting the SERVICE_BINDING_ROOT environment variable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bindAsFiles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindAsFiles")]
     pub bind_as_files: Option<bool>,
     /// DetectBindingResources is a flag that, when set to true, will cause SBO to search for binding information in the owned resources of the specified services.  If this binding information exists, then the application is bound to these subresources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "detectBindingResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "detectBindingResources")]
     pub detect_binding_resources: Option<bool>,
     /// Mappings specifies custom mappings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -48,11 +35,7 @@ pub struct ServiceBindingSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// NamingStrategy defines custom string template for preparing binding names.  It can be set to pre-defined strategies: `none`, `lowercase`, or `uppercase`.  Otherwise, it is treated as a custom go template, and it is handled accordingly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namingStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
     pub naming_strategy: Option<String>,
     /// Services indicates the backing services to be connected to by an application.  At least one service must be specified.
     pub services: Vec<ServiceBindingServices>,
@@ -62,11 +45,7 @@ pub struct ServiceBindingSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceBindingApplication {
     /// BindingPath refers to the paths in the application workload's schema where the binding workload would be referenced.  If BindingPath is not specified, then the default path locations are used.  The default location for ContainersPath is "spec.template.spec.containers".  If SecretPath is not specified, then the name of the secret object does not need to be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bindingPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindingPath")]
     pub binding_path: Option<ServiceBindingApplicationBindingPath>,
     /// Group of the referent.
     pub group: String,
@@ -74,11 +53,7 @@ pub struct ServiceBindingApplication {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ServiceBindingApplicationLabelSelector>,
     /// Name of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -94,18 +69,10 @@ pub struct ServiceBindingApplication {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceBindingApplicationBindingPath {
     /// ContainersPath defines the path to the corev1.Containers reference. If BindingPath is not specified, the default location is "spec.template.spec.containers".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containersPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containersPath")]
     pub containers_path: Option<String>,
     /// SecretPath defines the path to a string field where the name of the secret object is going to be assigned.  Note: The name of the secret object is same as that of the name of service binding custom resource (metadata.name).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretPath")]
     pub secret_path: Option<String>,
 }
 
@@ -113,18 +80,10 @@ pub struct ServiceBindingApplicationBindingPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceBindingApplicationLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ServiceBindingApplicationLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -181,3 +140,4 @@ pub struct ServiceBindingStatus {
     /// Secret indicates the name of the binding secret.
     pub secret: String,
 }
+

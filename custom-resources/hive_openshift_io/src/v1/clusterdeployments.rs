@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterDeploymentSpec defines the desired state of ClusterDeployment
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hive.openshift.io",
-    version = "v1",
-    kind = "ClusterDeployment",
-    plural = "clusterdeployments"
-)]
+#[kube(group = "hive.openshift.io", version = "v1", kind = "ClusterDeployment", plural = "clusterdeployments")]
 #[kube(namespaced)]
 #[kube(status = "ClusterDeploymentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterDeploymentSpec {
     /// BaseDomain is the base domain to which the cluster should belong.
     #[serde(rename = "baseDomain")]
@@ -33,36 +28,19 @@ pub struct ClusterDeploymentSpec {
     /// 'bound-service-account-signing-key.key' data key pointing to the private
     /// key that will be used to sign ServiceAccount objects. Primarily used to
     /// provision AWS clusters to use Amazon's Security Token Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "boundServiceAccountSigningKeySecretRef"
-    )]
-    pub bound_service_account_signing_key_secret_ref:
-        Option<ClusterDeploymentBoundServiceAccountSigningKeySecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "boundServiceAccountSigningKeySecretRef")]
+    pub bound_service_account_signing_key_secret_ref: Option<ClusterDeploymentBoundServiceAccountSigningKeySecretRef>,
     /// CertificateBundles is a list of certificate bundles associated with this cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateBundles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateBundles")]
     pub certificate_bundles: Option<Vec<ClusterDeploymentCertificateBundles>>,
     /// ClusterInstallLocalReference provides reference to an object that implements
     /// the hivecontract ClusterInstall. The namespace of the object is same as the
     /// ClusterDeployment.
     /// This cannot be set when Provisioning is also set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterInstallRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterInstallRef")]
     pub cluster_install_ref: Option<ClusterDeploymentClusterInstallRef>,
     /// ClusterMetadata contains metadata information about the installed cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterMetadata")]
     pub cluster_metadata: Option<ClusterDeploymentClusterMetadata>,
     /// ClusterName is the friendly name of the cluster. It is used for subdomains,
     /// some resource tagging, and other instances where a friendly name for the
@@ -70,18 +48,10 @@ pub struct ClusterDeploymentSpec {
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
     /// ClusterPoolRef is a reference to the ClusterPool that this ClusterDeployment originated from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterPoolRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterPoolRef")]
     pub cluster_pool_ref: Option<ClusterDeploymentClusterPoolRef>,
     /// ControlPlaneConfig contains additional configuration for the target cluster's control plane
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneConfig")]
     pub control_plane_config: Option<ClusterDeploymentControlPlaneConfig>,
     /// HibernateAfter will transition a cluster to hibernating power state after it has been running for the
     /// given duration. The time that a cluster has been running is the time since the cluster was installed or the
@@ -91,21 +61,13 @@ pub struct ClusterDeploymentSpec {
     /// https://bugzilla.redhat.com/show_bug.cgi?id=2050332
     /// https://github.com/kubernetes/apimachinery/issues/131
     /// https://github.com/kubernetes/apiextensions-apiserver/issues/56
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hibernateAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hibernateAfter")]
     pub hibernate_after: Option<String>,
     /// Ingress allows defining desired clusteringress/shards to be configured on the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<Vec<ClusterDeploymentIngress>>,
     /// InstallAttemptsLimit is the maximum number of times Hive will attempt to install the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installAttemptsLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installAttemptsLimit")]
     pub install_attempts_limit: Option<i32>,
     /// Installed is true if the cluster has been installed
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -119,30 +81,18 @@ pub struct ClusterDeploymentSpec {
     pub platform: ClusterDeploymentPlatform,
     /// PowerState indicates whether a cluster should be running or hibernating. When omitted,
     /// PowerState defaults to the Running state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "powerState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerState")]
     pub power_state: Option<ClusterDeploymentPowerState>,
     /// PreserveOnDelete allows the user to disconnect a cluster from Hive without deprovisioning it. This can also be
     /// used to abandon ongoing cluster deprovision.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preserveOnDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveOnDelete")]
     pub preserve_on_delete: Option<bool>,
     /// Provisioning contains settings used only for initial cluster provisioning.
     /// May be unset in the case of adopted clusters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provisioning: Option<ClusterDeploymentProvisioning>,
     /// PullSecretRef is the reference to the secret to use when pulling images.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecretRef")]
     pub pull_secret_ref: Option<ClusterDeploymentPullSecretRef>,
 }
 
@@ -212,11 +162,7 @@ pub struct ClusterDeploymentClusterMetadata {
     #[serde(rename = "adminKubeconfigSecretRef")]
     pub admin_kubeconfig_secret_ref: ClusterDeploymentClusterMetadataAdminKubeconfigSecretRef,
     /// AdminPasswordSecretRef references the secret containing the admin username/password which can be used to login to this cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPasswordSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPasswordSecretRef")]
     pub admin_password_secret_ref: Option<ClusterDeploymentClusterMetadataAdminPasswordSecretRef>,
     /// ClusterID is a globally unique identifier for this cluster generated during installation. Used for reporting metrics among other places.
     #[serde(rename = "clusterID")]
@@ -272,11 +218,7 @@ pub struct ClusterDeploymentClusterMetadataPlatform {
 pub struct ClusterDeploymentClusterMetadataPlatformAws {
     /// HostedZoneRole is the role to assume when performing operations
     /// on a hosted zone owned by another account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostedZoneRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostedZoneRole")]
     pub hosted_zone_role: Option<String>,
 }
 
@@ -292,11 +234,7 @@ pub struct ClusterDeploymentClusterMetadataPlatformAzure {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentClusterMetadataPlatformGcp {
     /// NetworkProjectID is used for shared VPC setups
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkProjectID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkProjectID")]
     pub network_project_id: Option<String>,
 }
 
@@ -308,21 +246,12 @@ pub struct ClusterDeploymentClusterPoolRef {
     pub claim_name: Option<String>,
     /// ClaimedTimestamp is the time this cluster was assigned to a ClusterClaim. This is only used for
     /// ClusterDeployments belonging to ClusterPools.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "claimedTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimedTimestamp")]
     pub claimed_timestamp: Option<String>,
     /// CustomizationRef is the ClusterPool Inventory claimed customization for this ClusterDeployment.
     /// The Customization exists in the ClusterPool namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterDeploymentCustomization"
-    )]
-    pub cluster_deployment_customization:
-        Option<ClusterDeploymentClusterPoolRefClusterDeploymentCustomization>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDeploymentCustomization")]
+    pub cluster_deployment_customization: Option<ClusterDeploymentClusterPoolRefClusterDeploymentCustomization>,
     /// Namespace is the namespace where the ClusterPool resides.
     pub namespace: String,
     /// PoolName is the name of the ClusterPool for which the cluster was created.
@@ -350,29 +279,17 @@ pub struct ClusterDeploymentControlPlaneConfig {
     /// Hive will use this IP address for creating TCP connections.
     /// Port from the original API server URL will be used.
     /// This field can be used when repointing the APIServer's DNS is not viable option.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiServerIPOverride"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerIPOverride")]
     pub api_server_ip_override: Option<String>,
     /// APIURLOverride is the optional URL override to which Hive will transition for communication with the API
     /// server of the remote cluster. When a remote cluster is created, Hive will initially communicate using the
     /// API URL established during installation. If an API URL Override is specified, Hive will periodically attempt
     /// to connect to the remote cluster using the override URL. Once Hive has determined that the override URL is
     /// active, Hive will use the override URL for further communications with the API server of the remote cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiURLOverride"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURLOverride")]
     pub api_url_override: Option<String>,
     /// ServingCertificates specifies serving certificates for the control plane
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servingCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servingCertificates")]
     pub serving_certificates: Option<ClusterDeploymentControlPlaneConfigServingCertificates>,
 }
 
@@ -407,36 +324,20 @@ pub struct ClusterDeploymentIngress {
     /// IngressController object will service (eg abcd.mycluster.mydomain.com).
     pub domain: String,
     /// HttpErrorCodePages allows configuring custom HTTP error pages using the IngressController object
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpErrorCodePages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpErrorCodePages")]
     pub http_error_code_pages: Option<ClusterDeploymentIngressHttpErrorCodePages>,
     /// Name of the ClusterIngress object to create.
     pub name: String,
     /// NamespaceSelector allows filtering the list of namespaces serviced by the
     /// ingress controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ClusterDeploymentIngressNamespaceSelector>,
     /// RouteSelector allows filtering the set of Routes serviced by the ingress controller
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeSelector")]
     pub route_selector: Option<ClusterDeploymentIngressRouteSelector>,
     /// ServingCertificate references a CertificateBundle in the ClusterDeployment.Spec that
     /// should be used for this Ingress
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servingCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servingCertificate")]
     pub serving_certificate: Option<String>,
 }
 
@@ -452,20 +353,12 @@ pub struct ClusterDeploymentIngressHttpErrorCodePages {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentIngressNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterDeploymentIngressNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -490,20 +383,12 @@ pub struct ClusterDeploymentIngressNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentIngressRouteSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterDeploymentIngressRouteSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -530,11 +415,7 @@ pub struct ClusterDeploymentIngressRouteSelectorMatchExpressions {
 pub struct ClusterDeploymentPlatform {
     /// AgentBareMetal is the configuration used when performing an Assisted Agent based installation
     /// to bare metal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentBareMetal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentBareMetal")]
     pub agent_bare_metal: Option<ClusterDeploymentPlatformAgentBareMetal>,
     /// AWS is the configuration used when installing on AWS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -581,21 +462,12 @@ pub struct ClusterDeploymentPlatformAgentBareMetal {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentPlatformAgentBareMetalAgentSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<ClusterDeploymentPlatformAgentBareMetalAgentSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterDeploymentPlatformAgentBareMetalAgentSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -621,29 +493,17 @@ pub struct ClusterDeploymentPlatformAgentBareMetalAgentSelectorMatchExpressions 
 pub struct ClusterDeploymentPlatformAws {
     /// CredentialsAssumeRole refers to the IAM role that must be assumed to obtain
     /// AWS account access for the cluster operations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsAssumeRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsAssumeRole")]
     pub credentials_assume_role: Option<ClusterDeploymentPlatformAwsCredentialsAssumeRole>,
     /// CredentialsSecretRef refers to a secret that contains the AWS account access
     /// credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretRef")]
     pub credentials_secret_ref: Option<ClusterDeploymentPlatformAwsCredentialsSecretRef>,
     /// PrivateLink allows uses to enable access to the cluster's API server using AWS
     /// PrivateLink. AWS PrivateLink includes a pair of VPC Endpoint Service and VPC
     /// Endpoint accross AWS accounts and allows clients to connect to services using AWS's
     /// internal networking instead of the Internet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateLink"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateLink")]
     pub private_link: Option<ClusterDeploymentPlatformAwsPrivateLink>,
     /// Region specifies the AWS region where the cluster will be created.
     pub region: String,
@@ -659,11 +519,7 @@ pub struct ClusterDeploymentPlatformAwsCredentialsAssumeRole {
     /// ExternalID is random string generated by platform so that assume role
     /// is protected from confused deputy problem.
     /// more info: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalID")]
     pub external_id: Option<String>,
     #[serde(rename = "roleARN")]
     pub role_arn: String,
@@ -692,11 +548,7 @@ pub struct ClusterDeploymentPlatformAwsPrivateLink {
     /// for the Private Link cluster's VPC Endpoint Service.
     /// ARNs provided as AdditionalAllowedPrincipals will be configured for the cluster's VPC Endpoint
     /// Service in addition to the IAM entity used by Hive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAllowedPrincipals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAllowedPrincipals")]
     pub additional_allowed_principals: Option<Vec<String>>,
     pub enabled: bool,
 }
@@ -705,11 +557,7 @@ pub struct ClusterDeploymentPlatformAwsPrivateLink {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentPlatformAzure {
     /// BaseDomainResourceGroupName specifies the resource group where the azure DNS zone for the base domain is found
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseDomainResourceGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseDomainResourceGroupName")]
     pub base_domain_resource_group_name: Option<String>,
     /// cloudName is the name of the Azure cloud environment which can be used to configure the Azure SDK
     /// with the appropriate Azure API endpoints.
@@ -756,8 +604,7 @@ pub struct ClusterDeploymentPlatformBaremetal {
     /// for access to the libvirt provisioning host.
     /// The SSH private key is expected to be in the secret data under the "ssh-privatekey" key.
     #[serde(rename = "libvirtSSHPrivateKeySecretRef")]
-    pub libvirt_ssh_private_key_secret_ref:
-        ClusterDeploymentPlatformBaremetalLibvirtSshPrivateKeySecretRef,
+    pub libvirt_ssh_private_key_secret_ref: ClusterDeploymentPlatformBaremetalLibvirtSshPrivateKeySecretRef,
 }
 
 /// LibvirtSSHPrivateKeySecretRef is the reference to the secret that contains the private SSH key to use
@@ -778,21 +625,13 @@ pub struct ClusterDeploymentPlatformBaremetalLibvirtSshPrivateKeySecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentPlatformGcp {
     /// CredentialsSecretRef refers to a secret that contains the GCP account access credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretRef")]
     pub credentials_secret_ref: Option<ClusterDeploymentPlatformGcpCredentialsSecretRef>,
     /// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP
     /// Private Service Connect. It includes a forwarding rule paired with a Service Attachment
     /// across GCP accounts and allows clients to connect to services using GCP internal networking
     /// of using public load balancers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateServiceConnect"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateServiceConnect")]
     pub private_service_connect: Option<ClusterDeploymentPlatformGcpPrivateServiceConnect>,
     /// Region specifies the GCP region where the cluster will be created.
     pub region: String,
@@ -819,13 +658,8 @@ pub struct ClusterDeploymentPlatformGcpPrivateServiceConnect {
     /// Enabled specifies if Private Service Connect is to be enabled on the cluster.
     pub enabled: bool,
     /// ServiceAttachment configures the service attachment to be used by the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAttachment"
-    )]
-    pub service_attachment:
-        Option<ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachment>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAttachment")]
+    pub service_attachment: Option<ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachment>,
 }
 
 /// ServiceAttachment configures the service attachment to be used by the cluster.
@@ -847,8 +681,7 @@ pub struct ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachmentSub
     /// configured with a purpose of "Private Service Connect", and have sufficient routing and firewall rules
     /// to access the api-int load balancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub existing:
-        Option<ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachmentSubnetExisting>,
+    pub existing: Option<ClusterDeploymentPlatformGcpPrivateServiceConnectServiceAttachmentSubnetExisting>,
 }
 
 /// Existing specifies a pre-existing subnet to use instead of creating a new service attachment subnet.
@@ -876,11 +709,7 @@ pub struct ClusterDeploymentPlatformIbmcloud {
     /// CISInstanceCRN is the IBM Cloud Internet Services Instance CRN
     /// CISInstanceCRN is DEPRECATED and gathered via the IBM Cloud API for the provided
     /// credentials and cluster deployment base domain. This field will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cisInstanceCRN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cisInstanceCRN")]
     pub cis_instance_crn: Option<String>,
     /// CredentialsSecretRef refers to a secret that contains IBM Cloud account access
     /// credentials.
@@ -907,7 +736,8 @@ pub struct ClusterDeploymentPlatformIbmcloudCredentialsSecretRef {
 /// None indicates platform-agnostic install.
 /// https://docs.openshift.com/container-platform/4.7/installing/installing_platform_agnostic/installing-platform-agnostic.html
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterDeploymentPlatformNone {}
+pub struct ClusterDeploymentPlatformNone {
+}
 
 /// OpenStack is the configuration used when installing on OpenStack
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -922,7 +752,7 @@ pub struct ClusterDeploymentPlatformOpenstack {
     /// The "clouds.yaml" file must set the "cacert" field to
     /// either "/etc/openstack-ca/<key name containing the trust bundle in credentialsSecretRef Secret>" or
     /// "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem".
-    ///
+    /// 
     /// For example,
     /// """clouds.yaml
     /// clouds:
@@ -930,11 +760,7 @@ pub struct ClusterDeploymentPlatformOpenstack {
     ///     auth: ...
     ///     cacert: "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
     /// """
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificatesSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesSecretRef")]
     pub certificates_secret_ref: Option<ClusterDeploymentPlatformOpenstackCertificatesSecretRef>,
     /// Cloud will be used to indicate the OS_CLOUD value to use the right section
     /// from the clouds.yaml in the CredentialsSecretRef.
@@ -944,11 +770,7 @@ pub struct ClusterDeploymentPlatformOpenstack {
     #[serde(rename = "credentialsSecretRef")]
     pub credentials_secret_ref: ClusterDeploymentPlatformOpenstackCredentialsSecretRef,
     /// TrunkSupport indicates whether or not to use trunk ports in your OpenShift cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trunkSupport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trunkSupport")]
     pub trunk_support: Option<bool>,
 }
 
@@ -962,7 +784,7 @@ pub struct ClusterDeploymentPlatformOpenstack {
 /// The "clouds.yaml" file must set the "cacert" field to
 /// either "/etc/openstack-ca/<key name containing the trust bundle in credentialsSecretRef Secret>" or
 /// "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem".
-///
+/// 
 /// For example,
 /// """clouds.yaml
 /// clouds:
@@ -1113,83 +935,47 @@ pub enum ClusterDeploymentPowerState {
 pub struct ClusterDeploymentProvisioning {
     /// ImageSetRef is a reference to a ClusterImageSet. If a value is specified for ReleaseImage,
     /// that will take precedence over the one from the ClusterImageSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageSetRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageSetRef")]
     pub image_set_ref: Option<ClusterDeploymentProvisioningImageSetRef>,
     /// InstallConfigSecretRef is the reference to a secret that contains an openshift-install
     /// InstallConfig. This file will be passed through directly to the installer.
     /// Any version of InstallConfig can be used, provided it can be parsed by the openshift-install
     /// version for the release you are provisioning.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installConfigSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installConfigSecretRef")]
     pub install_config_secret_ref: Option<ClusterDeploymentProvisioningInstallConfigSecretRef>,
     /// InstallerEnv are extra environment variables to pass through to the installer. This may be used to enable
     /// additional features of the installer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installerEnv"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installerEnv")]
     pub installer_env: Option<Vec<ClusterDeploymentProvisioningInstallerEnv>>,
     /// InstallerImageOverride allows specifying a URI for the installer image, normally gleaned from
     /// the metadata within the ReleaseImage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installerImageOverride"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installerImageOverride")]
     pub installer_image_override: Option<String>,
     /// ManifestsConfigMapRef is a reference to user-provided manifests to add to or replace manifests
     /// that are generated by the installer. It serves the same purpose as, and is mutually exclusive
     /// with, ManifestsSecretRef.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "manifestsConfigMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "manifestsConfigMapRef")]
     pub manifests_config_map_ref: Option<ClusterDeploymentProvisioningManifestsConfigMapRef>,
     /// ManifestsSecretRef is a reference to user-provided manifests to add to or replace manifests
     /// that are generated by the installer. It serves the same purpose as, and is mutually exclusive
     /// with, ManifestsConfigMapRef.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "manifestsSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "manifestsSecretRef")]
     pub manifests_secret_ref: Option<ClusterDeploymentProvisioningManifestsSecretRef>,
     /// ReleaseImage is the image containing metadata for all components that run in the cluster, and
     /// is the primary and best way to specify what specific version of OpenShift you wish to install.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "releaseImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "releaseImage")]
     pub release_image: Option<String>,
     /// SSHKnownHosts are known hosts to be configured in the hive install manager pod to avoid ssh prompts.
     /// Use of ssh in the install pod is somewhat limited today (failure log gathering from cluster, some bare metal
     /// provisioning scenarios), so this setting is often not needed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sshKnownHosts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKnownHosts")]
     pub ssh_known_hosts: Option<Vec<String>>,
     /// SSHPrivateKeySecretRef is the reference to the secret that contains the private SSH key to use
     /// for access to compute instances. This private key should correspond to the public key included
     /// in the InstallConfig. The private key is used by Hive to gather logs on the target cluster if
     /// there are install failures.
     /// The SSH private key is expected to be in the secret data under the "ssh-privatekey" key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sshPrivateKeySecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshPrivateKeySecretRef")]
     pub ssh_private_key_secret_ref: Option<ClusterDeploymentProvisioningSshPrivateKeySecretRef>,
 }
 
@@ -1241,32 +1027,18 @@ pub struct ClusterDeploymentProvisioningInstallerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentProvisioningInstallerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ClusterDeploymentProvisioningInstallerEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterDeploymentProvisioningInstallerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ClusterDeploymentProvisioningInstallerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ClusterDeploymentProvisioningInstallerEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterDeploymentProvisioningInstallerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterDeploymentProvisioningInstallerEnvValueFromSecretKeyRef>,
 }
 
@@ -1292,11 +1064,7 @@ pub struct ClusterDeploymentProvisioningInstallerEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentProvisioningInstallerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1308,11 +1076,7 @@ pub struct ClusterDeploymentProvisioningInstallerEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentProvisioningInstallerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1401,11 +1165,7 @@ pub struct ClusterDeploymentStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
     pub api_url: Option<String>,
     /// CertificateBundles contains of the status of the certificate bundles associated with this cluster deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateBundles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateBundles")]
     pub certificate_bundles: Option<Vec<ClusterDeploymentStatusCertificateBundles>>,
     /// CLIImage is the name of the oc cli image to use when installing the target cluster
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliImage")]
@@ -1414,69 +1174,33 @@ pub struct ClusterDeploymentStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// InstallRestarts is the total count of container restarts on the clusters install job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installRestarts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installRestarts")]
     pub install_restarts: Option<i64>,
     /// InstallStartedTimestamp is the time when all pre-requisites were met and cluster installation was launched.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installStartedTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installStartedTimestamp")]
     pub install_started_timestamp: Option<String>,
     /// InstallVersion is the version of OpenShift as reported by the release image
     /// resolved for the installation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installVersion")]
     pub install_version: Option<String>,
     /// InstalledTimestamp is the time we first detected that the cluster has been successfully installed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installedTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installedTimestamp")]
     pub installed_timestamp: Option<String>,
     /// InstallerImage is the name of the installer image to use when installing the target cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installerImage")]
     pub installer_image: Option<String>,
     /// Platform contains the observed state for the specific platform upon which to
     /// perform the installation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "platformStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "platformStatus")]
     pub platform_status: Option<ClusterDeploymentStatusPlatformStatus>,
     /// PowerState indicates the powerstate of cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "powerState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerState")]
     pub power_state: Option<String>,
     /// ProvisionRef is a reference to the last ClusterProvision created for the deployment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionRef")]
     pub provision_ref: Option<ClusterDeploymentStatusProvisionRef>,
     /// WebConsoleURL is the URL for the cluster's web console UI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webConsoleURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webConsoleURL")]
     pub web_console_url: Option<String>,
 }
 
@@ -1506,36 +1230,19 @@ pub struct ClusterDeploymentStatusPlatformStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentStatusPlatformStatusAws {
     /// PrivateLinkAccessStatus contains the observed state for PrivateLinkAccess resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateLink"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateLink")]
     pub private_link: Option<ClusterDeploymentStatusPlatformStatusAwsPrivateLink>,
 }
 
 /// PrivateLinkAccessStatus contains the observed state for PrivateLinkAccess resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentStatusPlatformStatusAwsPrivateLink {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostedZoneID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostedZoneID")]
     pub hosted_zone_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcEndpointID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcEndpointID")]
     pub vpc_endpoint_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcEndpointService"
-    )]
-    pub vpc_endpoint_service:
-        Option<ClusterDeploymentStatusPlatformStatusAwsPrivateLinkVpcEndpointService>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcEndpointService")]
+    pub vpc_endpoint_service: Option<ClusterDeploymentStatusPlatformStatusAwsPrivateLinkVpcEndpointService>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1543,19 +1250,11 @@ pub struct ClusterDeploymentStatusPlatformStatusAwsPrivateLinkVpcEndpointService
     /// AdditionalAllowedPrincipals is a list of additional allowed principal ARNs that have been configured
     /// for the Private Link cluster's VPC Endpoint Service. This list in Status is used to determine if a sync
     /// of Allowed Principals is needed outside of the regular reconcile period of 2hrs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAllowedPrincipals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAllowedPrincipals")]
     pub additional_allowed_principals: Option<Vec<String>>,
     /// DefaultAllowedPrincipal is the ARN of the IAM entity used by Hive as configured for the Private
     /// Link cluster's VPC Endpoint Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultAllowedPrincipal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultAllowedPrincipal")]
     pub default_allowed_principal: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -1567,13 +1266,8 @@ pub struct ClusterDeploymentStatusPlatformStatusAwsPrivateLinkVpcEndpointService
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentStatusPlatformStatusGcp {
     /// PrivateServiceConnect contains the private service connect resource references
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateServiceConnect"
-    )]
-    pub private_service_connect:
-        Option<ClusterDeploymentStatusPlatformStatusGcpPrivateServiceConnect>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateServiceConnect")]
+    pub private_service_connect: Option<ClusterDeploymentStatusPlatformStatusGcpPrivateServiceConnect>,
 }
 
 /// PrivateServiceConnect contains the private service connect resource references
@@ -1583,33 +1277,17 @@ pub struct ClusterDeploymentStatusPlatformStatusGcpPrivateServiceConnect {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     /// EndpointAddress is the selfLink of the address created for the cluster endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointAddress")]
     pub endpoint_address: Option<String>,
     /// ServiceAttachment is the selfLink of the service attachment created for the clsuter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAttachment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAttachment")]
     pub service_attachment: Option<String>,
     /// ServiceAttachmentFirewall is the selfLink of the firewall that allows traffic between
     /// the service attachment and the cluster's internal api load balancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAttachmentFirewall"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAttachmentFirewall")]
     pub service_attachment_firewall: Option<String>,
     /// ServiceAttachmentSubnet is the selfLink of the subnet that will contain the service attachment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAttachmentSubnet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAttachmentSubnet")]
     pub service_attachment_subnet: Option<String>,
 }
 
@@ -1624,3 +1302,4 @@ pub struct ClusterDeploymentStatusProvisionRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ScriptSpec defines the desired state of Script
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tests.testkube.io",
-    version = "v2",
-    kind = "Script",
-    plural = "scripts"
-)]
+#[kube(group = "tests.testkube.io", version = "v2", kind = "Script", plural = "scripts")]
 #[kube(namespaced)]
 #[kube(status = "ScriptStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ScriptSpec {
     /// script content object
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -87,3 +82,4 @@ pub struct ScriptStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_execution: Option<String>,
 }
+

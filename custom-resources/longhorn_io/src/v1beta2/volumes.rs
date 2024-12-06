@@ -4,207 +4,94 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VolumeSpec defines the desired state of the Longhorn volume
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "Volume",
-    plural = "volumes"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "Volume", plural = "volumes")]
 #[kube(namespaced)]
 #[kube(status = "VolumeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VolumeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "Standby")]
     pub standby: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<VolumeAccessMode>,
     /// Deprecated:Replaced by field `dataEngine`.'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendStoreDriver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
     pub backend_store_driver: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backingImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
     pub backing_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupCompressionMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupCompressionMethod")]
     pub backup_compression_method: Option<VolumeBackupCompressionMethod>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataEngine"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
     pub data_engine: Option<VolumeDataEngine>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataLocality"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataLocality")]
     pub data_locality: Option<VolumeDataLocality>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableFrontend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableFrontend")]
     pub disable_frontend: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "diskSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSelector")]
     pub disk_selector: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
     /// Deprecated: Replaced by field `image`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "engineImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineImage")]
     pub engine_image: Option<String>,
     /// Setting that freezes the filesystem on the root partition before a snapshot is created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "freezeFilesystemForSnapshot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "freezeFilesystemForSnapshot")]
     pub freeze_filesystem_for_snapshot: Option<VolumeFreezeFilesystemForSnapshot>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromBackup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromBackup")]
     pub from_backup: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub frontend: Option<VolumeFrontend>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAttachedBy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttachedBy")]
     pub last_attached_by: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub migratable: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "migrationNodeID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "migrationNodeID")]
     pub migration_node_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeID")]
     pub node_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberOfReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberOfReplicas")]
     pub number_of_replicas: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaAutoBalance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaAutoBalance")]
     pub replica_auto_balance: Option<VolumeReplicaAutoBalance>,
     /// Replica disk soft anti affinity of the volume. Set enabled to allow replicas to be scheduled in the same disk.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaDiskSoftAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaDiskSoftAntiAffinity")]
     pub replica_disk_soft_anti_affinity: Option<VolumeReplicaDiskSoftAntiAffinity>,
     /// Replica soft anti affinity of the volume. Set enabled to allow replicas to be scheduled on the same node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaSoftAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaSoftAntiAffinity")]
     pub replica_soft_anti_affinity: Option<VolumeReplicaSoftAntiAffinity>,
     /// Replica zone soft anti affinity of the volume. Set enabled to allow replicas to be scheduled in the same zone.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaZoneSoftAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaZoneSoftAntiAffinity")]
     pub replica_zone_soft_anti_affinity: Option<VolumeReplicaZoneSoftAntiAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreVolumeRecurringJob"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreVolumeRecurringJob")]
     pub restore_volume_recurring_job: Option<VolumeRestoreVolumeRecurringJob>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revisionCounterDisabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionCounterDisabled")]
     pub revision_counter_disabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotDataIntegrity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotDataIntegrity")]
     pub snapshot_data_integrity: Option<VolumeSnapshotDataIntegrity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotMaxCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxCount")]
     pub snapshot_max_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotMaxSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxSize")]
     pub snapshot_max_size: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staleReplicaTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staleReplicaTimeout")]
     pub stale_replica_timeout: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unmapMarkSnapChainRemoved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmapMarkSnapChainRemoved")]
     pub unmap_mark_snap_chain_removed: Option<VolumeUnmapMarkSnapChainRemoved>,
 }
 
@@ -356,117 +243,49 @@ pub enum VolumeUnmapMarkSnapChainRemoved {
 /// VolumeStatus defines the observed state of the Longhorn volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "actualSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actualSize")]
     pub actual_size: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloneStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloneStatus")]
     pub clone_status: Option<VolumeStatusCloneStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentImage")]
     pub current_image: Option<String>,
     /// the node that this volume is currently migrating to
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentMigrationNodeID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentMigrationNodeID")]
     pub current_migration_node_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentNodeID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentNodeID")]
     pub current_node_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expansionRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expansionRequired")]
     pub expansion_required: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "frontendDisabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "frontendDisabled")]
     pub frontend_disabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isStandby")]
     pub is_standby: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesStatus")]
     pub kubernetes_status: Option<VolumeStatusKubernetesStatus>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastBackup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastBackup")]
     pub last_backup: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastBackupAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastBackupAt")]
     pub last_backup_at: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastDegradedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastDegradedAt")]
     pub last_degraded_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
     /// Deprecated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pendingNodeID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingNodeID")]
     pub pending_node_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remountRequestedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remountRequestedAt")]
     pub remount_requested_at: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreInitiated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreInitiated")]
     pub restore_initiated: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreRequired")]
     pub restore_required: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub robustness: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareEndpoint")]
     pub share_endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareState")]
     pub share_state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
@@ -474,25 +293,13 @@ pub struct VolumeStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeStatusCloneStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attemptCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attemptCount")]
     pub attempt_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nextAllowedAttemptAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextAllowedAttemptAt")]
     pub next_allowed_attempt_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceVolume")]
     pub source_volume: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
@@ -500,17 +307,9 @@ pub struct VolumeStatusCloneStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeStatusKubernetesStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPVCRefAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPVCRefAt")]
     pub last_pvc_ref_at: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPodRefAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPodRefAt")]
     pub last_pod_ref_at: Option<String>,
     /// determine if PVC/Namespace is history or not
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -522,11 +321,7 @@ pub struct VolumeStatusKubernetesStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcName")]
     pub pvc_name: Option<String>,
     /// determine if Pod/Workload is history or not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workloadsStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadsStatus")]
     pub workloads_status: Option<Vec<VolumeStatusKubernetesStatusWorkloadsStatus>>,
 }
 
@@ -536,16 +331,9 @@ pub struct VolumeStatusKubernetesStatusWorkloadsStatus {
     pub pod_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podStatus")]
     pub pod_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workloadName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadName")]
     pub workload_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workloadType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadType")]
     pub workload_type: Option<String>,
 }
+

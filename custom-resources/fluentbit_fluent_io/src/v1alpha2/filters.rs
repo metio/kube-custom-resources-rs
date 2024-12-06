@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// FilterSpec defines the desired state of ClusterFilter
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "fluentbit.fluent.io",
-    version = "v1alpha2",
-    kind = "Filter",
-    plural = "filters"
-)]
+#[kube(group = "fluentbit.fluent.io", version = "v1alpha2", kind = "Filter", plural = "filters")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FilterSpec {
     /// A set of filter plugins in order.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -34,11 +29,7 @@ pub struct FilterSpec {
     pub r#match: Option<String>,
     /// A regular expression to match against the tags of incoming records.
     /// Use this option if you want to use the full regex syntax.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchRegex")]
     pub match_regex: Option<String>,
 }
 
@@ -48,11 +39,7 @@ pub struct FilterFilters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aws: Option<FilterFiltersAws>,
     /// CustomPlugin defines a Custom plugin configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customPlugin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPlugin")]
     pub custom_plugin: Option<FilterFiltersCustomPlugin>,
     /// Grep defines Grep Filter configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -61,11 +48,7 @@ pub struct FilterFilters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<FilterFiltersKubernetes>,
     /// LogToMetrics defines a Log to Metrics Filter configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logToMetrics"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logToMetrics")]
     pub log_to_metrics: Option<FilterFiltersLogToMetrics>,
     /// Lua defines Lua Filter configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -83,18 +66,10 @@ pub struct FilterFilters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parser: Option<FilterFiltersParser>,
     /// RecordModifier defines Record Modifier Filter configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordModifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordModifier")]
     pub record_modifier: Option<FilterFiltersRecordModifier>,
     /// RewriteTag defines a RewriteTag configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rewriteTag"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewriteTag")]
     pub rewrite_tag: Option<FilterFiltersRewriteTag>,
     /// Throttle defines a Throttle configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -120,38 +95,22 @@ pub struct FilterFiltersAws {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub az: Option<bool>,
     /// The EC2 instance ID.Default is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ec2InstanceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ec2InstanceID")]
     pub ec2_instance_id: Option<bool>,
     /// The EC2 instance type.Default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ec2InstanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ec2InstanceType")]
     pub ec2_instance_type: Option<bool>,
     /// The hostname for current EC2 instance.Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostName")]
     pub host_name: Option<bool>,
     /// Specify which version of the instance metadata service to use. Valid values are 'v1' or 'v2'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imdsVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imdsVersion")]
     pub imds_version: Option<FilterFiltersAwsImdsVersion>,
     /// The EC2 instance private ip.Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateIP")]
     pub private_ip: Option<bool>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// The VPC ID for current EC2 instance.Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
@@ -175,11 +134,7 @@ pub struct FilterFiltersCustomPlugin {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
     /// YamlConfig holds the unsupported plugins yaml configurations, it only works when the ConfigFileFormat is yaml
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "yamlConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "yamlConfig")]
     pub yaml_config: Option<BTreeMap<String, serde_json::Value>>,
 }
 
@@ -198,11 +153,7 @@ pub struct FilterFiltersGrep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
 }
 
@@ -216,51 +167,27 @@ pub struct FilterFiltersKubernetes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<bool>,
     /// Set the buffer size for HTTP client when reading responses from Kubernetes API server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bufferSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferSize")]
     pub buffer_size: Option<String>,
     /// When enabled, metadata will be fetched from K8s when docker_id is changed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheUseDockerId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheUseDockerId")]
     pub cache_use_docker_id: Option<bool>,
     /// DNS lookup retries N times until the network start working
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsRetries")]
     pub dns_retries: Option<i32>,
     /// DNS lookup interval between network status checks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsWaitTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsWaitTime")]
     pub dns_wait_time: Option<i32>,
     /// If set, use dummy-meta data (for test/dev purposes)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dummyMeta")]
     pub dummy_meta: Option<bool>,
     /// Allow Kubernetes Pods to exclude their logs from the log processor
     /// (read more about it in Kubernetes Annotations section).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sLoggingExclude"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sLoggingExclude")]
     pub k8s_logging_exclude: Option<bool>,
     /// Allow Kubernetes Pods to suggest a pre-defined Parser
     /// (read more about it in Kubernetes Annotations section)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sLoggingParser"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sLoggingParser")]
     pub k8s_logging_parser: Option<bool>,
     /// When Keep_Log is disabled, the log field is removed
     /// from the incoming message once it has been successfully merged
@@ -268,93 +195,49 @@ pub struct FilterFiltersKubernetes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepLog")]
     pub keep_log: Option<bool>,
     /// CA certificate file
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeCAFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeCAFile")]
     pub kube_ca_file: Option<String>,
     /// Absolute path to scan for certificate files
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeCAPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeCAPath")]
     pub kube_ca_path: Option<String>,
     /// configurable TTL for K8s cached metadata. By default, it is set to 0
     /// which means TTL for cache entries is disabled and cache entries are evicted at random
     /// when capacity is reached. In order to enable this option, you should set the number to a time interval.
     /// For example, set this value to 60 or 60s and cache entries which have been created more than 60s will be evicted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeMetaCacheTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeMetaCacheTTL")]
     pub kube_meta_cache_ttl: Option<String>,
     /// Configurable TTL for K8s cached namespace metadata.
     /// By default, it is set to 900 which means a 15min TTL for namespace cache entries.
     /// Setting this to 0 will mean entries are evicted at random once the cache is full.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeMetaNamespaceCacheTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeMetaNamespaceCacheTTL")]
     pub kube_meta_namespace_cache_ttl: Option<i32>,
     /// If set, Kubernetes meta-data can be cached/pre-loaded from files in JSON format in this directory,
     /// named as namespace-pod.meta
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeMetaPreloadCacheDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeMetaPreloadCacheDir")]
     pub kube_meta_preload_cache_dir: Option<String>,
     /// When the source records comes from Tail input plugin,
     /// this option allows to specify what's the prefix used in Tail configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeTagPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTagPrefix")]
     pub kube_tag_prefix: Option<String>,
     /// Command to get Kubernetes authorization token.
     /// By default, it will be NULL and we will use token file to get token.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeTokenCommand"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTokenCommand")]
     pub kube_token_command: Option<String>,
     /// Token file
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTokenFile")]
     pub kube_token_file: Option<String>,
     /// configurable 'time to live' for the K8s token. By default, it is set to 600 seconds.
     /// After this time, the token is reloaded from Kube_Token_File or the Kube_Token_Command.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeTokenTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeTokenTTL")]
     pub kube_token_ttl: Option<String>,
     /// API Server end-point
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeURL")]
     pub kube_url: Option<String>,
     /// kubelet host using for HTTP request, this only works when Use_Kubelet set to On.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeletHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeletHost")]
     pub kubelet_host: Option<String>,
     /// kubelet port using for HTTP request, this only works when useKubelet is set to On.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeletPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeletPort")]
     pub kubelet_port: Option<i32>,
     /// Include Kubernetes resource labels in the extra metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -366,62 +249,30 @@ pub struct FilterFiltersKubernetes {
     /// When Merge_Log is enabled, the filter tries to assume the log field from the incoming message is a JSON string message
     /// and make a structured representation of it at the same level of the log field in the map.
     /// Now if Merge_Log_Key is set (a string name), all the new structured fields taken from the original log content are inserted under the new key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mergeLogKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergeLogKey")]
     pub merge_log_key: Option<String>,
     /// When Merge_Log is enabled, trim (remove possible \n or \r) field values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mergeLogTrim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergeLogTrim")]
     pub merge_log_trim: Option<bool>,
     /// Optional parser name to specify how to parse the data contained in the log key. Recommended use is for developers or testing only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mergeParser"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergeParser")]
     pub merge_parser: Option<String>,
     /// Include Kubernetes namespace resource annotations in the extra metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceAnnotations")]
     pub namespace_annotations: Option<bool>,
     /// Include Kubernetes namespace resource labels in the extra metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceLabels")]
     pub namespace_labels: Option<bool>,
     /// Include Kubernetes namespace metadata only and no pod metadata.
     /// If this is set, the values of Labels and Annotations are ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceMetadataOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceMetadataOnly")]
     pub namespace_metadata_only: Option<bool>,
     /// Set an alternative Parser to process record Tag and extract pod_name, namespace_name, container_name and docker_id.
     /// The parser must be registered in a parsers file (refer to parser filter-kube-test as an example).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "regexParser"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "regexParser")]
     pub regex_parser: Option<String>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Debug level between 0 (nothing) and 4 (every detail).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsDebug")]
@@ -430,20 +281,12 @@ pub struct FilterFiltersKubernetes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsVerify")]
     pub tls_verify: Option<bool>,
     /// When enabled, the filter reads logs coming in Journald format.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useJournal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useJournal")]
     pub use_journal: Option<bool>,
     /// This is an optional feature flag to get metadata information from kubelet
     /// instead of calling Kube Server API to enhance the log.
     /// This could mitigate the Kube API heavy traffic issue for large cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useKubelet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useKubelet")]
     pub use_kubelet: Option<bool>,
 }
 
@@ -461,25 +304,13 @@ pub struct FilterFiltersLogToMetrics {
     pub bucket: Option<Vec<String>>,
     /// Flag that defines if logs should be discarded after processing. This applies
     /// for all logs, no matter if they have emitted metrics or not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discardLogs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discardLogs")]
     pub discard_logs: Option<bool>,
     /// set a buffer limit to restrict memory usage of metrics emitter
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterMemBufLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterMemBufLimit")]
     pub emitter_mem_buf_limit: Option<String>,
     /// Name of the emitter (advanced users)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterName")]
     pub emitter_name: Option<String>,
     /// Optional filter for records in which the content of KEY does not matches the regular expression.
     /// Value Format: FIELD REGEX
@@ -487,74 +318,38 @@ pub struct FilterFiltersLogToMetrics {
     pub exclude: Option<Vec<String>>,
     /// If enabled, it will automatically put pod_id, pod_name, namespace_name, docker_id and container_name
     /// into the metric as labels. This option is intended to be used in combination with the kubernetes filter plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesMode")]
     pub kubernetes_mode: Option<bool>,
     /// Includes a record field as label dimension in the metric.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelField")]
     pub label_field: Option<Vec<String>>,
     /// Sets a help text for the metric.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricDescription"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricDescription")]
     pub metric_description: Option<String>,
     /// Defines the mode for the metric. Valid values are [counter, gauge or histogram]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricMode")]
     pub metric_mode: Option<String>,
     /// Sets the name of the metric.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
     pub metric_name: Option<String>,
     /// Namespace of the metric
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricNamespace")]
     pub metric_namespace: Option<String>,
     /// Sets a sub-system for the metric.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricSubsystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricSubsystem")]
     pub metric_subsystem: Option<String>,
     /// Optional filter for records in which the content of KEY matches the regular expression.
     /// Value Format: FIELD REGEX
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<Vec<String>>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Defines the tag for the generated metrics record
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
     /// Specify the record field that holds a numerical value
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "valueField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueField")]
     pub value_field: Option<String>,
 }
 
@@ -572,18 +367,10 @@ pub struct FilterFiltersLua {
     pub code: Option<String>,
     /// If enabled, Lua script will be executed in protected mode.
     /// It prevents to crash when invalid Lua script is executed. Default is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectedMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectedMode")]
     pub protected_mode: Option<bool>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Path to the Lua script that will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -592,29 +379,17 @@ pub struct FilterFiltersLua {
     /// Floating number which might lead to loss precision when the data is converted back.
     /// If you desire timestamp precision enabling this option will pass the timestamp as
     /// a Lua table with keys sec for seconds since epoch and nsec for nanoseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeAsTable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAsTable")]
     pub time_as_table: Option<bool>,
     /// If these keys are matched, the fields are handled as array. If more than
     /// one key, delimit by space. It is useful the array can be empty.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "typeArrayKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typeArrayKey")]
     pub type_array_key: Option<Vec<String>>,
     /// If these keys are matched, the fields are converted to integer.
     /// If more than one key, delimit by space.
     /// Note that starting from Fluent Bit v1.6 integer data types are preserved
     /// and not converted to double as in previous versions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "typeIntKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typeIntKey")]
     pub type_int_key: Option<Vec<String>>,
 }
 
@@ -647,11 +422,7 @@ pub struct FilterFiltersModify {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<FilterFiltersModifyConditions>>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Rules are applied in the order they appear,
     /// with each rule operating on the result of the previous rule.
@@ -663,70 +434,34 @@ pub struct FilterFiltersModify {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FilterFiltersModifyConditions {
     /// Is true if a key matches regex KEY
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aKeyMatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aKeyMatches")]
     pub a_key_matches: Option<String>,
     /// Is true if KEY does not exist
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyDoesNotExist"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyDoesNotExist")]
     pub key_does_not_exist: Option<BTreeMap<String, String>>,
     /// Is true if KEY exists
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyExists")]
     pub key_exists: Option<String>,
     /// Is true if KEY exists and its value is not VALUE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyValueDoesNotEqual"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyValueDoesNotEqual")]
     pub key_value_does_not_equal: Option<BTreeMap<String, String>>,
     /// Is true if key KEY exists and its value does not match VALUE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyValueDoesNotMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyValueDoesNotMatch")]
     pub key_value_does_not_match: Option<BTreeMap<String, String>>,
     /// Is true if KEY exists and its value is VALUE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyValueEquals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyValueEquals")]
     pub key_value_equals: Option<BTreeMap<String, String>>,
     /// Is true if key KEY exists and its value matches VALUE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyValueMatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyValueMatches")]
     pub key_value_matches: Option<BTreeMap<String, String>>,
     /// Is true if all keys matching KEY have values that do not match VALUE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKeysDoNotHaveMatchingValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKeysDoNotHaveMatchingValues")]
     pub matching_keys_do_not_have_matching_values: Option<BTreeMap<String, String>>,
     /// Is true if all keys matching KEY have values that match VALUE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKeysHaveMatchingValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKeysHaveMatchingValues")]
     pub matching_keys_have_matching_values: Option<BTreeMap<String, String>>,
     /// Is true if no key matches regex KEY
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noKeyMatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noKeyMatches")]
     pub no_key_matches: Option<String>,
 }
 
@@ -745,28 +480,16 @@ pub struct FilterFiltersModifyRules {
     pub hard_copy: Option<BTreeMap<String, String>>,
     /// Rename a key/value pair with key KEY to RENAMED_KEY if KEY exists.
     /// If RENAMED_KEY already exists, this field is overwritten
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardRename"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardRename")]
     pub hard_rename: Option<BTreeMap<String, String>>,
     /// Remove a key/value pair with key KEY if it exists
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remove: Option<String>,
     /// Remove all key/value pairs with key matching regexp KEY
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removeRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
     pub remove_regex: Option<String>,
     /// Remove all key/value pairs with key matching wildcard KEY
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removeWildcard"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeWildcard")]
     pub remove_wildcard: Option<String>,
     /// Rename a key/value pair with key KEY to RENAMED_KEY if KEY exists AND RENAMED_KEY does not exist
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -785,35 +508,19 @@ pub struct FilterFiltersMultiline {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buffer: Option<bool>,
     /// Set a limit on the amount of memory in MB the emitter can consume if the outputs provide backpressure. The default for this limit is 10M. The pipeline will pause once the buffer exceeds the value of this setting. For example, if the value is set to 10MB then the pipeline will pause if the buffer exceeds 10M. The pipeline will remain paused until the output drains the buffer below the 10M limit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterMemBufLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterMemBufLimit")]
     pub emitter_mem_buf_limit: Option<i64>,
     /// Name for the emitter input instance which re-emits the completed records at the beginning of the pipeline.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterName")]
     pub emitter_name: Option<String>,
     /// The storage type for the emitter input instance. This option supports the values memory (default) and filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterType")]
     pub emitter_type: Option<FilterFiltersMultilineEmitterType>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushMs")]
     pub flush_ms: Option<i64>,
     /// Key name that holds the content to process.
     /// Note that a Multiline Parser definition can already specify the key_content to use, but this option allows to overwrite that value for the purpose of the filter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyContent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyContent")]
     pub key_content: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<FilterFiltersMultilineMode>,
@@ -821,11 +528,7 @@ pub struct FilterFiltersMultiline {
     /// You can specify multiple multiline parsers to detect different formats by separating them with a comma.
     pub parser: String,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
 }
 
@@ -860,28 +563,16 @@ pub struct FilterFiltersNest {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nestUnder")]
     pub nest_under: Option<String>,
     /// Lift records nested under the Nested_under key
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nestedUnder"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nestedUnder")]
     pub nested_under: Option<String>,
     /// Select the operation nest or lift
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operation: Option<FilterFiltersNestOperation>,
     /// Remove prefix from affected keys if it matches this string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removePrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removePrefix")]
     pub remove_prefix: Option<String>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Nest records which field matches the wildcard
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -912,33 +603,17 @@ pub struct FilterFiltersParser {
     pub parser: Option<String>,
     /// Keep original Key_Name field in the parsed result.
     /// If false, the field will be removed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preserveKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveKey")]
     pub preserve_key: Option<bool>,
     /// Keep all other original fields in the parsed result.
     /// If false, all other original fields will be removed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reserveData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reserveData")]
     pub reserve_data: Option<bool>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// If the key is a escaped string (e.g: stringify JSON), unescape the string before to apply the parser.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unescapeKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unescapeKey")]
     pub unescape_key: Option<bool>,
 }
 
@@ -949,38 +624,22 @@ pub struct FilterFiltersRecordModifier {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alias: Option<String>,
     /// If the key is not matched, that field is removed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowlistKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowlistKeys")]
     pub allowlist_keys: Option<Vec<String>>,
     /// Append fields. This parameter needs key and value pair.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub records: Option<Vec<String>>,
     /// If the key is matched, that field is removed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removeKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeKeys")]
     pub remove_keys: Option<Vec<String>>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// If set, the plugin appends uuid to each record. The value assigned becomes the key in the map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uuidKeys")]
     pub uuid_keys: Option<Vec<String>>,
     /// An alias of allowlistKeys for backwards compatibility.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "whitelistKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whitelistKeys")]
     pub whitelist_keys: Option<Vec<String>>,
 }
 
@@ -990,33 +649,17 @@ pub struct FilterFiltersRewriteTag {
     /// Alias for the plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alias: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterMemBufLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterMemBufLimit")]
     pub emitter_mem_buf_limit: Option<String>,
     /// When the filter emits a record under the new Tag, there is an internal emitter
     /// plugin that takes care of the job. Since this emitter expose metrics as any other
     /// component of the pipeline, you can use this property to configure an optional name for it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterName")]
     pub emitter_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterStorageType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterStorageType")]
     pub emitter_storage_type: Option<String>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Defines the matching criteria and the format of the Tag for the matching record.
     /// The Rule format have four components: KEY REGEX NEW_TAG KEEP.
@@ -1034,21 +677,13 @@ pub struct FilterFiltersThrottle {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// PrintStatus represents whether to print status messages with current rate and the limits to information logs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "printStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "printStatus")]
     pub print_status: Option<bool>,
     /// Rate is the amount of messages for the time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rate: Option<i64>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Window is the amount of intervals to calculate average over.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1059,52 +694,28 @@ pub struct FilterFiltersThrottle {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FilterFiltersWasm {
     /// Specify the whitelist of paths to be able to access paths from WASM programs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessiblePaths"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessiblePaths")]
     pub accessible_paths: Option<Vec<String>>,
     /// Alias for the plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alias: Option<String>,
     /// Define event format to interact with Wasm programs: msgpack or json. Default: json
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventFormat")]
     pub event_format: Option<String>,
     /// Wasm function name that will be triggered to do filtering. It's assumed that the function is built inside the Wasm program specified above.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
     pub function_name: Option<String>,
     /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Size of the heap size of Wasm execution. Review unit sizes for allowed values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wasmHeapSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wasmHeapSize")]
     pub wasm_heap_size: Option<String>,
     /// Path to the built Wasm program that will be used. This can be a relative path against the main configuration file.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "wasmPath")]
     pub wasm_path: Option<String>,
     /// Size of the stack size of Wasm execution. Review unit sizes for allowed values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wasmStackSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wasmStackSize")]
     pub wasm_stack_size: Option<String>,
 }
 
@@ -1124,3 +735,4 @@ pub enum FilterLogLevel {
     #[serde(rename = "trace")]
     Trace,
 }
+

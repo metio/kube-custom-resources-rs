@@ -5,25 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RBACDefinitionRbacBindings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRoleBindings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoleBindings")]
     pub cluster_role_bindings: Option<Vec<RBACDefinitionRbacBindingsClusterRoleBindings>>,
     pub name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleBindings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleBindings")]
     pub role_bindings: Option<Vec<RBACDefinitionRbacBindingsRoleBindings>>,
     pub subjects: Vec<RBACDefinitionRbacBindingsSubjects>,
 }
@@ -36,19 +28,11 @@ pub struct RBACDefinitionRbacBindingsClusterRoleBindings {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RBACDefinitionRbacBindingsRoleBindings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRole")]
     pub cluster_role: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<RBACDefinitionRbacBindingsRoleBindingsNamespaceSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
@@ -56,18 +40,9 @@ pub struct RBACDefinitionRbacBindingsRoleBindings {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RBACDefinitionRbacBindingsRoleBindingsNamespaceSelector {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<RBACDefinitionRbacBindingsRoleBindingsNamespaceSelectorMatchExpressions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<RBACDefinitionRbacBindingsRoleBindingsNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -89,17 +64,9 @@ pub enum RBACDefinitionRbacBindingsRoleBindingsNamespaceSelectorMatchExpressions
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RBACDefinitionRbacBindingsSubjects {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     pub kind: RBACDefinitionRbacBindingsSubjectsKind,
     pub name: String,
@@ -115,4 +82,6 @@ pub enum RBACDefinitionRbacBindingsSubjectsKind {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RBACDefinitionStatus {}
+pub struct RBACDefinitionStatus {
+}
+

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "model.kubedl.io",
-    version = "v1alpha1",
-    kind = "ModelVersion",
-    plural = "modelversions"
-)]
+#[kube(group = "model.kubedl.io", version = "v1alpha1", kind = "ModelVersion", plural = "modelversions")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ModelVersionSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdBy")]
     pub created_by: Option<String>,
@@ -38,11 +33,7 @@ pub struct ModelVersionSpec {
 pub struct ModelVersionStorage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "AWSEfs")]
     pub aws_efs: Option<ModelVersionStorageAwsEfs>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorage")]
     pub local_storage: Option<ModelVersionStorageLocalStorage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<ModelVersionStorageNfs>,
@@ -52,11 +43,7 @@ pub struct ModelVersionStorage {
 pub struct ModelVersionStorageAwsEfs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeHandle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeHandle")]
     pub volume_handle: Option<String>,
 }
 
@@ -82,20 +69,13 @@ pub struct ModelVersionStorageNfs {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelVersionStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "finishTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "finishTime")]
     pub finish_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageBuildPhase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageBuildPhase")]
     pub image_build_phase: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
 }
+

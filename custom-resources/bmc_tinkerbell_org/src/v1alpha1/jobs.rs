@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// JobSpec defines the desired state of Job.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "bmc.tinkerbell.org",
-    version = "v1alpha1",
-    kind = "Job",
-    plural = "jobs"
-)]
+#[kube(group = "bmc.tinkerbell.org", version = "v1alpha1", kind = "Job", plural = "jobs")]
 #[kube(namespaced)]
 #[kube(status = "JobStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct JobSpec {
     /// MachineRef represents the Machine resource to execute the job.
     /// All the tasks in the job are executed for the same Machine.
@@ -50,25 +45,13 @@ pub struct JobMachineRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTasks {
     /// OneTimeBootDeviceAction represents a baseboard management one time set boot device operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oneTimeBootDeviceAction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oneTimeBootDeviceAction")]
     pub one_time_boot_device_action: Option<JobTasksOneTimeBootDeviceAction>,
     /// PowerAction represents a baseboard management power operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "powerAction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerAction")]
     pub power_action: Option<JobTasksPowerAction>,
     /// VirtualMediaAction represents a baseboard management virtual media insert/eject.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualMediaAction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualMediaAction")]
     pub virtual_media_action: Option<JobTasksVirtualMediaAction>,
 }
 
@@ -117,11 +100,7 @@ pub struct JobTasksVirtualMediaAction {
 pub struct JobStatus {
     /// CompletionTime represents time when the job was completed.
     /// The completion time is only set when the job finishes successfully.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTime")]
     pub completion_time: Option<String>,
     /// Conditions represents the latest available observations of an object's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -143,3 +122,4 @@ pub struct JobStatusConditions {
     #[serde(rename = "type")]
     pub r#type: String,
 }
+

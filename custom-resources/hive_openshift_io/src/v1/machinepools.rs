@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// MachinePoolSpec defines the desired state of MachinePool
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hive.openshift.io",
-    version = "v1",
-    kind = "MachinePool",
-    plural = "machinepools"
-)]
+#[kube(group = "hive.openshift.io", version = "v1", kind = "MachinePool", plural = "machinepools")]
 #[kube(namespaced)]
 #[kube(status = "MachinePoolStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MachinePoolSpec {
     /// Autoscaling is the details for auto-scaling the machine pool.
     /// Replicas and autoscaling cannot be used together.
@@ -44,11 +39,7 @@ pub struct MachinePoolSpec {
     /// contrast with the Labels field). This list will overwrite any modifications made to
     /// Machine labels on an ongoing basis. Note: We ignore entries that conflict with
     /// generated labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineLabels")]
     pub machine_labels: Option<BTreeMap<String, String>>,
     /// Name is the name of the machine pool.
     pub name: String,
@@ -130,28 +121,16 @@ pub struct MachinePoolPlatform {
 pub struct MachinePoolPlatformAws {
     /// AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID
     /// is presented in the format sg-xxxx.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalSecurityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalSecurityGroupIDs")]
     pub additional_security_group_i_ds: Option<Vec<String>>,
     /// EC2MetadataOptions defines metadata service interaction options for EC2 instances in the machine pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataService")]
     pub metadata_service: Option<MachinePoolPlatformAwsMetadataService>,
     /// EC2RootVolume defines the storage for ec2 instance.
     #[serde(rename = "rootVolume")]
     pub root_volume: MachinePoolPlatformAwsRootVolume,
     /// SpotMarketOptions allows users to configure instances to be run using AWS Spot instances.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spotMarketOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spotMarketOptions")]
     pub spot_market_options: Option<MachinePoolPlatformAwsSpotMarketOptions>,
     /// Subnets is the list of IDs of subnets to which to attach the machines.
     /// There must be exactly one subnet for each availability zone used.
@@ -223,19 +202,11 @@ pub struct MachinePoolPlatformAwsSpotMarketOptions {
 pub struct MachinePoolPlatformAzure {
     /// ComputeSubnet specifies an existing subnet for use by compute nodes.
     /// If omitted, the default (${infraID}-worker-subnet) will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "computeSubnet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "computeSubnet")]
     pub compute_subnet: Option<String>,
     /// NetworkResourceGroupName specifies the network resource group that contains an existing VNet.
     /// Ignored unless VirtualNetwork is also specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkResourceGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkResourceGroupName")]
     pub network_resource_group_name: Option<String>,
     /// OSDisk defines the storage for instance.
     #[serde(rename = "osDisk")]
@@ -249,21 +220,13 @@ pub struct MachinePoolPlatformAzure {
     pub r#type: String,
     /// VirtualNetwork specifies the name of an existing VNet for the Machines to use
     /// If omitted, the default (${infraID}-vnet) will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNetwork")]
     pub virtual_network: Option<String>,
     /// VMNetworkingType specifies whether to enable accelerated networking.
     /// Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its
     /// networking performance.
     /// eg. values: "Accelerated", "Basic"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vmNetworkingType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vmNetworkingType")]
     pub vm_networking_type: Option<MachinePoolPlatformAzureVmNetworkingType>,
     /// Zones is list of availability zones that can be used.
     /// eg. ["1", "2", "3"]
@@ -275,11 +238,7 @@ pub struct MachinePoolPlatformAzure {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolPlatformAzureOsDisk {
     /// DiskEncryptionSet defines a disk encryption set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "diskEncryptionSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskEncryptionSet")]
     pub disk_encryption_set: Option<MachinePoolPlatformAzureOsDiskDiskEncryptionSet>,
     /// DiskSizeGB defines the size of disk in GB.
     #[serde(rename = "diskSizeGB")]
@@ -302,11 +261,7 @@ pub struct MachinePoolPlatformAzureOsDiskDiskEncryptionSet {
     pub resource_group: String,
     /// SubscriptionID defines the Azure subscription the disk encryption
     /// set is in.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subscriptionId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subscriptionId")]
     pub subscription_id: Option<String>,
 }
 
@@ -346,21 +301,13 @@ pub enum MachinePoolPlatformAzureVmNetworkingType {
 pub struct MachinePoolPlatformGcp {
     /// NetworkProjectID specifies which project the network and subnets exist in when
     /// they are not in the main ProjectID.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkProjectID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkProjectID")]
     pub network_project_id: Option<String>,
     /// OnHostMaintenance determines the behavior when a maintenance event occurs that might cause the instance to reboot.
     /// This is required to be set to "Terminate" if you want to provision machine with attached GPUs.
     /// Otherwise, allowed values are "Migrate" and "Terminate".
     /// If omitted, the platform chooses a default, which is subject to change over time, currently that default is "Migrate".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onHostMaintenance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onHostMaintenance")]
     pub on_host_maintenance: Option<MachinePoolPlatformGcpOnHostMaintenance>,
     /// OSDisk defines the storage for instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "osDisk")]
@@ -368,21 +315,13 @@ pub struct MachinePoolPlatformGcp {
     /// SecureBoot Defines whether the instance should have secure boot enabled.
     /// Verifies the digital signature of all boot components, and halts the boot process if signature verification fails.
     /// If omitted, the platform chooses a default, which is subject to change over time. Currently that default is "Disabled".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secureBoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secureBoot")]
     pub secure_boot: Option<MachinePoolPlatformGcpSecureBoot>,
     /// ServiceAccount is the email of a gcp service account to be attached to worker nodes
     /// in order to provide the permissions required by the cloud provider. For the default
     /// worker MachinePool, it is the user's responsibility to match this to the value
     /// provided in the install-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// InstanceType defines the GCP instance type.
     /// eg. n1-standard-4
@@ -411,11 +350,7 @@ pub enum MachinePoolPlatformGcpOnHostMaintenance {
 pub struct MachinePoolPlatformGcpOsDisk {
     /// DiskSizeGB defines the size of disk in GB.
     /// Defaulted internally to 128.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "diskSizeGB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSizeGB")]
     pub disk_size_gb: Option<i64>,
     /// DiskType defines the type of disk.
     /// The valid values are pd-standard and pd-ssd.
@@ -423,11 +358,7 @@ pub struct MachinePoolPlatformGcpOsDisk {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskType")]
     pub disk_type: Option<MachinePoolPlatformGcpOsDiskDiskType>,
     /// EncryptionKey defines the KMS key to be used to encrypt the disk.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKey")]
     pub encryption_key: Option<MachinePoolPlatformGcpOsDiskEncryptionKey>,
 }
 
@@ -451,11 +382,7 @@ pub struct MachinePoolPlatformGcpOsDiskEncryptionKey {
     /// Engine default service account is used.
     /// See https://cloud.google.com/compute/docs/access/service-accounts#compute_engine_service_account
     /// for details on the default service account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kmsKeyServiceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyServiceAccount")]
     pub kms_key_service_account: Option<String>,
 }
 
@@ -510,18 +437,10 @@ pub struct MachinePoolPlatformGcpUserTags {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolPlatformIbmcloud {
     /// BootVolume is the configuration for the machine's boot volume.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bootVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootVolume")]
     pub boot_volume: Option<MachinePoolPlatformIbmcloudBootVolume>,
     /// DedicatedHosts is the configuration for the machine's dedicated host and profile.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dedicatedHosts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dedicatedHosts")]
     pub dedicated_hosts: Option<Vec<MachinePoolPlatformIbmcloudDedicatedHosts>>,
     /// InstanceType is the VSI machine profile.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -537,11 +456,7 @@ pub struct MachinePoolPlatformIbmcloudBootVolume {
     /// EncryptionKey is the CRN referencing a Key Protect or Hyper Protect
     /// Crypto Services key to use for volume encryption. If not specified, a
     /// provider managed encryption key will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKey")]
     pub encryption_key: Option<String>,
 }
 
@@ -563,11 +478,7 @@ pub struct MachinePoolPlatformIbmcloudDedicatedHosts {
 pub struct MachinePoolPlatformOpenstack {
     /// AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID
     /// is presented in the format sg-xxxx.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalSecurityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalSecurityGroupIDs")]
     pub additional_security_group_i_ds: Option<Vec<String>>,
     /// Flavor defines the OpenStack Nova flavor.
     /// eg. m1.large
@@ -577,11 +488,7 @@ pub struct MachinePoolPlatformOpenstack {
     pub flavor: String,
     /// RootVolume defines the root volume for instances in the machine pool.
     /// The instances use ephemeral disks if not set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootVolume")]
     pub root_volume: Option<MachinePoolPlatformOpenstackRootVolume>,
 }
 
@@ -664,11 +571,7 @@ pub struct MachinePoolPlatformVsphere {
     pub os_disk: MachinePoolPlatformVsphereOsDisk,
     /// ResourcePool is the name of the resource pool that will be used for virtual machines.
     /// If it is not present, a default value will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourcePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePool")]
     pub resource_pool: Option<String>,
 }
 
@@ -709,47 +612,27 @@ pub struct MachinePoolStatus {
     /// for this MachinePool. Note that this value indicates the replica that most recently handled the
     /// MachinePool. If the hive-machinepool statefulset is scaled up or down, the controlling replica
     /// can change, potentially causing logs to be spread across multiple pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlledByReplica"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlledByReplica")]
     pub controlled_by_replica: Option<i64>,
     /// MachineSets is the status of the machine sets for the machine pool on the remote cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineSets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineSets")]
     pub machine_sets: Option<Vec<MachinePoolStatusMachineSets>>,
     /// OwnedLabels lists the keys of labels this MachinePool created on the remote MachineSet's
     /// MachineSpec. (In contrast with OwnedMachineLabels.)
     /// Used to identify labels to remove from the remote MachineSet when they are absent from
     /// the MachinePool's spec.labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownedLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownedLabels")]
     pub owned_labels: Option<Vec<String>>,
     /// OwnedMachineLabels lists the keys of labels this MachinePool created on the remote
     /// MachineSet's MachineTemplateSpec. (In contrast with OwnedLabels.)
     /// Used to identify labels to remove from the remote MachineSet when they are absent from
     /// the MachinePool's spec.machineLabels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownedMachineLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownedMachineLabels")]
     pub owned_machine_labels: Option<Vec<String>>,
     /// OwnedTaints lists identifiers of taints this MachinePool created on the remote MachineSet.
     /// Used to identify taints to remove from the remote MachineSet when they are absent from
     /// the MachinePool's spec.taints.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownedTaints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownedTaints")]
     pub owned_taints: Option<Vec<MachinePoolStatusOwnedTaints>>,
     /// Replicas is the current number of replicas for the machine pool.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -759,22 +642,14 @@ pub struct MachinePoolStatus {
 /// MachineSetStatus is the status of a machineset in the remote cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolStatusMachineSets {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMessage")]
     pub error_message: Option<String>,
     /// In the event that there is a terminal problem reconciling the
     /// replicas, both ErrorReason and ErrorMessage will be set. ErrorReason
     /// will be populated with a succinct value suitable for machine
     /// interpretation, while ErrorMessage will contain a more verbose
     /// string suitable for logging and human consumption.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorReason")]
     pub error_reason: Option<String>,
     /// MaxReplicas is the maximum number of replicas for the machine set.
     #[serde(rename = "maxReplicas")]
@@ -787,11 +662,7 @@ pub struct MachinePoolStatusMachineSets {
     /// The number of ready replicas for this MachineSet. A machine is considered ready
     /// when the node has been created and is "Ready". It is transferred as-is from the
     /// MachineSet from remote cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// Replicas is the current number of replicas for the machine set.
     pub replicas: i32,
@@ -808,3 +679,4 @@ pub struct MachinePoolStatusOwnedTaints {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
 }
+

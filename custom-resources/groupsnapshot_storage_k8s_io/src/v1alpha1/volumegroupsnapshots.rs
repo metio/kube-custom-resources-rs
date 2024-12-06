@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -13,17 +13,12 @@ use self::prelude::*;
 /// Spec defines the desired characteristics of a group snapshot requested by a user.
 /// Required.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "groupsnapshot.storage.k8s.io",
-    version = "v1alpha1",
-    kind = "VolumeGroupSnapshot",
-    plural = "volumegroupsnapshots"
-)]
+#[kube(group = "groupsnapshot.storage.k8s.io", version = "v1alpha1", kind = "VolumeGroupSnapshot", plural = "volumegroupsnapshots")]
 #[kube(namespaced)]
 #[kube(status = "VolumeGroupSnapshotStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VolumeGroupSnapshotSpec {
     /// Source specifies where a group snapshot will be created from.
     /// This field is immutable after creation.
@@ -34,11 +29,7 @@ pub struct VolumeGroupSnapshotSpec {
     /// VolumeGroupSnapshotClassName may be left nil to indicate that the default
     /// class will be used.
     /// Empty string is not allowed for this field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeGroupSnapshotClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeGroupSnapshotClassName")]
     pub volume_group_snapshot_class_name: Option<String>,
 }
 
@@ -61,11 +52,7 @@ pub struct VolumeGroupSnapshotSource {
     /// This field should be set if the volume group snapshot already exists and
     /// only needs a representation in Kubernetes.
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeGroupSnapshotContentName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeGroupSnapshotContentName")]
     pub volume_group_snapshot_content_name: Option<String>,
 }
 
@@ -79,20 +66,12 @@ pub struct VolumeGroupSnapshotSource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeGroupSnapshotSourceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<VolumeGroupSnapshotSourceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -128,11 +107,7 @@ pub struct VolumeGroupSnapshotStatus {
     /// VolumeGroupSnapshot and VolumeGroupSnapshotContent objects is successful
     /// (by validating that both VolumeGroupSnapshot and VolumeGroupSnapshotContent
     /// point at each other) before using this object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "boundVolumeGroupSnapshotContentName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "boundVolumeGroupSnapshotContentName")]
     pub bound_volume_group_snapshot_content_name: Option<String>,
     /// CreationTime is the timestamp when the point-in-time group snapshot is taken
     /// by the underlying storage system.
@@ -141,11 +116,7 @@ pub struct VolumeGroupSnapshotStatus {
     /// The format of this field is a Unix nanoseconds time encoded as an int64.
     /// On Unix, the command date +%s%N returns the current time in nanoseconds
     /// since 1970-01-01 00:00:00 UTC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     /// Error is the last observed error during group snapshot creation, if any.
     /// This field could be helpful to upper level controllers (i.e., application
@@ -158,22 +129,13 @@ pub struct VolumeGroupSnapshotStatus {
     /// VolumeSnapshotRefList is the list of PVC and VolumeSnapshot pairs that
     /// is part of this group snapshot.
     /// The maximum number of allowed snapshots in the group is 100.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvcVolumeSnapshotRefList"
-    )]
-    pub pvc_volume_snapshot_ref_list:
-        Option<Vec<VolumeGroupSnapshotStatusPvcVolumeSnapshotRefList>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcVolumeSnapshotRefList")]
+    pub pvc_volume_snapshot_ref_list: Option<Vec<VolumeGroupSnapshotStatusPvcVolumeSnapshotRefList>>,
     /// ReadyToUse indicates if all the individual snapshots in the group are ready
     /// to be used to restore a group of volumes.
     /// ReadyToUse becomes true when ReadyToUse of all individual snapshots become true.
     /// If not specified, it means the readiness of a group snapshot is unknown.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyToUse"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyToUse")]
     pub ready_to_use: Option<bool>,
 }
 
@@ -200,21 +162,11 @@ pub struct VolumeGroupSnapshotStatusError {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeGroupSnapshotStatusPvcVolumeSnapshotRefList {
     /// PersistentVolumeClaimRef is a reference to the PVC this pair is referring to
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaimRef"
-    )]
-    pub persistent_volume_claim_ref:
-        Option<VolumeGroupSnapshotStatusPvcVolumeSnapshotRefListPersistentVolumeClaimRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimRef")]
+    pub persistent_volume_claim_ref: Option<VolumeGroupSnapshotStatusPvcVolumeSnapshotRefListPersistentVolumeClaimRef>,
     /// VolumeSnapshotRef is a reference to the VolumeSnapshot this pair is referring to
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotRef"
-    )]
-    pub volume_snapshot_ref:
-        Option<VolumeGroupSnapshotStatusPvcVolumeSnapshotRefListVolumeSnapshotRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotRef")]
+    pub volume_snapshot_ref: Option<VolumeGroupSnapshotStatusPvcVolumeSnapshotRefListVolumeSnapshotRef>,
 }
 
 /// PersistentVolumeClaimRef is a reference to the PVC this pair is referring to
@@ -236,3 +188,4 @@ pub struct VolumeGroupSnapshotStatusPvcVolumeSnapshotRefListVolumeSnapshotRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

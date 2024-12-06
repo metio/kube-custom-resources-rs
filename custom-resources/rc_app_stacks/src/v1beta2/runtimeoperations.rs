@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Defines the desired state of RuntimeOperation
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "rc.app.stacks",
-    version = "v1beta2",
-    kind = "RuntimeOperation",
-    plural = "runtimeoperations"
-)]
+#[kube(group = "rc.app.stacks", version = "v1beta2", kind = "RuntimeOperation", plural = "runtimeoperations")]
 #[kube(namespaced)]
 #[kube(status = "RuntimeOperationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RuntimeOperationSpec {
     /// Command to execute. Not executed within a shell.
     pub command: Vec<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Name of the Pod to perform runtime operation on. Pod must be from the same namespace as the RuntimeOperation instance.
     #[serde(rename = "podName")]
@@ -43,3 +34,4 @@ pub struct RuntimeOperationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

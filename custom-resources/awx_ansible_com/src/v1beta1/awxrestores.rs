@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "awx.ansible.com",
-    version = "v1beta1",
-    kind = "AWXRestore",
-    plural = "awxrestores"
-)]
+#[kube(group = "awx.ansible.com", version = "v1beta1", kind = "AWXRestore", plural = "awxrestores")]
 #[kube(namespaced)]
 #[kube(status = "AWXRestoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AWXRestoreSpec {
     /// Additional labels defined on the resource, which should be propagated to child resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -130,21 +125,13 @@ pub struct AWXRestoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<AWXRestoreStatusConditions>>,
     /// Restore process complete
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreComplete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreComplete")]
     pub restore_complete: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXRestoreStatusConditions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
@@ -153,3 +140,4 @@ pub struct AWXRestoreStatusConditions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

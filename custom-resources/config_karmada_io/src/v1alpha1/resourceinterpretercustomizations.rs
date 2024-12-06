@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec describes the configuration in detail.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "config.karmada.io",
-    version = "v1alpha1",
-    kind = "ResourceInterpreterCustomization",
-    plural = "resourceinterpretercustomizations"
-)]
+#[kube(group = "config.karmada.io", version = "v1alpha1", kind = "ResourceInterpreterCustomization", plural = "resourceinterpretercustomizations")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ResourceInterpreterCustomizationSpec {
     /// Customizations describe the interpretation rules.
     pub customizations: ResourceInterpreterCustomizationCustomizations,
@@ -35,22 +30,12 @@ pub struct ResourceInterpreterCustomizationCustomizations {
     /// Karmada provides built-in rules for several standard Kubernetes types, see:
     /// https://karmada.io/docs/userguide/globalview/customizing-resource-interpreter/#interpretdependency
     /// If DependencyInterpretation is set, the built-in rules will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dependencyInterpretation"
-    )]
-    pub dependency_interpretation:
-        Option<ResourceInterpreterCustomizationCustomizationsDependencyInterpretation>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependencyInterpretation")]
+    pub dependency_interpretation: Option<ResourceInterpreterCustomizationCustomizationsDependencyInterpretation>,
     /// HealthInterpretation describes the health assessment rules by which Karmada
     /// can assess the health state of the resource type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthInterpretation"
-    )]
-    pub health_interpretation:
-        Option<ResourceInterpreterCustomizationCustomizationsHealthInterpretation>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthInterpretation")]
+    pub health_interpretation: Option<ResourceInterpreterCustomizationCustomizationsHealthInterpretation>,
     /// ReplicaResource describes the rules for Karmada to discover the resource's
     /// replica as well as resource requirements.
     /// It would be useful for those CRD resources that declare workload types like
@@ -58,11 +43,7 @@ pub struct ResourceInterpreterCustomizationCustomizations {
     /// It is usually not needed for Kubernetes native resources(Deployment, Job) as
     /// Karmada knows how to discover info from them. But if it is set, the built-in
     /// discovery rules will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaResource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaResource")]
     pub replica_resource: Option<ResourceInterpreterCustomizationCustomizationsReplicaResource>,
     /// ReplicaRevision describes the rules for Karmada to revise the resource's replica.
     /// It would be useful for those CRD resources that declare workload types like
@@ -70,11 +51,7 @@ pub struct ResourceInterpreterCustomizationCustomizations {
     /// It is usually not needed for Kubernetes native resources(Deployment, Job) as
     /// Karmada knows how to revise replicas for them. But if it is set, the built-in
     /// revision rules will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaRevision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaRevision")]
     pub replica_revision: Option<ResourceInterpreterCustomizationCustomizationsReplicaRevision>,
     /// Retention describes the desired behavior that Karmada should react on
     /// the changes made by member cluster components. This avoids system
@@ -90,21 +67,13 @@ pub struct ResourceInterpreterCustomizationCustomizations {
     /// Karmada provides built-in rules for several standard Kubernetes types, see:
     /// https://karmada.io/docs/userguide/globalview/customizing-resource-interpreter/#aggregatestatus
     /// If StatusAggregation is set, the built-in rules will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusAggregation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusAggregation")]
     pub status_aggregation: Option<ResourceInterpreterCustomizationCustomizationsStatusAggregation>,
     /// StatusReflection describes the rules for Karmada to pick the resource's status.
     /// Karmada provides built-in rules for several standard Kubernetes types, see:
     /// https://karmada.io/docs/userguide/globalview/customizing-resource-interpreter/#interpretstatus
     /// If StatusReflection is set, the built-in rules will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusReflection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusReflection")]
     pub status_reflection: Option<ResourceInterpreterCustomizationCustomizationsStatusReflection>,
 }
 
@@ -118,8 +87,8 @@ pub struct ResourceInterpreterCustomizationCustomizationsDependencyInterpretatio
     /// LuaScript holds the Lua script that is used to interpret the dependencies of
     /// a specific resource.
     /// The script should implement a function as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     ///   luaScript: >
     ///       function GetDependencies(desiredObj)
@@ -136,17 +105,17 @@ pub struct ResourceInterpreterCustomizationCustomizationsDependencyInterpretatio
     ///           return dependencies
     ///       end
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// The content of the LuaScript needs to be a whole function including both
     /// declaration and implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// The parameters will be supplied by the system:
     ///   - desiredObj: the object represents the configuration to be applied
     ///       to the member cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// The returned value should be expressed by a slice of DependentObjectReference.
     #[serde(rename = "luaScript")]
     pub lua_script: String,
@@ -159,8 +128,8 @@ pub struct ResourceInterpreterCustomizationCustomizationsHealthInterpretation {
     /// LuaScript holds the Lua script that is used to assess the health state of
     /// a specific resource.
     /// The script should implement a function as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     ///   luaScript: >
     ///       function InterpretHealth(observedObj)
@@ -169,17 +138,17 @@ pub struct ResourceInterpreterCustomizationCustomizationsHealthInterpretation {
     ///           end
     ///       end
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// The content of the LuaScript needs to be a whole function including both
     /// declaration and implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// The parameters will be supplied by the system:
     ///   - observedObj: the object represents the configuration that is observed
     ///       from a specific member cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// The returned boolean value indicates the health status.
     #[serde(rename = "luaScript")]
     pub lua_script: String,
@@ -196,11 +165,11 @@ pub struct ResourceInterpreterCustomizationCustomizationsHealthInterpretation {
 pub struct ResourceInterpreterCustomizationCustomizationsReplicaResource {
     /// LuaScript holds the Lua script that is used to discover the resource's
     /// replica as well as resource requirements
-    ///
-    ///
+    /// 
+    /// 
     /// The script should implement a function as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     ///   luaScript: >
     ///       function GetReplicas(desiredObj)
@@ -213,17 +182,17 @@ pub struct ResourceInterpreterCustomizationCustomizationsReplicaResource {
     ///           return replica, requirement
     ///       end
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// The content of the LuaScript needs to be a whole function including both
     /// declaration and implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// The parameters will be supplied by the system:
     ///   - desiredObj: the object represents the configuration to be applied
     ///       to the member cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// The function expects two return values:
     ///   - replica: the declared replica number
     ///   - requirement: the resource required by each replica expressed with a
@@ -243,8 +212,8 @@ pub struct ResourceInterpreterCustomizationCustomizationsReplicaResource {
 pub struct ResourceInterpreterCustomizationCustomizationsReplicaRevision {
     /// LuaScript holds the Lua script that is used to revise replicas in the desired specification.
     /// The script should implement a function as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     ///   luaScript: >
     ///       function ReviseReplica(desiredObj, desiredReplica)
@@ -252,18 +221,18 @@ pub struct ResourceInterpreterCustomizationCustomizationsReplicaRevision {
     ///           return desiredObj
     ///       end
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// The content of the LuaScript needs to be a whole function including both
     /// declaration and implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// The parameters will be supplied by the system:
     ///   - desiredObj: the object represents the configuration to be applied
     ///       to the member cluster.
     ///   - desiredReplica: the replica number should be applied with.
-    ///
-    ///
+    /// 
+    /// 
     /// The returned object should be a revised configuration which will be
     /// applied to member cluster eventually.
     #[serde(rename = "luaScript")]
@@ -281,11 +250,11 @@ pub struct ResourceInterpreterCustomizationCustomizationsReplicaRevision {
 pub struct ResourceInterpreterCustomizationCustomizationsRetention {
     /// LuaScript holds the Lua script that is used to retain runtime values
     /// to the desired specification.
-    ///
-    ///
+    /// 
+    /// 
     /// The script should implement a function as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     ///   luaScript: >
     ///       function Retain(desiredObj, observedObj)
@@ -293,19 +262,19 @@ pub struct ResourceInterpreterCustomizationCustomizationsRetention {
     ///           return desiredObj
     ///       end
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// The content of the LuaScript needs to be a whole function including both
     /// declaration and implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// The parameters will be supplied by the system:
     ///   - desiredObj: the object represents the configuration to be applied
     ///       to the member cluster.
     ///   - observedObj: the object represents the configuration that is observed
     ///       from a specific member cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// The returned object should be a retained configuration which will be
     /// applied to member cluster eventually.
     #[serde(rename = "luaScript")]
@@ -322,8 +291,8 @@ pub struct ResourceInterpreterCustomizationCustomizationsStatusAggregation {
     /// LuaScript holds the Lua script that is used to aggregate decentralized statuses
     /// to the desired specification.
     /// The script should implement a function as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     ///   luaScript: >
     ///       function AggregateStatus(desiredObj, statusItems)
@@ -333,17 +302,17 @@ pub struct ResourceInterpreterCustomizationCustomizationsStatusAggregation {
     ///           return desiredObj
     ///       end
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// The content of the LuaScript needs to be a whole function including both
     /// declaration and implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// The parameters will be supplied by the system:
     ///   - desiredObj: the object represents a resource template.
     ///   - statusItems: the slice of status expressed with AggregatedStatusItem.
-    ///
-    ///
+    /// 
+    /// 
     /// The returned object should be a whole object with status aggregated.
     #[serde(rename = "luaScript")]
     pub lua_script: String,
@@ -357,8 +326,8 @@ pub struct ResourceInterpreterCustomizationCustomizationsStatusAggregation {
 pub struct ResourceInterpreterCustomizationCustomizationsStatusReflection {
     /// LuaScript holds the Lua script that is used to get the status from the observed specification.
     /// The script should implement a function as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     ///   luaScript: >
     ///       function ReflectStatus(observedObj)
@@ -367,17 +336,17 @@ pub struct ResourceInterpreterCustomizationCustomizationsStatusReflection {
     ///           return status
     ///       end
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// The content of the LuaScript needs to be a whole function including both
     /// declaration and implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// The parameters will be supplied by the system:
     ///   - observedObj: the object represents the configuration that is observed
     ///       from a specific member cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// The returned status could be the whole status or part of it and will
     /// be set into both Work and ResourceBinding(ClusterResourceBinding).
     #[serde(rename = "luaScript")]
@@ -393,3 +362,4 @@ pub struct ResourceInterpreterCustomizationTarget {
     /// Kind represents the Kind of target resources.
     pub kind: String,
 }
+

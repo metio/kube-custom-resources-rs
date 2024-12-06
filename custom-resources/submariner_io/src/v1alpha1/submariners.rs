@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SubmarinerSpec defines the desired state of Submariner.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "submariner.io",
-    version = "v1alpha1",
-    kind = "Submariner",
-    plural = "submariners"
-)]
+#[kube(group = "submariner.io", version = "v1alpha1", kind = "Submariner", plural = "submariners")]
 #[kube(namespaced)]
 #[kube(status = "SubmarinerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SubmarinerSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "airGappedDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "airGappedDeployment")]
     pub air_gapped_deployment: Option<bool>,
     /// Type of broker (must be "k8s").
     pub broker: String,
@@ -37,84 +28,40 @@ pub struct SubmarinerSpec {
     #[serde(rename = "brokerK8sApiServer")]
     pub broker_k8s_api_server: String,
     /// The broker API Token.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerK8sApiServerToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerK8sApiServerToken")]
     pub broker_k8s_api_server_token: Option<String>,
     /// The broker certificate authority.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerK8sCA"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerK8sCA")]
     pub broker_k8s_ca: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerK8sInsecure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerK8sInsecure")]
     pub broker_k8s_insecure: Option<bool>,
     /// The Broker namespace.
     #[serde(rename = "brokerK8sRemoteNamespace")]
     pub broker_k8s_remote_namespace: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerK8sSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerK8sSecret")]
     pub broker_k8s_secret: Option<String>,
     /// Cable driver implementation - any of [libreswan, wireguard, vxlan].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cableDriver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cableDriver")]
     pub cable_driver: Option<String>,
     /// Enable logging IPsec debugging information.
     #[serde(rename = "ceIPSecDebug")]
     pub ce_ip_sec_debug: bool,
     /// Force UDP encapsulation for IPsec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ceIPSecForceUDPEncaps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ceIPSecForceUDPEncaps")]
     pub ce_ip_sec_force_udp_encaps: Option<bool>,
     /// The IPsec IKE port (500 usually).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ceIPSecIKEPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ceIPSecIKEPort")]
     pub ce_ip_sec_ike_port: Option<i64>,
     /// The IPsec NAT traversal port (4500 usually).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ceIPSecNATTPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ceIPSecNATTPort")]
     pub ce_ip_sec_natt_port: Option<i64>,
     /// The IPsec Pre-Shared Key which must be identical in all route agents across the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ceIPSecPSK"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ceIPSecPSK")]
     pub ce_ip_sec_psk: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ceIPSecPSKSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ceIPSecPSKSecret")]
     pub ce_ip_sec_psk_secret: Option<String>,
     /// Enable this cluster as a preferred server for data-plane connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ceIPSecPreferredServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ceIPSecPreferredServer")]
     pub ce_ip_sec_preferred_server: Option<bool>,
     /// The cluster CIDR.
     #[serde(rename = "clusterCIDR")]
@@ -123,86 +70,42 @@ pub struct SubmarinerSpec {
     #[serde(rename = "clusterID")]
     pub cluster_id: String,
     /// ClustersetIP CIDR for allocating ClustersetIPs to exported services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clustersetIPCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clustersetIPCIDR")]
     pub clusterset_ipcidr: Option<String>,
     /// Enable ClustersetIP default for services exported on this cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clustersetIPEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clustersetIPEnabled")]
     pub clusterset_ip_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "colorCodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "colorCodes")]
     pub color_codes: Option<String>,
     /// The gateway connection health check.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionHealthCheck")]
     pub connection_health_check: Option<SubmarinerConnectionHealthCheck>,
     /// Name of the custom CoreDNS configmap to configure forwarding to Lighthouse. It should be in <namespace>/<name> format where <namespace> is optional and defaults to kube-system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreDNSCustomConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreDNSCustomConfig")]
     pub core_dns_custom_config: Option<SubmarinerCoreDnsCustomConfig>,
     /// List of domains to use for multi-cluster service discovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customDomains")]
     pub custom_domains: Option<Vec<String>>,
     /// Enable operator debugging.
     pub debug: bool,
     /// The Global CIDR super-net range for allocating GlobalCIDRs to each cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalCIDR")]
     pub global_cidr: Option<String>,
     /// Halt on certificate error (so the pod gets restarted).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "haltOnCertificateError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "haltOnCertificateError")]
     pub halt_on_certificate_error: Option<bool>,
     /// Override component images.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageOverrides")]
     pub image_overrides: Option<BTreeMap<String, String>>,
     /// Enable automatic Load Balancer in front of the gateways.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerEnabled")]
     pub load_balancer_enabled: Option<bool>,
     /// The namespace in which to deploy the submariner operator.
     pub namespace: String,
     /// Enable NAT between clusters.
     #[serde(rename = "natEnabled")]
     pub nat_enabled: bool,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// The image repository.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -211,11 +114,7 @@ pub struct SubmarinerSpec {
     #[serde(rename = "serviceCIDR")]
     pub service_cidr: String,
     /// Enable support for Service Discovery (Lighthouse).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceDiscoveryEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDiscoveryEnabled")]
     pub service_discovery_enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<SubmarinerTolerations>>,
@@ -231,18 +130,10 @@ pub struct SubmarinerConnectionHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// The interval at which health check pings are sent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i64>,
     /// The maximum number of packets lost at which the health checker will mark the connection as down.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPacketLossCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPacketLossCount")]
     pub max_packet_loss_count: Option<i64>,
 }
 
@@ -250,11 +141,7 @@ pub struct SubmarinerConnectionHealthCheck {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerCoreDnsCustomConfig {
     /// Name of the custom CoreDNS configmap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
     /// Namespace of the custom CoreDNS configmap.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -274,11 +161,7 @@ pub struct SubmarinerTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -288,96 +171,48 @@ pub struct SubmarinerTolerations {
 /// SubmarinerStatus defines the observed state of Submariner.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "airGappedDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "airGappedDeployment")]
     pub air_gapped_deployment: Option<bool>,
     /// The current cluster CIDR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterCIDR")]
     pub cluster_cidr: Option<String>,
     /// The current cluster ID.
     #[serde(rename = "clusterID")]
     pub cluster_id: String,
     /// The current clustersetIP CIDR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clustersetIPCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clustersetIPCIDR")]
     pub clusterset_ipcidr: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "colorCodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "colorCodes")]
     pub color_codes: Option<String>,
     /// Information about the deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentInfo")]
     pub deployment_info: Option<SubmarinerStatusDeploymentInfo>,
     /// The status of the gateway DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayDaemonSetStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayDaemonSetStatus")]
     pub gateway_daemon_set_status: Option<SubmarinerStatusGatewayDaemonSetStatus>,
     /// Status of the gateways in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateways: Option<Vec<SubmarinerStatusGateways>>,
     /// The current global CIDR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalCIDR")]
     pub global_cidr: Option<String>,
     /// The status of the Globalnet DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalnetDaemonSetStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalnetDaemonSetStatus")]
     pub globalnet_daemon_set_status: Option<SubmarinerStatusGlobalnetDaemonSetStatus>,
     /// The status of the load balancer DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerStatus")]
     pub load_balancer_status: Option<SubmarinerStatusLoadBalancerStatus>,
     /// The current NAT status.
     #[serde(rename = "natEnabled")]
     pub nat_enabled: bool,
     /// The current network plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkPlugin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPlugin")]
     pub network_plugin: Option<String>,
     /// The status of the route agent DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeAgentDaemonSetStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeAgentDaemonSetStatus")]
     pub route_agent_daemon_set_status: Option<SubmarinerStatusRouteAgentDaemonSetStatus>,
     /// The current service CIDR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceCIDR")]
     pub service_cidr: Option<String>,
     /// The image version in use by the various Submariner DaemonSets and Deployments.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -387,50 +222,25 @@ pub struct SubmarinerStatus {
 /// Information about the deployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusDeploymentInfo {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudProvider")]
     pub cloud_provider: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesType")]
     pub kubernetes_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesTypeVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesTypeVersion")]
     pub kubernetes_type_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesVersion")]
     pub kubernetes_version: Option<String>,
 }
 
 /// The status of the gateway DaemonSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGatewayDaemonSetStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastResourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastResourceVersion")]
     pub last_resource_version: Option<String>,
     #[serde(rename = "mismatchedContainerImages")]
     pub mismatched_container_images: bool,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonReadyContainerStates"
-    )]
-    pub non_ready_container_states:
-        Option<Vec<SubmarinerStatusGatewayDaemonSetStatusNonReadyContainerStates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonReadyContainerStates")]
+    pub non_ready_container_states: Option<Vec<SubmarinerStatusGatewayDaemonSetStatusNonReadyContainerStates>>,
     /// DaemonSetStatus represents the current status of a daemon set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<SubmarinerStatusGatewayDaemonSetStatusStatus>,
@@ -462,21 +272,13 @@ pub struct SubmarinerStatusGatewayDaemonSetStatusNonReadyContainerStatesRunning 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGatewayDaemonSetStatusNonReadyContainerStatesTerminated {
     /// Container's ID in the format '<type>://<container_id>'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     /// Exit status from the last termination of the container
     #[serde(rename = "exitCode")]
     pub exit_code: i32,
     /// Time at which the container last terminated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "finishedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "finishedAt")]
     pub finished_at: Option<String>,
     /// Message regarding the last termination of the container
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -507,11 +309,7 @@ pub struct SubmarinerStatusGatewayDaemonSetStatusNonReadyContainerStatesWaiting 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGatewayDaemonSetStatusStatus {
     /// Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collisionCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
     pub collision_count: Option<i32>,
     /// Represents the latest available observations of a DaemonSet's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -523,11 +321,7 @@ pub struct SubmarinerStatusGatewayDaemonSetStatusStatus {
     #[serde(rename = "desiredNumberScheduled")]
     pub desired_number_scheduled: i32,
     /// The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberAvailable")]
     pub number_available: Option<i32>,
     /// The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "numberMisscheduled")]
@@ -536,25 +330,13 @@ pub struct SubmarinerStatusGatewayDaemonSetStatusStatus {
     #[serde(rename = "numberReady")]
     pub number_ready: i32,
     /// The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberUnavailable")]
     pub number_unavailable: Option<i32>,
     /// The most recent generation observed by the daemon set controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// The total number of nodes that are running updated daemon pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedNumberScheduled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedNumberScheduled")]
     pub updated_number_scheduled: Option<i32>,
 }
 
@@ -574,11 +356,7 @@ pub struct SubmarinerStatusGateways {
 pub struct SubmarinerStatusGatewaysConnections {
     pub endpoint: SubmarinerStatusGatewaysConnectionsEndpoint,
     /// LatencySpec describes the round trip time information for a packet between the gateway pods of two clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latencyRTT"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latencyRTT")]
     pub latency_rtt: Option<SubmarinerStatusGatewaysConnectionsLatencyRtt>,
     pub status: String,
     #[serde(rename = "statusMessage")]
@@ -596,11 +374,7 @@ pub struct SubmarinerStatusGatewaysConnectionsEndpoint {
     pub backend_config: Option<BTreeMap<String, String>>,
     pub cable_name: String,
     pub cluster_id: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckIP")]
     pub health_check_ip: Option<String>,
     pub hostname: String,
     pub nat_enabled: bool,
@@ -631,11 +405,7 @@ pub struct SubmarinerStatusGatewaysLocalEndpoint {
     pub backend_config: Option<BTreeMap<String, String>>,
     pub cable_name: String,
     pub cluster_id: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckIP")]
     pub health_check_ip: Option<String>,
     pub hostname: String,
     pub nat_enabled: bool,
@@ -647,21 +417,12 @@ pub struct SubmarinerStatusGatewaysLocalEndpoint {
 /// The status of the Globalnet DaemonSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGlobalnetDaemonSetStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastResourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastResourceVersion")]
     pub last_resource_version: Option<String>,
     #[serde(rename = "mismatchedContainerImages")]
     pub mismatched_container_images: bool,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonReadyContainerStates"
-    )]
-    pub non_ready_container_states:
-        Option<Vec<SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonReadyContainerStates")]
+    pub non_ready_container_states: Option<Vec<SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStates>>,
     /// DaemonSetStatus represents the current status of a daemon set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<SubmarinerStatusGlobalnetDaemonSetStatusStatus>,
@@ -675,8 +436,7 @@ pub struct SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStates {
     pub running: Option<SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStatesRunning>,
     /// Details about a terminated container
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub terminated:
-        Option<SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStatesTerminated>,
+    pub terminated: Option<SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStatesTerminated>,
     /// Details about a waiting container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub waiting: Option<SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStatesWaiting>,
@@ -694,21 +454,13 @@ pub struct SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStatesRunnin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStatesTerminated {
     /// Container's ID in the format '<type>://<container_id>'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     /// Exit status from the last termination of the container
     #[serde(rename = "exitCode")]
     pub exit_code: i32,
     /// Time at which the container last terminated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "finishedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "finishedAt")]
     pub finished_at: Option<String>,
     /// Message regarding the last termination of the container
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -739,11 +491,7 @@ pub struct SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStatesWaitin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGlobalnetDaemonSetStatusStatus {
     /// Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collisionCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
     pub collision_count: Option<i32>,
     /// Represents the latest available observations of a DaemonSet's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -755,11 +503,7 @@ pub struct SubmarinerStatusGlobalnetDaemonSetStatusStatus {
     #[serde(rename = "desiredNumberScheduled")]
     pub desired_number_scheduled: i32,
     /// The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberAvailable")]
     pub number_available: Option<i32>,
     /// The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "numberMisscheduled")]
@@ -768,25 +512,13 @@ pub struct SubmarinerStatusGlobalnetDaemonSetStatusStatus {
     #[serde(rename = "numberReady")]
     pub number_ready: i32,
     /// The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberUnavailable")]
     pub number_unavailable: Option<i32>,
     /// The most recent generation observed by the daemon set controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// The total number of nodes that are running updated daemon pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedNumberScheduled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedNumberScheduled")]
     pub updated_number_scheduled: Option<i32>,
 }
 
@@ -834,21 +566,12 @@ pub struct SubmarinerStatusLoadBalancerStatusStatusIngressPorts {
 /// The status of the route agent DaemonSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusRouteAgentDaemonSetStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastResourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastResourceVersion")]
     pub last_resource_version: Option<String>,
     #[serde(rename = "mismatchedContainerImages")]
     pub mismatched_container_images: bool,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonReadyContainerStates"
-    )]
-    pub non_ready_container_states:
-        Option<Vec<SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonReadyContainerStates")]
+    pub non_ready_container_states: Option<Vec<SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStates>>,
     /// DaemonSetStatus represents the current status of a daemon set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<SubmarinerStatusRouteAgentDaemonSetStatusStatus>,
@@ -862,8 +585,7 @@ pub struct SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStates {
     pub running: Option<SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStatesRunning>,
     /// Details about a terminated container
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub terminated:
-        Option<SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStatesTerminated>,
+    pub terminated: Option<SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStatesTerminated>,
     /// Details about a waiting container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub waiting: Option<SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStatesWaiting>,
@@ -881,21 +603,13 @@ pub struct SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStatesRunni
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStatesTerminated {
     /// Container's ID in the format '<type>://<container_id>'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     /// Exit status from the last termination of the container
     #[serde(rename = "exitCode")]
     pub exit_code: i32,
     /// Time at which the container last terminated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "finishedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "finishedAt")]
     pub finished_at: Option<String>,
     /// Message regarding the last termination of the container
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -926,11 +640,7 @@ pub struct SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStatesWaiti
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusRouteAgentDaemonSetStatusStatus {
     /// Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collisionCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
     pub collision_count: Option<i32>,
     /// Represents the latest available observations of a DaemonSet's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -942,11 +652,7 @@ pub struct SubmarinerStatusRouteAgentDaemonSetStatusStatus {
     #[serde(rename = "desiredNumberScheduled")]
     pub desired_number_scheduled: i32,
     /// The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberAvailable")]
     pub number_available: Option<i32>,
     /// The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "numberMisscheduled")]
@@ -955,24 +661,13 @@ pub struct SubmarinerStatusRouteAgentDaemonSetStatusStatus {
     #[serde(rename = "numberReady")]
     pub number_ready: i32,
     /// The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberUnavailable")]
     pub number_unavailable: Option<i32>,
     /// The most recent generation observed by the daemon set controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// The total number of nodes that are running updated daemon pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedNumberScheduled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedNumberScheduled")]
     pub updated_number_scheduled: Option<i32>,
 }
+

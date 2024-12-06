@@ -4,44 +4,35 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired behavior of the Prometheus agent. More info:
 /// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "monitoring.coreos.com",
-    version = "v1alpha1",
-    kind = "PrometheusAgent",
-    plural = "prometheusagents"
-)]
+#[kube(group = "monitoring.coreos.com", version = "v1alpha1", kind = "PrometheusAgent", plural = "prometheusagents")]
 #[kube(namespaced)]
 #[kube(status = "PrometheusAgentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PrometheusAgentSpec {
     /// AdditionalArgs allows setting additional arguments for the 'prometheus' container.
-    ///
+    /// 
     /// It is intended for e.g. activating hidden flags which are not supported by
     /// the dedicated configuration options yet. The arguments are passed as-is to the
     /// Prometheus container which may cause issues if they are invalid or not supported
     /// by the given Prometheus version.
-    ///
+    /// 
     /// In case of an argument conflict (e.g. an argument which is already set by the
     /// operator itself) or when providing an invalid argument, the reconciliation will
     /// fail and an error will be logged.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalArgs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalArgs")]
     pub additional_args: Option<Vec<PrometheusAgentAdditionalArgs>>,
     /// AdditionalScrapeConfigs allows specifying a key of a Secret containing
     /// additional Prometheus scrape configurations. Scrape configurations
@@ -54,11 +45,7 @@ pub struct PrometheusAgentSpec {
     /// break upgrades of Prometheus. It is advised to review Prometheus release
     /// notes to ensure that no incompatible scrape configs are going to break
     /// Prometheus after the upgrade.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalScrapeConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalScrapeConfigs")]
     pub additional_scrape_configs: Option<PrometheusAgentAdditionalScrapeConfigs>,
     /// Defines the Pods' affinity scheduling rules if specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -68,11 +55,7 @@ pub struct PrometheusAgentSpec {
     /// If null, Prometheus is assumed to run inside of the cluster: it will
     /// discover the API servers automatically and use the Pod's CA certificate
     /// and bearer token file at /var/run/secrets/kubernetes.io/serviceaccount/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiserverConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiserverConfig")]
     pub apiserver_config: Option<PrometheusAgentApiserverConfig>,
     /// When true, ServiceMonitor, PodMonitor and Probe object are forbidden to
     /// reference arbitrary files on the file system of the 'prometheus'
@@ -84,43 +67,27 @@ pub struct PrometheusAgentSpec {
     /// `spec.arbitraryFSAccessThroughSM` to 'true' would prevent the attack.
     /// Users should instead provide the credentials using the
     /// `spec.bearerTokenSecret` field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "arbitraryFSAccessThroughSMs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "arbitraryFSAccessThroughSMs")]
     pub arbitrary_fs_access_through_s_ms: Option<PrometheusAgentArbitraryFsAccessThroughSMs>,
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted in the pod.
     /// If the field isn't set, the operator mounts the service account token by default.
-    ///
+    /// 
     /// **Warning:** be aware that by default, Prometheus requires the service account token for Kubernetes service discovery.
     /// It is possible to use strategic merge patch to project the service account token into the 'prometheus' container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     /// BodySizeLimit defines per-scrape on response body size.
     /// Only valid in Prometheus versions 2.45.0 and newer.
-    ///
+    /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedBodySizeLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bodySizeLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodySizeLimit")]
     pub body_size_limit: Option<String>,
     /// ConfigMaps is a list of ConfigMaps in the same namespace as the Prometheus
     /// object, which shall be mounted into the Prometheus Pods.
     /// Each ConfigMap is added to the StatefulSet definition as a volume named `configmap-<configmap-name>`.
     /// The ConfigMaps are mounted into /etc/prometheus/configmaps/<configmap-name> in the 'prometheus' container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMaps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMaps")]
     pub config_maps: Option<Vec<String>>,
     /// Containers allows injecting additional containers or modifying operator
     /// generated containers. This can be used to allow adding an authentication
@@ -128,12 +95,12 @@ pub struct PrometheusAgentSpec {
     /// container. Containers described here modify an operator generated
     /// container if they share the same name and modifications are done via a
     /// strategic merge patch.
-    ///
+    /// 
     /// The names of containers managed by the operator are:
     /// * `prometheus`
     /// * `config-reloader`
     /// * `thanos-sidecar`
-    ///
+    /// 
     /// Overriding containers is entirely outside the scope of what the
     /// maintainers will support and by doing so, you accept that this behaviour
     /// may break at any time without notice.
@@ -146,249 +113,185 @@ pub struct PrometheusAgentSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<PrometheusAgentDnsPolicy>,
     /// Enable access to Prometheus feature flags. By default, no features are enabled.
-    ///
+    /// 
     /// Enabling features which are disabled by default is entirely outside the
     /// scope of what the maintainers will support and by doing so, you accept
     /// that this behaviour may break at any time without notice.
-    ///
+    /// 
     /// For more information see https://prometheus.io/docs/prometheus/latest/feature_flags/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableFeatures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFeatures")]
     pub enable_features: Option<Vec<String>>,
     /// Enable Prometheus to be used as a receiver for the Prometheus remote
     /// write protocol.
-    ///
+    /// 
     /// WARNING: This is not considered an efficient way of ingesting samples.
     /// Use it with caution for specific low-volume use cases.
     /// It is not suitable for replacing the ingestion via scraping and turning
     /// Prometheus into a push-based metrics collection system.
     /// For more information see https://prometheus.io/docs/prometheus/latest/querying/api/#remote-write-receiver
-    ///
+    /// 
     /// It requires Prometheus >= v2.33.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableRemoteWriteReceiver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRemoteWriteReceiver")]
     pub enable_remote_write_receiver: Option<bool>,
     /// When defined, enforcedBodySizeLimit specifies a global limit on the size
     /// of uncompressed response body that will be accepted by Prometheus.
     /// Targets responding with a body larger than this many bytes will cause
     /// the scrape to fail.
-    ///
+    /// 
     /// It requires Prometheus >= v2.28.0.
-    ///
+    /// 
     /// When both `enforcedBodySizeLimit` and `bodySizeLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined bodySizeLimit value will inherit the global bodySizeLimit value (Prometheus >= 2.45.0) or the enforcedBodySizeLimit value (Prometheus < v2.45.0).
     ///   If Prometheus version is >= 2.45.0 and the `enforcedBodySizeLimit` is greater than the `bodySizeLimit`, the `bodySizeLimit` will be set to `enforcedBodySizeLimit`.
     /// * Scrape objects with a bodySizeLimit value less than or equal to enforcedBodySizeLimit keep their specific value.
     /// * Scrape objects with a bodySizeLimit value greater than enforcedBodySizeLimit are set to enforcedBodySizeLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enforcedBodySizeLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedBodySizeLimit")]
     pub enforced_body_size_limit: Option<String>,
     /// When defined, enforcedKeepDroppedTargets specifies a global limit on the number of targets
     /// dropped by relabeling that will be kept in memory. The value overrides
     /// any `spec.keepDroppedTargets` set by
     /// ServiceMonitor, PodMonitor, Probe objects unless `spec.keepDroppedTargets` is
     /// greater than zero and less than `spec.enforcedKeepDroppedTargets`.
-    ///
+    /// 
     /// It requires Prometheus >= v2.47.0.
-    ///
+    /// 
     /// When both `enforcedKeepDroppedTargets` and `keepDroppedTargets` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined keepDroppedTargets value will inherit the global keepDroppedTargets value (Prometheus >= 2.45.0) or the enforcedKeepDroppedTargets value (Prometheus < v2.45.0).
     ///   If Prometheus version is >= 2.45.0 and the `enforcedKeepDroppedTargets` is greater than the `keepDroppedTargets`, the `keepDroppedTargets` will be set to `enforcedKeepDroppedTargets`.
     /// * Scrape objects with a keepDroppedTargets value less than or equal to enforcedKeepDroppedTargets keep their specific value.
     /// * Scrape objects with a keepDroppedTargets value greater than enforcedKeepDroppedTargets are set to enforcedKeepDroppedTargets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enforcedKeepDroppedTargets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedKeepDroppedTargets")]
     pub enforced_keep_dropped_targets: Option<i64>,
     /// When defined, enforcedLabelLimit specifies a global limit on the number
     /// of labels per sample. The value overrides any `spec.labelLimit` set by
     /// ServiceMonitor, PodMonitor, Probe objects unless `spec.labelLimit` is
     /// greater than zero and less than `spec.enforcedLabelLimit`.
-    ///
+    /// 
     /// It requires Prometheus >= v2.27.0.
-    ///
+    /// 
     /// When both `enforcedLabelLimit` and `labelLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined labelLimit value will inherit the global labelLimit value (Prometheus >= 2.45.0) or the enforcedLabelLimit value (Prometheus < v2.45.0).
     ///   If Prometheus version is >= 2.45.0 and the `enforcedLabelLimit` is greater than the `labelLimit`, the `labelLimit` will be set to `enforcedLabelLimit`.
     /// * Scrape objects with a labelLimit value less than or equal to enforcedLabelLimit keep their specific value.
     /// * Scrape objects with a labelLimit value greater than enforcedLabelLimit are set to enforcedLabelLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enforcedLabelLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedLabelLimit")]
     pub enforced_label_limit: Option<i64>,
     /// When defined, enforcedLabelNameLengthLimit specifies a global limit on the length
     /// of labels name per sample. The value overrides any `spec.labelNameLengthLimit` set by
     /// ServiceMonitor, PodMonitor, Probe objects unless `spec.labelNameLengthLimit` is
     /// greater than zero and less than `spec.enforcedLabelNameLengthLimit`.
-    ///
+    /// 
     /// It requires Prometheus >= v2.27.0.
-    ///
+    /// 
     /// When both `enforcedLabelNameLengthLimit` and `labelNameLengthLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined labelNameLengthLimit value will inherit the global labelNameLengthLimit value (Prometheus >= 2.45.0) or the enforcedLabelNameLengthLimit value (Prometheus < v2.45.0).
     ///   If Prometheus version is >= 2.45.0 and the `enforcedLabelNameLengthLimit` is greater than the `labelNameLengthLimit`, the `labelNameLengthLimit` will be set to `enforcedLabelNameLengthLimit`.
     /// * Scrape objects with a labelNameLengthLimit value less than or equal to enforcedLabelNameLengthLimit keep their specific value.
     /// * Scrape objects with a labelNameLengthLimit value greater than enforcedLabelNameLengthLimit are set to enforcedLabelNameLengthLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enforcedLabelNameLengthLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedLabelNameLengthLimit")]
     pub enforced_label_name_length_limit: Option<i64>,
     /// When not null, enforcedLabelValueLengthLimit defines a global limit on the length
     /// of labels value per sample. The value overrides any `spec.labelValueLengthLimit` set by
     /// ServiceMonitor, PodMonitor, Probe objects unless `spec.labelValueLengthLimit` is
     /// greater than zero and less than `spec.enforcedLabelValueLengthLimit`.
-    ///
+    /// 
     /// It requires Prometheus >= v2.27.0.
-    ///
+    /// 
     /// When both `enforcedLabelValueLengthLimit` and `labelValueLengthLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined labelValueLengthLimit value will inherit the global labelValueLengthLimit value (Prometheus >= 2.45.0) or the enforcedLabelValueLengthLimit value (Prometheus < v2.45.0).
     ///   If Prometheus version is >= 2.45.0 and the `enforcedLabelValueLengthLimit` is greater than the `labelValueLengthLimit`, the `labelValueLengthLimit` will be set to `enforcedLabelValueLengthLimit`.
     /// * Scrape objects with a labelValueLengthLimit value less than or equal to enforcedLabelValueLengthLimit keep their specific value.
     /// * Scrape objects with a labelValueLengthLimit value greater than enforcedLabelValueLengthLimit are set to enforcedLabelValueLengthLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enforcedLabelValueLengthLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedLabelValueLengthLimit")]
     pub enforced_label_value_length_limit: Option<i64>,
     /// When not empty, a label will be added to:
-    ///
+    /// 
     /// 1. All metrics scraped from `ServiceMonitor`, `PodMonitor`, `Probe` and `ScrapeConfig` objects.
     /// 2. All metrics generated from recording rules defined in `PrometheusRule` objects.
     /// 3. All alerts generated from alerting rules defined in `PrometheusRule` objects.
     /// 4. All vector selectors of PromQL expressions defined in `PrometheusRule` objects.
-    ///
+    /// 
     /// The label will not added for objects referenced in `spec.excludedFromEnforcement`.
-    ///
+    /// 
     /// The label's name is this field's value.
     /// The label's value is the namespace of the `ServiceMonitor`,
     /// `PodMonitor`, `Probe`, `PrometheusRule` or `ScrapeConfig` object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enforcedNamespaceLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedNamespaceLabel")]
     pub enforced_namespace_label: Option<String>,
     /// When defined, enforcedSampleLimit specifies a global limit on the number
     /// of scraped samples that will be accepted. This overrides any
     /// `spec.sampleLimit` set by ServiceMonitor, PodMonitor, Probe objects
     /// unless `spec.sampleLimit` is greater than zero and less than
     /// `spec.enforcedSampleLimit`.
-    ///
+    /// 
     /// It is meant to be used by admins to keep the overall number of
     /// samples/series under a desired limit.
-    ///
+    /// 
     /// When both `enforcedSampleLimit` and `sampleLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined sampleLimit value will inherit the global sampleLimit value (Prometheus >= 2.45.0) or the enforcedSampleLimit value (Prometheus < v2.45.0).
     ///   If Prometheus version is >= 2.45.0 and the `enforcedSampleLimit` is greater than the `sampleLimit`, the `sampleLimit` will be set to `enforcedSampleLimit`.
     /// * Scrape objects with a sampleLimit value less than or equal to enforcedSampleLimit keep their specific value.
     /// * Scrape objects with a sampleLimit value greater than enforcedSampleLimit are set to enforcedSampleLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enforcedSampleLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedSampleLimit")]
     pub enforced_sample_limit: Option<i64>,
     /// When defined, enforcedTargetLimit specifies a global limit on the number
     /// of scraped targets. The value overrides any `spec.targetLimit` set by
     /// ServiceMonitor, PodMonitor, Probe objects unless `spec.targetLimit` is
     /// greater than zero and less than `spec.enforcedTargetLimit`.
-    ///
+    /// 
     /// It is meant to be used by admins to to keep the overall number of
     /// targets under a desired limit.
-    ///
+    /// 
     /// When both `enforcedTargetLimit` and `targetLimit` are defined and greater than zero, the following rules apply:
     /// * Scrape objects without a defined targetLimit value will inherit the global targetLimit value (Prometheus >= 2.45.0) or the enforcedTargetLimit value (Prometheus < v2.45.0).
     ///   If Prometheus version is >= 2.45.0 and the `enforcedTargetLimit` is greater than the `targetLimit`, the `targetLimit` will be set to `enforcedTargetLimit`.
     /// * Scrape objects with a targetLimit value less than or equal to enforcedTargetLimit keep their specific value.
     /// * Scrape objects with a targetLimit value greater than enforcedTargetLimit are set to enforcedTargetLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enforcedTargetLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcedTargetLimit")]
     pub enforced_target_limit: Option<i64>,
     /// List of references to PodMonitor, ServiceMonitor, Probe and PrometheusRule objects
     /// to be excluded from enforcing a namespace label of origin.
-    ///
+    /// 
     /// It is only applicable if `spec.enforcedNamespaceLabel` set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedFromEnforcement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedFromEnforcement")]
     pub excluded_from_enforcement: Option<Vec<PrometheusAgentExcludedFromEnforcement>>,
     /// The labels to add to any time series or alerts when communicating with
     /// external systems (federation, remote storage, Alertmanager).
     /// Labels defined by `spec.replicaExternalLabelName` and
     /// `spec.prometheusExternalLabelName` take precedence over this list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalLabels")]
     pub external_labels: Option<BTreeMap<String, String>>,
     /// The external URL under which the Prometheus service is externally
     /// available. This is necessary to generate correct URLs (for instance if
     /// Prometheus is accessible behind an Ingress resource).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalUrl")]
     pub external_url: Option<String>,
     /// Optional list of hosts and IPs that will be injected into the Pod's
     /// hosts file if specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<PrometheusAgentHostAliases>>,
     /// Use the host's network namespace if true.
-    ///
+    /// 
     /// Make sure to understand the security implications if you want to enable
     /// it (https://kubernetes.io/docs/concepts/configuration/overview/).
-    ///
+    /// 
     /// When hostNetwork is enabled, this will set the DNS policy to
     /// `ClusterFirstWithHostNet` automatically (unless `.spec.DNSPolicy` is set
     /// to a different value).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// When true, `spec.namespaceSelector` from all PodMonitor, ServiceMonitor
     /// and Probe objects will be ignored. They will only discover targets
     /// within the namespace of the PodMonitor, ServiceMonitor and Probe
     /// object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreNamespaceSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreNamespaceSelectors")]
     pub ignore_namespace_selectors: Option<bool>,
     /// Container image name for Prometheus. If specified, it takes precedence
     /// over the `spec.baseImage`, `spec.tag` and `spec.sha` fields.
-    ///
+    /// 
     /// Specifying `spec.version` is still necessary to ensure the Prometheus
     /// Operator knows which version of Prometheus is being configured.
-    ///
+    /// 
     /// If neither `spec.image` nor `spec.baseImage` are defined, the operator
     /// will use the latest upstream version of Prometheus available at the time
     /// when the operator was released.
@@ -396,20 +299,12 @@ pub struct PrometheusAgentSpec {
     pub image: Option<String>,
     /// Image pull policy for the 'prometheus', 'init-config-reloader' and 'config-reloader' containers.
     /// See https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<PrometheusAgentImagePullPolicy>,
     /// An optional list of references to Secrets in the same namespace
     /// to use for pulling images from registries.
     /// See http://kubernetes.io/docs/user-guide/images#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<PrometheusAgentImagePullSecrets>>,
     /// InitContainers allows injecting initContainers to the Pod definition. Those
     /// can be used to e.g.  fetch secrets for injection into the Prometheus
@@ -419,72 +314,48 @@ pub struct PrometheusAgentSpec {
     /// InitContainers described here modify an operator generated init
     /// containers if they share the same name and modifications are done via a
     /// strategic merge patch.
-    ///
+    /// 
     /// The names of init container name managed by the operator are:
     /// * `init-config-reloader`.
-    ///
+    /// 
     /// Overriding init containers is entirely outside the scope of what the
     /// maintainers will support and by doing so, you accept that this behaviour
     /// may break at any time without notice.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<PrometheusAgentInitContainers>>,
     /// Per-scrape limit on the number of targets dropped by relabeling
     /// that will be kept in memory. 0 means no limit.
-    ///
+    /// 
     /// It requires Prometheus >= v2.47.0.
-    ///
+    /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedKeepDroppedTargets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepDroppedTargets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepDroppedTargets")]
     pub keep_dropped_targets: Option<i64>,
     /// Per-scrape limit on number of labels that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.45.0 and newer.
-    ///
+    /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedLabelLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelLimit")]
     pub label_limit: Option<i64>,
     /// Per-scrape limit on length of labels name that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.45.0 and newer.
-    ///
+    /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedLabelNameLengthLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelNameLengthLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelNameLengthLimit")]
     pub label_name_length_limit: Option<i64>,
     /// Per-scrape limit on length of labels value that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.45.0 and newer.
-    ///
+    /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedLabelValueLengthLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelValueLengthLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelValueLengthLimit")]
     pub label_value_length_limit: Option<i64>,
     /// When true, the Prometheus server listens on the loopback address
     /// instead of the Pod IP's address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenLocal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenLocal")]
     pub listen_local: Option<bool>,
     /// Log format for Log level for Prometheus and the config-reloader sidecar.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
@@ -494,36 +365,24 @@ pub struct PrometheusAgentSpec {
     pub log_level: Option<PrometheusAgentLogLevel>,
     /// Defines the maximum time that the `prometheus` container's startup probe will wait before being considered failed. The startup probe will return success after the WAL replay is complete.
     /// If set, the value should be greater than 60 (seconds). Otherwise it will be equal to 600 seconds (15 minutes).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumStartupDurationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumStartupDurationSeconds")]
     pub maximum_startup_duration_seconds: Option<i32>,
     /// Minimum number of seconds for which a newly created Pod should be ready
     /// without any of its container crashing for it to be considered available.
     /// Defaults to 0 (pod will be considered available as soon as it is ready)
-    ///
+    /// 
     /// This is an alpha field from kubernetes 1.22 until 1.24 which requires
     /// enabling the StatefulSetMinReadySeconds feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Mode defines how the Prometheus operator deploys the PrometheusAgent pod(s).
     /// For now this field has no effect.
-    ///
+    /// 
     /// (Alpha) Using this field requires the `PrometheusAgentDaemonSet` feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<PrometheusAgentMode>,
     /// Defines on which Nodes the Pods are scheduled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Settings related to the OTLP receiver feature.
     /// It requires Prometheus >= v2.55.0.
@@ -534,20 +393,12 @@ pub struct PrometheusAgentSpec {
     /// ScrapeConfig objects. Otherwise the HonorLabels field of the service or pod monitor applies.
     /// In practice,`overrideHonorLaels:true` enforces `honorLabels:false`
     /// for all ServiceMonitor, PodMonitor and ScrapeConfig objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overrideHonorLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overrideHonorLabels")]
     pub override_honor_labels: Option<bool>,
     /// When true, Prometheus ignores the timestamps for all the targets created
     /// from service and pod monitors.
     /// Otherwise the HonorTimestamps field of the service or pod monitor applies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overrideHonorTimestamps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overrideHonorTimestamps")]
     pub override_honor_timestamps: Option<bool>,
     /// When a Prometheus deployment is paused, no actions except for deletion
     /// will be performed on the underlying objects.
@@ -557,15 +408,10 @@ pub struct PrometheusAgentSpec {
     /// The default behavior is all PVCs are retained.
     /// This is an alpha field from kubernetes 1.23 until 1.26 and a beta field from 1.26.
     /// It requires enabling the StatefulSetAutoDeletePVC feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaimRetentionPolicy"
-    )]
-    pub persistent_volume_claim_retention_policy:
-        Option<PrometheusAgentPersistentVolumeClaimRetentionPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimRetentionPolicy")]
+    pub persistent_volume_claim_retention_policy: Option<PrometheusAgentPersistentVolumeClaimRetentionPolicy>,
     /// PodMetadata configures labels and annotations which are propagated to the Prometheus pods.
-    ///
+    /// 
     /// The following items are reserved and cannot be overridden:
     /// * "prometheus" label, set to the name of the Prometheus object.
     /// * "app.kubernetes.io/instance" label, set to the name of the Prometheus object.
@@ -575,24 +421,16 @@ pub struct PrometheusAgentSpec {
     /// * "operator.prometheus.io/name" label, set to the name of the Prometheus object.
     /// * "operator.prometheus.io/shard" label, set to the shard number of the Prometheus object.
     /// * "kubectl.kubernetes.io/default-container" annotation, set to "prometheus".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<PrometheusAgentPodMetadata>,
     /// Namespaces to match for PodMonitors discovery. An empty label selector
     /// matches all namespaces. A null label selector (default value) matches the current
     /// namespace only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMonitorNamespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMonitorNamespaceSelector")]
     pub pod_monitor_namespace_selector: Option<PrometheusAgentPodMonitorNamespaceSelector>,
     /// PodMonitors to be selected for target discovery. An empty label selector
     /// matches all objects. A null label selector matches no objects.
-    ///
+    /// 
     /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
     /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
     /// The Prometheus operator will ensure that the Prometheus configuration's
@@ -601,43 +439,27 @@ pub struct PrometheusAgentSpec {
     /// This behavior is *deprecated* and will be removed in the next major version
     /// of the custom resource definition. It is recommended to use
     /// `spec.additionalScrapeConfigs` instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMonitorSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMonitorSelector")]
     pub pod_monitor_selector: Option<PrometheusAgentPodMonitorSelector>,
     /// PodTargetLabels are appended to the `spec.podTargetLabels` field of all
     /// PodMonitor and ServiceMonitor objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podTargetLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTargetLabels")]
     pub pod_target_labels: Option<Vec<String>>,
     /// Port name used for the pods and governing service.
     /// Default: "web"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
     pub port_name: Option<String>,
     /// Priority class assigned to the Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Namespaces to match for Probe discovery. An empty label
     /// selector matches all namespaces. A null label selector matches the
     /// current namespace only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "probeNamespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probeNamespaceSelector")]
     pub probe_namespace_selector: Option<PrometheusAgentProbeNamespaceSelector>,
     /// Probes to be selected for target discovery. An empty label selector
     /// matches all objects. A null label selector matches no objects.
-    ///
+    /// 
     /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
     /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
     /// The Prometheus operator will ensure that the Prometheus configuration's
@@ -646,63 +468,39 @@ pub struct PrometheusAgentSpec {
     /// This behavior is *deprecated* and will be removed in the next major version
     /// of the custom resource definition. It is recommended to use
     /// `spec.additionalScrapeConfigs` instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "probeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probeSelector")]
     pub probe_selector: Option<PrometheusAgentProbeSelector>,
     /// Name of Prometheus external label used to denote the Prometheus instance
     /// name. The external label will _not_ be added when the field is set to
     /// the empty string (`""`).
-    ///
+    /// 
     /// Default: "prometheus"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prometheusExternalLabelName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusExternalLabelName")]
     pub prometheus_external_label_name: Option<String>,
     /// Defines the strategy used to reload the Prometheus configuration.
     /// If not specified, the configuration is reloaded using the /-/reload HTTP endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reloadStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadStrategy")]
     pub reload_strategy: Option<PrometheusAgentReloadStrategy>,
     /// Defines the list of remote write configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteWrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteWrite")]
     pub remote_write: Option<Vec<PrometheusAgentRemoteWrite>>,
     /// List of the protobuf message versions to accept when receiving the
     /// remote writes.
-    ///
+    /// 
     /// It requires Prometheus >= v2.54.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteWriteReceiverMessageVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteWriteReceiverMessageVersions")]
     pub remote_write_receiver_message_versions: Option<Vec<String>>,
     /// Name of Prometheus external label used to denote the replica name.
     /// The external label will _not_ be added when the field is set to the
     /// empty string (`""`).
-    ///
+    /// 
     /// Default: "prometheus_replica"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaExternalLabelName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaExternalLabelName")]
     pub replica_external_label_name: Option<String>,
     /// Number of replicas of each shard to deploy for a Prometheus deployment.
     /// `spec.replicas` multiplied by `spec.shards` is the total number of Pods
     /// created.
-    ///
+    /// 
     /// Default: 1
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
@@ -710,53 +508,37 @@ pub struct PrometheusAgentSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PrometheusAgentResources>,
     /// The route prefix Prometheus registers HTTP handlers for.
-    ///
+    /// 
     /// This is useful when using `spec.externalURL`, and a proxy is rewriting
     /// HTTP routes of a request, and the actual ExternalURL is still true, but
     /// the server serves requests under a different route prefix. For example
     /// for use with `kubectl proxy`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routePrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routePrefix")]
     pub route_prefix: Option<String>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
     /// Only valid in Prometheus versions 2.45.0 and newer.
-    ///
+    /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedSampleLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// List of scrape classes to expose to scraping objects such as
     /// PodMonitors, ServiceMonitors, Probes and ScrapeConfigs.
-    ///
+    /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClasses")]
     pub scrape_classes: Option<Vec<PrometheusAgentScrapeClasses>>,
     /// Namespaces to match for ScrapeConfig discovery. An empty label selector
     /// matches all namespaces. A null label selector matches the current
     /// namespace only.
-    ///
+    /// 
     /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeConfigNamespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigNamespaceSelector")]
     pub scrape_config_namespace_selector: Option<PrometheusAgentScrapeConfigNamespaceSelector>,
     /// ScrapeConfigs to be selected for target discovery. An empty label
     /// selector matches all objects. A null label selector matches no objects.
-    ///
+    /// 
     /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
     /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
     /// The Prometheus operator will ensure that the Prometheus configuration's
@@ -765,41 +547,25 @@ pub struct PrometheusAgentSpec {
     /// This behavior is *deprecated* and will be removed in the next major version
     /// of the custom resource definition. It is recommended to use
     /// `spec.additionalScrapeConfigs` instead.
-    ///
+    /// 
     /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeConfigSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigSelector")]
     pub scrape_config_selector: Option<PrometheusAgentScrapeConfigSelector>,
     /// Interval between consecutive scrapes.
-    ///
+    /// 
     /// Default: "30s"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
     /// The protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
-    ///
+    /// 
     /// If unset, Prometheus uses its default value.
-    ///
+    /// 
     /// It requires Prometheus >= v2.49.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeProtocols"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
     pub scrape_protocols: Option<Vec<String>>,
     /// Number of seconds to wait until a scrape request times out.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
     /// Secrets is a list of Secrets in the same namespace as the Prometheus
     /// object, which shall be mounted into the Prometheus Pods.
@@ -809,43 +575,27 @@ pub struct PrometheusAgentSpec {
     pub secrets: Option<Vec<String>>,
     /// SecurityContext holds pod-level security attributes and common container settings.
     /// This defaults to the default PodSecurityContext.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<PrometheusAgentSecurityContext>,
     /// ServiceAccountName is the name of the ServiceAccount to use to run the
     /// Prometheus Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Defines the service discovery role used to discover targets from
     /// `ServiceMonitor` objects and Alertmanager endpoints.
-    ///
+    /// 
     /// If set, the value should be either "Endpoints" or "EndpointSlice".
     /// If unset, the operator assumes the "Endpoints" role.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceDiscoveryRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDiscoveryRole")]
     pub service_discovery_role: Option<PrometheusAgentServiceDiscoveryRole>,
     /// Namespaces to match for ServicedMonitors discovery. An empty label selector
     /// matches all namespaces. A null label selector (default value) matches the current
     /// namespace only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceMonitorNamespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitorNamespaceSelector")]
     pub service_monitor_namespace_selector: Option<PrometheusAgentServiceMonitorNamespaceSelector>,
     /// ServiceMonitors to be selected for target discovery. An empty label
     /// selector matches all objects. A null label selector matches no objects.
-    ///
+    /// 
     /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
     /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
     /// The Prometheus operator will ensure that the Prometheus configuration's
@@ -854,24 +604,20 @@ pub struct PrometheusAgentSpec {
     /// This behavior is *deprecated* and will be removed in the next major version
     /// of the custom resource definition. It is recommended to use
     /// `spec.additionalScrapeConfigs` instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceMonitorSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitorSelector")]
     pub service_monitor_selector: Option<PrometheusAgentServiceMonitorSelector>,
     /// Number of shards to distribute targets onto. `spec.replicas`
     /// multiplied by `spec.shards` is the total number of Pods created.
-    ///
+    /// 
     /// Note that scaling down shards will not reshard data onto remaining
     /// instances, it must be manually moved. Increasing shards will not reshard
     /// data either but it will continue to be available from the same
     /// instances. To query globally, use Thanos sidecar and Thanos querier or
     /// remote write data to a central location.
-    ///
+    /// 
     /// Sharding is performed on the content of the `__address__` target meta-label
     /// for PodMonitors and ServiceMonitors and `__param_target__` for Probes.
-    ///
+    /// 
     /// Default: 1
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shards: Option<i32>,
@@ -880,34 +626,22 @@ pub struct PrometheusAgentSpec {
     pub storage: Option<PrometheusAgentStorage>,
     /// TargetLimit defines a limit on the number of scraped targets that will be accepted.
     /// Only valid in Prometheus versions 2.45.0 and newer.
-    ///
+    /// 
     /// Note that the global limit only applies to scrape objects that don't specify an explicit limit value.
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedTargetLimit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLimit")]
     pub target_limit: Option<i64>,
     /// Defines the Pods' tolerations if specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<PrometheusAgentTolerations>>,
     /// Defines the pod's topology spread constraints if specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<PrometheusAgentTopologySpreadConstraints>>,
     /// TracingConfig configures tracing in Prometheus.
-    ///
+    /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tracingConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfig")]
     pub tracing_config: Option<PrometheusAgentTracingConfig>,
     /// Defines the runtime reloadable configuration of the timeseries database(TSDB).
     /// It requires Prometheus >= v2.39.0 or PrometheusAgent >= v2.54.0.
@@ -915,21 +649,17 @@ pub struct PrometheusAgentSpec {
     pub tsdb: Option<PrometheusAgentTsdb>,
     /// Version of Prometheus being deployed. The operator uses this information
     /// to generate the Prometheus StatefulSet + configuration files.
-    ///
+    /// 
     /// If not specified, the operator assumes the latest upstream version of
     /// Prometheus available at the time when the version of the operator was
     /// released.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
     /// VolumeMounts allows the configuration of additional VolumeMounts.
-    ///
+    /// 
     /// VolumeMounts will be appended to other VolumeMounts in the 'prometheus'
     /// container, that are generated as a result of StorageSpec objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<PrometheusAgentVolumeMounts>>,
     /// Volumes allows the configuration of additional volumes on the output
     /// StatefulSet definition. Volumes specified will be appended to other
@@ -937,15 +667,11 @@ pub struct PrometheusAgentSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<PrometheusAgentVolumes>>,
     /// Configures compression of the write-ahead log (WAL) using Snappy.
-    ///
+    /// 
     /// WAL compression is enabled by default for Prometheus >= 2.20.0
-    ///
+    /// 
     /// Requires Prometheus v2.11.0 and above.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "walCompression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "walCompression")]
     pub wal_compression: Option<bool>,
     /// Defines the configuration of the Prometheus web server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -993,25 +719,13 @@ pub struct PrometheusAgentAdditionalScrapeConfigs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<PrometheusAgentAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<PrometheusAgentAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<PrometheusAgentAffinityPodAntiAffinity>,
 }
 
@@ -1027,26 +741,15 @@ pub struct PrometheusAgentAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<PrometheusAgentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PrometheusAgentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<PrometheusAgentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<PrometheusAgentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -1073,8 +776,7 @@ pub struct PrometheusAgentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PrometheusAgentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1092,8 +794,7 @@ pub struct PrometheusAgentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PrometheusAgentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1136,8 +837,7 @@ pub struct PrometheusAgentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PrometheusAgentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1155,8 +855,7 @@ pub struct PrometheusAgentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PrometheusAgentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1183,14 +882,8 @@ pub struct PrometheusAgentAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<PrometheusAgentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PrometheusAgentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -1198,14 +891,8 @@ pub struct PrometheusAgentAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<PrometheusAgentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PrometheusAgentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -1287,8 +974,7 @@ pub struct PrometheusAgentAffinityPodAffinityPreferredDuringSchedulingIgnoredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PrometheusAgentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1322,8 +1008,7 @@ pub struct PrometheusAgentAffinityPodAffinityPreferredDuringSchedulingIgnoredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PrometheusAgentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1410,8 +1095,7 @@ pub struct PrometheusAgentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PrometheusAgentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1445,8 +1129,7 @@ pub struct PrometheusAgentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PrometheusAgentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1472,14 +1155,8 @@ pub struct PrometheusAgentAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<PrometheusAgentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PrometheusAgentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -1487,14 +1164,8 @@ pub struct PrometheusAgentAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<PrometheusAgentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PrometheusAgentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -1576,8 +1247,7 @@ pub struct PrometheusAgentAffinityPodAntiAffinityPreferredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PrometheusAgentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1611,8 +1281,7 @@ pub struct PrometheusAgentAffinityPodAntiAffinityPreferredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PrometheusAgentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1699,8 +1368,7 @@ pub struct PrometheusAgentAffinityPodAntiAffinityRequiredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PrometheusAgentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1734,8 +1402,7 @@ pub struct PrometheusAgentAffinityPodAntiAffinityRequiredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PrometheusAgentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1757,37 +1424,29 @@ pub struct PrometheusAgentAffinityPodAntiAffinityRequiredDuringSchedulingIgnored
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentApiserverConfig {
     /// Authorization section for the API server.
-    ///
+    /// 
     /// Cannot be set at the same time as `basicAuth`, `bearerToken`, or
     /// `bearerTokenFile`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<PrometheusAgentApiserverConfigAuthorization>,
     /// BasicAuth configuration for the API server.
-    ///
+    /// 
     /// Cannot be set at the same time as `authorization`, `bearerToken`, or
     /// `bearerTokenFile`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PrometheusAgentApiserverConfigBasicAuth>,
     /// *Warning: this field shouldn't be used because the token value appears
     /// in clear-text. Prefer using `authorization`.*
-    ///
+    /// 
     /// Deprecated: this will be removed in a future release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// File to read bearer token for accessing apiserver.
-    ///
+    /// 
     /// Cannot be set at the same time as `basicAuth`, `authorization`, or `bearerToken`.
-    ///
+    /// 
     /// Deprecated: this will be removed in a future release. Prefer using `authorization`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Kubernetes API address consisting of a hostname or IP address followed
     /// by an optional port number.
@@ -1798,7 +1457,7 @@ pub struct PrometheusAgentApiserverConfig {
 }
 
 /// Authorization section for the API server.
-///
+/// 
 /// Cannot be set at the same time as `basicAuth`, `bearerToken`, or
 /// `bearerTokenFile`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1807,16 +1466,12 @@ pub struct PrometheusAgentApiserverConfigAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<PrometheusAgentApiserverConfigAuthorizationCredentials>,
     /// File to read a secret from, mutually exclusive with `credentials`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1840,7 +1495,7 @@ pub struct PrometheusAgentApiserverConfigAuthorizationCredentials {
 }
 
 /// BasicAuth configuration for the API server.
-///
+/// 
 /// Cannot be set at the same time as `authorization`, `bearerToken`, or
 /// `bearerTokenFile`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1907,11 +1562,7 @@ pub struct PrometheusAgentApiserverConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the Prometheus container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -1920,29 +1571,17 @@ pub struct PrometheusAgentApiserverConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PrometheusAgentApiserverConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusAgentApiserverConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusAgentApiserverConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2141,11 +1780,7 @@ pub struct PrometheusAgentContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -2155,11 +1790,7 @@ pub struct PrometheusAgentContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PrometheusAgentContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -2178,18 +1809,10 @@ pub struct PrometheusAgentContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PrometheusAgentContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<PrometheusAgentContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -2211,20 +1834,12 @@ pub struct PrometheusAgentContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<PrometheusAgentContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -2233,11 +1848,7 @@ pub struct PrometheusAgentContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<PrometheusAgentContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -2260,11 +1871,7 @@ pub struct PrometheusAgentContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -2273,40 +1880,24 @@ pub struct PrometheusAgentContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<PrometheusAgentContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<PrometheusAgentContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -2335,11 +1926,7 @@ pub struct PrometheusAgentContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PrometheusAgentContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -2347,18 +1934,10 @@ pub struct PrometheusAgentContainersEnvValueFrom {
     pub field_ref: Option<PrometheusAgentContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PrometheusAgentContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PrometheusAgentContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -2384,11 +1963,7 @@ pub struct PrometheusAgentContainersEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2400,11 +1975,7 @@ pub struct PrometheusAgentContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2434,11 +2005,7 @@ pub struct PrometheusAgentContainersEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<PrometheusAgentContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2543,11 +2110,7 @@ pub struct PrometheusAgentContainersLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PrometheusAgentContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2640,11 +2203,7 @@ pub struct PrometheusAgentContainersLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PrometheusAgentContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2701,11 +2260,7 @@ pub struct PrometheusAgentContainersLivenessProbe {
     pub exec: Option<PrometheusAgentContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2715,27 +2270,15 @@ pub struct PrometheusAgentContainersLivenessProbe {
     pub http_get: Option<PrometheusAgentContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2750,20 +2293,12 @@ pub struct PrometheusAgentContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2786,7 +2321,7 @@ pub struct PrometheusAgentContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2800,11 +2335,7 @@ pub struct PrometheusAgentContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PrometheusAgentContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2879,11 +2410,7 @@ pub struct PrometheusAgentContainersReadinessProbe {
     pub exec: Option<PrometheusAgentContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2893,27 +2420,15 @@ pub struct PrometheusAgentContainersReadinessProbe {
     pub http_get: Option<PrometheusAgentContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2928,20 +2443,12 @@ pub struct PrometheusAgentContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2964,7 +2471,7 @@ pub struct PrometheusAgentContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2978,11 +2485,7 @@ pub struct PrometheusAgentContainersReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PrometheusAgentContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3039,10 +2542,10 @@ pub struct PrometheusAgentContainersResizePolicy {
 pub struct PrometheusAgentContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PrometheusAgentContainersResourcesClaims>>,
@@ -3084,20 +2587,12 @@ pub struct PrometheusAgentContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<PrometheusAgentContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -3120,22 +2615,14 @@ pub struct PrometheusAgentContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -3143,11 +2630,7 @@ pub struct PrometheusAgentContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -3161,31 +2644,19 @@ pub struct PrometheusAgentContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PrometheusAgentContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PrometheusAgentContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PrometheusAgentContainersSecurityContextWindowsOptions>,
 }
 
@@ -3198,11 +2669,7 @@ pub struct PrometheusAgentContainersSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -3257,15 +2724,11 @@ pub struct PrometheusAgentContainersSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3282,38 +2745,22 @@ pub struct PrometheusAgentContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3331,11 +2778,7 @@ pub struct PrometheusAgentContainersStartupProbe {
     pub exec: Option<PrometheusAgentContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3345,27 +2788,15 @@ pub struct PrometheusAgentContainersStartupProbe {
     pub http_get: Option<PrometheusAgentContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -3380,20 +2811,12 @@ pub struct PrometheusAgentContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3416,7 +2839,7 @@ pub struct PrometheusAgentContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3430,11 +2853,7 @@ pub struct PrometheusAgentContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PrometheusAgentContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3494,11 +2913,7 @@ pub struct PrometheusAgentContainersVolumeMounts {
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -3508,25 +2923,21 @@ pub struct PrometheusAgentContainersVolumeMounts {
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -3536,11 +2947,7 @@ pub struct PrometheusAgentContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3701,11 +3108,7 @@ pub struct PrometheusAgentInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -3715,11 +3118,7 @@ pub struct PrometheusAgentInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PrometheusAgentInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -3738,18 +3137,10 @@ pub struct PrometheusAgentInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PrometheusAgentInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<PrometheusAgentInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -3771,20 +3162,12 @@ pub struct PrometheusAgentInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<PrometheusAgentInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -3793,11 +3176,7 @@ pub struct PrometheusAgentInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<PrometheusAgentInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -3820,11 +3199,7 @@ pub struct PrometheusAgentInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -3833,40 +3208,24 @@ pub struct PrometheusAgentInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<PrometheusAgentInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<PrometheusAgentInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -3895,11 +3254,7 @@ pub struct PrometheusAgentInitContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PrometheusAgentInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -3907,18 +3262,10 @@ pub struct PrometheusAgentInitContainersEnvValueFrom {
     pub field_ref: Option<PrometheusAgentInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PrometheusAgentInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PrometheusAgentInitContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -3944,11 +3291,7 @@ pub struct PrometheusAgentInitContainersEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3960,11 +3303,7 @@ pub struct PrometheusAgentInitContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3994,11 +3333,7 @@ pub struct PrometheusAgentInitContainersEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<PrometheusAgentInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4103,13 +3438,8 @@ pub struct PrometheusAgentInitContainersLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<PrometheusAgentInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PrometheusAgentInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -4201,11 +3531,7 @@ pub struct PrometheusAgentInitContainersLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PrometheusAgentInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4262,11 +3588,7 @@ pub struct PrometheusAgentInitContainersLivenessProbe {
     pub exec: Option<PrometheusAgentInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4276,27 +3598,15 @@ pub struct PrometheusAgentInitContainersLivenessProbe {
     pub http_get: Option<PrometheusAgentInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -4311,20 +3621,12 @@ pub struct PrometheusAgentInitContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4347,7 +3649,7 @@ pub struct PrometheusAgentInitContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4361,11 +3663,7 @@ pub struct PrometheusAgentInitContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PrometheusAgentInitContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4440,11 +3738,7 @@ pub struct PrometheusAgentInitContainersReadinessProbe {
     pub exec: Option<PrometheusAgentInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4454,27 +3748,15 @@ pub struct PrometheusAgentInitContainersReadinessProbe {
     pub http_get: Option<PrometheusAgentInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -4489,20 +3771,12 @@ pub struct PrometheusAgentInitContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4525,7 +3799,7 @@ pub struct PrometheusAgentInitContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4539,11 +3813,7 @@ pub struct PrometheusAgentInitContainersReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PrometheusAgentInitContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4600,10 +3870,10 @@ pub struct PrometheusAgentInitContainersResizePolicy {
 pub struct PrometheusAgentInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PrometheusAgentInitContainersResourcesClaims>>,
@@ -4645,20 +3915,12 @@ pub struct PrometheusAgentInitContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<PrometheusAgentInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -4681,22 +3943,14 @@ pub struct PrometheusAgentInitContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -4704,11 +3958,7 @@ pub struct PrometheusAgentInitContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -4722,31 +3972,19 @@ pub struct PrometheusAgentInitContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PrometheusAgentInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PrometheusAgentInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PrometheusAgentInitContainersSecurityContextWindowsOptions>,
 }
 
@@ -4759,11 +3997,7 @@ pub struct PrometheusAgentInitContainersSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -4818,15 +4052,11 @@ pub struct PrometheusAgentInitContainersSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -4843,38 +4073,22 @@ pub struct PrometheusAgentInitContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -4892,11 +4106,7 @@ pub struct PrometheusAgentInitContainersStartupProbe {
     pub exec: Option<PrometheusAgentInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4906,27 +4116,15 @@ pub struct PrometheusAgentInitContainersStartupProbe {
     pub http_get: Option<PrometheusAgentInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -4941,20 +4139,12 @@ pub struct PrometheusAgentInitContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4977,7 +4167,7 @@ pub struct PrometheusAgentInitContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4991,11 +4181,7 @@ pub struct PrometheusAgentInitContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PrometheusAgentInitContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5055,11 +4241,7 @@ pub struct PrometheusAgentInitContainersVolumeMounts {
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -5069,25 +4251,21 @@ pub struct PrometheusAgentInitContainersVolumeMounts {
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -5097,11 +4275,7 @@ pub struct PrometheusAgentInitContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -5146,11 +4320,7 @@ pub enum PrometheusAgentMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentOtlp {
     /// List of OpenTelemetry Attributes that should be promoted to metric labels, defaults to none.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "promoteResourceAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteResourceAttributes")]
     pub promote_resource_attributes: Option<Vec<String>>,
 }
 
@@ -5164,27 +4334,19 @@ pub struct PrometheusAgentPersistentVolumeClaimRetentionPolicy {
     /// VolumeClaimTemplates when the StatefulSet is deleted. The default policy
     /// of `Retain` causes PVCs to not be affected by StatefulSet deletion. The
     /// `Delete` policy causes those PVCs to be deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "whenDeleted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenDeleted")]
     pub when_deleted: Option<String>,
     /// WhenScaled specifies what happens to PVCs created from StatefulSet
     /// VolumeClaimTemplates when the StatefulSet is scaled down. The default
     /// policy of `Retain` causes PVCs to not be affected by a scaledown. The
     /// `Delete` policy causes the associated PVCs for any excess pods above
     /// the replica count to be deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "whenScaled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenScaled")]
     pub when_scaled: Option<String>,
 }
 
 /// PodMetadata configures labels and annotations which are propagated to the Prometheus pods.
-///
+/// 
 /// The following items are reserved and cannot be overridden:
 /// * "prometheus" label, set to the name of the Prometheus object.
 /// * "app.kubernetes.io/instance" label, set to the name of the Prometheus object.
@@ -5224,20 +4386,12 @@ pub struct PrometheusAgentPodMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentPodMonitorNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PrometheusAgentPodMonitorNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5260,7 +4414,7 @@ pub struct PrometheusAgentPodMonitorNamespaceSelectorMatchExpressions {
 
 /// PodMonitors to be selected for target discovery. An empty label selector
 /// matches all objects. A null label selector matches no objects.
-///
+/// 
 /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
 /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
 /// The Prometheus operator will ensure that the Prometheus configuration's
@@ -5272,20 +4426,12 @@ pub struct PrometheusAgentPodMonitorNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentPodMonitorSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PrometheusAgentPodMonitorSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5312,20 +4458,12 @@ pub struct PrometheusAgentPodMonitorSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentProbeNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PrometheusAgentProbeNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5348,7 +4486,7 @@ pub struct PrometheusAgentProbeNamespaceSelectorMatchExpressions {
 
 /// Probes to be selected for target discovery. An empty label selector
 /// matches all objects. A null label selector matches no objects.
-///
+/// 
 /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
 /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
 /// The Prometheus operator will ensure that the Prometheus configuration's
@@ -5360,20 +4498,12 @@ pub struct PrometheusAgentProbeNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentProbeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PrometheusAgentProbeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5408,172 +4538,123 @@ pub enum PrometheusAgentReloadStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWrite {
     /// Authorization section for the URL.
-    ///
+    /// 
     /// It requires Prometheus >= v2.26.0.
-    ///
+    /// 
     /// Cannot be set at the same time as `sigv4`, `basicAuth`, `oauth2`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<PrometheusAgentRemoteWriteAuthorization>,
     /// AzureAD for the URL.
-    ///
+    /// 
     /// It requires Prometheus >= v2.45.0.
-    ///
+    /// 
     /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureAd")]
     pub azure_ad: Option<PrometheusAgentRemoteWriteAzureAd>,
     /// BasicAuth configuration for the URL.
-    ///
+    /// 
     /// Cannot be set at the same time as `sigv4`, `authorization`, `oauth2`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PrometheusAgentRemoteWriteBasicAuth>,
     /// *Warning: this field shouldn't be used because the token value appears
     /// in clear-text. Prefer using `authorization`.*
-    ///
+    /// 
     /// Deprecated: this will be removed in a future release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// File from which to read bearer token for the URL.
-    ///
+    /// 
     /// Deprecated: this will be removed in a future release. Prefer using `authorization`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    ///
+    /// 
     /// It requires Prometheus >= v2.26.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Custom HTTP headers to be sent along with each remote write request.
     /// Be aware that headers that are set by Prometheus itself can't be overwritten.
-    ///
+    /// 
     /// It requires Prometheus >= v2.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
     /// The Remote Write message's version to use when writing to the endpoint.
-    ///
+    /// 
     /// `Version1.0` corresponds to the `prometheus.WriteRequest` protobuf message introduced in Remote Write 1.0.
     /// `Version2.0` corresponds to the `io.prometheus.write.v2.Request` protobuf message introduced in Remote Write 2.0.
-    ///
+    /// 
     /// When `Version2.0` is selected, Prometheus will automatically be
     /// configured to append the metadata of scraped metrics to the WAL.
-    ///
+    /// 
     /// Before setting this field, consult with your remote storage provider
     /// what message version it supports.
-    ///
+    /// 
     /// It requires Prometheus >= v2.54.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageVersion")]
     pub message_version: Option<PrometheusAgentRemoteWriteMessageVersion>,
     /// MetadataConfig configures the sending of series metadata to the remote storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataConfig")]
     pub metadata_config: Option<PrometheusAgentRemoteWriteMetadataConfig>,
     /// The name of the remote write queue, it must be unique if specified. The
     /// name is used in metrics and logging in order to differentiate queues.
-    ///
+    /// 
     /// It requires Prometheus >= v2.15.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// OAuth2 configuration for the URL.
-    ///
+    /// 
     /// It requires Prometheus >= v2.27.0.
-    ///
+    /// 
     /// Cannot be set at the same time as `sigv4`, `authorization`, `basicAuth`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<PrometheusAgentRemoteWriteOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, PrometheusAgentRemoteWriteProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, PrometheusAgentRemoteWriteProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// QueueConfig allows tuning of the remote write queue parameters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queueConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueConfig")]
     pub queue_config: Option<PrometheusAgentRemoteWriteQueueConfig>,
     /// Timeout for requests to the remote write endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteTimeout")]
     pub remote_timeout: Option<String>,
     /// Enables sending of exemplars over remote write. Note that
     /// exemplar-storage itself must be enabled using the `spec.enableFeatures`
     /// option for exemplars to be scraped in the first place.
-    ///
+    /// 
     /// It requires Prometheus >= v2.27.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendExemplars"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendExemplars")]
     pub send_exemplars: Option<bool>,
     /// Enables sending of native histograms, also known as sparse histograms
     /// over remote write.
-    ///
+    /// 
     /// It requires Prometheus >= v2.40.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendNativeHistograms"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendNativeHistograms")]
     pub send_native_histograms: Option<bool>,
     /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
-    ///
+    /// 
     /// It requires Prometheus >= v2.26.0.
-    ///
+    /// 
     /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sigv4: Option<PrometheusAgentRemoteWriteSigv4>,
@@ -5583,18 +4664,14 @@ pub struct PrometheusAgentRemoteWrite {
     /// The URL of the endpoint to send samples to.
     pub url: String,
     /// The list of remote write relabel configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeRelabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeRelabelConfigs")]
     pub write_relabel_configs: Option<Vec<PrometheusAgentRemoteWriteWriteRelabelConfigs>>,
 }
 
 /// Authorization section for the URL.
-///
+/// 
 /// It requires Prometheus >= v2.26.0.
-///
+/// 
 /// Cannot be set at the same time as `sigv4`, `basicAuth`, `oauth2`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWriteAuthorization {
@@ -5602,16 +4679,12 @@ pub struct PrometheusAgentRemoteWriteAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<PrometheusAgentRemoteWriteAuthorizationCredentials>,
     /// File to read a secret from, mutually exclusive with `credentials`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -5635,9 +4708,9 @@ pub struct PrometheusAgentRemoteWriteAuthorizationCredentials {
 }
 
 /// AzureAD for the URL.
-///
+/// 
 /// It requires Prometheus >= v2.45.0.
-///
+/// 
 /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWriteAzureAd {
@@ -5646,31 +4719,27 @@ pub struct PrometheusAgentRemoteWriteAzureAd {
     pub cloud: Option<PrometheusAgentRemoteWriteAzureAdCloud>,
     /// ManagedIdentity defines the Azure User-assigned Managed identity.
     /// Cannot be set at the same time as `oauth` or `sdk`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managedIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedIdentity")]
     pub managed_identity: Option<PrometheusAgentRemoteWriteAzureAdManagedIdentity>,
     /// OAuth defines the oauth config that is being used to authenticate.
     /// Cannot be set at the same time as `managedIdentity` or `sdk`.
-    ///
+    /// 
     /// It requires Prometheus >= v2.48.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth: Option<PrometheusAgentRemoteWriteAzureAdOauth>,
     /// SDK defines the Azure SDK config that is being used to authenticate.
     /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
     /// Cannot be set at the same time as `oauth` or `managedIdentity`.
-    ///
+    /// 
     /// It requires Prometheus >= 2.52.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sdk: Option<PrometheusAgentRemoteWriteAzureAdSdk>,
 }
 
 /// AzureAD for the URL.
-///
+/// 
 /// It requires Prometheus >= v2.45.0.
-///
+/// 
 /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusAgentRemoteWriteAzureAdCloud {
@@ -5690,7 +4759,7 @@ pub struct PrometheusAgentRemoteWriteAzureAdManagedIdentity {
 
 /// OAuth defines the oauth config that is being used to authenticate.
 /// Cannot be set at the same time as `managedIdentity` or `sdk`.
-///
+/// 
 /// It requires Prometheus >= v2.48.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWriteAzureAdOauth {
@@ -5725,7 +4794,7 @@ pub struct PrometheusAgentRemoteWriteAzureAdOauthClientSecret {
 /// SDK defines the Azure SDK config that is being used to authenticate.
 /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
 /// Cannot be set at the same time as `oauth` or `managedIdentity`.
-///
+/// 
 /// It requires Prometheus >= 2.52.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWriteAzureAdSdk {
@@ -5735,7 +4804,7 @@ pub struct PrometheusAgentRemoteWriteAzureAdSdk {
 }
 
 /// BasicAuth configuration for the URL.
-///
+/// 
 /// Cannot be set at the same time as `sigv4`, `authorization`, `oauth2`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWriteBasicAuth {
@@ -5802,18 +4871,14 @@ pub struct PrometheusAgentRemoteWriteMetadataConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send: Option<bool>,
     /// Defines how frequently metric metadata is sent to the remote storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendInterval")]
     pub send_interval: Option<String>,
 }
 
 /// OAuth2 configuration for the URL.
-///
+/// 
 /// It requires Prometheus >= v2.27.0.
-///
+/// 
 /// Cannot be set at the same time as `sigv4`, `authorization`, `basicAuth`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWriteOauth2 {
@@ -5827,38 +4892,25 @@ pub struct PrometheusAgentRemoteWriteOauth2 {
     pub client_secret: PrometheusAgentRemoteWriteOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, PrometheusAgentRemoteWriteOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, PrometheusAgentRemoteWriteOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -5967,39 +5019,23 @@ pub struct PrometheusAgentRemoteWriteOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<PrometheusAgentRemoteWriteOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PrometheusAgentRemoteWriteOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusAgentRemoteWriteOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusAgentRemoteWriteOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -6159,74 +5195,46 @@ pub struct PrometheusAgentRemoteWriteProxyConnectHeader {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWriteQueueConfig {
     /// BatchSendDeadline is the maximum time a sample will wait in buffer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batchSendDeadline"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSendDeadline")]
     pub batch_send_deadline: Option<String>,
     /// Capacity is the number of samples to buffer per shard before we start
     /// dropping them.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<i64>,
     /// MaxBackoff is the maximum retry delay.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxBackoff"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBackoff")]
     pub max_backoff: Option<String>,
     /// MaxRetries is the maximum number of times to retry a batch on recoverable errors.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// MaxSamplesPerSend is the maximum number of samples per send.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxSamplesPerSend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSamplesPerSend")]
     pub max_samples_per_send: Option<i64>,
     /// MaxShards is the maximum number of shards, i.e. amount of concurrency.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxShards")]
     pub max_shards: Option<i64>,
     /// MinBackoff is the initial retry delay. Gets doubled for every retry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minBackoff"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minBackoff")]
     pub min_backoff: Option<String>,
     /// MinShards is the minimum number of shards, i.e. amount of concurrency.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minShards")]
     pub min_shards: Option<i64>,
     /// Retry upon receiving a 429 status code from the remote-write storage.
-    ///
+    /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryOnRateLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOnRateLimit")]
     pub retry_on_rate_limit: Option<bool>,
     /// SampleAgeLimit drops samples older than the limit.
     /// It requires Prometheus >= v2.50.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleAgeLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleAgeLimit")]
     pub sample_age_limit: Option<String>,
 }
 
 /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
-///
+/// 
 /// It requires Prometheus >= v2.26.0.
-///
+/// 
 /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWriteSigv4 {
@@ -6301,11 +5309,7 @@ pub struct PrometheusAgentRemoteWriteTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the Prometheus container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -6314,29 +5318,17 @@ pub struct PrometheusAgentRemoteWriteTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PrometheusAgentRemoteWriteTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusAgentRemoteWriteTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusAgentRemoteWriteTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -6475,20 +5467,20 @@ pub enum PrometheusAgentRemoteWriteTlsConfigMinVersion {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWriteWriteRelabelConfigs {
     /// Action to perform based on the regex matching.
-    ///
+    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    ///
+    /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PrometheusAgentRemoteWriteWriteRelabelConfigsAction>,
     /// Modulus to take of the hash of the source label values.
-    ///
+    /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
@@ -6497,7 +5489,7 @@ pub struct PrometheusAgentRemoteWriteWriteRelabelConfigs {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    ///
+    /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
@@ -6507,29 +5499,21 @@ pub struct PrometheusAgentRemoteWriteWriteRelabelConfigs {
     /// The source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
-    ///
+    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    ///
+    /// 
     /// Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusAgentRemoteWriteWriteRelabelConfigsAction {
@@ -6578,10 +5562,10 @@ pub enum PrometheusAgentRemoteWriteWriteRelabelConfigsAction {
 pub struct PrometheusAgentResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PrometheusAgentResourcesClaims>>,
@@ -6616,47 +5600,39 @@ pub struct PrometheusAgentScrapeClasses {
     /// AttachMetadata configures additional metadata to the discovered targets.
     /// When the scrape object defines its own configuration, it takes
     /// precedence over the scrape class configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attachMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
     pub attach_metadata: Option<PrometheusAgentScrapeClassesAttachMetadata>,
     /// Default indicates that the scrape applies to all scrape objects that
     /// don't configure an explicit scrape class name.
-    ///
+    /// 
     /// Only one scrape class can be set as the default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<bool>,
     /// MetricRelabelings configures the relabeling rules to apply to all samples before ingestion.
-    ///
+    /// 
     /// The Operator adds the scrape class metric relabelings defined here.
     /// Then the Operator adds the target-specific metric relabelings defined in ServiceMonitors, PodMonitors, Probes and ScrapeConfigs.
     /// Then the Operator adds namespace enforcement relabeling rule, specified in '.spec.enforcedNamespaceLabel'.
-    ///
+    /// 
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricRelabelings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
     pub metric_relabelings: Option<Vec<PrometheusAgentScrapeClassesMetricRelabelings>>,
     /// Name of the scrape class.
     pub name: String,
     /// Relabelings configures the relabeling rules to apply to all scrape targets.
-    ///
+    /// 
     /// The Operator automatically adds relabelings for a few standard Kubernetes fields
     /// like `__meta_kubernetes_namespace` and `__meta_kubernetes_service_name`.
     /// Then the Operator adds the scrape class relabelings defined here.
     /// Then the Operator adds the target-specific relabelings defined in the scrape object.
-    ///
+    /// 
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<PrometheusAgentScrapeClassesRelabelings>>,
     /// TLSConfig defines the TLS settings to use for the scrape. When the
     /// scrape objects define their own CA, certificate and/or key, they take
     /// precedence over the corresponding scrape class fields.
-    ///
+    /// 
     /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<PrometheusAgentScrapeClassesTlsConfig>,
@@ -6669,7 +5645,7 @@ pub struct PrometheusAgentScrapeClasses {
 pub struct PrometheusAgentScrapeClassesAttachMetadata {
     /// When set to true, Prometheus attaches node metadata to the discovered
     /// targets.
-    ///
+    /// 
     /// The Prometheus service account must have the `list` and `watch`
     /// permissions on the `Nodes` objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6678,20 +5654,20 @@ pub struct PrometheusAgentScrapeClassesAttachMetadata {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentScrapeClassesMetricRelabelings {
     /// Action to perform based on the regex matching.
-    ///
+    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    ///
+    /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PrometheusAgentScrapeClassesMetricRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    ///
+    /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
@@ -6700,7 +5676,7 @@ pub struct PrometheusAgentScrapeClassesMetricRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    ///
+    /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
@@ -6710,29 +5686,21 @@ pub struct PrometheusAgentScrapeClassesMetricRelabelings {
     /// The source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
-    ///
+    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    ///
+    /// 
     /// Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusAgentScrapeClassesMetricRelabelingsAction {
@@ -6778,20 +5746,20 @@ pub enum PrometheusAgentScrapeClassesMetricRelabelingsAction {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentScrapeClassesRelabelings {
     /// Action to perform based on the regex matching.
-    ///
+    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    ///
+    /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<PrometheusAgentScrapeClassesRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    ///
+    /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
@@ -6800,7 +5768,7 @@ pub struct PrometheusAgentScrapeClassesRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    ///
+    /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
@@ -6810,29 +5778,21 @@ pub struct PrometheusAgentScrapeClassesRelabelings {
     /// The source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
-    ///
+    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    ///
+    /// 
     /// Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusAgentScrapeClassesRelabelingsAction {
@@ -6879,7 +5839,7 @@ pub enum PrometheusAgentScrapeClassesRelabelingsAction {
 /// TLSConfig defines the TLS settings to use for the scrape. When the
 /// scrape objects define their own CA, certificate and/or key, they take
 /// precedence over the corresponding scrape class fields.
-///
+/// 
 /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentScrapeClassesTlsConfig {
@@ -6896,11 +5856,7 @@ pub struct PrometheusAgentScrapeClassesTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the Prometheus container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -6909,29 +5865,17 @@ pub struct PrometheusAgentScrapeClassesTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PrometheusAgentScrapeClassesTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusAgentScrapeClassesTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusAgentScrapeClassesTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -7045,7 +5989,7 @@ pub struct PrometheusAgentScrapeClassesTlsConfigKeySecret {
 /// TLSConfig defines the TLS settings to use for the scrape. When the
 /// scrape objects define their own CA, certificate and/or key, they take
 /// precedence over the corresponding scrape class fields.
-///
+/// 
 /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusAgentScrapeClassesTlsConfigMaxVersion {
@@ -7062,7 +6006,7 @@ pub enum PrometheusAgentScrapeClassesTlsConfigMaxVersion {
 /// TLSConfig defines the TLS settings to use for the scrape. When the
 /// scrape objects define their own CA, certificate and/or key, they take
 /// precedence over the corresponding scrape class fields.
-///
+/// 
 /// For now only the `caFile`, `certFile` and `keyFile` fields are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusAgentScrapeClassesTlsConfigMinVersion {
@@ -7079,26 +6023,17 @@ pub enum PrometheusAgentScrapeClassesTlsConfigMinVersion {
 /// Namespaces to match for ScrapeConfig discovery. An empty label selector
 /// matches all namespaces. A null label selector matches the current
 /// namespace only.
-///
+/// 
 /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentScrapeConfigNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PrometheusAgentScrapeConfigNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PrometheusAgentScrapeConfigNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -7121,7 +6056,7 @@ pub struct PrometheusAgentScrapeConfigNamespaceSelectorMatchExpressions {
 
 /// ScrapeConfigs to be selected for target discovery. An empty label
 /// selector matches all objects. A null label selector matches no objects.
-///
+/// 
 /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
 /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
 /// The Prometheus operator will ensure that the Prometheus configuration's
@@ -7130,25 +6065,17 @@ pub struct PrometheusAgentScrapeConfigNamespaceSelectorMatchExpressions {
 /// This behavior is *deprecated* and will be removed in the next major version
 /// of the custom resource definition. It is recommended to use
 /// `spec.additionalScrapeConfigs` instead.
-///
+/// 
 /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentScrapeConfigSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PrometheusAgentScrapeConfigSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -7175,20 +6102,16 @@ pub struct PrometheusAgentScrapeConfigSelectorMatchExpressions {
 pub struct PrometheusAgentSecurityContext {
     /// appArmorProfile is the AppArmor options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<PrometheusAgentSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -7200,11 +6123,7 @@ pub struct PrometheusAgentSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -7212,11 +6131,7 @@ pub struct PrometheusAgentSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -7224,11 +6139,7 @@ pub struct PrometheusAgentSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -7244,19 +6155,11 @@ pub struct PrometheusAgentSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PrometheusAgentSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PrometheusAgentSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in
     /// addition to the container's primary GID and fsGroup (if specified).  If
@@ -7267,22 +6170,14 @@ pub struct PrometheusAgentSecurityContext {
     /// defined in the container image may still be used, depending on the
     /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Defines how supplemental groups of the first container processes are calculated.
     /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
     /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
     /// and the container runtime must implement support for this feature.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroupsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
     pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -7293,11 +6188,7 @@ pub struct PrometheusAgentSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PrometheusAgentSecurityContextWindowsOptions>,
 }
 
@@ -7309,11 +6200,7 @@ pub struct PrometheusAgentSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -7354,15 +6241,11 @@ pub struct PrometheusAgentSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -7388,38 +6271,22 @@ pub struct PrometheusAgentSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -7437,21 +6304,12 @@ pub enum PrometheusAgentServiceDiscoveryRole {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentServiceMonitorNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PrometheusAgentServiceMonitorNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PrometheusAgentServiceMonitorNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -7474,7 +6332,7 @@ pub struct PrometheusAgentServiceMonitorNamespaceSelectorMatchExpressions {
 
 /// ServiceMonitors to be selected for target discovery. An empty label
 /// selector matches all objects. A null label selector matches no objects.
-///
+/// 
 /// If `spec.serviceMonitorSelector`, `spec.podMonitorSelector`, `spec.probeSelector`
 /// and `spec.scrapeConfigSelector` are null, the Prometheus configuration is unmanaged.
 /// The Prometheus operator will ensure that the Prometheus configuration's
@@ -7486,20 +6344,12 @@ pub struct PrometheusAgentServiceMonitorNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentServiceMonitorSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PrometheusAgentServiceMonitorSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -7524,11 +6374,7 @@ pub struct PrometheusAgentServiceMonitorSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentStorage {
     /// Deprecated: subPath usage will be removed in a future release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableMountSubPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMountSubPath")]
     pub disable_mount_sub_path: Option<bool>,
     /// EmptyDirVolumeSource to be used by the StatefulSet.
     /// If specified, it takes precedence over `ephemeral` and `volumeClaimTemplate`.
@@ -7544,11 +6390,7 @@ pub struct PrometheusAgentStorage {
     /// Defines the PVC spec to be used by the Prometheus StatefulSets.
     /// The easiest way to use a volume that cannot be automatically provisioned
     /// is to use a label selector alongside manually created PersistentVolumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<PrometheusAgentStorageVolumeClaimTemplate>,
 }
 
@@ -7586,7 +6428,7 @@ pub struct PrometheusAgentStorageEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -7595,16 +6437,12 @@ pub struct PrometheusAgentStorageEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<PrometheusAgentStorageEphemeralVolumeClaimTemplate>,
 }
 
@@ -7615,7 +6453,7 @@ pub struct PrometheusAgentStorageEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -7624,10 +6462,10 @@ pub struct PrometheusAgentStorageEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplate {
@@ -7647,7 +6485,8 @@ pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplate {
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplateMetadata {}
+pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -7657,11 +6496,7 @@ pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplateMetadata {}
 pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -7671,11 +6506,7 @@ pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplateSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<PrometheusAgentStorageEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
@@ -7700,13 +6531,8 @@ pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplateSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<PrometheusAgentStorageEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<PrometheusAgentStorageEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
@@ -7719,11 +6545,7 @@ pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<PrometheusAgentStorageEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -7737,26 +6559,14 @@ pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplateSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -7845,21 +6655,12 @@ pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplateSpecResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentStorageEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PrometheusAgentStorageEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PrometheusAgentStorageEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -7889,11 +6690,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplate {
     /// Servers should convert recognized schemas to the latest internal value, and
     /// may reject unrecognized values.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind is a string value representing the REST resource this object represents.
     /// Servers may infer this from the endpoint the client submits requests to.
@@ -7945,11 +6742,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateMetadata {
 pub struct PrometheusAgentStorageVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -7959,11 +6752,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<PrometheusAgentStorageVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
@@ -7988,11 +6777,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<PrometheusAgentStorageVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
@@ -8006,11 +6791,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateSpec {
     pub selector: Option<PrometheusAgentStorageVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -8024,26 +6805,14 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -8132,21 +6901,12 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateSpecResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentStorageVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PrometheusAgentStorageVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PrometheusAgentStorageVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -8172,11 +6932,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateSpecSelectorMatchExpressions
 pub struct PrometheusAgentStorageVolumeClaimTemplateStatus {
     /// accessModes contains the actual access modes the volume backing the PVC has.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// allocatedResourceStatuses stores status of resource being resized for the given PVC.
     /// Key names follow standard Kubernetes label syntax. Valid values are either:
@@ -8185,7 +6941,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateStatus {
     /// 	* Custom resources must use implementation-defined prefixed names such as "example.com/my-custom-resource"
     /// Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered
     /// reserved and hence may not be used.
-    ///
+    /// 
     /// ClaimResourceStatus can be in any of following states:
     /// 	- ControllerResizeInProgress:
     /// 		State set when resize controller starts resizing the volume in control-plane.
@@ -8206,18 +6962,14 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateStatus {
     ///      - pvc.status.allocatedResourceStatus['storage'] = "NodeResizeInProgress"
     ///      - pvc.status.allocatedResourceStatus['storage'] = "NodeResizeFailed"
     /// When this field is not set, it means that no resize operation is in progress for the given PVC.
-    ///
+    /// 
     /// A controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    ///
+    /// 
     /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocatedResourceStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourceStatuses")]
     pub allocated_resource_statuses: Option<BTreeMap<String, String>>,
     /// allocatedResources tracks the resources allocated to a PVC including its capacity.
     /// Key names follow standard Kubernetes label syntax. Valid values are either:
@@ -8226,7 +6978,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateStatus {
     /// 	* Custom resources must use implementation-defined prefixed names such as "example.com/my-custom-resource"
     /// Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered
     /// reserved and hence may not be used.
-    ///
+    /// 
     /// Capacity reported here may be larger than the actual capacity when a volume expansion operation
     /// is requested.
     /// For storage quota, the larger value from allocatedResources and PVC.spec.resources is used.
@@ -8234,18 +6986,14 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateStatus {
     /// If a volume expansion capacity request is lowered, allocatedResources is only
     /// lowered if there are no expansion operations in progress and if the actual volume capacity
     /// is equal or lower than the requested capacity.
-    ///
+    /// 
     /// A controller that receives PVC update with previously unknown resourceName
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    ///
+    /// 
     /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocatedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
     /// capacity represents the actual resources of the underlying volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8257,22 +7005,13 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateStatus {
     /// currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.
     /// When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim
     /// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentVolumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVolumeAttributesClassName")]
     pub current_volume_attributes_class_name: Option<String>,
     /// ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
     /// When this is unset, there is no ModifyVolume operation being attempted.
     /// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modifyVolumeStatus"
-    )]
-    pub modify_volume_status:
-        Option<PrometheusAgentStorageVolumeClaimTemplateStatusModifyVolumeStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modifyVolumeStatus")]
+    pub modify_volume_status: Option<PrometheusAgentStorageVolumeClaimTemplateStatusModifyVolumeStatus>,
     /// phase represents the current phase of PersistentVolumeClaim.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
@@ -8295,11 +7034,7 @@ pub struct PrometheusAgentStorageVolumeClaimTemplateStatusModifyVolumeStatus {
     /// Note: New statuses can be added in the future. Consumers should check for unknown statuses and fail appropriately.
     pub status: String,
     /// targetVolumeAttributesClassName is the name of the VolumeAttributesClass the PVC currently being reconciled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetVolumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetVolumeAttributesClassName")]
     pub target_volume_attributes_class_name: Option<String>,
 }
 
@@ -8325,11 +7060,7 @@ pub struct PrometheusAgentTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -8340,21 +7071,12 @@ pub struct PrometheusAgentTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentTopologySpreadConstraints {
     /// Defines what Prometheus Operator managed labels should be added to labelSelector on the topologySpreadConstraint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalLabelSelectors"
-    )]
-    pub additional_label_selectors:
-        Option<PrometheusAgentTopologySpreadConstraintsAdditionalLabelSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalLabelSelectors")]
+    pub additional_label_selectors: Option<PrometheusAgentTopologySpreadConstraintsAdditionalLabelSelectors>,
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PrometheusAgentTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
@@ -8364,13 +7086,9 @@ pub struct PrometheusAgentTopologySpreadConstraints {
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -8401,7 +7119,7 @@ pub struct PrometheusAgentTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -8410,38 +7128,26 @@ pub struct PrometheusAgentTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -8489,21 +7195,12 @@ pub enum PrometheusAgentTopologySpreadConstraintsAdditionalLabelSelectors {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PrometheusAgentTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PrometheusAgentTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -8525,17 +7222,13 @@ pub struct PrometheusAgentTopologySpreadConstraintsLabelSelectorMatchExpressions
 }
 
 /// TracingConfig configures tracing in Prometheus.
-///
+/// 
 /// This is an *experimental feature*, it may change in any upcoming release
 /// in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentTracingConfig {
     /// Client used to export the traces. Supported values are `http` or `grpc`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientType")]
     pub client_type: Option<PrometheusAgentTracingConfigClientType>,
     /// Compression key for supported compression types. The only supported value is `gzip`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8549,11 +7242,7 @@ pub struct PrometheusAgentTracingConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     /// Sets the probability a given trace will be sampled. Must be a float from 0 through 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "samplingFraction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "samplingFraction")]
     pub sampling_fraction: Option<IntOrString>,
     /// Maximum time the exporter will wait for each batch export.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8564,7 +7253,7 @@ pub struct PrometheusAgentTracingConfig {
 }
 
 /// TracingConfig configures tracing in Prometheus.
-///
+/// 
 /// This is an *experimental feature*, it may change in any upcoming release
 /// in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -8576,7 +7265,7 @@ pub enum PrometheusAgentTracingConfigClientType {
 }
 
 /// TracingConfig configures tracing in Prometheus.
-///
+/// 
 /// This is an *experimental feature*, it may change in any upcoming release
 /// in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -8601,11 +7290,7 @@ pub struct PrometheusAgentTracingConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the Prometheus container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -8614,29 +7299,17 @@ pub struct PrometheusAgentTracingConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PrometheusAgentTracingConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusAgentTracingConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusAgentTracingConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -8779,19 +7452,15 @@ pub enum PrometheusAgentTracingConfigTlsConfigMinVersion {
 pub struct PrometheusAgentTsdb {
     /// Configures how old an out-of-order/out-of-bounds sample can be with
     /// respect to the TSDB max time.
-    ///
+    /// 
     /// An out-of-order/out-of-bounds sample is ingested into the TSDB as long as
     /// the timestamp of the sample is >= (TSDB.MaxTime - outOfOrderTimeWindow).
-    ///
+    /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
-    ///
+    /// 
     /// It requires Prometheus >= v2.39.0 or PrometheusAgent >= v2.54.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outOfOrderTimeWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outOfOrderTimeWindow")]
     pub out_of_order_time_window: Option<String>,
 }
 
@@ -8808,11 +7477,7 @@ pub struct PrometheusAgentVolumeMounts {
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -8822,25 +7487,21 @@ pub struct PrometheusAgentVolumeMounts {
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -8850,11 +7511,7 @@ pub struct PrometheusAgentVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -8864,11 +7521,7 @@ pub struct PrometheusAgentVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<PrometheusAgentVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
@@ -8890,11 +7543,7 @@ pub struct PrometheusAgentVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<PrometheusAgentVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<PrometheusAgentVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -8903,7 +7552,7 @@ pub struct PrometheusAgentVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -8913,15 +7562,15 @@ pub struct PrometheusAgentVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8931,11 +7580,7 @@ pub struct PrometheusAgentVolumes {
     pub fc: Option<PrometheusAgentVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<PrometheusAgentVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8943,11 +7588,7 @@ pub struct PrometheusAgentVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<PrometheusAgentVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -8968,11 +7609,11 @@ pub struct PrometheusAgentVolumes {
     pub host_path: Option<PrometheusAgentVolumesHostPath>,
     /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
     /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
-    ///
+    /// 
     /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
     /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
-    ///
+    /// 
     /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
     /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
@@ -8998,25 +7639,13 @@ pub struct PrometheusAgentVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<PrometheusAgentVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<PrometheusAgentVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<PrometheusAgentVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9039,11 +7668,7 @@ pub struct PrometheusAgentVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<PrometheusAgentVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<PrometheusAgentVolumesVsphereVolume>,
 }
 
@@ -9078,11 +7703,7 @@ pub struct PrometheusAgentVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -9135,11 +7756,7 @@ pub struct PrometheusAgentVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -9212,11 +7829,7 @@ pub struct PrometheusAgentVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -9275,11 +7888,7 @@ pub struct PrometheusAgentVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<PrometheusAgentVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
@@ -9287,11 +7896,7 @@ pub struct PrometheusAgentVolumesCsi {
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -9322,11 +7927,7 @@ pub struct PrometheusAgentVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9351,11 +7952,7 @@ pub struct PrometheusAgentVolumesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PrometheusAgentVolumesDownwardApiItemsResourceFieldRef>,
 }
 
@@ -9363,11 +7960,7 @@ pub struct PrometheusAgentVolumesDownwardApiItems {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -9379,11 +7972,7 @@ pub struct PrometheusAgentVolumesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9415,7 +8004,7 @@ pub struct PrometheusAgentVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -9425,15 +8014,15 @@ pub struct PrometheusAgentVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9445,7 +8034,7 @@ pub struct PrometheusAgentVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -9454,16 +8043,12 @@ pub struct PrometheusAgentVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<PrometheusAgentVolumesEphemeralVolumeClaimTemplate>,
 }
 
@@ -9474,7 +8059,7 @@ pub struct PrometheusAgentVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -9483,10 +8068,10 @@ pub struct PrometheusAgentVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplate {
@@ -9506,7 +8091,8 @@ pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplate {
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplateMetadata {}
+pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -9516,11 +8102,7 @@ pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplateMetadata {}
 pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -9530,11 +8112,7 @@ pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
@@ -9559,13 +8137,8 @@ pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
@@ -9578,11 +8151,7 @@ pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -9596,26 +8165,14 @@ pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -9704,21 +8261,12 @@ pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpecResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PrometheusAgentVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -9755,11 +8303,7 @@ pub struct PrometheusAgentVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -9815,18 +8359,10 @@ pub struct PrometheusAgentVolumesFlexVolumeSecretRef {
 pub struct PrometheusAgentVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -9915,11 +8451,11 @@ pub struct PrometheusAgentVolumesHostPath {
 
 /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
 /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
-///
+/// 
 /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
 /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
 /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
-///
+/// 
 /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
 /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
@@ -9934,11 +8470,7 @@ pub struct PrometheusAgentVolumesImage {
     /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
     /// Required: Image or artifact reference to be used.
     /// Behaves in the same way as pod.spec.containers[*].image.
@@ -9956,18 +8488,10 @@ pub struct PrometheusAgentVolumesImage {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -9978,21 +8502,13 @@ pub struct PrometheusAgentVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -10096,11 +8612,7 @@ pub struct PrometheusAgentVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections. Each entry in this list
     /// handles one source.
@@ -10114,53 +8626,41 @@ pub struct PrometheusAgentVolumesProjected {
 pub struct PrometheusAgentVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
     pub cluster_trust_bundle: Option<PrometheusAgentVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PrometheusAgentVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<PrometheusAgentVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PrometheusAgentVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<PrometheusAgentVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -10172,13 +8672,8 @@ pub struct PrometheusAgentVolumesProjectedSourcesClusterTrustBundle {
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<PrometheusAgentVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PrometheusAgentVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10195,11 +8690,7 @@ pub struct PrometheusAgentVolumesProjectedSourcesClusterTrustBundle {
     /// Select all ClusterTrustBundles that match this signer name.
     /// Mutually-exclusive with name.  The contents of all selected
     /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -10210,22 +8701,12 @@ pub struct PrometheusAgentVolumesProjectedSourcesClusterTrustBundle {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentVolumesProjectedSourcesClusterTrustBundleLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<PrometheusAgentVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PrometheusAgentVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -10316,24 +8797,15 @@ pub struct PrometheusAgentVolumesProjectedSourcesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<PrometheusAgentVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<PrometheusAgentVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -10345,11 +8817,7 @@ pub struct PrometheusAgentVolumesProjectedSourcesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10417,11 +8885,7 @@ pub struct PrometheusAgentVolumesProjectedSourcesServiceAccountToken {
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -10526,11 +8990,7 @@ pub struct PrometheusAgentVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -10541,36 +9001,20 @@ pub struct PrometheusAgentVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: PrometheusAgentVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -10598,11 +9042,7 @@ pub struct PrometheusAgentVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -10618,11 +9058,7 @@ pub struct PrometheusAgentVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -10664,11 +9100,7 @@ pub struct PrometheusAgentVolumesStorageos {
     pub secret_ref: Option<PrometheusAgentVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -10676,11 +9108,7 @@ pub struct PrometheusAgentVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -10706,18 +9134,10 @@ pub struct PrometheusAgentVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -10728,19 +9148,11 @@ pub struct PrometheusAgentVolumesVsphereVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentWeb {
     /// Defines HTTP parameters for web server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<PrometheusAgentWebHttpConfig>,
     /// Defines the maximum number of simultaneous connections
     /// A zero value means that Prometheus doesn't accept any incoming connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// The prometheus web page title.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pageTitle")]
@@ -10768,11 +9180,7 @@ pub struct PrometheusAgentWebHttpConfig {
 pub struct PrometheusAgentWebHttpConfigHeaders {
     /// Set the Content-Security-Policy header to HTTP responses.
     /// Unset if blank.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentSecurityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentSecurityPolicy")]
     pub content_security_policy: Option<String>,
     /// Set the Strict-Transport-Security header to HTTP responses.
     /// Unset if blank.
@@ -10780,38 +9188,22 @@ pub struct PrometheusAgentWebHttpConfigHeaders {
     /// browsers to load Prometheus and the other applications hosted on the same
     /// domain and subdomains over HTTPS.
     /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "strictTransportSecurity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "strictTransportSecurity")]
     pub strict_transport_security: Option<String>,
     /// Set the X-Content-Type-Options header to HTTP responses.
     /// Unset if blank. Accepted value is nosniff.
     /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "xContentTypeOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xContentTypeOptions")]
     pub x_content_type_options: Option<PrometheusAgentWebHttpConfigHeadersXContentTypeOptions>,
     /// Set the X-Frame-Options header to HTTP responses.
     /// Unset if blank. Accepted values are deny and sameorigin.
     /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "xFrameOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xFrameOptions")]
     pub x_frame_options: Option<PrometheusAgentWebHttpConfigHeadersXFrameOptions>,
     /// Set the X-XSS-Protection header to all responses.
     /// Unset if blank.
     /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "xXSSProtection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xXSSProtection")]
     pub x_xss_protection: Option<String>,
 }
 
@@ -10845,28 +9237,16 @@ pub struct PrometheusAgentWebTlsConfig {
     /// List of supported cipher suites for TLS versions up to TLS 1.2. If empty,
     /// Go default cipher suites are used. Available cipher suites are documented
     /// in the go documentation: https://golang.org/pkg/crypto/tls/#pkg-constants
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipherSuites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
     pub cipher_suites: Option<Vec<String>>,
     /// Server policy for client authentication. Maps to ClientAuth Policies.
     /// For more detail on clientAuth options:
     /// https://golang.org/pkg/crypto/tls/#ClientAuthType
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientAuthType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAuthType")]
     pub client_auth_type: Option<String>,
     /// Path to the CA certificate file for client certificate authentication to the server.
     /// Mutually exclusive with `client_ca`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCAFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCAFile")]
     pub client_ca_file: Option<String>,
     /// Contains the CA certificate for client certificate authentication to the server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10874,11 +9254,7 @@ pub struct PrometheusAgentWebTlsConfig {
     /// Elliptic curves that will be used in an ECDHE handshake, in preference
     /// order. Available curves are documented in the go documentation:
     /// https://golang.org/pkg/crypto/tls/#CurveID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "curvePreferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "curvePreferences")]
     pub curve_preferences: Option<Vec<String>>,
     /// Path to the TLS key file in the Prometheus container for the server.
     /// Mutually exclusive with `keySecret`.
@@ -10888,28 +9264,16 @@ pub struct PrometheusAgentWebTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<PrometheusAgentWebTlsConfigKeySecret>,
     /// Maximum TLS version that is acceptable. Defaults to TLS13.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<String>,
     /// Minimum TLS version that is acceptable. Defaults to TLS12.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<String>,
     /// Controls whether the server selects the
     /// client's most preferred cipher suite, or the server's most preferred
     /// cipher suite. If true then the server's preference, as expressed in
     /// the order of elements in cipherSuites, is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferServerCipherSuites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferServerCipherSuites")]
     pub prefer_server_cipher_suites: Option<bool>,
 }
 
@@ -11042,11 +9406,7 @@ pub struct PrometheusAgentStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
     /// The list has one entry per shard. Each entry provides a summary of the shard status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shardStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardStatuses")]
     pub shard_statuses: Option<Vec<PrometheusAgentStatusShardStatuses>>,
     /// Shards is the most recently observed number of shards.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11079,3 +9439,4 @@ pub struct PrometheusAgentStatusShardStatuses {
     #[serde(rename = "updatedReplicas")]
     pub updated_replicas: i32,
 }
+

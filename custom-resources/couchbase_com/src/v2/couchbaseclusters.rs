@@ -4,37 +4,28 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterSpec is the specification for a CouchbaseCluster resources, and allows
 /// the cluster to be customized.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "couchbase.com",
-    version = "v2",
-    kind = "CouchbaseCluster",
-    plural = "couchbaseclusters"
-)]
+#[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseCluster", plural = "couchbaseclusters")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CouchbaseClusterSpec {
     /// AntiAffinity forces the Operator to schedule different Couchbase server pods on
     /// different Kubernetes nodes.  Anti-affinity reduces the likelihood of unrecoverable
     /// failure in the event of a node issue.  Use of anti-affinity is highly recommended for
     /// production clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "antiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinity")]
     pub anti_affinity: Option<bool>,
     /// AutoResourceAllocation populates pod resource requests based on the services running
     /// on that pod.  When enabled, this feature will calculate the memory request as the
@@ -44,11 +35,7 @@ pub struct CouchbaseClusterSpec {
     /// pods.  This field also allows default pod CPU requests and limits to be applied.
     /// All resource allocations can be overridden by explicitly configuring them in the
     /// `spec.servers.resources` field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoResourceAllocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoResourceAllocation")]
     pub auto_resource_allocation: Option<CouchbaseClusterAutoResourceAllocation>,
     /// AutoscaleStabilizationPeriod defines how long after a rebalance the
     /// corresponding HorizontalPodAutoscaler should remain in maintenance mode.
@@ -57,18 +44,14 @@ pub struct CouchbaseClusterSpec {
     /// Since certain metrics can be unpredictable when Couchbase is rebalancing or upgrading,
     /// setting a stabilization period helps to prevent scaling recommendations from the
     /// HorizontalPodAutoscaler for a provided period of time.
-    ///
-    ///
+    /// 
+    /// 
     /// Values must be a valid Kubernetes duration of 0s or higher:
     /// https://golang.org/pkg/time/#ParseDuration
     /// A value of 0, puts the cluster in maintenance mode during rebalance but
     /// immediately exits this mode once the rebalance has completed.
     /// When undefined, the HPA is never put into maintenance mode during rebalance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoscaleStabilizationPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscaleStabilizationPeriod")]
     pub autoscale_stabilization_period: Option<String>,
     /// Backup defines whether the Operator should manage automated backups, and how
     /// to lookup backup resources.
@@ -88,36 +71,24 @@ pub struct CouchbaseClusterSpec {
     /// expand the volumes which are actively bound to Pods.
     /// Volumes can only be expanded and not reduced to a smaller size.
     /// See: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#resizing-an-in-use-persistentvolumeclaim
-    ///
-    ///
+    /// 
+    /// 
     /// If "EnableOnlineVolumeExpansion" is enabled for use within an environment that does
     /// not actually support online volume and file system expansion then the cluster will fallback to
     /// rolling upgrade procedure to create a new set of Pods for use with resized Volumes.
     /// More info:  https://kubernetes.io/docs/concepts/storage/persistent-volumes/#expanding-persistent-volumes-claims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableOnlineVolumeExpansion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableOnlineVolumeExpansion")]
     pub enable_online_volume_expansion: Option<bool>,
     /// DEPRECATED - This option only exists for backwards compatibility and no longer
     /// restricts autoscaling to ephemeral services.
     /// EnablePreviewScaling enables autoscaling for stateful services and buckets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enablePreviewScaling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enablePreviewScaling")]
     pub enable_preview_scaling: Option<bool>,
     /// EnvImagePrecedence gives precedence over the default container image name in
     /// `spec.Image` to an image name provided through Operator environment variables.
     /// For more info on using Operator environment variables:
     /// https://docs.couchbase.com/operator/current/reference-operator-configuration.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envImagePrecedence"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envImagePrecedence")]
     pub env_image_precedence: Option<bool>,
     /// Hibernate is whether to hibernate the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -125,11 +96,7 @@ pub struct CouchbaseClusterSpec {
     /// HibernationStrategy defines how to hibernate the cluster.  When Immediate
     /// the Operator will immediately delete all pods and take no further action until
     /// the hibernate field is set to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hibernationStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hibernationStrategy")]
     pub hibernation_strategy: Option<CouchbaseClusterHibernationStrategy>,
     /// Image is the container image name that will be used to launch Couchbase
     /// server instances.  Updating this field will cause an automatic upgrade of
@@ -152,11 +119,7 @@ pub struct CouchbaseClusterSpec {
     /// for expanding volumes. This must only be provided, if EnableOnlineVolumeExpansion is set to true.
     /// Value must be between 0 and 30.
     /// If no value is provided, then it defaults to 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onlineVolumeExpansionTimeoutInMins"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlineVolumeExpansionTimeoutInMins")]
     pub online_volume_expansion_timeout_in_mins: Option<i64>,
     /// Paused is to pause the control of the operator for the Couchbase cluster.
     /// This does not pause the cluster itself, instead stopping the operator from
@@ -176,19 +139,11 @@ pub struct CouchbaseClusterSpec {
     /// data, where the loss of the pod means that the data is known to be unrecoverable.
     /// This field must be either "PrioritizeDataIntegrity" or "PrioritizeUptime", defaulting
     /// to "PrioritizeDataIntegrity".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recoveryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoveryPolicy")]
     pub recovery_policy: Option<CouchbaseClusterRecoveryPolicy>,
     /// When `spec.upgradeStrategy` is set to `RollingUpgrade` it will, by default, upgrade one pod
     /// at a time.  If this field is specified then that number can be increased.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpgrade"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpgrade")]
     pub rolling_upgrade: Option<CouchbaseClusterRollingUpgrade>,
     /// Security defines Couchbase cluster security options such as the administrator
     /// account username and password, and user RBAC settings.
@@ -200,11 +155,7 @@ pub struct CouchbaseClusterSpec {
     /// you must also set runAsUser to 1000, corresponding to the Couchbase user
     /// in official container images.  More info:
     /// https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<CouchbaseClusterSecurityContext>,
     /// ServerGroups define the set of availability zones you want to distribute
     /// pods over, and construct Couchbase server groups for.  By default, most
@@ -215,11 +166,7 @@ pub struct CouchbaseClusterSpec {
     /// aware scheduling when none is provided for you.  Global server groups are
     /// applied to all server classes, and may be overridden on a per-server class
     /// basis to give more control over scheduling and server groups.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverGroups")]
     pub server_groups: Option<Vec<String>>,
     /// Servers defines server classes for the Operator to provision and manage.
     /// A server class defines what services are running and how many members make
@@ -230,22 +177,14 @@ pub struct CouchbaseClusterSpec {
     pub servers: Vec<CouchbaseClusterServers>,
     /// SoftwareUpdateNotifications enables software update notifications in the UI.
     /// When enabled, the UI will alert when a Couchbase server upgrade is available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "softwareUpdateNotifications"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "softwareUpdateNotifications")]
     pub software_update_notifications: Option<bool>,
     /// UpgradeProcess defines the process that will be used when performing a couchbase cluster upgrade.
     /// When SwapRebalance is requested (default), pods will be upgraded using either a RollingUpgrade or
     /// ImmediateUpgrade (determined by UpgradeStrategy). When InPlaceUpgrade is requested, the operator will
     /// perform an in-place upgrade on a best effort basis. InPlaceUpgrade cannot be used if the UpgradeStrategy
     /// is set to ImmediateUpgrade.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upgradeProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeProcess")]
     pub upgrade_process: Option<CouchbaseClusterUpgradeProcess>,
     /// UpgradeStrategy controls how aggressive the Operator is when performing a cluster
     /// upgrade.  When a rolling upgrade is requested, pods are upgraded one at a time.  This
@@ -253,21 +192,13 @@ pub struct CouchbaseClusterSpec {
     /// requested, all pods are upgraded at the same time.  This strategy is faster, but more
     /// disruptive.  This field must be either "RollingUpgrade" or "ImmediateUpgrade", defaulting
     /// to "RollingUpgrade".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upgradeStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeStrategy")]
     pub upgrade_strategy: Option<CouchbaseClusterUpgradeStrategy>,
     /// VolumeClaimTemplates define the desired characteristics of a volume
     /// that can be requested/claimed by a pod, for example the storage class to
     /// use and the volume size.  Volume claim templates are referred to by name
     /// by server class volume mount configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<CouchbaseClusterVolumeClaimTemplates>>,
     /// XDCR defines whether the Operator should manage XDCR, remote clusters and how
     /// to lookup replication resources.
@@ -296,22 +227,14 @@ pub struct CouchbaseClusterAutoResourceAllocation {
     /// CPUs required to run Couchbase Server.  Explicitly specifying the CPU request
     /// for a particular server class will override this value. More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuRequests")]
     pub cpu_requests: Option<String>,
     /// Enabled defines whether auto-resource allocation is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// OverheadPercent defines the amount of memory above that required for individual
     /// services on a pod.  For Couchbase Server this should be approximately 25%.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overheadPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overheadPercent")]
     pub overhead_percent: Option<i64>,
 }
 
@@ -326,11 +249,7 @@ pub struct CouchbaseClusterBackup {
     pub image: String,
     /// ImagePullSecrets allow you to use an image from private
     /// repositories and non-dockerhub ones.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<CouchbaseClusterBackupImagePullSecrets>>,
     /// Labels defines additional labels to appear on the backup/restore pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -340,19 +259,11 @@ pub struct CouchbaseClusterBackup {
     pub managed: Option<bool>,
     /// NodeSelector defines which nodes to constrain the pods that
     /// run any backup and restore operations to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Deprecated: by CouchbaseBackup.spec.objectStore.Endpoint
     /// ObjectEndpoint contains the configuration for connecting to a custom S3 compliant object store.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectEndpoint")]
     pub object_endpoint: Option<CouchbaseClusterBackupObjectEndpoint>,
     /// Resources is the resource requirements for the backup and restore
     /// containers.  Will be populated by defaults if not specified.
@@ -370,11 +281,7 @@ pub struct CouchbaseClusterBackup {
     pub selector: Option<CouchbaseClusterBackupSelector>,
     /// The Service Account to run backup (and restore) pods under.
     /// Without this backup pods will not be able to update status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Tolerations specifies all backup and restore pod tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -383,11 +290,7 @@ pub struct CouchbaseClusterBackup {
     /// UseIAMRole enables backup to fetch EC2 instance metadata.
     /// This allows the AWS SDK to use the EC2's IAM Role for S3 access.
     /// UseIAMRole will ignore credentials in s3Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useIAMRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useIAMRole")]
     pub use_iam_role: Option<bool>,
 }
 
@@ -415,11 +318,7 @@ pub struct CouchbaseClusterBackupObjectEndpoint {
     pub url: Option<String>,
     /// UseVirtualPath will force the AWS SDK to use the new virtual style paths
     /// which are often required by S3 compatible object stores.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useVirtualPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useVirtualPath")]
     pub use_virtual_path: Option<bool>,
 }
 
@@ -429,12 +328,12 @@ pub struct CouchbaseClusterBackupObjectEndpoint {
 pub struct CouchbaseClusterBackupResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CouchbaseClusterBackupResourcesClaims>>,
@@ -464,20 +363,12 @@ pub struct CouchbaseClusterBackupResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterBackupSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CouchbaseClusterBackupSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -520,11 +411,7 @@ pub struct CouchbaseClusterBackupTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -573,20 +460,12 @@ pub struct CouchbaseClusterBuckets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterBucketsSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CouchbaseClusterBucketsSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -616,73 +495,41 @@ pub struct CouchbaseClusterCluster {
     /// the analytics service.  This field must be a quantity greater than or equal to 1Gi.  This
     /// field defaults to 1Gi.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsServiceMemoryQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsServiceMemoryQuota")]
     pub analytics_service_memory_quota: Option<String>,
     /// AutoCompaction allows the configuration of auto-compaction, including on what
     /// conditions disk space is reclaimed and when it is allowed to run.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoCompaction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoCompaction")]
     pub auto_compaction: Option<CouchbaseClusterClusterAutoCompaction>,
     /// AutoFailoverMaxCount is the maximum number of automatic failovers Couchbase server
     /// will allow before not allowing any more.  This field must be between 1-3 for server versions prior to 7.1.0
     /// default is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoFailoverMaxCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoFailoverMaxCount")]
     pub auto_failover_max_count: Option<i64>,
     /// AutoFailoverOnDataDiskIssues defines whether Couchbase server should failover a pod
     /// if a disk issue was detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoFailoverOnDataDiskIssues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoFailoverOnDataDiskIssues")]
     pub auto_failover_on_data_disk_issues: Option<bool>,
     /// AutoFailoverOnDataDiskIssuesTimePeriod defines how long to wait for transient errors
     /// before failing over a faulty disk.  This field must be in the range 5-3600s, defaulting
     /// to 120s.  More info:  https://golang.org/pkg/time/#ParseDuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoFailoverOnDataDiskIssuesTimePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoFailoverOnDataDiskIssuesTimePeriod")]
     pub auto_failover_on_data_disk_issues_time_period: Option<String>,
     /// AutoFailoverServerGroup whether to enable failing over a server group.
     /// This field is ignored in server versions 7.1+ as it has been removed from the Couchbase API
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoFailoverServerGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoFailoverServerGroup")]
     pub auto_failover_server_group: Option<bool>,
     /// AutoFailoverTimeout defines how long Couchbase server will wait between a pod
     /// being witnessed as down, until when it will failover the pod.  Couchbase server
     /// will only failover pods if it deems it safe to do so, and not result in data
     /// loss.  This field must be in the range 5-3600s, defaulting to 120s.
     /// More info:  https://golang.org/pkg/time/#ParseDuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoFailoverTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoFailoverTimeout")]
     pub auto_failover_timeout: Option<String>,
     /// ClusterName defines the name of the cluster, as displayed in the Couchbase UI.
     /// By default, the cluster name is that specified in the CouchbaseCluster resource's
     /// metadata.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// Data allows the data service to be configured.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -692,44 +539,28 @@ pub struct CouchbaseClusterCluster {
     /// the data service.  This field must be a quantity greater than or equal to 256Mi.  This
     /// field defaults to 256Mi.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataServiceMemoryQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataServiceMemoryQuota")]
     pub data_service_memory_quota: Option<String>,
     /// EventingServiceMemQuota is the amount of memory that should be allocated to the eventing service.
     /// This value is per-pod, and only applicable to pods belonging to server classes running
     /// the eventing service.  This field must be a quantity greater than or equal to 256Mi.  This
     /// field defaults to 256Mi.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventingServiceMemoryQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventingServiceMemoryQuota")]
     pub eventing_service_memory_quota: Option<String>,
     /// IndexServiceMemQuota is the amount of memory that should be allocated to the index service.
     /// This value is per-pod, and only applicable to pods belonging to server classes running
     /// the index service.  This field must be a quantity greater than or equal to 256Mi.  This
     /// field defaults to 256Mi.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "indexServiceMemoryQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexServiceMemoryQuota")]
     pub index_service_memory_quota: Option<String>,
     /// DEPRECATED - by indexer.
     /// The index storage mode to use for secondary indexing.  This field must be one of
     /// "memory_optimized" or "plasma", defaulting to "memory_optimized".  This field is
     /// immutable and cannot be changed unless there are no server classes running the
     /// index service in the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "indexStorageSetting"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexStorageSetting")]
     pub index_storage_setting: Option<CouchbaseClusterClusterIndexStorageSetting>,
     /// Indexer allows the indexer to be configured.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -744,22 +575,14 @@ pub struct CouchbaseClusterCluster {
     /// In CB Server 7.6.0+ QueryServiceMemQuota also sets a soft memory limit for every Query node in the cluster.
     /// The garbage collector tries to keep below this target. It is not a hard, absolute limit, and memory
     /// usage may exceed this value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryServiceMemoryQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryServiceMemoryQuota")]
     pub query_service_memory_quota: Option<String>,
     /// SearchServiceMemQuota is the amount of memory that should be allocated to the search service.
     /// This value is per-pod, and only applicable to pods belonging to server classes running
     /// the search service.  This field must be a quantity greater than or equal to 256Mi.  This
     /// field defaults to 256Mi.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "searchServiceMemoryQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "searchServiceMemoryQuota")]
     pub search_service_memory_quota: Option<String>,
 }
 
@@ -768,45 +591,23 @@ pub struct CouchbaseClusterCluster {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterClusterAutoCompaction {
     /// DatabaseFragmentationThreshold defines triggers for when database compaction should start.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseFragmentationThreshold"
-    )]
-    pub database_fragmentation_threshold:
-        Option<CouchbaseClusterClusterAutoCompactionDatabaseFragmentationThreshold>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseFragmentationThreshold")]
+    pub database_fragmentation_threshold: Option<CouchbaseClusterClusterAutoCompactionDatabaseFragmentationThreshold>,
     /// ParallelCompaction controls whether database and view compactions can happen
     /// in parallel.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parallelCompaction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelCompaction")]
     pub parallel_compaction: Option<bool>,
     /// TimeWindow allows restriction of when compaction can occur.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeWindow")]
     pub time_window: Option<CouchbaseClusterClusterAutoCompactionTimeWindow>,
     /// TombstonePurgeInterval controls how long to wait before purging tombstones.
     /// This field must be in the range 1h-1440h, defaulting to 72h.
     /// More info:  https://golang.org/pkg/time/#ParseDuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tombstonePurgeInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tombstonePurgeInterval")]
     pub tombstone_purge_interval: Option<String>,
     /// ViewFragmentationThreshold defines triggers for when view compaction should start.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "viewFragmentationThreshold"
-    )]
-    pub view_fragmentation_threshold:
-        Option<CouchbaseClusterClusterAutoCompactionViewFragmentationThreshold>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "viewFragmentationThreshold")]
+    pub view_fragmentation_threshold: Option<CouchbaseClusterClusterAutoCompactionViewFragmentationThreshold>,
 }
 
 /// DatabaseFragmentationThreshold defines triggers for when database compaction should start.
@@ -828,11 +629,7 @@ pub struct CouchbaseClusterClusterAutoCompactionDatabaseFragmentationThreshold {
 pub struct CouchbaseClusterClusterAutoCompactionTimeWindow {
     /// AbortCompactionOutsideWindow stops compaction processes when the
     /// process moves outside the window.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "abortCompactionOutsideWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "abortCompactionOutsideWindow")]
     pub abort_compaction_outside_window: Option<bool>,
     /// End is a wallclock time, in the form HH:MM, when a compaction should stop.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -866,20 +663,12 @@ pub struct CouchbaseClusterClusterData {
     /// and should only be increased where there are sufficient CPU resources
     /// allocated for their use. If not specified, this defaults to the
     /// default value set by Couchbase Server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "auxIOThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auxIOThreads")]
     pub aux_io_threads: Option<i64>,
     /// MinReplicasCount allows the minimum number of replicas required for
     /// buckets to be set. New buckets cannot be created with less than this minimum.
     /// Defaults to 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReplicasCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicasCount")]
     pub min_replicas_count: Option<i64>,
     /// NonIOThreads allows the number of threads used by the data service,
     /// per pod, to be altered.  This indicates the number of threads that are
@@ -888,11 +677,7 @@ pub struct CouchbaseClusterClusterData {
     /// and should only be increased where there are sufficient CPU resources
     /// allocated for their use. If not specified, this defaults to the
     /// default value set by Couchbase Server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonIOThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonIOThreads")]
     pub non_io_threads: Option<i64>,
     /// ReaderThreads allows the number of threads used by the data service,
     /// per pod, to be altered.  This value must be between 4 and 64 threads for CB versions below 7.1.0 and,
@@ -900,11 +685,7 @@ pub struct CouchbaseClusterClusterData {
     /// and should only be increased where there are sufficient CPU resources
     /// allocated for their use.  If not specified, this defaults to the
     /// default value set by Couchbase Server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readerThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readerThreads")]
     pub reader_threads: Option<i64>,
     /// WriterThreads allows the number of threads used by the data service,
     /// per pod, to be altered.  This setting is especially relevant when
@@ -914,11 +695,7 @@ pub struct CouchbaseClusterClusterData {
     /// and should only be increased where there are sufficient CPU resources
     /// allocated for their use. If not specified, this defaults to the
     /// default value set by Couchbase Server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writerThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writerThreads")]
     pub writer_threads: Option<i64>,
 }
 
@@ -939,11 +716,7 @@ pub struct CouchbaseClusterClusterIndexer {
     /// are newly assigned to them during a rebalance. When set to true,
     /// Couchbase Server moves a reassigned index’s files between Index Servers.
     /// This field is only supported on CB versions 7.6.0+.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableShardAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableShardAffinity")]
     pub enable_shard_affinity: Option<bool>,
     /// LogLevel controls the verbosity of indexer logs.  This field must be one of
     /// "silent", "fatal", "error", "warn", "info", "verbose", "timing", "debug" or
@@ -952,19 +725,11 @@ pub struct CouchbaseClusterClusterIndexer {
     pub log_level: Option<CouchbaseClusterClusterIndexerLogLevel>,
     /// MaxRollbackPoints controls the number of checkpoints that can be rolled
     /// back to.  The default is 2, with a minimum of 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRollbackPoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRollbackPoints")]
     pub max_rollback_points: Option<i64>,
     /// MemorySnapshotInterval controls when memory indexes should be snapshotted.
     /// This defaults to 200ms, and must be greater than or equal to 1ms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memorySnapshotInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySnapshotInterval")]
     pub memory_snapshot_interval: Option<String>,
     /// NumberOfReplica specifies number of secondary index replicas to be created
     /// by the Index Service whenever CREATE INDEX is invoked, which ensures
@@ -973,38 +738,22 @@ pub struct CouchbaseClusterClusterIndexer {
     /// the specified number of nodes must be one greater than num_replica
     /// This defaults to 0, which means no index replicas to be created by default.
     /// Minimum must be 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numReplica"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numReplica")]
     pub num_replica: Option<i64>,
     /// RedistributeIndexes when true, Couchbase Server redistributes indexes
     /// when rebalance occurs, in order to optimize performance.
     /// If false (the default), such redistribution does not occur.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redistributeIndexes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redistributeIndexes")]
     pub redistribute_indexes: Option<bool>,
     /// StableSnapshotInterval controls when disk indexes should be snapshotted.
     /// This defaults to 5s, and must be greater than or equal to 1ms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stableSnapshotInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stableSnapshotInterval")]
     pub stable_snapshot_interval: Option<String>,
     /// StorageMode controls the underlying storage engine for indexes.  Once set
     /// it can only be modified if there are no nodes in the cluster running the
     /// index service.  The field must be one of "memory_optimized" or "plasma",
     /// defaulting to "memory_optimized".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<CouchbaseClusterClusterIndexerStorageMode>,
     /// Threads controls the number of processor threads to use for indexing.
     /// A value of 0 means 1 per CPU.  This attribute must be greater
@@ -1049,11 +798,7 @@ pub enum CouchbaseClusterClusterIndexerStorageMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterClusterQuery {
     /// BackfillEnabled allows the query service to backfill.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backfillEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backfillEnabled")]
     pub backfill_enabled: Option<bool>,
     /// CBOEnabled specifies whether the cost-based optimizer is enabled.
     /// Defaults to true.
@@ -1097,11 +842,7 @@ pub struct CouchbaseClusterClusterQuery {
     /// requests catalog. All completed queries lasting longer than this threshold
     /// are logged in the completed requests catalog. This field requires `completedTrackingEnabled`
     /// to be set to true and `completedTrackingAllRequests` to be false to have any effect.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completedTrackingThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completedTrackingThreshold")]
     pub completed_tracking_threshold: Option<String>,
     /// LogLevel controls the verbosity of query logs. This field must be one of
     /// "debug", "trace", "info", "warn", "error", "severe", or "none", defaulting to "info".
@@ -1118,11 +859,7 @@ pub struct CouchbaseClusterClusterQuery {
     /// a request. It does not take into account any other memory that might be used to process a request,
     /// such as the stack, the operators, or some intermediate values.
     /// Defaults to 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memoryQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryQuota")]
     pub memory_quota: Option<String>,
     /// NodeQuotaValPercent sets the  percentage of the `useReplica` that is dedicated to tracked
     /// value content memory across all active requests for every Query node in the cluster.
@@ -1169,21 +906,13 @@ pub struct CouchbaseClusterClusterQuery {
     /// `backfillEnabled` to be set to true in order to have any effect.
     /// More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "temporarySpace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "temporarySpace")]
     pub temporary_space: Option<String>,
     /// TemporarySpaceUnlimited allows the temporary storage used by
     /// the query service backfill, per-pod, to be unconstrained.  This field
     /// requires `backfillEnabled` to be set to true in order to have any effect.
     /// This field overrides `temporarySpace`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "temporarySpaceUnlimited"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "temporarySpaceUnlimited")]
     pub temporary_space_unlimited: Option<bool>,
     /// Timeout is the maximum time to spend on the request before timing out.
     /// If this field is not set then there will be no timeout.
@@ -1201,11 +930,7 @@ pub struct CouchbaseClusterClusterQuery {
     /// and cannot be overridden at request level. If this field is unset then it is enabled/disabled
     /// at the request level.
     /// This field is only supported on CB versions 7.6.0+.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useReplica"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useReplica")]
     pub use_replica: Option<bool>,
 }
 
@@ -1242,18 +967,10 @@ pub struct CouchbaseClusterLogging {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audit: Option<CouchbaseClusterLoggingAudit>,
     /// LogRetentionCount gives the number of persistent log PVCs to keep.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logRetentionCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logRetentionCount")]
     pub log_retention_count: Option<i64>,
     /// LogRetentionTime gives the time to keep persistent log PVCs alive for.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logRetentionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logRetentionTime")]
     pub log_retention_time: Option<String>,
     /// Specification of all logging configuration required to manage the sidecar containers in each pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1267,21 +984,13 @@ pub struct CouchbaseClusterLoggingAudit {
     /// This is passed to the REST API with no verification by the operator.
     /// Refer to the documentation for details:
     /// https://docs.couchbase.com/server/current/audit-event-reference/audit-event-reference.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disabledEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disabledEvents")]
     pub disabled_events: Option<Vec<i64>>,
     /// The list of users to ignore for auditing purposes.
     /// This is passed to the REST API with minimal validation it meets an acceptable regex pattern.
     /// Refer to the documentation for full details on how to configure this:
     /// https://docs.couchbase.com/server/current/manage/manage-security/manage-auditing.html#ignoring-events-by-user
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disabledUsers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disabledUsers")]
     pub disabled_users: Option<Vec<String>>,
     /// Enabled is a boolean that enables the audit capabilities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1291,11 +1000,7 @@ pub struct CouchbaseClusterLoggingAudit {
     /// By default the Couchbase Server rotates the audit logs but does not clean up the rotated logs.
     /// This is left as an operation for the cluster administrator to manage, the operator allows for us to automate this:
     /// https://docs.couchbase.com/server/current/manage/manage-security/manage-auditing.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "garbageCollection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "garbageCollection")]
     pub garbage_collection: Option<CouchbaseClusterLoggingAuditGarbageCollection>,
     /// The interval to optionally rotate the audit log.
     /// This is passed to the REST API, see here for details:
@@ -1346,12 +1051,12 @@ pub struct CouchbaseClusterLoggingAuditGarbageCollectionSidecar {
 pub struct CouchbaseClusterLoggingAuditGarbageCollectionSidecarResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CouchbaseClusterLoggingAuditGarbageCollectionSidecarResourcesClaims>>,
@@ -1405,11 +1110,7 @@ pub struct CouchbaseClusterLoggingServer {
     /// Note that if running multiple clusters in the same kubernetes namespace then you should use a separate Secret for each,
     /// otherwise the first cluster will take ownership (if created) and the Secret will be cleaned up when that cluster is
     /// removed. If running clusters in separate namespaces then they will be separate Secrets anyway.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configurationName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationName")]
     pub configuration_name: Option<String>,
     /// Enabled is a boolean that enables the logging sidecar container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1419,11 +1120,7 @@ pub struct CouchbaseClusterLoggingServer {
     /// To use a custom configuration make sure to set this to false.
     /// Note that the ownership of any Secret is not changed so if a Secret is created externally it can be updated by
     /// the operator but it's ownership stays the same so it will be cleaned up when it's owner is.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "manageConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "manageConfiguration")]
     pub manage_configuration: Option<bool>,
     /// Any specific logging sidecar container configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1438,11 +1135,7 @@ pub struct CouchbaseClusterLoggingServerSidecar {
     /// Note that the configuration file must be called 'fluent-bit.conf' at the root of this path,
     /// there is no provision for overriding the name of the config file passed as the
     /// COUCHBASE_LOGS_CONFIG_FILE environment variable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configurationMountPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationMountPath")]
     pub configuration_mount_path: Option<String>,
     /// Image is the image to be used to deal with logging as a sidecar.
     /// No validation is carried out as this can be any arbitrary repo and tag.
@@ -1461,12 +1154,12 @@ pub struct CouchbaseClusterLoggingServerSidecar {
 pub struct CouchbaseClusterLoggingServerSidecarResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CouchbaseClusterLoggingServerSidecarResourcesClaims>>,
@@ -1508,11 +1201,7 @@ pub struct CouchbaseClusterMonitoring {
 pub struct CouchbaseClusterMonitoringPrometheus {
     /// AuthorizationSecret is the name of a Kubernetes secret that contains a
     /// bearer token to authorize GET requests to the metrics endpoint
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizationSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizationSecret")]
     pub authorization_secret: Option<String>,
     /// Enabled is a boolean that enables/disables the metrics sidecar container.
     /// This must be set to true, when image is provided.
@@ -1525,11 +1214,7 @@ pub struct CouchbaseClusterMonitoringPrometheus {
     /// RefreshRate is the frequency in which cached statistics are updated in seconds.
     /// Shorter intervals will add additional resource overhead to clusters running Couchbase Server 7.0+
     /// Default is 60 seconds, Maximum value is 600 seconds, and minimum value is 1 second.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshRate")]
     pub refresh_rate: Option<i64>,
     /// Resources is the resource requirements for the metrics container.
     /// Will be populated by Kubernetes defaults if not specified.
@@ -1543,12 +1228,12 @@ pub struct CouchbaseClusterMonitoringPrometheus {
 pub struct CouchbaseClusterMonitoringPrometheusResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CouchbaseClusterMonitoringPrometheusResourcesClaims>>,
@@ -1585,11 +1270,7 @@ pub struct CouchbaseClusterNetworking {
     /// protocols to provide added security and simplicty when defining firewall
     /// rules.  Disabling of address families is only supported in Couchbase
     /// Server 7.0.2+.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addressFamily"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addressFamily")]
     pub address_family: Option<CouchbaseClusterNetworkingAddressFamily>,
     /// AdminConsoleServiceTemplate provides a template used by the Operator to create
     /// and manage the admin console service.  This allows services to be annotated, the
@@ -1597,67 +1278,38 @@ pub struct CouchbaseClusterNetworking {
     /// a LoadBalancer service type, TLS and dynamic DNS must also be enabled. The Operator
     /// reserves the right to modify or replace any field.  More info:
     /// https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#service-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminConsoleServiceTemplate"
-    )]
-    pub admin_console_service_template:
-        Option<CouchbaseClusterNetworkingAdminConsoleServiceTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminConsoleServiceTemplate")]
+    pub admin_console_service_template: Option<CouchbaseClusterNetworkingAdminConsoleServiceTemplate>,
     /// DEPRECATED - by adminConsoleServiceTemplate.
     /// AdminConsoleServiceType defines whether to create a node port or load balancer service.
     /// When using a LoadBalancer service type, TLS and dynamic DNS must also be enabled.
     /// This field must be one of "NodePort" or "LoadBalancer", defaulting to "NodePort".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminConsoleServiceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminConsoleServiceType")]
     pub admin_console_service_type: Option<CouchbaseClusterNetworkingAdminConsoleServiceType>,
     /// DEPRECATED - not required by Couchbase Server.
     /// AdminConsoleServices is a selector to choose specific services to expose via the admin
     /// console. This field may contain any of "data", "index", "query", "search", "eventing"
     /// and "analytics".  Each service may only be included once.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminConsoleServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminConsoleServices")]
     pub admin_console_services: Option<Vec<String>>,
     /// CloudNativeGateway is used to provision a gRPC gateway proxying a Couchbase
     /// cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudNativeGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudNativeGateway")]
     pub cloud_native_gateway: Option<CouchbaseClusterNetworkingCloudNativeGateway>,
     /// DisableUIOverHTTP is used to explicitly enable and disable UI access over
     /// the HTTP protocol.  If not specified, this field defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableUIOverHTTP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableUIOverHTTP")]
     pub disable_ui_over_http: Option<bool>,
     /// DisableUIOverHTTPS is used to explicitly enable and disable UI access over
     /// the HTTPS protocol.  If not specified, this field defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableUIOverHTTPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableUIOverHTTPS")]
     pub disable_ui_over_https: Option<bool>,
     /// DNS defines information required for Dynamic DNS support.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dns: Option<CouchbaseClusterNetworkingDns>,
     /// ExposeAdminConsole creates a service referencing the admin console.
     /// The service is configured by the adminConsoleServiceTemplate field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposeAdminConsole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeAdminConsole")]
     pub expose_admin_console: Option<bool>,
     /// ExposedFeatureServiceTemplate provides a template used by the Operator to create
     /// and manage per-pod services.  This allows services to be annotated, the
@@ -1665,22 +1317,13 @@ pub struct CouchbaseClusterNetworking {
     /// a LoadBalancer service type, TLS and dynamic DNS must also be enabled. The Operator
     /// reserves the right to modify or replace any field.  More info:
     /// https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#service-v1-core
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposedFeatureServiceTemplate"
-    )]
-    pub exposed_feature_service_template:
-        Option<CouchbaseClusterNetworkingExposedFeatureServiceTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposedFeatureServiceTemplate")]
+    pub exposed_feature_service_template: Option<CouchbaseClusterNetworkingExposedFeatureServiceTemplate>,
     /// DEPRECATED - by exposedFeatureServiceTemplate.
     /// ExposedFeatureServiceType defines whether to create a node port or load balancer service.
     /// When using a LoadBalancer service type, TLS and dynamic DNS must also be enabled.
     /// This field must be one of "NodePort" or "LoadBalancer", defaulting to "NodePort".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposedFeatureServiceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposedFeatureServiceType")]
     pub exposed_feature_service_type: Option<CouchbaseClusterNetworkingExposedFeatureServiceType>,
     /// DEPRECATED  - by exposedFeatureServiceTemplate.
     /// ExposedFeatureTrafficPolicy defines how packets should be routed from a load balancer
@@ -1688,13 +1331,8 @@ pub struct CouchbaseClusterNetworking {
     /// cluster, traffic is routed to any node, then forwarded on.  While cluster routing may be
     /// slower, there are some situations where it is required for connectivity.  This field
     /// must be either "Cluster" or "Local", defaulting to "Local",
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposedFeatureTrafficPolicy"
-    )]
-    pub exposed_feature_traffic_policy:
-        Option<CouchbaseClusterNetworkingExposedFeatureTrafficPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposedFeatureTrafficPolicy")]
+    pub exposed_feature_traffic_policy: Option<CouchbaseClusterNetworkingExposedFeatureTrafficPolicy>,
     /// ExposedFeatures is a list of Couchbase features to expose when using a networking
     /// model that exposes the Couchbase cluster externally to Kubernetes.  This field also
     /// triggers the creation of per-pod services used by clients to connect to the Couchbase
@@ -1704,40 +1342,24 @@ pub struct CouchbaseClusterNetworking {
     /// replication.  When client, all services are exposed as required for client SDK operation.
     /// This field may contain any of "admin", "xdcr" and "client".  Each feature may only be
     /// included once.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposedFeatures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposedFeatures")]
     pub exposed_features: Option<Vec<String>>,
     /// DEPRECATED - by adminConsoleServiceTemplate and exposedFeatureServiceTemplate.
     /// LoadBalancerSourceRanges applies only when an exposed service is of type
     /// LoadBalancer and limits the source IP ranges that are allowed to use the
     /// service.  Items must use IPv4 class-less interdomain routing (CIDR) notation
     /// e.g. 10.0.0.0/16.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// NetworkPlatform is used to enable support for various networking
     /// technologies.  This field must be one of "Istio".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkPlatform"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPlatform")]
     pub network_platform: Option<CouchbaseClusterNetworkingNetworkPlatform>,
     /// DEPRECATED - by adminConsoleServiceTemplate and exposedFeatureServiceTemplate.
     /// ServiceAnnotations allows services to be annotated with custom labels.
     /// Operator annotations are merged on top of these so have precedence as
     /// they are required for correct operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
     pub service_annotations: Option<BTreeMap<String, String>>,
     /// TLS defines the TLS configuration for the cluster including
     /// server and client certificate configuration, and TLS security policies.
@@ -1747,21 +1369,13 @@ pub struct CouchbaseClusterNetworking {
     /// external addresses is started, and when it is deemed a failure.  Polling of
     /// DNS name availability inherently dangerous due to negative caching, so prefer
     /// the use of an initial `waitForAddressReachableDelay` to allow propagation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitForAddressReachable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForAddressReachable")]
     pub wait_for_address_reachable: Option<String>,
     /// WaitForAddressReachableDelay is used to defer operator checks that
     /// ensure external addresses are reachable before new nodes are balanced
     /// in to the cluster.  This prevents negative DNS caching while waiting
     /// for external-DDNS controllers to propagate addresses.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitForAddressReachableDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForAddressReachableDelay")]
     pub wait_for_address_reachable_delay: Option<String>,
 }
 
@@ -1817,11 +1431,7 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpec {
     /// value), those requests will be respected, regardless of this field.
     /// This field may only be set for services with type LoadBalancer and will
     /// be cleared if the type is changed to any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// clusterIP is the IP address of the service and is usually assigned
     /// randomly. If an address is specified manually, is in-range (as per
@@ -1858,38 +1468,26 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpec {
     /// be initialized from the clusterIP field.  If this field is specified,
     /// clients must ensure that clusterIPs[0] and clusterIP have the same
     /// value.
-    ///
-    ///
+    /// 
+    /// 
     /// This field may hold a maximum of two entries (dual-stack IPs, in either order).
     /// These IPs must correspond to the values of the ipFamilies field. Both
     /// clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIPs")]
     pub cluster_i_ps: Option<Vec<String>>,
     /// externalIPs is a list of IP addresses for which nodes in the cluster
     /// will also accept traffic for this service.  These IPs are not managed by
     /// Kubernetes.  The user is responsible for ensuring that traffic arrives
     /// at a node with this IP.  A common example is external load-balancers
     /// that are not part of the Kubernetes system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
     /// externalName is the external reference that discovery mechanisms will
     /// return as an alias for this service (e.g. a DNS CNAME record). No
     /// proxying will be involved.  Must be a lowercase RFC-1123 hostname
     /// (https://tools.ietf.org/html/rfc1123) and requires `type` to be "ExternalName".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalName")]
     pub external_name: Option<String>,
     /// externalTrafficPolicy describes how nodes distribute service traffic they
     /// receive on one of the Service's "externally-facing" addresses (NodePorts,
@@ -1904,11 +1502,7 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpec {
     /// within the cluster will always get "Cluster" semantics, but clients sending to
     /// a NodePort from within the cluster may need to take traffic policy into account
     /// when picking a node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// healthCheckNodePort specifies the healthcheck nodePort for the service.
     /// This only applies when type is set to LoadBalancer and
@@ -1920,11 +1514,7 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpec {
     /// which does not need it, creation will fail. This field will be wiped
     /// when updating a Service to no longer need it (e.g. changing type).
     /// This field cannot be updated once set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckNodePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckNodePort")]
     pub health_check_node_port: Option<i32>,
     /// InternalTrafficPolicy describes how nodes distribute service traffic they
     /// receive on the ClusterIP. If set to "Local", the proxy will assume that pods
@@ -1932,11 +1522,7 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpec {
     /// dropping the traffic if there are no local endpoints. The default value,
     /// "Cluster", uses the standard behavior of routing to all endpoints evenly
     /// (possibly modified by topology and other features).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
     pub internal_traffic_policy: Option<String>,
     /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this
     /// service. This field is usually assigned automatically based on cluster
@@ -1949,17 +1535,13 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpec {
     /// and "IPv6".  This field only applies to Services of types ClusterIP,
     /// NodePort, and LoadBalancer, and does apply to "headless" services.
     /// This field will be wiped when updating a Service to type ExternalName.
-    ///
-    ///
+    /// 
+    /// 
     /// This field may hold a maximum of two entries (dual-stack families, in
     /// either order).  These families must correspond to the values of the
     /// clusterIPs field, if specified. Both clusterIPs and ipFamilies are
     /// governed by the ipFamilyPolicy field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
     /// IPFamilyPolicy represents the dual-stack-ness requested or required by
     /// this Service. If there is no value provided, then this field will be set
@@ -1969,11 +1551,7 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpec {
     /// (two IP families on dual-stack configured clusters, otherwise fail). The
     /// ipFamilies and clusterIPs fields depend on the value of this field. This
     /// field will be wiped when updating a service to type ExternalName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<String>,
     /// loadBalancerClass is the class of the load balancer implementation this Service belongs to.
     /// If specified, the value of this field must be a label-style identifier, with an optional prefix,
@@ -1985,11 +1563,7 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpec {
     /// implementation (e.g. cloud providers) should ignore Services that set this field.
     /// This field can only be set when creating or updating a Service to type 'LoadBalancer'.
     /// Once set, it can not be changed. This field will be wiped when a service is updated to a non 'LoadBalancer' type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
     /// Only applies to Service Type: LoadBalancer.
     /// This feature depends on whether the underlying cloud-provider supports specifying
@@ -1998,41 +1572,24 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpec {
     /// Deprecated: This field was under-specified and its meaning varies across implementations.
     /// Using it is non-portable and it may not support dual-stack.
     /// Users are encouraged to use implementation-specific annotations when available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// If specified and supported by the platform, this will restrict traffic through the cloud-provider
     /// load-balancer will be restricted to the specified client IPs. This field will be ignored if the
     /// cloud-provider does not support the feature."
     /// More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Supports "ClientIP" and "None". Used to maintain session affinity.
     /// Enable client IP based session affinity.
     /// Must be ClientIP or None.
     /// Defaults to None.
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// sessionAffinityConfig contains the configurations of session affinity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinityConfig"
-    )]
-    pub session_affinity_config:
-        Option<CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpecSessionAffinityConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
+    pub session_affinity_config: Option<CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpecSessionAffinityConfig>,
     /// type determines how the Service is exposed. Defaults to ClusterIP. Valid
     /// options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
     /// "ClusterIP" allocates a cluster-internal IP address for load-balancing
@@ -2058,9 +1615,7 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpec {
 pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpecSessionAffinityConfig {
     /// clientIP contains the configurations of Client IP based session affinity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientIP")]
-    pub client_ip: Option<
-        CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpecSessionAffinityConfigClientIp,
-    >,
+    pub client_ip: Option<CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpecSessionAffinityConfigClientIp>,
 }
 
 /// clientIP contains the configurations of Client IP based session affinity.
@@ -2069,11 +1624,7 @@ pub struct CouchbaseClusterNetworkingAdminConsoleServiceTemplateSpecSessionAffin
     /// timeoutSeconds specifies the seconds of ClientIP type session sticky time.
     /// The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP".
     /// Default value is 10800(for 3 hours).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2100,11 +1651,7 @@ pub struct CouchbaseClusterNetworkingCloudNativeGateway {
     pub log_level: CouchbaseClusterNetworkingCloudNativeGatewayLogLevel,
     /// TerminationGracePeriodSeconds specifies the grace period for the container to
     /// terminate. Defaults to 75 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// TLS defines the TLS configuration for the Cloud Native Gateway server including
     /// server and client certificate configuration, and TLS security policies.
@@ -2158,11 +1705,7 @@ pub struct CouchbaseClusterNetworkingCloudNativeGatewayTls {
     /// that contains Cloud Native Gateway gRPC server TLS data.
     /// The secret is expected to contain "tls.crt" and
     /// "tls.key" as per the kubernetes.io/tls secret type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSecretName")]
     pub server_secret_name: Option<String>,
 }
 
@@ -2222,11 +1765,7 @@ pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpec {
     /// value), those requests will be respected, regardless of this field.
     /// This field may only be set for services with type LoadBalancer and will
     /// be cleared if the type is changed to any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// clusterIP is the IP address of the service and is usually assigned
     /// randomly. If an address is specified manually, is in-range (as per
@@ -2263,38 +1802,26 @@ pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpec {
     /// be initialized from the clusterIP field.  If this field is specified,
     /// clients must ensure that clusterIPs[0] and clusterIP have the same
     /// value.
-    ///
-    ///
+    /// 
+    /// 
     /// This field may hold a maximum of two entries (dual-stack IPs, in either order).
     /// These IPs must correspond to the values of the ipFamilies field. Both
     /// clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIPs")]
     pub cluster_i_ps: Option<Vec<String>>,
     /// externalIPs is a list of IP addresses for which nodes in the cluster
     /// will also accept traffic for this service.  These IPs are not managed by
     /// Kubernetes.  The user is responsible for ensuring that traffic arrives
     /// at a node with this IP.  A common example is external load-balancers
     /// that are not part of the Kubernetes system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
     /// externalName is the external reference that discovery mechanisms will
     /// return as an alias for this service (e.g. a DNS CNAME record). No
     /// proxying will be involved.  Must be a lowercase RFC-1123 hostname
     /// (https://tools.ietf.org/html/rfc1123) and requires `type` to be "ExternalName".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalName")]
     pub external_name: Option<String>,
     /// externalTrafficPolicy describes how nodes distribute service traffic they
     /// receive on one of the Service's "externally-facing" addresses (NodePorts,
@@ -2309,11 +1836,7 @@ pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpec {
     /// within the cluster will always get "Cluster" semantics, but clients sending to
     /// a NodePort from within the cluster may need to take traffic policy into account
     /// when picking a node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// healthCheckNodePort specifies the healthcheck nodePort for the service.
     /// This only applies when type is set to LoadBalancer and
@@ -2325,11 +1848,7 @@ pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpec {
     /// which does not need it, creation will fail. This field will be wiped
     /// when updating a Service to no longer need it (e.g. changing type).
     /// This field cannot be updated once set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckNodePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckNodePort")]
     pub health_check_node_port: Option<i32>,
     /// InternalTrafficPolicy describes how nodes distribute service traffic they
     /// receive on the ClusterIP. If set to "Local", the proxy will assume that pods
@@ -2337,11 +1856,7 @@ pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpec {
     /// dropping the traffic if there are no local endpoints. The default value,
     /// "Cluster", uses the standard behavior of routing to all endpoints evenly
     /// (possibly modified by topology and other features).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
     pub internal_traffic_policy: Option<String>,
     /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this
     /// service. This field is usually assigned automatically based on cluster
@@ -2354,17 +1869,13 @@ pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpec {
     /// and "IPv6".  This field only applies to Services of types ClusterIP,
     /// NodePort, and LoadBalancer, and does apply to "headless" services.
     /// This field will be wiped when updating a Service to type ExternalName.
-    ///
-    ///
+    /// 
+    /// 
     /// This field may hold a maximum of two entries (dual-stack families, in
     /// either order).  These families must correspond to the values of the
     /// clusterIPs field, if specified. Both clusterIPs and ipFamilies are
     /// governed by the ipFamilyPolicy field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
     /// IPFamilyPolicy represents the dual-stack-ness requested or required by
     /// this Service. If there is no value provided, then this field will be set
@@ -2374,11 +1885,7 @@ pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpec {
     /// (two IP families on dual-stack configured clusters, otherwise fail). The
     /// ipFamilies and clusterIPs fields depend on the value of this field. This
     /// field will be wiped when updating a service to type ExternalName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<String>,
     /// loadBalancerClass is the class of the load balancer implementation this Service belongs to.
     /// If specified, the value of this field must be a label-style identifier, with an optional prefix,
@@ -2390,11 +1897,7 @@ pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpec {
     /// implementation (e.g. cloud providers) should ignore Services that set this field.
     /// This field can only be set when creating or updating a Service to type 'LoadBalancer'.
     /// Once set, it can not be changed. This field will be wiped when a service is updated to a non 'LoadBalancer' type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
     /// Only applies to Service Type: LoadBalancer.
     /// This feature depends on whether the underlying cloud-provider supports specifying
@@ -2403,41 +1906,24 @@ pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpec {
     /// Deprecated: This field was under-specified and its meaning varies across implementations.
     /// Using it is non-portable and it may not support dual-stack.
     /// Users are encouraged to use implementation-specific annotations when available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// If specified and supported by the platform, this will restrict traffic through the cloud-provider
     /// load-balancer will be restricted to the specified client IPs. This field will be ignored if the
     /// cloud-provider does not support the feature."
     /// More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Supports "ClientIP" and "None". Used to maintain session affinity.
     /// Enable client IP based session affinity.
     /// Must be ClientIP or None.
     /// Defaults to None.
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// sessionAffinityConfig contains the configurations of session affinity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinityConfig"
-    )]
-    pub session_affinity_config:
-        Option<CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpecSessionAffinityConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
+    pub session_affinity_config: Option<CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpecSessionAffinityConfig>,
     /// type determines how the Service is exposed. Defaults to ClusterIP. Valid
     /// options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
     /// "ClusterIP" allocates a cluster-internal IP address for load-balancing
@@ -2463,23 +1949,16 @@ pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpec {
 pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpecSessionAffinityConfig {
     /// clientIP contains the configurations of Client IP based session affinity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientIP")]
-    pub client_ip: Option<
-        CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpecSessionAffinityConfigClientIp,
-    >,
+    pub client_ip: Option<CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpecSessionAffinityConfigClientIp>,
 }
 
 /// clientIP contains the configurations of Client IP based session affinity.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpecSessionAffinityConfigClientIp
-{
+pub struct CouchbaseClusterNetworkingExposedFeatureServiceTemplateSpecSessionAffinityConfigClientIp {
     /// timeoutSeconds specifies the seconds of ClientIP type session sticky time.
     /// The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP".
     /// Default value is 10800(for 3 hours).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2515,38 +1994,22 @@ pub struct CouchbaseClusterNetworkingTls {
     /// server in the event that any of the server certificates expire. When enabled
     /// the Operator only attempts plain text cert reloading when expired certificates
     /// are detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPlainTextCertReload"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPlainTextCertReload")]
     pub allow_plain_text_cert_reload: Option<bool>,
     /// CipherSuites specifies a list of cipher suites for Couchbase server to select
     /// from when negotiating TLS handshakes with a client.  Suites are not validated
     /// by the Operator.  Run "openssl ciphers -v" in a Couchbase server pod to
     /// interrogate supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipherSuites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
     pub cipher_suites: Option<Vec<String>>,
     /// ClientCertificatePaths defines where to look in client certificates in order
     /// to extract the user name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificatePaths"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificatePaths")]
     pub client_certificate_paths: Option<Vec<CouchbaseClusterNetworkingTlsClientCertificatePaths>>,
     /// ClientCertificatePolicy defines the client authentication policy to use.
     /// If set, the Operator expects TLS configuration to contain a valid certificate/key pair
     /// for the Administrator account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificatePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificatePolicy")]
     pub client_certificate_policy: Option<CouchbaseClusterNetworkingTlsClientCertificatePolicy>,
     /// NodeToNodeEncryption specifies whether to encrypt data between Couchbase nodes
     /// within the same cluster.  This may come at the expense of performance.  When
@@ -2556,11 +2019,7 @@ pub struct CouchbaseClusterNetworkingTls {
     /// ports.  Strict mode is only available on Couchbase Server versions 7.1 and greater.
     /// Node to node encryption can only be used when TLS certificates are managed by the
     /// Operator.  This field must be either "ControlPlaneOnly", "All", or "Strict".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeToNodeEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeToNodeEncryption")]
     pub node_to_node_encryption: Option<CouchbaseClusterNetworkingTlsNodeToNodeEncryption>,
     /// PassphraseConfig configures the passphrase key to use with encrypted certificates.
     /// The passphrase may be registered with Couchbase Server using a local script or a
@@ -2586,11 +2045,7 @@ pub struct CouchbaseClusterNetworkingTls {
     /// "kubernetes.io/tls" with "tls.crt" and "tls.key". If the "tls.key" is an encrypted
     /// private key then the secret type can be the generic Opaque type since "kubernetes.io/tls"
     /// type secrets cannot verify encrypted keys.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretSource")]
     pub secret_source: Option<CouchbaseClusterNetworkingTlsSecretSource>,
     /// DEPRECATED - by couchbaseclusters.spec.networking.tls.secretSource.
     /// Static enables user to generate static x509 certificates and keys,
@@ -2602,11 +2057,7 @@ pub struct CouchbaseClusterNetworkingTls {
     /// negotiate with a client.  Must be one of TLS1.0, TLS1.1 TLS1.2 or TLS1.3,
     /// defaulting to TLS1.2.  TLS1.3 is only valid for Couchbase Server 7.1.0 onward.
     /// TLS1.0 and TLS1.1 are not valid for Couchbase Server 7.6.0 onward.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsMinimumVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsMinimumVersion")]
     pub tls_minimum_version: Option<CouchbaseClusterNetworkingTlsTlsMinimumVersion>,
 }
 
@@ -2671,11 +2122,7 @@ pub struct CouchbaseClusterNetworkingTlsPassphrase {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterNetworkingTlsPassphraseRest {
     /// AddressFamily is the address family to use. By default inet (meaning IPV4) is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addressFamily"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addressFamily")]
     pub address_family: Option<CouchbaseClusterNetworkingTlsPassphraseRestAddressFamily>,
     /// Headers is a map of one or more key-value pairs to pass alongside the Get request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2687,11 +2134,7 @@ pub struct CouchbaseClusterNetworkingTlsPassphraseRest {
     /// URL will be called using the GET method and may use http/https protocol.
     pub url: String,
     /// VerifyPeer ensures peer verification is performed when Https is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyPeer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyPeer")]
     pub verify_peer: Option<bool>,
 }
 
@@ -2730,11 +2173,7 @@ pub struct CouchbaseClusterNetworkingTlsSecretSource {
     /// ClientSecretName specifies the secret name, in the same namespace as the cluster,
     /// the contains client TLS data.  The secret is expected to contain "tls.crt" and
     /// "tls.key" as per the Kubernetes.io/tls secret type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecretName")]
     pub client_secret_name: Option<String>,
     /// ServerSecretName specifies the secret name, in the same namespace as the cluster,
     /// that contains server TLS data.  The secret is expected to contain "tls.crt" and
@@ -2757,11 +2196,7 @@ pub struct CouchbaseClusterNetworkingTlsStatic {
     /// ca.crt).  If client authentication is enabled, then the secret must also contain
     /// a client certificate chain (data key "couchbase-operator.crt") and private key
     /// (data key "couchbase-operator.key").
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorSecret")]
     pub operator_secret: Option<String>,
     /// ServerSecret is a secret name containing TLS certs used by each Couchbase member pod
     /// for the communication between Couchbase server and its clients.  The secret must
@@ -2770,11 +2205,7 @@ pub struct CouchbaseClusterNetworkingTlsStatic {
     /// format.  The certificate chain must have a required set of X.509v3 subject alternative
     /// names for all cluster addressing modes.  See the Operator TLS documentation for more
     /// information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSecret")]
     pub server_secret: Option<String>,
 }
 
@@ -2822,11 +2253,7 @@ pub struct CouchbaseClusterRollingUpgrade {
     /// This field must be greater than zero.
     /// The smallest of `maxUpgradable` and `maxUpgradablePercent` takes precedence if
     /// both are defined.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUpgradable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUpgradable")]
     pub max_upgradable: Option<i64>,
     /// MaxUpgradablePercent allows the number of pods affected by an upgrade at any
     /// one time to be increased.  By default a rolling upgrade will
@@ -2838,11 +2265,7 @@ pub struct CouchbaseClusterRollingUpgrade {
     /// rounded down to 2.
     /// The smallest of `maxUpgradable` and `maxUpgradablePercent` takes precedence if
     /// both are defined.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUpgradablePercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUpgradablePercent")]
     pub max_upgradable_percent: Option<String>,
 }
 
@@ -2867,11 +2290,7 @@ pub struct CouchbaseClusterSecurity {
     /// you must also set runAsUser to 1000, corresponding to the Couchbase user
     /// in official container images.  More info:
     /// https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<CouchbaseClusterSecurityPodSecurityContext>,
     /// RBAC is the options provided for enabling and selecting RBAC User resources to manage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2880,20 +2299,12 @@ pub struct CouchbaseClusterSecurity {
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// Use securityContext.allowPrivilegeEscalation field to grant more privileges than its parent process.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<CouchbaseClusterSecuritySecurityContext>,
     /// UISessionTimeout sets how long, in minutes, before a user is declared inactive
     /// and signed out from the Couchbase Server UI.
     /// 0 represents no time out.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uiSessionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uiSessionTimeout")]
     pub ui_session_timeout: Option<i64>,
 }
 
@@ -2904,19 +2315,11 @@ pub struct CouchbaseClusterSecurity {
 pub struct CouchbaseClusterSecurityLdap {
     /// AuthenticationEnabled allows users who attempt to access Couchbase Server without having been
     /// added as local users to be authenticated against the specified LDAP Host(s).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationEnabled")]
     pub authentication_enabled: Option<bool>,
     /// AuthorizationEnabled allows authenticated LDAP users to be authorized with RBAC roles granted to
     /// any Couchbase Server group associated with the user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizationEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizationEnabled")]
     pub authorization_enabled: Option<bool>,
     /// DN to use for searching users and groups synchronization. More info:
     /// https://docs.couchbase.com/server/current/manage/manage-security/configure-ldap.html
@@ -2934,11 +2337,7 @@ pub struct CouchbaseClusterSecurityLdap {
     pub cacert: Option<String>,
     /// Lifetime of values in cache in milliseconds. Default 300000 ms.  More info:
     /// https://docs.couchbase.com/server/current/manage/manage-security/configure-ldap.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheValueLifetime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheValueLifetime")]
     pub cache_value_lifetime: Option<i64>,
     /// Encryption determines how the connection with the LDAP server should be encrypted.
     /// Encryption may set as either StartTLSExtension, TLS, or false.
@@ -2950,52 +2349,32 @@ pub struct CouchbaseClusterSecurityLdap {
     pub encryption: Option<CouchbaseClusterSecurityLdapEncryption>,
     /// LDAP query, to get the users' groups by username in RFC4516 format.  More info:
     /// https://docs.couchbase.com/server/current/manage/manage-security/configure-ldap.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupsQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupsQuery")]
     pub groups_query: Option<String>,
     /// List of LDAP hosts to provide authentication-support for Couchbase Server.
     /// Host name must be a valid IP address or DNS Name e.g openldap.default.svc, 10.0.92.147.
     pub hosts: Vec<String>,
     /// Sets middlebox compatibility mode for LDAP. This option is only available on
     /// Couchbase Server 7.6.0+.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "middleboxCompMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "middleboxCompMode")]
     pub middlebox_comp_mode: Option<bool>,
     /// If enabled Couchbase server will try to recursively search for groups
     /// for every discovered ldap group. groups_query will be user for the search.
     /// More info:
     /// https://docs.couchbase.com/server/current/manage/manage-security/configure-ldap.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nestedGroupsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nestedGroupsEnabled")]
     pub nested_groups_enabled: Option<bool>,
     /// Maximum number of recursive groups requests the server is allowed to perform.
     /// Requires NestedGroupsEnabled.  Values between 1 and 100: the default is 10.
     /// More info:
     /// https://docs.couchbase.com/server/current/manage/manage-security/configure-ldap.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nestedGroupsMaxDepth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nestedGroupsMaxDepth")]
     pub nested_groups_max_depth: Option<i64>,
     /// LDAP port.
     /// This is typically 389 for LDAP, and 636 for LDAPS.
     pub port: i64,
     /// Whether server certificate validation be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverCertValidation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCertValidation")]
     pub server_cert_validation: Option<bool>,
     /// TLSSecret is the name of a Kubernetes secret to use explcitly for LDAP ca cert.
     /// If TLSSecret is not provided, certificates found in `couchbaseclusters.spec.networking.tls.rootCAs`
@@ -3006,11 +2385,7 @@ pub struct CouchbaseClusterSecurityLdap {
     /// User to distinguished name (DN) mapping. If none is specified,
     /// the username is used as the user’s distinguished name.  More info:
     /// https://docs.couchbase.com/server/current/manage/manage-security/configure-ldap.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDNMapping"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDNMapping")]
     pub user_dn_mapping: Option<CouchbaseClusterSecurityLdapUserDnMapping>,
 }
 
@@ -3052,13 +2427,13 @@ pub struct CouchbaseClusterSecurityPodSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -3070,11 +2445,7 @@ pub struct CouchbaseClusterSecurityPodSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -3082,11 +2453,7 @@ pub struct CouchbaseClusterSecurityPodSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -3094,11 +2461,7 @@ pub struct CouchbaseClusterSecurityPodSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -3114,19 +2477,11 @@ pub struct CouchbaseClusterSecurityPodSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<CouchbaseClusterSecurityPodSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<CouchbaseClusterSecurityPodSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -3135,11 +2490,7 @@ pub struct CouchbaseClusterSecurityPodSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -3150,11 +2501,7 @@ pub struct CouchbaseClusterSecurityPodSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<CouchbaseClusterSecurityPodSecurityContextWindowsOptions>,
 }
 
@@ -3188,16 +2535,12 @@ pub struct CouchbaseClusterSecurityPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3223,38 +2566,22 @@ pub struct CouchbaseClusterSecurityPodSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3275,20 +2602,12 @@ pub struct CouchbaseClusterSecurityRbac {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterSecurityRbacSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CouchbaseClusterSecurityRbacSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -3322,11 +2641,7 @@ pub struct CouchbaseClusterSecuritySecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -3349,22 +2664,14 @@ pub struct CouchbaseClusterSecuritySecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -3372,11 +2679,7 @@ pub struct CouchbaseClusterSecuritySecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -3390,31 +2693,19 @@ pub struct CouchbaseClusterSecuritySecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<CouchbaseClusterSecuritySecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<CouchbaseClusterSecuritySecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<CouchbaseClusterSecuritySecurityContextWindowsOptions>,
 }
 
@@ -3462,16 +2753,12 @@ pub struct CouchbaseClusterSecuritySecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3488,38 +2775,22 @@ pub struct CouchbaseClusterSecuritySecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3535,13 +2806,13 @@ pub struct CouchbaseClusterSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -3553,11 +2824,7 @@ pub struct CouchbaseClusterSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -3565,11 +2832,7 @@ pub struct CouchbaseClusterSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -3577,11 +2840,7 @@ pub struct CouchbaseClusterSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -3597,19 +2856,11 @@ pub struct CouchbaseClusterSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<CouchbaseClusterSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<CouchbaseClusterSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -3618,11 +2869,7 @@ pub struct CouchbaseClusterSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -3633,11 +2880,7 @@ pub struct CouchbaseClusterSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<CouchbaseClusterSecurityContextWindowsOptions>,
 }
 
@@ -3671,16 +2914,12 @@ pub struct CouchbaseClusterSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3706,38 +2945,22 @@ pub struct CouchbaseClusterSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3747,11 +2970,7 @@ pub struct CouchbaseClusterServers {
     /// When true, the Operator will create a CouchbaseAutoscaler resource for this
     /// server class.  The CouchbaseAutoscaler implements the Kubernetes scale API and
     /// can be controlled by the Kubernetes horizontal pod autoscaler (HPA).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoscaleEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscaleEnabled")]
     pub autoscale_enabled: Option<bool>,
     /// Env allows the setting of environment variables in the Couchbase server container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3793,11 +3012,7 @@ pub struct CouchbaseClusterServers {
     /// aware scheduling when none is provided for you.  Global server groups are
     /// applied to all server classes, and may be overridden on a per-server class
     /// basis to give more control over scheduling and server groups.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverGroups")]
     pub server_groups: Option<Vec<String>>,
     /// Services is the set of Couchbase services to run on this server class.
     /// At least one class must contain the data service.  The field may contain
@@ -3808,11 +3023,7 @@ pub struct CouchbaseClusterServers {
     /// must be greater than or equal to 1.
     pub size: i64,
     /// VolumeMounts define persistent volume claims to attach to pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<CouchbaseClusterServersVolumeMounts>,
 }
 
@@ -3841,11 +3052,7 @@ pub struct CouchbaseClusterServersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterServersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<CouchbaseClusterServersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -3853,18 +3060,10 @@ pub struct CouchbaseClusterServersEnvValueFrom {
     pub field_ref: Option<CouchbaseClusterServersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<CouchbaseClusterServersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<CouchbaseClusterServersEnvValueFromSecretKeyRef>,
 }
 
@@ -3888,11 +3087,7 @@ pub struct CouchbaseClusterServersEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterServersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3904,11 +3099,7 @@ pub struct CouchbaseClusterServersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterServersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3936,11 +3127,7 @@ pub struct CouchbaseClusterServersEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterServersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<CouchbaseClusterServersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4016,21 +3203,13 @@ pub struct CouchbaseClusterServersPodSpec {
     /// Optional duration in seconds the pod may be active on the node relative to
     /// StartTime before the system will actively try to mark it failed and kill associated containers.
     /// Value must be a positive integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// If specified, the pod's scheduling constraints
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<CouchbaseClusterServersPodSpecAffinity>,
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     /// Specifies the DNS parameters of a pod.
     /// Parameters specified here will be merged to the generated DNS
@@ -4048,11 +3227,7 @@ pub struct CouchbaseClusterServersPodSpec {
     /// EnableServiceLinks indicates whether information about services should be injected into pod's
     /// environment variables, matching the syntax of Docker links.
     /// Optional: Defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableServiceLinks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
     /// Use the host's ipc namespace.
     /// Optional: Default to false.
@@ -4061,11 +3236,7 @@ pub struct CouchbaseClusterServersPodSpec {
     /// Host networking requested for this pod. Use the host's network namespace.
     /// If this option is set, the ports that will be used must be specified.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// Use the host's pid namespace.
     /// Optional: Default to false.
@@ -4085,11 +3256,7 @@ pub struct CouchbaseClusterServersPodSpec {
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
     /// If specified, these secrets will be passed to individual puller implementations for them to use.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<CouchbaseClusterServersPodSpecImagePullSecrets>>,
     /// NodeName is a request to schedule this pod onto a specific node. If it is non-empty,
     /// the scheduler simply schedules this pod onto that node, assuming that it fits resource
@@ -4099,20 +3266,16 @@ pub struct CouchbaseClusterServersPodSpec {
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Specifies the OS of the containers in the pod.
     /// Some pod and container fields are restricted if this is set.
-    ///
-    ///
+    /// 
+    /// 
     /// If the OS field is set to linux, the following fields must be unset:
     /// -securityContext.windowsOptions
-    ///
-    ///
+    /// 
+    /// 
     /// If the OS field is set to windows, following fields must be unset:
     /// - spec.hostPID
     /// - spec.hostIPC
@@ -4149,11 +3312,7 @@ pub struct CouchbaseClusterServersPodSpec {
     /// PreemptionPolicy is the Policy for preempting pods with lower priority.
     /// One of Never, PreemptLowerPriority.
     /// Defaults to PreemptLowerPriority if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
     pub preemption_policy: Option<String>,
     /// The priority value. Various system components use this field to find the
     /// priority of the pod. When Priority Admission Controller is enabled, it
@@ -4168,100 +3327,64 @@ pub struct CouchbaseClusterServersPodSpec {
     /// name must be defined by creating a PriorityClass object with that name.
     /// If not specified, the pod priority will be default or zero if there is no
     /// default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// ResourceClaims defines which ResourceClaims must be allocated
     /// and reserved before the Pod is allowed to start. The resources
     /// will be made available to those containers which consume them
     /// by name.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaims"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<CouchbaseClusterServersPodSpecResourceClaims>>,
     /// RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used
     /// to run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.
     /// If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an
     /// empty definition that uses the default runtime handler.
     /// More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     /// If specified, the pod will be dispatched by specified scheduler.
     /// If not specified, the pod will be dispatched by default scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// SchedulingGates is an opaque list of values that if specified will block scheduling the pod.
     /// If schedulingGates is not empty, the pod will stay in the SchedulingGated state and the
     /// scheduler will not attempt to schedule the pod.
-    ///
-    ///
+    /// 
+    /// 
     /// SchedulingGates can only be set at pod creation time, and be removed only afterwards.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta feature enabled by the PodSchedulingReadiness feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
     pub scheduling_gates: Option<Vec<CouchbaseClusterServersPodSpecSchedulingGates>>,
     /// DeprecatedServiceAccount is a depreciated alias for ServiceAccountName.
     /// Deprecated: Use serviceAccountName instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// If true the pod's hostname will be configured as the pod's FQDN, rather than the leaf name (the default).
     /// In Linux containers, this means setting the FQDN in the hostname field of the kernel (the nodename field of struct utsname).
     /// In Windows containers, this means setting the registry value of hostname for the registry key HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters to FQDN.
     /// If a pod does not have FQDN, this has no effect.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setHostnameAsFQDN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
     /// Share a single process namespace between all of the containers in a pod.
     /// When this is set containers will be able to view and signal processes from other containers
     /// in the same pod, and the first process in each container will not be assigned PID 1.
     /// HostPID and ShareProcessNamespace cannot both be set.
     /// Optional: Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     /// Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request.
     /// Value must be non-negative integer. The value zero indicates stop immediately via
@@ -4271,11 +3394,7 @@ pub struct CouchbaseClusterServersPodSpec {
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
     /// Set this value longer than the expected cleanup time for your process.
     /// Defaults to 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4283,38 +3402,21 @@ pub struct CouchbaseClusterServersPodSpec {
     /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<CouchbaseClusterServersPodSpecTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<CouchbaseClusterServersPodSpecTopologySpreadConstraints>>,
 }
 
 /// If specified, the pod's scheduling constraints
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterServersPodSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<CouchbaseClusterServersPodSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<CouchbaseClusterServersPodSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<CouchbaseClusterServersPodSpecAffinityPodAntiAffinity>,
 }
 
@@ -4365,8 +3467,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityPreferredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4384,8 +3485,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityPreferredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4428,8 +3528,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityRequiredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4447,8 +3546,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityRequiredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct CouchbaseClusterServersPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4543,8 +3641,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4578,8 +3675,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4642,8 +3738,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4677,8 +3772,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CouchbaseClusterServersPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4772,8 +3866,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityPreferredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4807,8 +3900,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityPreferredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4871,8 +3963,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityRequiredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4906,8 +3997,7 @@ pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityRequiredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CouchbaseClusterServersPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4967,12 +4057,12 @@ pub struct CouchbaseClusterServersPodSpecImagePullSecrets {
 
 /// Specifies the OS of the containers in the pod.
 /// Some pod and container fields are restricted if this is set.
-///
-///
+/// 
+/// 
 /// If the OS field is set to linux, the following fields must be unset:
 /// -securityContext.windowsOptions
-///
-///
+/// 
+/// 
 /// If the OS field is set to windows, following fields must be unset:
 /// - spec.hostPID
 /// - spec.hostIPC
@@ -5022,31 +4112,23 @@ pub struct CouchbaseClusterServersPodSpecResourceClaims {
 pub struct CouchbaseClusterServersPodSpecResourceClaimsSource {
     /// ResourceClaimName is the name of a ResourceClaim object in the same
     /// namespace as this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     /// ResourceClaimTemplateName is the name of a ResourceClaimTemplate
     /// object in the same namespace as this pod.
-    ///
-    ///
+    /// 
+    /// 
     /// The template will be used to create a new ResourceClaim, which will
     /// be bound to this pod. When this pod is deleted, the ResourceClaim
     /// will also be deleted. The pod name and resource name, along with a
     /// generated component, will be used to form a unique name for the
     /// ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable and no changes will be made to the
     /// corresponding ResourceClaim by the control plane after creating the
     /// ResourceClaim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimTemplateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
 }
 
@@ -5080,11 +4162,7 @@ pub struct CouchbaseClusterServersPodSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -5098,13 +4176,8 @@ pub struct CouchbaseClusterServersPodSpecTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<CouchbaseClusterServersPodSpecTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<CouchbaseClusterServersPodSpecTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -5113,14 +4186,10 @@ pub struct CouchbaseClusterServersPodSpecTopologySpreadConstraints {
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -5151,8 +4220,8 @@ pub struct CouchbaseClusterServersPodSpecTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -5161,43 +4230,31 @@ pub struct CouchbaseClusterServersPodSpecTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -5239,22 +4296,12 @@ pub struct CouchbaseClusterServersPodSpecTopologySpreadConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterServersPodSpecTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<CouchbaseClusterServersPodSpecTopologySpreadConstraintsLabelSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CouchbaseClusterServersPodSpecTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5282,12 +4329,12 @@ pub struct CouchbaseClusterServersPodSpecTopologySpreadConstraintsLabelSelectorM
 pub struct CouchbaseClusterServersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CouchbaseClusterServersResourcesClaims>>,
@@ -5418,11 +4465,7 @@ pub struct CouchbaseClusterVolumeClaimTemplatesMetadata {
 pub struct CouchbaseClusterVolumeClaimTemplatesSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
@@ -5447,11 +4490,7 @@ pub struct CouchbaseClusterVolumeClaimTemplatesSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<CouchbaseClusterVolumeClaimTemplatesSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
@@ -5465,26 +4504,14 @@ pub struct CouchbaseClusterVolumeClaimTemplatesSpec {
     pub selector: Option<CouchbaseClusterVolumeClaimTemplatesSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -5538,12 +4565,12 @@ pub struct CouchbaseClusterVolumeClaimTemplatesSpecDataSourceRef {
 pub struct CouchbaseClusterVolumeClaimTemplatesSpecResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CouchbaseClusterVolumeClaimTemplatesSpecResourcesClaims>>,
@@ -5572,21 +4599,12 @@ pub struct CouchbaseClusterVolumeClaimTemplatesSpecResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterVolumeClaimTemplatesSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CouchbaseClusterVolumeClaimTemplatesSpecSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CouchbaseClusterVolumeClaimTemplatesSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5615,11 +4633,7 @@ pub struct CouchbaseClusterXdcr {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub managed: Option<bool>,
     /// RemoteClusters is a set of named remote clusters to establish replications to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteClusters")]
     pub remote_clusters: Option<Vec<CouchbaseClusterXdcrRemoteClusters>>,
 }
 
@@ -5630,11 +4644,7 @@ pub struct CouchbaseClusterXdcrRemoteClusters {
     /// remote connection.  It is only required when not using mTLS.  The secret
     /// must contain a username (secret key "username") and password (secret key
     /// "password").
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationSecret")]
     pub authentication_secret: Option<String>,
     /// Hostname is the connection string to use to connect the remote cluster.  To use IPv6, place brackets (`[`, `]`) around the IPv6 value.
     pub hostname: String,
@@ -5672,21 +4682,12 @@ pub struct CouchbaseClusterXdcrRemoteClustersReplications {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterXdcrRemoteClustersReplicationsSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CouchbaseClusterXdcrRemoteClustersReplicationsSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CouchbaseClusterXdcrRemoteClustersReplicationsSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5739,20 +4740,12 @@ pub struct CouchbaseClusterStatus {
     pub conditions: Option<Vec<Condition>>,
     /// ControlPaused indicates if the Operator has acknowledged and paused the
     /// control of the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPaused"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPaused")]
     pub control_paused: Option<bool>,
     /// CurrentVersion is the current Couchbase version.  This reflects the
     /// version of the whole cluster, therefore during upgrade, it is only
     /// updated when the upgrade has completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVersion")]
     pub current_version: Option<String>,
     /// Groups describes all the groups managed by the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5774,92 +4767,52 @@ pub struct CouchbaseClusterStatusAllocations {
     /// AllocatedMemory defines the total memory allocated for constrained Couchbase services.
     /// More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocatedMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedMemory")]
     pub allocated_memory: Option<String>,
     /// AllocatedMemoryPercent is set when memory resources are requested and define how much of
     /// the requested memory is allocated to constrained Couchbase services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocatedMemoryPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedMemoryPercent")]
     pub allocated_memory_percent: Option<i64>,
     /// AnalyticsServiceAllocation is set when the analytics service is enabled for this class and
     /// defines how much memory this service consumes per pod.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsServiceAllocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsServiceAllocation")]
     pub analytics_service_allocation: Option<String>,
     /// DataServiceAllocation is set when the data service is enabled for this class and
     /// defines how much memory this service consumes per pod.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataServiceAllocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataServiceAllocation")]
     pub data_service_allocation: Option<String>,
     /// EventingServiceAllocation is set when the eventing service is enabled for this class and
     /// defines how much memory this service consumes per pod.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventingServiceAllocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventingServiceAllocation")]
     pub eventing_service_allocation: Option<String>,
     /// IndexServiceAllocation is set when the index service is enabled for this class and
     /// defines how much memory this service consumes per pod.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "indexServiceAllocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexServiceAllocation")]
     pub index_service_allocation: Option<String>,
     /// Name is the name of the server class defined in spec.servers
     pub name: String,
     /// RequestedMemory, if set, defines the Kubernetes resource request for the server class.
     /// More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestedMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedMemory")]
     pub requested_memory: Option<String>,
     /// SearchServiceAllocation is set when the search service is enabled for this class and
     /// defines how much memory this service consumes per pod.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "searchServiceAllocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "searchServiceAllocation")]
     pub search_service_allocation: Option<String>,
     /// UnusedMemory is set when memory resources are requested and is the difference between
     /// the requestedMemory and allocatedMemory.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unusedMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unusedMemory")]
     pub unused_memory: Option<String>,
     /// UnusedMemoryPercent is set when memory resources are requested and defines how much
     /// requested memory is not allocated.  Couchbase server expects at least a 20% overhead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unusedMemoryPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unusedMemoryPercent")]
     pub unused_memory_percent: Option<i64>,
 }
 
@@ -5896,11 +4849,7 @@ pub struct CouchbaseClusterStatusBuckets {
     /// BucketReplicas is the number of data replicas.
     pub replicas: i64,
     /// BucketStorageBackend is the storage backend of the bucket.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageBackend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageBackend")]
     pub storage_backend: Option<String>,
     /// BucketType is the type of the bucket.
     #[serde(rename = "type")]
@@ -5919,3 +4868,4 @@ pub struct CouchbaseClusterStatusMembers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unready: Option<Vec<String>>,
 }
+

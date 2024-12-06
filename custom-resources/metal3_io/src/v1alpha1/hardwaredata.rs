@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// HardwareDataSpec defines the desired state of HardwareData.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "metal3.io",
-    version = "v1alpha1",
-    kind = "HardwareData",
-    plural = "hardwaredata"
-)]
+#[kube(group = "metal3.io", version = "v1alpha1", kind = "HardwareData", plural = "hardwaredata")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HardwareDataSpec {
     /// The hardware discovered on the host during its inspection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,21 +37,13 @@ pub struct HardwareDataHardware {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nics: Option<Vec<HardwareDataHardwareNics>>,
     /// The host's amount of memory in Mebibytes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ramMebibytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ramMebibytes")]
     pub ram_mebibytes: Option<i64>,
     /// List of storage (disk, SSD, etc.) available to the host.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<Vec<HardwareDataHardwareStorage>>,
     /// System vendor information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemVendor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemVendor")]
     pub system_vendor: Option<HardwareDataHardwareSystemVendor>,
 }
 
@@ -66,11 +53,7 @@ pub struct HardwareDataHardwareCpu {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arch: Option<String>,
     /// ClockSpeed is a clock speed in MHz
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clockMegahertz"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clockMegahertz")]
     pub clock_megahertz: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
@@ -149,11 +132,7 @@ pub struct HardwareDataHardwareStorage {
     /// A list of alternate Linux device names of the disk, e.g. "/dev/sda".
     /// Note that this list is not exhaustive, and names may not be stable
     /// across reboots.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alternateNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alternateNames")]
     pub alternate_names: Option<Vec<String>>,
     /// The SCSI location of the device
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -173,11 +152,7 @@ pub struct HardwareDataHardwareStorage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rotational: Option<bool>,
     /// The serial number of the device
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serialNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serialNumber")]
     pub serial_number: Option<String>,
     /// The size of the disk in Bytes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeBytes")]
@@ -192,18 +167,10 @@ pub struct HardwareDataHardwareStorage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwn: Option<String>,
     /// The WWN Vendor extension of the device
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wwnVendorExtension"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wwnVendorExtension")]
     pub wwn_vendor_extension: Option<String>,
     /// The WWN with the extension
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wwnWithExtension"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wwnWithExtension")]
     pub wwn_with_extension: Option<String>,
 }
 
@@ -223,16 +190,9 @@ pub enum HardwareDataHardwareStorageType {
 pub struct HardwareDataHardwareSystemVendor {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manufacturer: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "productName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "productName")]
     pub product_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serialNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serialNumber")]
     pub serial_number: Option<String>,
 }
+

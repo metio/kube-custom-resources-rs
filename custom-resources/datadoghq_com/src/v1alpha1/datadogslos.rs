@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "datadoghq.com",
-    version = "v1alpha1",
-    kind = "DatadogSLO",
-    plural = "datadogslos"
-)]
+#[kube(group = "datadoghq.com", version = "v1alpha1", kind = "DatadogSLO", plural = "datadogslos")]
 #[kube(namespaced)]
 #[kube(status = "DatadogSLOStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DatadogSLOSpec {
     /// ControllerOptions are the optional parameters in the DatadogSLO controller
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerOptions")]
     pub controller_options: Option<DatadogSLOControllerOptions>,
     /// Description is a user-defined description of the service level objective.
     /// Always included in service level objective responses (but may be null). Optional in create/update requests.
@@ -41,11 +32,7 @@ pub struct DatadogSLOSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub groups: Option<Vec<String>>,
     /// MonitorIDs is a list of monitor IDs that defines the scope of a monitor service level objective. Required if type is monitor.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitorIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorIDs")]
     pub monitor_i_ds: Option<Vec<i64>>,
     /// Name is the name of the service level objective.
     pub name: String,
@@ -67,11 +54,7 @@ pub struct DatadogSLOSpec {
     #[serde(rename = "type")]
     pub r#type: String,
     /// WarningThreshold is a optional warning threshold such that when the service level indicator is below this value for the given threshold, but above the target threshold, the objective appears in a "warning" state. This value must be greater than the target threshold.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "warningThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "warningThreshold")]
     pub warning_threshold: Option<IntOrString>,
 }
 
@@ -79,11 +62,7 @@ pub struct DatadogSLOSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogSLOControllerOptions {
     /// DisableRequiredTags disables the automatic addition of required tags to SLOs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableRequiredTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableRequiredTags")]
     pub disable_required_tags: Option<bool>,
 }
 
@@ -111,27 +90,16 @@ pub struct DatadogSLOStatus {
     pub creator: Option<String>,
     /// CurrentHash tracks the hash of the current DatadogSLOSpec to know
     /// if the Spec has changed and needs an update.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentHash")]
     pub current_hash: Option<String>,
     /// ID is the SLO ID generated in Datadog.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// LastForceSyncTime is the last time the API SLO was last force synced with the DatadogSLO resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastForceSyncTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastForceSyncTime")]
     pub last_force_sync_time: Option<String>,
     /// SyncStatus shows the health of syncing the SLO state to Datadog.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncStatus")]
     pub sync_status: Option<String>,
 }
+

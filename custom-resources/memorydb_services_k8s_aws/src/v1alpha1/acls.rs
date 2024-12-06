@@ -4,29 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ACLSpec defines the desired state of ACL.
-///
+/// 
 /// An Access Control List. You can authenticate users with Access Contol Lists.
 /// ACLs enable you to control cluster access by grouping users. These Access
 /// control lists are designed as a way to organize access to clusters.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "memorydb.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "ACL",
-    plural = "acls"
-)]
+#[kube(group = "memorydb.services.k8s.aws", version = "v1alpha1", kind = "ACL", plural = "acls")]
 #[kube(namespaced)]
 #[kube(status = "ACLStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ACLSpec {
     /// The name of the Access Control List.
     pub name: String,
@@ -58,7 +53,7 @@ pub struct ACLTags {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -85,11 +80,7 @@ pub struct ACLStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ACLStatusAckResourceMetadata>,
     /// A list of clusters associated with the ACL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -105,18 +96,10 @@ pub struct ACLStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<ACLStatusEvents>>,
     /// The minimum engine version supported for the ACL
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumEngineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumEngineVersion")]
     pub minimum_engine_version: Option<String>,
     /// A list of updates being applied to the ACL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pendingChanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingChanges")]
     pub pending_changes: Option<ACLStatusPendingChanges>,
     /// Indicates ACL status. Can be "creating", "active", "modifying", "deleting".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -153,33 +136,18 @@ pub struct ACLStatusEvents {
     pub date: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceName")]
     pub source_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<String>,
 }
 
 /// A list of updates being applied to the ACL.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ACLStatusPendingChanges {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userNamesToAdd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userNamesToAdd")]
     pub user_names_to_add: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userNamesToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userNamesToRemove")]
     pub user_names_to_remove: Option<Vec<String>>,
 }
+

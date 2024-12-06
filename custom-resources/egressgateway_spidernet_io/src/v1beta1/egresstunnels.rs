@@ -5,30 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "egressgateway.spidernet.io",
-    version = "v1beta1",
-    kind = "EgressTunnel",
-    plural = "egresstunnels"
-)]
+#[kube(group = "egressgateway.spidernet.io", version = "v1beta1", kind = "EgressTunnel", plural = "egresstunnels")]
 #[kube(status = "EgressTunnelStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct EgressTunnelSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct EgressTunnelSpec {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EgressTunnelStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHeartbeatTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHeartbeatTime")]
     pub last_heartbeat_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mark: Option<String>,
@@ -69,3 +61,4 @@ pub struct EgressTunnelStatusTunnelParent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

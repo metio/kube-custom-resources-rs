@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec defines the desired state of GCPBackendPolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "networking.gke.io",
-    version = "v1",
-    kind = "GCPBackendPolicy",
-    plural = "gcpbackendpolicies"
-)]
+#[kube(group = "networking.gke.io", version = "v1", kind = "GCPBackendPolicy", plural = "gcpbackendpolicies")]
 #[kube(namespaced)]
 #[kube(status = "GCPBackendPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GCPBackendPolicySpec {
     /// Default defines default policy configuration for the targeted resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -36,11 +31,7 @@ pub struct GCPBackendPolicySpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GCPBackendPolicyDefault {
     /// ConnectionDraining contains configuration for connection draining
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionDraining"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionDraining")]
     pub connection_draining: Option<GCPBackendPolicyDefaultConnectionDraining>,
     /// IAP contains the configurations for Identity-Aware Proxy. Identity-Aware Proxy manages access control policies for backend services associated with a HTTPRoute, so they can be accessed only by authenticated users or applications with correct Identity and Access Management (IAM) role. See https://cloud.google.com/compute/docs/reference/rest/v1/backendServices
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -49,25 +40,13 @@ pub struct GCPBackendPolicyDefault {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<GCPBackendPolicyDefaultLogging>,
     /// SecurityPolicy is a reference to a GCP Cloud Armor SecurityPolicy resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityPolicy")]
     pub security_policy: Option<String>,
     /// SessionAffinityConfig contains configuration for stickiness parameters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<GCPBackendPolicyDefaultSessionAffinity>,
     /// TimeoutSec is a BackendService parameter. See https://cloud.google.com/compute/docs/reference/rest/v1/backendServices. If the field is omitted, a default value (30s) will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSec")]
     pub timeout_sec: Option<i64>,
 }
 
@@ -75,11 +54,7 @@ pub struct GCPBackendPolicyDefault {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GCPBackendPolicyDefaultConnectionDraining {
     /// DrainingTimeoutSec is a BackendService parameter. It is used during removal of VMs from instance groups. This guarantees that for the specified time all existing connections to a VM will remain untouched, but no new connections will be accepted. Set timeout to zero to disable connection draining. Enable the feature by specifying a timeout of up to one hour. If the field is omitted, a default value (0s) will be used. See https://cloud.google.com/compute/docs/reference/rest/v1/backendServices
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "drainingTimeoutSec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "drainingTimeoutSec")]
     pub draining_timeout_sec: Option<i64>,
 }
 
@@ -93,11 +68,7 @@ pub struct GCPBackendPolicyDefaultIap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Oauth2ClientSecret contains the OAuth2 client secret to use for the authentication flow. See https://cloud.google.com/compute/docs/reference/rest/v1/backendServices Oauth2ClientSecret must be set if Enabled is set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oauth2ClientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oauth2ClientSecret")]
     pub oauth2_client_secret: Option<GCPBackendPolicyDefaultIapOauth2ClientSecret>,
 }
 
@@ -116,11 +87,7 @@ pub struct GCPBackendPolicyDefaultLogging {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// This field can only be specified if logging is enabled for this backend service. The value of the field must be in range [0, 1e6]. This is converted to a floating point value in the range [0, 1] by dividing by 1e6 for use with the GCE api and interpreted as the proportion of requests that will be logged. By default all requests will be logged.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleRate")]
     pub sample_rate: Option<i32>,
 }
 
@@ -128,11 +95,7 @@ pub struct GCPBackendPolicyDefaultLogging {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GCPBackendPolicyDefaultSessionAffinity {
     /// CookieTTLSec specifies the lifetime of cookies in seconds. This setting requires GENERATED_COOKIE or HTTP_COOKIE session affinity. If set to 0, the cookie is non-persistent and lasts only until the end of the browser session (or equivalent). The maximum allowed value is two weeks (1,209,600).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cookieTtlSec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cookieTtlSec")]
     pub cookie_ttl_sec: Option<i64>,
     /// Type specifies the type of session affinity to use. If not specified, this defaults to NONE.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -179,3 +142,4 @@ pub struct GCPBackendPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

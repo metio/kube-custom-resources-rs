@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Spec represents the specification of a Ceph Filesystem SubVolumeGroup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ceph.rook.io",
-    version = "v1",
-    kind = "CephFilesystemSubVolumeGroup",
-    plural = "cephfilesystemsubvolumegroups"
-)]
+#[kube(group = "ceph.rook.io", version = "v1", kind = "CephFilesystemSubVolumeGroup", plural = "cephfilesystemsubvolumegroups")]
 #[kube(namespaced)]
 #[kube(status = "CephFilesystemSubVolumeGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CephFilesystemSubVolumeGroupSpec {
     /// The data pool name for the Ceph Filesystem subvolume group layout, if the default CephFS pool is not desired.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataPoolName")]
     pub data_pool_name: Option<String>,
     /// FilesystemName is the name of Ceph Filesystem SubVolumeGroup volume name. Typically it's the name of
     /// the CephFilesystem CR. If not coming from the CephFilesystem CR, it can be retrieved from the
@@ -70,13 +61,10 @@ pub struct CephFilesystemSubVolumeGroupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub info: Option<BTreeMap<String, String>>,
     /// ObservedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ConditionType represent a resource's status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

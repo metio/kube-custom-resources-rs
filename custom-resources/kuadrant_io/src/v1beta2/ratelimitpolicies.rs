@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// RateLimitPolicySpec defines the desired state of RateLimitPolicy
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuadrant.io",
-    version = "v1beta2",
-    kind = "RateLimitPolicy",
-    plural = "ratelimitpolicies"
-)]
+#[kube(group = "kuadrant.io", version = "v1beta2", kind = "RateLimitPolicy", plural = "ratelimitpolicies")]
 #[kube(namespaced)]
 #[kube(status = "RateLimitPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RateLimitPolicySpec {
     /// Defaults define explicit default values for this policy and for policies inheriting this policy.
     /// Defaults are mutually exclusive with implicit defaults defined by RateLimitPolicyCommonSpec.
@@ -61,11 +56,7 @@ pub struct RateLimitPolicyDefaultsLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rates: Option<Vec<RateLimitPolicyDefaultsLimitsRates>>,
     /// RouteSelectors defines semantics for matching an HTTP request based on conditions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeSelectors")]
     pub route_selectors: Option<Vec<RateLimitPolicyDefaultsLimitsRouteSelectors>>,
     /// When holds the list of conditions for the policy to be enforced.
     /// Called also "soft" conditions as route selectors must also match
@@ -115,23 +106,23 @@ pub struct RateLimitPolicyDefaultsLimitsRouteSelectors {
 /// HTTPRouteMatch defines the predicate used to match requests to a given
 /// action. Multiple match types are ANDed together, i.e. the match will
 /// evaluate to true only if all conditions are satisfied.
-///
-///
+/// 
+/// 
 /// For example, the match below will match a HTTP request only if its path
 /// starts with `/foo` AND it contains the `version: v1` header:
-///
-///
+/// 
+/// 
 /// ```text
 /// match:
-///
-///
+/// 
+/// 
 /// 	path:
 /// 	  value: "/foo"
 /// 	headers:
 /// 	- name: "version"
 /// 	  value "v1"
-///
-///
+/// 
+/// 
 /// ```
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyDefaultsLimitsRouteSelectorsMatches {
@@ -143,8 +134,8 @@ pub struct RateLimitPolicyDefaultsLimitsRouteSelectorsMatches {
     /// Method specifies HTTP method matcher.
     /// When specified, this route will be matched only if the request has the
     /// specified method.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<RateLimitPolicyDefaultsLimitsRouteSelectorsMatchesMethod>,
@@ -155,14 +146,10 @@ pub struct RateLimitPolicyDefaultsLimitsRouteSelectorsMatches {
     /// QueryParams specifies HTTP query parameter matchers. Multiple match
     /// values are ANDed together, meaning, a request must match all the
     /// specified query parameters to select the route.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Extended
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParams")]
     pub query_params: Option<Vec<RateLimitPolicyDefaultsLimitsRouteSelectorsMatchesQueryParams>>,
 }
 
@@ -172,15 +159,15 @@ pub struct RateLimitPolicyDefaultsLimitsRouteSelectorsMatches {
 pub struct RateLimitPolicyDefaultsLimitsRouteSelectorsMatchesHeaders {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
     /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
-    ///
-    ///
+    /// 
+    /// 
     /// If multiple entries specify equivalent header names, only the first
     /// entry with an equivalent name MUST be considered for a match. Subsequent
     /// entries with an equivalent header name MUST be ignored. Due to the
     /// case-insensitivity of header names, "foo" and "Foo" are considered
     /// equivalent.
-    ///
-    ///
+    /// 
+    /// 
     /// When a header is repeated in an HTTP request, it is
     /// implementation-specific behavior as to how this is represented.
     /// Generally, proxies should follow the guidance from the RFC:
@@ -188,14 +175,14 @@ pub struct RateLimitPolicyDefaultsLimitsRouteSelectorsMatchesHeaders {
     /// processing a repeated header, with special handling for "Set-Cookie".
     pub name: String,
     /// Type specifies how to match against the value of the header.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core (Exact)
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Implementation-specific (RegularExpression)
-    ///
-    ///
+    /// 
+    /// 
     /// Since RegularExpression HeaderMatchType has implementation-specific
     /// conformance, implementations can support POSIX, PCRE or any other dialects
     /// of regular expressions. Please read the implementation's documentation to
@@ -217,23 +204,23 @@ pub enum RateLimitPolicyDefaultsLimitsRouteSelectorsMatchesHeadersType {
 /// HTTPRouteMatch defines the predicate used to match requests to a given
 /// action. Multiple match types are ANDed together, i.e. the match will
 /// evaluate to true only if all conditions are satisfied.
-///
-///
+/// 
+/// 
 /// For example, the match below will match a HTTP request only if its path
 /// starts with `/foo` AND it contains the `version: v1` header:
-///
-///
+/// 
+/// 
 /// ```text
 /// match:
-///
-///
+/// 
+/// 
 /// 	path:
 /// 	  value: "/foo"
 /// 	headers:
 /// 	- name: "version"
 /// 	  value "v1"
-///
-///
+/// 
+/// 
 /// ```
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RateLimitPolicyDefaultsLimitsRouteSelectorsMatchesMethod {
@@ -262,11 +249,11 @@ pub enum RateLimitPolicyDefaultsLimitsRouteSelectorsMatchesMethod {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyDefaultsLimitsRouteSelectorsMatchesPath {
     /// Type specifies how to match against the path Value.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core (Exact, PathPrefix)
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Implementation-specific (RegularExpression)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<RateLimitPolicyDefaultsLimitsRouteSelectorsMatchesPathType>,
@@ -291,33 +278,33 @@ pub struct RateLimitPolicyDefaultsLimitsRouteSelectorsMatchesQueryParams {
     /// Name is the name of the HTTP query param to be matched. This must be an
     /// exact string match. (See
     /// https://tools.ietf.org/html/rfc7230#section-2.7.3).
-    ///
-    ///
+    /// 
+    /// 
     /// If multiple entries specify equivalent query param names, only the first
     /// entry with an equivalent name MUST be considered for a match. Subsequent
     /// entries with an equivalent query param name MUST be ignored.
-    ///
-    ///
+    /// 
+    /// 
     /// If a query param is repeated in an HTTP request, the behavior is
     /// purposely left undefined, since different data planes have different
     /// capabilities. However, it is *recommended* that implementations should
     /// match against the first value of the param if the data plane supports it,
     /// as this behavior is expected in other load balancing contexts outside of
     /// the Gateway API.
-    ///
-    ///
+    /// 
+    /// 
     /// Users SHOULD NOT route traffic based on repeated query params to guard
     /// themselves against potential differences in the implementations.
     pub name: String,
     /// Type specifies how to match against the value of the query parameter.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Extended (Exact)
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Implementation-specific (RegularExpression)
-    ///
-    ///
+    /// 
+    /// 
     /// Since RegularExpression QueryParamMatchType has Implementation-specific
     /// conformance, implementations can support POSIX, PCRE or any other
     /// dialects of regular expressions. Please read the implementation's
@@ -381,11 +368,7 @@ pub struct RateLimitPolicyLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rates: Option<Vec<RateLimitPolicyLimitsRates>>,
     /// RouteSelectors defines semantics for matching an HTTP request based on conditions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeSelectors")]
     pub route_selectors: Option<Vec<RateLimitPolicyLimitsRouteSelectors>>,
     /// When holds the list of conditions for the policy to be enforced.
     /// Called also "soft" conditions as route selectors must also match
@@ -435,23 +418,23 @@ pub struct RateLimitPolicyLimitsRouteSelectors {
 /// HTTPRouteMatch defines the predicate used to match requests to a given
 /// action. Multiple match types are ANDed together, i.e. the match will
 /// evaluate to true only if all conditions are satisfied.
-///
-///
+/// 
+/// 
 /// For example, the match below will match a HTTP request only if its path
 /// starts with `/foo` AND it contains the `version: v1` header:
-///
-///
+/// 
+/// 
 /// ```text
 /// match:
-///
-///
+/// 
+/// 
 /// 	path:
 /// 	  value: "/foo"
 /// 	headers:
 /// 	- name: "version"
 /// 	  value "v1"
-///
-///
+/// 
+/// 
 /// ```
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyLimitsRouteSelectorsMatches {
@@ -463,8 +446,8 @@ pub struct RateLimitPolicyLimitsRouteSelectorsMatches {
     /// Method specifies HTTP method matcher.
     /// When specified, this route will be matched only if the request has the
     /// specified method.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<RateLimitPolicyLimitsRouteSelectorsMatchesMethod>,
@@ -475,14 +458,10 @@ pub struct RateLimitPolicyLimitsRouteSelectorsMatches {
     /// QueryParams specifies HTTP query parameter matchers. Multiple match
     /// values are ANDed together, meaning, a request must match all the
     /// specified query parameters to select the route.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Extended
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParams")]
     pub query_params: Option<Vec<RateLimitPolicyLimitsRouteSelectorsMatchesQueryParams>>,
 }
 
@@ -492,15 +471,15 @@ pub struct RateLimitPolicyLimitsRouteSelectorsMatches {
 pub struct RateLimitPolicyLimitsRouteSelectorsMatchesHeaders {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
     /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
-    ///
-    ///
+    /// 
+    /// 
     /// If multiple entries specify equivalent header names, only the first
     /// entry with an equivalent name MUST be considered for a match. Subsequent
     /// entries with an equivalent header name MUST be ignored. Due to the
     /// case-insensitivity of header names, "foo" and "Foo" are considered
     /// equivalent.
-    ///
-    ///
+    /// 
+    /// 
     /// When a header is repeated in an HTTP request, it is
     /// implementation-specific behavior as to how this is represented.
     /// Generally, proxies should follow the guidance from the RFC:
@@ -508,14 +487,14 @@ pub struct RateLimitPolicyLimitsRouteSelectorsMatchesHeaders {
     /// processing a repeated header, with special handling for "Set-Cookie".
     pub name: String,
     /// Type specifies how to match against the value of the header.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core (Exact)
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Implementation-specific (RegularExpression)
-    ///
-    ///
+    /// 
+    /// 
     /// Since RegularExpression HeaderMatchType has implementation-specific
     /// conformance, implementations can support POSIX, PCRE or any other dialects
     /// of regular expressions. Please read the implementation's documentation to
@@ -537,23 +516,23 @@ pub enum RateLimitPolicyLimitsRouteSelectorsMatchesHeadersType {
 /// HTTPRouteMatch defines the predicate used to match requests to a given
 /// action. Multiple match types are ANDed together, i.e. the match will
 /// evaluate to true only if all conditions are satisfied.
-///
-///
+/// 
+/// 
 /// For example, the match below will match a HTTP request only if its path
 /// starts with `/foo` AND it contains the `version: v1` header:
-///
-///
+/// 
+/// 
 /// ```text
 /// match:
-///
-///
+/// 
+/// 
 /// 	path:
 /// 	  value: "/foo"
 /// 	headers:
 /// 	- name: "version"
 /// 	  value "v1"
-///
-///
+/// 
+/// 
 /// ```
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RateLimitPolicyLimitsRouteSelectorsMatchesMethod {
@@ -582,11 +561,11 @@ pub enum RateLimitPolicyLimitsRouteSelectorsMatchesMethod {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyLimitsRouteSelectorsMatchesPath {
     /// Type specifies how to match against the path Value.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core (Exact, PathPrefix)
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Implementation-specific (RegularExpression)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<RateLimitPolicyLimitsRouteSelectorsMatchesPathType>,
@@ -611,33 +590,33 @@ pub struct RateLimitPolicyLimitsRouteSelectorsMatchesQueryParams {
     /// Name is the name of the HTTP query param to be matched. This must be an
     /// exact string match. (See
     /// https://tools.ietf.org/html/rfc7230#section-2.7.3).
-    ///
-    ///
+    /// 
+    /// 
     /// If multiple entries specify equivalent query param names, only the first
     /// entry with an equivalent name MUST be considered for a match. Subsequent
     /// entries with an equivalent query param name MUST be ignored.
-    ///
-    ///
+    /// 
+    /// 
     /// If a query param is repeated in an HTTP request, the behavior is
     /// purposely left undefined, since different data planes have different
     /// capabilities. However, it is *recommended* that implementations should
     /// match against the first value of the param if the data plane supports it,
     /// as this behavior is expected in other load balancing contexts outside of
     /// the Gateway API.
-    ///
-    ///
+    /// 
+    /// 
     /// Users SHOULD NOT route traffic based on repeated query params to guard
     /// themselves against potential differences in the implementations.
     pub name: String,
     /// Type specifies how to match against the value of the query parameter.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Extended (Exact)
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Implementation-specific (RegularExpression)
-    ///
-    ///
+    /// 
+    /// 
     /// Since RegularExpression QueryParamMatchType has Implementation-specific
     /// conformance, implementations can support POSIX, PCRE or any other
     /// dialects of regular expressions. Please read the implementation's
@@ -710,11 +689,7 @@ pub struct RateLimitPolicyOverridesLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rates: Option<Vec<RateLimitPolicyOverridesLimitsRates>>,
     /// RouteSelectors defines semantics for matching an HTTP request based on conditions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeSelectors")]
     pub route_selectors: Option<Vec<RateLimitPolicyOverridesLimitsRouteSelectors>>,
     /// When holds the list of conditions for the policy to be enforced.
     /// Called also "soft" conditions as route selectors must also match
@@ -764,23 +739,23 @@ pub struct RateLimitPolicyOverridesLimitsRouteSelectors {
 /// HTTPRouteMatch defines the predicate used to match requests to a given
 /// action. Multiple match types are ANDed together, i.e. the match will
 /// evaluate to true only if all conditions are satisfied.
-///
-///
+/// 
+/// 
 /// For example, the match below will match a HTTP request only if its path
 /// starts with `/foo` AND it contains the `version: v1` header:
-///
-///
+/// 
+/// 
 /// ```text
 /// match:
-///
-///
+/// 
+/// 
 /// 	path:
 /// 	  value: "/foo"
 /// 	headers:
 /// 	- name: "version"
 /// 	  value "v1"
-///
-///
+/// 
+/// 
 /// ```
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyOverridesLimitsRouteSelectorsMatches {
@@ -792,8 +767,8 @@ pub struct RateLimitPolicyOverridesLimitsRouteSelectorsMatches {
     /// Method specifies HTTP method matcher.
     /// When specified, this route will be matched only if the request has the
     /// specified method.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<RateLimitPolicyOverridesLimitsRouteSelectorsMatchesMethod>,
@@ -804,14 +779,10 @@ pub struct RateLimitPolicyOverridesLimitsRouteSelectorsMatches {
     /// QueryParams specifies HTTP query parameter matchers. Multiple match
     /// values are ANDed together, meaning, a request must match all the
     /// specified query parameters to select the route.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Extended
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParams")]
     pub query_params: Option<Vec<RateLimitPolicyOverridesLimitsRouteSelectorsMatchesQueryParams>>,
 }
 
@@ -821,15 +792,15 @@ pub struct RateLimitPolicyOverridesLimitsRouteSelectorsMatches {
 pub struct RateLimitPolicyOverridesLimitsRouteSelectorsMatchesHeaders {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
     /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
-    ///
-    ///
+    /// 
+    /// 
     /// If multiple entries specify equivalent header names, only the first
     /// entry with an equivalent name MUST be considered for a match. Subsequent
     /// entries with an equivalent header name MUST be ignored. Due to the
     /// case-insensitivity of header names, "foo" and "Foo" are considered
     /// equivalent.
-    ///
-    ///
+    /// 
+    /// 
     /// When a header is repeated in an HTTP request, it is
     /// implementation-specific behavior as to how this is represented.
     /// Generally, proxies should follow the guidance from the RFC:
@@ -837,14 +808,14 @@ pub struct RateLimitPolicyOverridesLimitsRouteSelectorsMatchesHeaders {
     /// processing a repeated header, with special handling for "Set-Cookie".
     pub name: String,
     /// Type specifies how to match against the value of the header.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core (Exact)
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Implementation-specific (RegularExpression)
-    ///
-    ///
+    /// 
+    /// 
     /// Since RegularExpression HeaderMatchType has implementation-specific
     /// conformance, implementations can support POSIX, PCRE or any other dialects
     /// of regular expressions. Please read the implementation's documentation to
@@ -866,23 +837,23 @@ pub enum RateLimitPolicyOverridesLimitsRouteSelectorsMatchesHeadersType {
 /// HTTPRouteMatch defines the predicate used to match requests to a given
 /// action. Multiple match types are ANDed together, i.e. the match will
 /// evaluate to true only if all conditions are satisfied.
-///
-///
+/// 
+/// 
 /// For example, the match below will match a HTTP request only if its path
 /// starts with `/foo` AND it contains the `version: v1` header:
-///
-///
+/// 
+/// 
 /// ```text
 /// match:
-///
-///
+/// 
+/// 
 /// 	path:
 /// 	  value: "/foo"
 /// 	headers:
 /// 	- name: "version"
 /// 	  value "v1"
-///
-///
+/// 
+/// 
 /// ```
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RateLimitPolicyOverridesLimitsRouteSelectorsMatchesMethod {
@@ -911,11 +882,11 @@ pub enum RateLimitPolicyOverridesLimitsRouteSelectorsMatchesMethod {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyOverridesLimitsRouteSelectorsMatchesPath {
     /// Type specifies how to match against the path Value.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core (Exact, PathPrefix)
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Implementation-specific (RegularExpression)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<RateLimitPolicyOverridesLimitsRouteSelectorsMatchesPathType>,
@@ -940,33 +911,33 @@ pub struct RateLimitPolicyOverridesLimitsRouteSelectorsMatchesQueryParams {
     /// Name is the name of the HTTP query param to be matched. This must be an
     /// exact string match. (See
     /// https://tools.ietf.org/html/rfc7230#section-2.7.3).
-    ///
-    ///
+    /// 
+    /// 
     /// If multiple entries specify equivalent query param names, only the first
     /// entry with an equivalent name MUST be considered for a match. Subsequent
     /// entries with an equivalent query param name MUST be ignored.
-    ///
-    ///
+    /// 
+    /// 
     /// If a query param is repeated in an HTTP request, the behavior is
     /// purposely left undefined, since different data planes have different
     /// capabilities. However, it is *recommended* that implementations should
     /// match against the first value of the param if the data plane supports it,
     /// as this behavior is expected in other load balancing contexts outside of
     /// the Gateway API.
-    ///
-    ///
+    /// 
+    /// 
     /// Users SHOULD NOT route traffic based on repeated query params to guard
     /// themselves against potential differences in the implementations.
     pub name: String,
     /// Type specifies how to match against the value of the query parameter.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Extended (Exact)
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Implementation-specific (RegularExpression)
-    ///
-    ///
+    /// 
+    /// 
     /// Since RegularExpression QueryParamMatchType has Implementation-specific
     /// conformance, implementations can support POSIX, PCRE or any other
     /// dialects of regular expressions. Please read the implementation's
@@ -1038,10 +1009,7 @@ pub struct RateLimitPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration reflects the generation of the most recently observed spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

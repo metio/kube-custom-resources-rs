@@ -1,2 +1,2 @@
-pub mod cluster-leaksignal-istios;
-pub mod leaksignal-istios;
+pub mod cluster_leaksignal_istios;
+pub mod leaksignal_istios;

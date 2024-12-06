@@ -5,34 +5,25 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VaultDynamicSecretSpec defines the desired state of VaultDynamicSecret
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "secrets.hashicorp.com",
-    version = "v1beta1",
-    kind = "VaultDynamicSecret",
-    plural = "vaultdynamicsecrets"
-)]
+#[kube(group = "secrets.hashicorp.com", version = "v1beta1", kind = "VaultDynamicSecret", plural = "vaultdynamicsecrets")]
 #[kube(namespaced)]
 #[kube(status = "VaultDynamicSecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VaultDynamicSecretSpec {
     /// AllowStaticCreds should be set when syncing credentials that are periodically
     /// rotated by the Vault server, rather than created upon request. These secrets
     /// are sometimes referred to as "static roles", or "static credentials", with a
     /// request path that contains "static-creds".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowStaticCreds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStaticCreds")]
     pub allow_static_creds: Option<bool>,
     /// Destination provides configuration necessary for syncing the Vault secret to Kubernetes.
     pub destination: VaultDynamicSecretDestination,
@@ -59,19 +50,11 @@ pub struct VaultDynamicSecretSpec {
     /// response. The value should be within the secret engine's configured ttl or
     /// max_ttl. The source secret's lease duration takes precedence over this
     /// configuration when it is greater than 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshAfter")]
     pub refresh_after: Option<String>,
     /// RenewalPercent is the percent out of 100 of the lease duration when the
     /// lease is renewed. Defaults to 67 percent plus jitter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "renewalPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "renewalPercent")]
     pub renewal_percent: Option<i64>,
     /// RequestHTTPMethod to use when syncing Secrets from Vault.
     /// Setting a value here is not typically required.
@@ -81,11 +64,7 @@ pub struct VaultDynamicSecretSpec {
     /// uncertain about what method to use.
     /// Of note, the Vault client treats PUT and POST as being equivalent.
     /// The underlying Vault client implementation will always use the PUT method.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHTTPMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHTTPMethod")]
     pub request_http_method: Option<VaultDynamicSecretRequestHttpMethod>,
     /// Revoke the existing lease on VDS resource deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -95,21 +74,13 @@ pub struct VaultDynamicSecretSpec {
     /// In that case one, or more RolloutRestartTarget(s) can be configured here. The Operator will
     /// trigger a "rollout-restart" for each target whenever the Vault secret changes between reconciliation events.
     /// See RolloutRestartTarget for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rolloutRestartTargets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutRestartTargets")]
     pub rollout_restart_targets: Option<Vec<VaultDynamicSecretRolloutRestartTargets>>,
     /// VaultAuthRef to the VaultAuth resource, can be prefixed with a namespace,
     /// eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to
     /// the namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator
     /// will default to the `default` VaultAuth, configured in the operator's namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vaultAuthRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultAuthRef")]
     pub vault_auth_ref: Option<String>,
 }
 
@@ -150,11 +121,7 @@ pub struct VaultDynamicSecretDestinationTransformation {
     /// globally by including 'exclude-raw` in the '--global-transformation-options'
     /// command line flag. If set, the command line flag always takes precedence over
     /// this configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeRaw"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeRaw")]
     pub exclude_raw: Option<bool>,
     /// Excludes contains regex patterns used to filter top-level source secret data
     /// fields for exclusion from the final K8s Secret data. These pattern filters are
@@ -176,13 +143,8 @@ pub struct VaultDynamicSecretDestinationTransformation {
     pub templates: Option<BTreeMap<String, VaultDynamicSecretDestinationTransformationTemplates>>,
     /// TransformationRefs contain references to template configuration from
     /// SecretTransformation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transformationRefs"
-    )]
-    pub transformation_refs:
-        Option<Vec<VaultDynamicSecretDestinationTransformationTransformationRefs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformationRefs")]
+    pub transformation_refs: Option<Vec<VaultDynamicSecretDestinationTransformationTransformationRefs>>,
 }
 
 /// Templates maps a template name to its Template. Templates are always included
@@ -207,19 +169,11 @@ pub struct VaultDynamicSecretDestinationTransformationTemplates {
 pub struct VaultDynamicSecretDestinationTransformationTransformationRefs {
     /// IgnoreExcludes controls whether to use the SecretTransformation's Excludes
     /// data key filters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreExcludes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreExcludes")]
     pub ignore_excludes: Option<bool>,
     /// IgnoreIncludes controls whether to use the SecretTransformation's Includes
     /// data key filters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreIncludes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreIncludes")]
     pub ignore_includes: Option<bool>,
     /// Name of the SecretTransformation resource.
     pub name: String,
@@ -228,13 +182,8 @@ pub struct VaultDynamicSecretDestinationTransformationTransformationRefs {
     pub namespace: Option<String>,
     /// TemplateRefs map to a Template found in this TransformationRef. If empty, then
     /// all templates from the SecretTransformation will be rendered to the K8s Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRefs"
-    )]
-    pub template_refs:
-        Option<Vec<VaultDynamicSecretDestinationTransformationTransformationRefsTemplateRefs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRefs")]
+    pub template_refs: Option<Vec<VaultDynamicSecretDestinationTransformationTransformationRefsTemplateRefs>>,
 }
 
 /// TemplateRef points to templating text that is stored in a
@@ -244,11 +193,7 @@ pub struct VaultDynamicSecretDestinationTransformationTransformationRefsTemplate
     /// KeyOverride to the rendered template in the Destination secret. If Key is
     /// empty, then the Key from reference spec will be used. Set this to override the
     /// Key set from the reference spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyOverride"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyOverride")]
     pub key_override: Option<String>,
     /// Name of the Template in SecretTransformationSpec.Templates.
     /// the rendered secret data.
@@ -272,7 +217,7 @@ pub enum VaultDynamicSecretRequestHttpMethod {
 /// 'spec.template.metadata.annotations' to include 'vso.secrets.hashicorp.com/restartedAt'
 /// with a timestamp value of when the trigger was executed.
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
-///
+/// 
 /// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VaultDynamicSecretRolloutRestartTargets {
@@ -288,7 +233,7 @@ pub struct VaultDynamicSecretRolloutRestartTargets {
 /// 'spec.template.metadata.annotations' to include 'vso.secrets.hashicorp.com/restartedAt'
 /// with a timestamp value of when the trigger was executed.
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
-///
+/// 
 /// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VaultDynamicSecretRolloutRestartTargetsKind {
@@ -310,39 +255,27 @@ pub struct VaultDynamicSecretStatus {
     pub last_renewal_time: i64,
     /// LastRuntimePodUID used for tracking the transition from one Pod to the next.
     /// It is used to mitigate the effects of a Vault lease renewal storm.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastRuntimePodUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastRuntimePodUID")]
     pub last_runtime_pod_uid: Option<String>,
     /// SecretLease for the Vault secret.
     #[serde(rename = "secretLease")]
     pub secret_lease: VaultDynamicSecretStatusSecretLease,
     /// SecretMAC used when deciding whether new Vault secret data should be synced.
-    ///
+    /// 
     /// The controller will compare the "new" Vault secret data to this value using HMAC,
     /// if they are different, then the data will be synced to the Destination.
-    ///
+    /// 
     /// The SecretMac is also used to detect drift in the Destination Secret's Data.
     /// If drift is detected the data will be synced to the Destination.
     /// SecretMAC will only be stored when VaultDynamicSecretSpec.AllowStaticCreds is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretMAC")]
     pub secret_mac: Option<String>,
     /// StaticCredsMetaData contains the static creds response meta-data
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticCredsMetaData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticCredsMetaData")]
     pub static_creds_meta_data: Option<VaultDynamicSecretStatusStaticCredsMetaData>,
     /// VaultClientMeta contains the status of the Vault client and is used during
     /// resource reconciliation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vaultClientMeta"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultClientMeta")]
     pub vault_client_meta: Option<VaultDynamicSecretStatusVaultClientMeta>,
 }
 
@@ -375,11 +308,7 @@ pub struct VaultDynamicSecretStatusStaticCredsMetaData {
     /// schedule for each rotation.
     /// e.g. "1 0 * * *" would rotate at one minute past midnight (00:01) every
     /// day.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rotationSchedule"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotationSchedule")]
     pub rotation_schedule: Option<String>,
     /// TTL is the seconds remaining before the next rotation.
     pub ttl: i64,
@@ -397,3 +326,4 @@ pub struct VaultDynamicSecretStatusVaultClientMeta {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }
+

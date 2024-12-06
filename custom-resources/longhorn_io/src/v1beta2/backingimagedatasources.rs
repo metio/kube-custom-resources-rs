@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// BackingImageDataSourceSpec defines the desired state of the Longhorn backing image data source
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "BackingImageDataSource",
-    plural = "backingimagedatasources"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "BackingImageDataSource", plural = "backingimagedatasources")]
 #[kube(namespaced)]
 #[kube(status = "BackingImageDataSourceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackingImageDataSourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
@@ -30,21 +25,13 @@ pub struct BackingImageDataSourceSpec {
     pub disk_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskUUID")]
     pub disk_uuid: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileTransferred"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileTransferred")]
     pub file_transferred: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeID")]
     pub node_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<BackingImageDataSourceSourceType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
@@ -70,11 +57,7 @@ pub enum BackingImageDataSourceSourceType {
 pub struct BackingImageDataSourceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentState")]
     pub current_state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
@@ -84,14 +67,11 @@ pub struct BackingImageDataSourceStatus {
     pub owner_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub progress: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runningParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningParameters")]
     pub running_parameters: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageIP")]
     pub storage_ip: Option<String>,
 }
+

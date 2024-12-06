@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ComposableSpec defines the desired state of Composable
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ibmcloud.ibm.com",
-    version = "v1alpha1",
-    kind = "Composable",
-    plural = "composables"
-)]
+#[kube(group = "ibmcloud.ibm.com", version = "v1alpha1", kind = "Composable", plural = "composables")]
 #[kube(namespaced)]
 #[kube(status = "ComposableStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ComposableSpec {
     /// Template defines the underlying object
     pub template: BTreeMap<String, serde_json::Value>,
@@ -46,3 +41,4 @@ pub enum ComposableStatusState {
     Pending,
     Online,
 }
+

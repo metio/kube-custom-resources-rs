@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// StageSpec defines the desired state of Stage.
-///
+/// 
 /// Represents an API stage.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apigatewayv2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Stage",
-    plural = "stages"
-)]
+#[kube(group = "apigatewayv2.services.k8s.aws", version = "v1alpha1", kind = "Stage", plural = "stages")]
 #[kube(namespaced)]
 #[kube(status = "StageStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct StageSpec {
     /// Settings for logging access in a stage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogSettings")]
     pub access_log_settings: Option<StageAccessLogSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiID")]
     pub api_id: Option<String>,
@@ -40,64 +31,36 @@ pub struct StageSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiRef")]
     pub api_ref: Option<StageApiRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoDeploy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoDeploy")]
     pub auto_deploy: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificateID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificateID")]
     pub client_certificate_id: Option<String>,
     /// Represents a collection of route settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultRouteSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRouteSettings")]
     pub default_route_settings: Option<StageDefaultRouteSettings>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentID")]
     pub deployment_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentRef")]
     pub deployment_ref: Option<StageDeploymentRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeSettings")]
     pub route_settings: Option<BTreeMap<String, StageRouteSettings>>,
     #[serde(rename = "stageName")]
     pub stage_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stageVariables"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stageVariables")]
     pub stage_variables: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
@@ -107,11 +70,7 @@ pub struct StageSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StageAccessLogSettings {
     /// Represents an Amazon Resource Name (ARN).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationARN")]
     pub destination_arn: Option<String>,
     /// A string with a length between [1-1024].
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -122,7 +81,7 @@ pub struct StageAccessLogSettings {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -146,36 +105,16 @@ pub struct StageApiRefFrom {
 /// Represents a collection of route settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StageDefaultRouteSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataTraceEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataTraceEnabled")]
     pub data_trace_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "detailedMetricsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "detailedMetricsEnabled")]
     pub detailed_metrics_enabled: Option<bool>,
     /// The logging level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loggingLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingLevel")]
     pub logging_level: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "throttlingBurstLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throttlingBurstLimit")]
     pub throttling_burst_limit: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "throttlingRateLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throttlingRateLimit")]
     pub throttling_rate_limit: Option<f64>,
 }
 
@@ -183,7 +122,7 @@ pub struct StageDefaultRouteSettings {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -206,36 +145,16 @@ pub struct StageDeploymentRefFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StageRouteSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataTraceEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataTraceEnabled")]
     pub data_trace_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "detailedMetricsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "detailedMetricsEnabled")]
     pub detailed_metrics_enabled: Option<bool>,
     /// The logging level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loggingLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingLevel")]
     pub logging_level: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "throttlingBurstLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throttlingBurstLimit")]
     pub throttling_burst_limit: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "throttlingRateLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throttlingRateLimit")]
     pub throttling_rate_limit: Option<f64>,
 }
 
@@ -245,17 +164,9 @@ pub struct StageStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<StageStatusAckResourceMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiGatewayManaged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGatewayManaged")]
     pub api_gateway_managed: Option<bool>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -263,23 +174,11 @@ pub struct StageStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createdDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastDeploymentStatusMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastDeploymentStatusMessage")]
     pub last_deployment_status_message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdatedDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdatedDate")]
     pub last_updated_date: Option<String>,
 }
 
@@ -304,3 +203,4 @@ pub struct StageStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

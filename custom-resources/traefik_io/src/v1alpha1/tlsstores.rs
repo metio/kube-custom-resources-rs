@@ -5,39 +5,26 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// TLSStoreSpec defines the desired state of a TLSStore.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "traefik.io",
-    version = "v1alpha1",
-    kind = "TLSStore",
-    plural = "tlsstores"
-)]
+#[kube(group = "traefik.io", version = "v1alpha1", kind = "TLSStore", plural = "tlsstores")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TLSStoreSpec {
     /// Certificates is a list of secret names, each secret holding a key/certificate pair to add to the store.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<Vec<TLSStoreCertificates>>,
     /// DefaultCertificate defines the default certificate configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultCertificate")]
     pub default_certificate: Option<TLSStoreDefaultCertificate>,
     /// DefaultGeneratedCert defines the default generated certificate configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultGeneratedCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultGeneratedCert")]
     pub default_generated_cert: Option<TLSStoreDefaultGeneratedCert>,
 }
 
@@ -78,3 +65,4 @@ pub struct TLSStoreDefaultGeneratedCertDomain {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sans: Option<Vec<String>>,
 }
+

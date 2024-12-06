@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec declares policy exception behaviors.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kyverno.io",
-    version = "v2alpha1",
-    kind = "GlobalContextEntry",
-    plural = "globalcontextentries"
-)]
+#[kube(group = "kyverno.io", version = "v2alpha1", kind = "GlobalContextEntry", plural = "globalcontextentries")]
 #[kube(status = "GlobalContextEntryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GlobalContextEntrySpec {
     /// Stores results from an API call which will be cached.
     /// Mutually exclusive with KubernetesResource.
@@ -33,11 +28,7 @@ pub struct GlobalContextEntrySpec {
     pub api_call: Option<GlobalContextEntryApiCall>,
     /// Stores a list of Kubernetes resources which will be cached.
     /// Mutually exclusive with APICall.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesResource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesResource")]
     pub kubernetes_resource: Option<GlobalContextEntryKubernetesResource>,
 }
 
@@ -59,18 +50,10 @@ pub struct GlobalContextEntryApiCall {
     /// RefreshInterval defines the interval in duration at which to poll the APICall.
     /// The duration is a sequence of decimal numbers, each with optional fraction and a unit suffix,
     /// such as "300ms", "1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// RetryLimit defines the number of times the APICall should be retried in case of failure.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<i64>,
     /// Service is an API call to a JSON web service.
     /// This is used for non-Kubernetes API server calls.
@@ -159,13 +142,10 @@ pub struct GlobalContextEntryStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Indicates the time when the globalcontextentry was last refreshed successfully for the API Call
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastRefreshTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastRefreshTime")]
     pub last_refresh_time: Option<String>,
     /// Deprecated in favor of Conditions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
 }
+

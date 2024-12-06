@@ -5,34 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "core.kubeadmiral.io",
-    version = "v1alpha1",
-    kind = "SchedulerPluginWebhookConfiguration",
-    plural = "schedulerpluginwebhookconfigurations"
-)]
+#[kube(group = "core.kubeadmiral.io", version = "v1alpha1", kind = "SchedulerPluginWebhookConfiguration", plural = "schedulerpluginwebhookconfigurations")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SchedulerPluginWebhookConfigurationSpec {
     /// Path for the filter call, empty if not supported. This path is appended to the URLPrefix when issuing the filter call to webhook.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterPath")]
     pub filter_path: Option<String>,
     /// HTTPTimeout specifies the timeout duration for a call to the webhook. Timeout fails the scheduling of the workload. Defaults to 5 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpTimeout")]
     pub http_timeout: Option<String>,
     /// PayloadVersions is an ordered list of preferred request and response versions the webhook expects. The scheduler will try to use the first version in the list which it supports. If none of the versions specified in this list supported by the scheduler, scheduling will fail for this object.
     #[serde(rename = "payloadVersions")]
@@ -41,11 +28,7 @@ pub struct SchedulerPluginWebhookConfigurationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scorePath")]
     pub score_path: Option<String>,
     /// Path for the select call, empty if not supported. This verb is appended to the URLPrefix when issuing the select call to webhook.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selectPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPath")]
     pub select_path: Option<String>,
     /// TLSConfig specifies the transport layer security config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -71,10 +54,7 @@ pub struct SchedulerPluginWebhookConfigurationTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyData")]
     pub key_data: Option<String>,
     /// ServerName is passed to the server for SNI and is used in the client to check server certificates against. If ServerName is empty, the hostname used to contact the server is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
+

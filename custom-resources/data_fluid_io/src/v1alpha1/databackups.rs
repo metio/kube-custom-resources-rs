@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DataBackupSpec defines the desired state of DataBackup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "data.fluid.io",
-    version = "v1alpha1",
-    kind = "DataBackup",
-    plural = "databackups"
-)]
+#[kube(group = "data.fluid.io", version = "v1alpha1", kind = "DataBackup", plural = "databackups")]
 #[kube(namespaced)]
 #[kube(status = "DataBackupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DataBackupSpec {
     /// BackupPath defines the target path to save data of the DataBackup
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPath")]
     pub backup_path: Option<String>,
     /// Dataset defines the target dataset of the DataBackup
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,11 +33,7 @@ pub struct DataBackupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAs")]
     pub run_as: Option<DataBackupRunAs>,
     /// TTLSecondsAfterFinished is the time second to clean up data operations after finished or failed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ttlSecondsAfterFinished"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
     pub ttl_seconds_after_finished: Option<i32>,
 }
 
@@ -54,18 +41,10 @@ pub struct DataBackupSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataBackupRunAfter {
     /// AffinityStrategy specifies the pod affinity strategy with the referent operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "affinityStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "affinityStrategy")]
     pub affinity_strategy: Option<DataBackupRunAfterAffinityStrategy>,
     /// API version of the referent operation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind specifies the type of the referent operation
     pub kind: DataBackupRunAfterKind,
@@ -95,11 +74,7 @@ pub struct DataBackupRunAfterAffinityStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DataBackupRunAfterAffinityStrategyDependOn {
     /// API version of the referent operation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind specifies the type of the referent operation
     pub kind: DataBackupRunAfterAffinityStrategyDependOnKind,
@@ -165,34 +140,18 @@ pub struct DataBackupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub infos: Option<BTreeMap<String, String>>,
     /// LastScheduleTime is the last time the cron operation was scheduled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastScheduleTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastScheduleTime")]
     pub last_schedule_time: Option<String>,
     /// LastSuccessfulTime is the last time the cron operation successfully completed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSuccessfulTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSuccessfulTime")]
     pub last_successful_time: Option<String>,
     /// NodeAffinity records the node affinity for operation pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<DataBackupStatusNodeAffinity>,
     /// Phase describes current phase of operation
     pub phase: String,
     /// WaitingStatus stores information about waiting operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitingFor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitingFor")]
     pub waiting_for: Option<DataBackupStatusWaitingFor>,
 }
 
@@ -208,25 +167,15 @@ pub struct DataBackupStatusNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -234,8 +183,7 @@ pub struct DataBackupStatusNodeAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -254,8 +202,7 @@ pub struct DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -273,8 +220,7 @@ pub struct DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -298,9 +244,7 @@ pub struct DataBackupStatusNodeAffinityPreferredDuringSchedulingIgnoredDuringExe
 pub struct DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Required. A list of node selector terms. The terms are ORed.
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<
-        DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms,
-    >,
+    pub node_selector_terms: Vec<DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 /// A null or empty node selector term matches no objects. The requirements of
@@ -319,8 +263,7 @@ pub struct DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExec
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -338,8 +281,7 @@ pub struct DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExec
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -358,10 +300,7 @@ pub struct DataBackupStatusNodeAffinityRequiredDuringSchedulingIgnoredDuringExec
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataBackupStatusWaitingFor {
     /// OperationComplete indicates if the preceding operation is complete
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operationComplete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operationComplete")]
     pub operation_complete: Option<bool>,
 }
+

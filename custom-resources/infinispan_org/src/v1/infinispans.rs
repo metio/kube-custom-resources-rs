@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// InfinispanSpec defines the desired state of Infinispan
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infinispan.org",
-    version = "v1",
-    kind = "Infinispan",
-    plural = "infinispans"
-)]
+#[kube(group = "infinispan.org", version = "v1", kind = "Infinispan", plural = "infinispans")]
 #[kube(namespaced)]
 #[kube(status = "InfinispanStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct InfinispanSpec {
     /// Deprecated. Use scheduling.affinity instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -31,23 +26,11 @@ pub struct InfinispanSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscale: Option<InfinispanAutoscale>,
     /// Deprecated. Has no effect starting with Infinispan 15.0.0 servers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudEvents")]
     pub cloud_events: Option<InfinispanCloudEvents>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configListener"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configListener")]
     pub config_listener: Option<InfinispanConfigListener>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
     /// InfinispanContainerSpec specify resource requirements per container
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -86,25 +69,13 @@ pub struct InfinispanSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<InfinispanAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<InfinispanAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<InfinispanAffinityPodAntiAffinity>,
 }
 
@@ -120,25 +91,15 @@ pub struct InfinispanAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<InfinispanAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<InfinispanAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -146,8 +107,7 @@ pub struct InfinispanAffinityNodeAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -166,8 +126,7 @@ pub struct InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringE
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -185,8 +144,7 @@ pub struct InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringE
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InfinispanAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -229,8 +187,7 @@ pub struct InfinispanAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InfinispanAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -248,8 +205,7 @@ pub struct InfinispanAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InfinispanAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -276,13 +232,8 @@ pub struct InfinispanAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -290,13 +241,8 @@ pub struct InfinispanAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<InfinispanAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<InfinispanAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -304,8 +250,7 @@ pub struct InfinispanAffinityPodAffinity {
 pub struct InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -355,8 +300,7 @@ pub struct InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -390,8 +334,7 @@ pub struct InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InfinispanAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -454,8 +397,7 @@ pub struct InfinispanAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InfinispanAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -489,8 +431,7 @@ pub struct InfinispanAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InfinispanAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -516,14 +457,8 @@ pub struct InfinispanAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<InfinispanAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<InfinispanAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -531,14 +466,8 @@ pub struct InfinispanAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<InfinispanAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<InfinispanAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -596,8 +525,7 @@ pub struct InfinispanAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InfinispanAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -631,8 +559,7 @@ pub struct InfinispanAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InfinispanAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -695,8 +622,7 @@ pub struct InfinispanAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InfinispanAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -730,8 +656,7 @@ pub struct InfinispanAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InfinispanAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -770,11 +695,7 @@ pub struct InfinispanCloudEvents {
     #[serde(rename = "bootstrapServers")]
     pub bootstrap_servers: String,
     /// CacheEntriesTopic is the name of the topic on which events will be published
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheEntriesTopic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheEntriesTopic")]
     pub cache_entries_topic: Option<String>,
 }
 
@@ -814,27 +735,15 @@ pub enum InfinispanConfigListenerLoggingLevel {
 /// InfinispanContainerSpec specify resource requirements per container
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanContainer {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cliExtraJvmOpts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliExtraJvmOpts")]
     pub cli_extra_jvm_opts: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraJvmOpts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraJvmOpts")]
     pub extra_jvm_opts: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routerExtraJvmOpts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routerExtraJvmOpts")]
     pub router_extra_jvm_opts: Option<String>,
 }
 
@@ -844,18 +753,10 @@ pub struct InfinispanDependencies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub artifacts: Option<Vec<InfinispanDependenciesArtifacts>>,
     /// InitDependenciesContainerSpec describes the configuration options for the dependency download init container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainer")]
     pub init_container: Option<InfinispanDependenciesInitContainer>,
     /// The Persistent Volume Claim that holds custom libraries
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimName")]
     pub volume_claim_name: Option<String>,
 }
 
@@ -939,22 +840,14 @@ pub struct InfinispanLogging {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanScheduling {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "PriorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "PriorityClassName")]
     pub priority_class_name: Option<String>,
     /// Affinity is a group of affinity scheduling rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<InfinispanSchedulingAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<InfinispanSchedulingTolerations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<InfinispanSchedulingTopologySpreadConstraints>>,
 }
 
@@ -962,25 +855,13 @@ pub struct InfinispanScheduling {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanSchedulingAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<InfinispanSchedulingAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<InfinispanSchedulingAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<InfinispanSchedulingAffinityPodAntiAffinity>,
 }
 
@@ -996,29 +877,15 @@ pub struct InfinispanSchedulingAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<
-            InfinispanSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<InfinispanSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        InfinispanSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<InfinispanSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -1045,8 +912,7 @@ pub struct InfinispanSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgno
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InfinispanSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1064,8 +930,7 @@ pub struct InfinispanSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgno
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InfinispanSchedulingAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1108,8 +973,7 @@ pub struct InfinispanSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnor
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InfinispanSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1127,8 +991,7 @@ pub struct InfinispanSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnor
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InfinispanSchedulingAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1155,14 +1018,8 @@ pub struct InfinispanSchedulingAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<InfinispanSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<InfinispanSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -1170,14 +1027,8 @@ pub struct InfinispanSchedulingAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<InfinispanSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<InfinispanSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -1235,8 +1086,7 @@ pub struct InfinispanSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnor
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InfinispanSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1270,8 +1120,7 @@ pub struct InfinispanSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnor
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InfinispanSchedulingAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1334,8 +1183,7 @@ pub struct InfinispanSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InfinispanSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1369,8 +1217,7 @@ pub struct InfinispanSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InfinispanSchedulingAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1464,8 +1311,7 @@ pub struct InfinispanSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InfinispanSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1499,8 +1345,7 @@ pub struct InfinispanSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InfinispanSchedulingAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1563,8 +1408,7 @@ pub struct InfinispanSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InfinispanSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1598,8 +1442,7 @@ pub struct InfinispanSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InfinispanSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InfinispanSchedulingAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1635,11 +1478,7 @@ pub struct InfinispanSchedulingTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1653,11 +1492,7 @@ pub struct InfinispanSchedulingTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<InfinispanSchedulingTopologySpreadConstraintsLabelSelector>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -1688,8 +1523,8 @@ pub struct InfinispanSchedulingTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -1698,14 +1533,10 @@ pub struct InfinispanSchedulingTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling MinDomainsInPodTopologySpread feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -1746,21 +1577,12 @@ pub struct InfinispanSchedulingTopologySpreadConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanSchedulingTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<InfinispanSchedulingTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<InfinispanSchedulingTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1787,32 +1609,16 @@ pub struct InfinispanSecurity {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<InfinispanSecurityAuthorization>,
     /// A secret that contains CredentialStore alias and password combinations
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialStoreSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialStoreSecretName")]
     pub credential_store_secret_name: Option<String>,
     /// Enable or disable user authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointAuthentication"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointAuthentication")]
     pub endpoint_authentication: Option<bool>,
     /// EndpointEncryption configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointEncryption")]
     pub endpoint_encryption: Option<InfinispanSecurityEndpointEncryption>,
     /// The secret that contains user credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointSecretName")]
     pub endpoint_secret_name: Option<String>,
 }
 
@@ -1834,31 +1640,15 @@ pub struct InfinispanSecurityAuthorizationRoles {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanSecurityEndpointEncryption {
     /// The secret that contains TLS certificates
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretName")]
     pub cert_secret_name: Option<String>,
     /// A service that provides TLS certificates
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certServiceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certServiceName")]
     pub cert_service_name: Option<String>,
     /// ClientCertType specifies a client certificate validation mechanism.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<InfinispanSecurityEndpointEncryptionClientCert>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertSecretName")]
     pub client_cert_secret_name: Option<String>,
     /// Disable or modify endpoint encryption.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1892,11 +1682,7 @@ pub struct InfinispanService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<InfinispanServiceContainer>,
     /// Cache replication factor, or number of copies for each entry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationFactor")]
     pub replication_factor: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sites: Option<InfinispanServiceSites>,
@@ -1909,48 +1695,28 @@ pub struct InfinispanService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanServiceContainer {
     /// Enable/disable container ephemeral storage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeralStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralStorage")]
     pub ephemeral_storage: Option<bool>,
     /// Periodic probe of container liveness.
     /// Container will be restarted if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<InfinispanServiceContainerLivenessProbe>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<InfinispanServiceContainerReadinessProbe>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
     /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<InfinispanServiceContainerStartupProbe>,
     /// The amount of storage for the persistent volume claim.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<String>,
     /// The storage class object for persistent volume claims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -1959,39 +1725,19 @@ pub struct InfinispanServiceContainer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanServiceContainerLivenessProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Number of seconds after the container has started before liveness probes are initiated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// Number of seconds after which the probe times out.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2000,39 +1746,19 @@ pub struct InfinispanServiceContainerLivenessProbe {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanServiceContainerReadinessProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Number of seconds after the container has started before liveness probes are initiated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// Number of seconds after which the probe times out.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2044,39 +1770,19 @@ pub struct InfinispanServiceContainerReadinessProbe {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanServiceContainerStartupProbe {
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// Number of seconds after the container has started before liveness probes are initiated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// Number of seconds after which the probe times out.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2099,11 +1805,7 @@ pub struct InfinispanServiceSitesLocal {
     pub encryption: Option<InfinispanServiceSitesLocalEncryption>,
     /// CrossSiteExposeSpec describe how Infinispan Cross-Site service will be exposed externally
     pub expose: InfinispanServiceSitesLocalExpose,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRelayNodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRelayNodes")]
     pub max_relay_nodes: Option<i32>,
     pub name: String,
 }
@@ -2118,21 +1820,13 @@ pub struct InfinispanServiceSitesLocalDiscovery {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub heartbeats: Option<InfinispanServiceSitesLocalDiscoveryHeartbeats>,
     /// Enables (default) or disables the Gossip Router pod and cross-site services
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "launchGossipRouter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "launchGossipRouter")]
     pub launch_gossip_router: Option<bool>,
     /// Memory resource request for Gossip Router if enabled
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
     /// Enables the JGroups suspect events if the Gossip Router detects a connection closed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "suspectEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suspectEvents")]
     pub suspect_events: Option<bool>,
     /// Configures the discovery mode for cross-site replication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -2173,11 +1867,7 @@ pub struct InfinispanServiceSitesLocalEncryption {
     #[serde(rename = "transportKeyStore")]
     pub transport_key_store: InfinispanServiceSitesLocalEncryptionTransportKeyStore,
     /// CrossSiteTrustStore truststore configuration for cross-site replication with TLS
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustStore")]
     pub trust_store: Option<InfinispanServiceSitesLocalEncryptionTrustStore>,
 }
 
@@ -2231,11 +1921,7 @@ pub struct InfinispanServiceSitesLocalExpose {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// RouteHostName optionally, specifies a custom hostname to be used by Openshift Route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeHostName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeHostName")]
     pub route_host_name: Option<String>,
     /// Type specifies different exposition methods for data grid
     #[serde(rename = "type")]
@@ -2254,11 +1940,7 @@ pub enum InfinispanServiceSitesLocalExposeType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanServiceSitesLocations {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// Deprecated and to be removed on subsequent release. Use .URL with infinispan+xsite schema instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2270,11 +1952,7 @@ pub struct InfinispanServiceSitesLocations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// The access secret that allows backups to a remote site
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
@@ -2300,17 +1978,9 @@ pub struct InfinispanStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<InfinispanStatusConditions>>,
     /// Infinispan Console URL
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consoleUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consoleUrl")]
     pub console_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hotRodRollingUpgradeStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hotRodRollingUpgradeStatus")]
     pub hot_rod_rolling_upgrade_status: Option<InfinispanStatusHotRodRollingUpgradeStatus>,
     /// The Operand status
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2323,11 +1993,7 @@ pub struct InfinispanStatus {
     pub pod_status: Option<InfinispanStatusPodStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasWantedAtRestart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasWantedAtRestart")]
     pub replicas_wanted_at_restart: Option<i32>,
     /// InfinispanSecurity info for the user application connection
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2335,11 +2001,7 @@ pub struct InfinispanStatus {
     /// The Selector used to identify Infinispan cluster pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statefulSetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statefulSetName")]
     pub stateful_set_name: Option<String>,
 }
 
@@ -2358,23 +2020,11 @@ pub struct InfinispanStatusConditions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanStatusHotRodRollingUpgradeStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "SourceStatefulSetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "SourceStatefulSetName")]
     pub source_stateful_set_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "SourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "SourceVersion")]
     pub source_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "TargetStatefulSetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "TargetStatefulSetName")]
     pub target_stateful_set_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stage: Option<String>,
@@ -2384,11 +2034,7 @@ pub struct InfinispanStatusHotRodRollingUpgradeStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanStatusOperand {
     /// Whether the Operand installed/pending is using a custom image
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customImage")]
     pub custom_image: Option<bool>,
     /// Whether the Operand has been deprecated and is subject for removal in a subsequent release
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2432,32 +2078,16 @@ pub struct InfinispanStatusSecurity {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<InfinispanStatusSecurityAuthorization>,
     /// A secret that contains CredentialStore alias and password combinations
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialStoreSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialStoreSecretName")]
     pub credential_store_secret_name: Option<String>,
     /// Enable or disable user authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointAuthentication"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointAuthentication")]
     pub endpoint_authentication: Option<bool>,
     /// EndpointEncryption configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointEncryption")]
     pub endpoint_encryption: Option<InfinispanStatusSecurityEndpointEncryption>,
     /// The secret that contains user credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointSecretName")]
     pub endpoint_secret_name: Option<String>,
 }
 
@@ -2479,31 +2109,15 @@ pub struct InfinispanStatusSecurityAuthorizationRoles {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InfinispanStatusSecurityEndpointEncryption {
     /// The secret that contains TLS certificates
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretName")]
     pub cert_secret_name: Option<String>,
     /// A service that provides TLS certificates
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certServiceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certServiceName")]
     pub cert_service_name: Option<String>,
     /// ClientCertType specifies a client certificate validation mechanism.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<InfinispanStatusSecurityEndpointEncryptionClientCert>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertSecretName")]
     pub client_cert_secret_name: Option<String>,
     /// Disable or modify endpoint encryption.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -2529,3 +2143,4 @@ pub enum InfinispanStatusSecurityEndpointEncryptionType {
     SecretX,
     None,
 }
+

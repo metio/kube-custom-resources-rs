@@ -4,58 +4,37 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired state for Tigera log storage.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "LogStorage",
-    plural = "logstorages"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "LogStorage", plural = "logstorages")]
 #[kube(status = "LogStorageStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct LogStorageSpec {
     /// ComponentResources can be used to customize the resource requirements for each component.
     /// Only ECKOperator is supported for this spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentResources")]
     pub component_resources: Option<Vec<LogStorageComponentResources>>,
     /// DataNodeSelector gives you more control over the node that Elasticsearch will run on. The contents of DataNodeSelector will
     /// be added to the PodSpec of the Elasticsearch nodes. For the pod to be eligible to run on a node, the node must have
     /// each of the indicated key-value pairs as labels as well as access to the specified StorageClassName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataNodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataNodeSelector")]
     pub data_node_selector: Option<BTreeMap<String, String>>,
     /// ECKOperatorStatefulSet configures the ECKOperator StatefulSet. If used in conjunction with the deprecated
     /// ComponentResources, then these overrides take precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eckOperatorStatefulSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eckOperatorStatefulSet")]
     pub eck_operator_stateful_set: Option<LogStorageEckOperatorStatefulSet>,
     /// ElasticsearchMetricsDeployment configures the tigera-elasticsearch-metric Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "elasticsearchMetricsDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearchMetricsDeployment")]
     pub elasticsearch_metrics_deployment: Option<LogStorageElasticsearchMetricsDeployment>,
     /// Index defines the configuration for the indices in the Elasticsearch cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -64,11 +43,7 @@ pub struct LogStorageSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kibana: Option<LogStorageKibana>,
     /// LinseedDeployment configures the linseed Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linseedDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linseedDeployment")]
     pub linseed_deployment: Option<LogStorageLinseedDeployment>,
     /// Nodes defines the configuration for a set of identical Elasticsearch cluster nodes, each of type master, data, and ingest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -81,11 +56,7 @@ pub struct LogStorageSpec {
     /// active. We recommend choosing a storage class dedicated to Tigera LogStorage only. Otherwise, data retention
     /// cannot be guaranteed during upgrades. See https://docs.tigera.io/maintenance/upgrading for up-to-date instructions.
     /// Default: tigera-elasticsearch
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -175,13 +146,8 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpec {
     /// InitContainers is a list of ECKOperator StatefulSet init containers.
     /// If specified, this overrides the specified ECKOperator StatefulSet init containers.
     /// If omitted, the ECKOperator StatefulSet will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainers>>,
 }
 
 /// ECKOperatorStatefulSetContainer is a ECKOperator StatefulSet container.
@@ -215,8 +181,7 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResources {
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResourcesClaims>>,
+    pub claims: Option<Vec<LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -261,8 +226,7 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainersResourc
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainersResourcesClaims>>,
+    pub claims: Option<Vec<LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -319,13 +283,8 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpec {
     /// InitContainers is a list of ElasticsearchMetricsDeployment init containers.
     /// If specified, this overrides the specified ElasticsearchMetricsDeployment init containers.
     /// If omitted, the ElasticsearchMetrics Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainers>>,
 }
 
 /// ElasticsearchMetricsDeploymentContainer is a ElasticsearchMetricsDeployment container.
@@ -338,8 +297,7 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainers {
     /// If specified, this overrides the named ElasticsearchMetricsDeployment container's resources.
     /// If omitted, the ElasticsearchMetrics Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersResources>,
+    pub resources: Option<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersResources>,
 }
 
 /// ElasticsearchMetricsDeploymentContainer is a ElasticsearchMetricsDeployment container.
@@ -360,9 +318,7 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersRes
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -394,8 +350,7 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainer
     /// If specified, this overrides the named ElasticsearchMetricsDeployment init container's resources.
     /// If omitted, the ElasticsearchMetrics Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersResources>,
+    pub resources: Option<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersResources>,
 }
 
 /// ElasticsearchMetricsDeploymentInitContainer is a ElasticsearchMetricsDeployment init container.
@@ -416,9 +371,7 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainer
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -483,11 +436,7 @@ pub struct LogStorageKibanaSpecTemplateSpec {
     /// InitContainers is a list of Kibana init containers.
     /// If specified, this overrides the specified Kibana Deployment init containers.
     /// If omitted, the Kibana Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<LogStorageKibanaSpecTemplateSpecInitContainers>>,
 }
 
@@ -634,11 +583,7 @@ pub struct LogStorageLinseedDeploymentSpecTemplateSpec {
     /// InitContainers is a list of linseed init containers.
     /// If specified, this overrides the specified linseed Deployment init containers.
     /// If omitted, the linseed Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<LogStorageLinseedDeploymentSpecTemplateSpecInitContainers>>,
 }
 
@@ -728,8 +673,7 @@ pub struct LogStorageLinseedDeploymentSpecTemplateSpecInitContainersResources {
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<LogStorageLinseedDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
+    pub claims: Option<Vec<LogStorageLinseedDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -761,11 +705,7 @@ pub struct LogStorageNodes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSets")]
     pub node_sets: Option<Vec<LogStorageNodesNodeSets>>,
     /// ResourceRequirements defines the resource limits and requirements for the Elasticsearch cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
     pub resource_requirements: Option<LogStorageNodesResourceRequirements>,
 }
 
@@ -775,11 +715,7 @@ pub struct LogStorageNodesNodeSets {
     /// SelectionAttributes defines K8s node attributes a NodeSet should use when setting the Node Affinity selectors and
     /// Elasticsearch cluster awareness attributes for the Elasticsearch nodes. The list of SelectionAttributes are used
     /// to define Node Affinities and set the node awareness configuration in the running Elasticsearch instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selectionAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectionAttributes")]
     pub selection_attributes: Option<Vec<LogStorageNodesNodeSetsSelectionAttributes>>,
 }
 
@@ -831,11 +767,7 @@ pub struct LogStorageRetention {
     /// AuditReports configures the retention period for audit logs, in days.  Logs written on a day that started at least this long ago are
     /// removed.  To keep logs for at least x days, use a retention period of x+1.
     /// Default: 91
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "auditReports"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditReports")]
     pub audit_reports: Option<i32>,
     /// BGPLogs configures the retention period for BGP logs, in days.  Logs written on a day that started at least this long ago
     /// are removed.  To keep logs for at least x days, use a retention period of x+1.
@@ -848,11 +780,7 @@ pub struct LogStorageRetention {
     /// Logs written on a day that started at least this long ago are
     /// removed.  To keep logs for at least x days, use a retention period of x+1.
     /// Default: 91
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "complianceReports"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "complianceReports")]
     pub compliance_reports: Option<i32>,
     /// DNSLogs configures the retention period for DNS logs, in days.  Logs written on a day that started at least this long ago
     /// are removed.  To keep logs for at least x days, use a retention period of x+1.
@@ -883,21 +811,14 @@ pub struct LogStorageStatus {
     pub conditions: Option<Vec<Condition>>,
     /// ElasticsearchHash represents the current revision and configuration of the installed Elasticsearch cluster. This
     /// is an opaque string which can be monitored for changes to perform actions when Elasticsearch is modified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "elasticsearchHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearchHash")]
     pub elasticsearch_hash: Option<String>,
     /// KibanaHash represents the current revision and configuration of the installed Kibana dashboard. This
     /// is an opaque string which can be monitored for changes to perform actions when Kibana is modified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kibanaHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kibanaHash")]
     pub kibana_hash: Option<String>,
     /// State provides user-readable status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

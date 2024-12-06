@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ImageUpdateAutomationSpec defines the desired state of ImageUpdateAutomation
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "image.toolkit.fluxcd.io",
-    version = "v1beta1",
-    kind = "ImageUpdateAutomation",
-    plural = "imageupdateautomations"
-)]
+#[kube(group = "image.toolkit.fluxcd.io", version = "v1beta1", kind = "ImageUpdateAutomation", plural = "imageupdateautomations")]
 #[kube(namespaced)]
 #[kube(status = "ImageUpdateAutomationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct ImageUpdateAutomationSpec {
     /// GitSpec contains all the git-specific definitions. This is
     /// technically optional, but in practice mandatory until there are
@@ -85,13 +80,13 @@ pub struct ImageUpdateAutomationGitCheckoutRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
     /// Commit SHA to check out, takes precedence over all reference fields.
-    ///
+    /// 
     /// This can be combined with Branch to shallow clone the branch, in which
     /// the commit is expected to exist.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commit: Option<String>,
     /// Name of the reference to check out; takes precedence over Branch, Tag and SemVer.
-    ///
+    /// 
     /// It must be a valid Git reference: https://git-scm.com/docs/git-check-ref-format#_description
     /// Examples: "refs/heads/main", "refs/tags/v0.1.0", "refs/pull/420/head", "refs/merge-requests/1/head"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -112,18 +107,10 @@ pub struct ImageUpdateAutomationGitCommit {
     pub author: ImageUpdateAutomationGitCommitAuthor,
     /// MessageTemplate provides a template for the commit message,
     /// into which will be interpolated the details of the change made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageTemplate")]
     pub message_template: Option<String>,
     /// SigningKey provides the option to sign commits with a GPG key
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingKey")]
     pub signing_key: Option<ImageUpdateAutomationGitCommitSigningKey>,
 }
 
@@ -188,11 +175,7 @@ pub struct ImageUpdateAutomationGitPush {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ImageUpdateAutomationSourceRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the referent.
     pub kind: ImageUpdateAutomationSourceRefKind,
@@ -240,40 +223,21 @@ pub struct ImageUpdateAutomationStatus {
     /// LastAutomationRunTime records the last time the controller ran
     /// this automation through to completion (even if no updates were
     /// made).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAutomationRunTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAutomationRunTime")]
     pub last_automation_run_time: Option<String>,
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// LastPushCommit records the SHA1 of the last commit made by the
     /// controller, for this automation object
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPushCommit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPushCommit")]
     pub last_push_commit: Option<String>,
     /// LastPushTime records the time of the last pushed change.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPushTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPushTime")]
     pub last_push_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

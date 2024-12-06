@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DopplerSecretSpec defines the desired state of DopplerSecret
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "secrets.doppler.com",
-    version = "v1alpha1",
-    kind = "DopplerSecret",
-    plural = "dopplersecrets"
-)]
+#[kube(group = "secrets.doppler.com", version = "v1alpha1", kind = "DopplerSecret", plural = "dopplersecrets")]
 #[kube(namespaced)]
 #[kube(status = "DopplerSecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DopplerSecretSpec {
     /// The Doppler config
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -35,18 +30,10 @@ pub struct DopplerSecretSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// The Kubernetes secret where the operator will store and sync the fetched secrets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managedSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedSecret")]
     pub managed_secret: Option<DopplerSecretManagedSecret>,
     /// The environment variable compatible secrets name transformer to apply
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nameTransformer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameTransformer")]
     pub name_transformer: Option<DopplerSecretNameTransformer>,
     /// A list of processors to transform the data during ingestion
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -55,21 +42,13 @@ pub struct DopplerSecretSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project: Option<String>,
     /// The number of seconds to wait between resyncs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resyncSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncSeconds")]
     pub resync_seconds: Option<i64>,
     /// A list of secrets to sync from the config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
     /// The Kubernetes secret containing the Doppler service token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecret")]
     pub token_secret: Option<DopplerSecretTokenSecret>,
     /// Whether or not to verify TLS
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyTLS")]
@@ -176,3 +155,4 @@ pub struct DopplerSecretTokenSecret {
 pub struct DopplerSecretStatus {
     pub conditions: Vec<Condition>,
 }
+

@@ -4,23 +4,18 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "policy.clusterpedia.io",
-    version = "v1alpha1",
-    kind = "PediaClusterLifecycle",
-    plural = "pediaclusterlifecycles"
-)]
+#[kube(group = "policy.clusterpedia.io", version = "v1alpha1", kind = "PediaClusterLifecycle", plural = "pediaclusterlifecycles")]
 #[kube(status = "PediaClusterLifecycleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PediaClusterLifecycleSpec {
     #[serde(rename = "creationCondition")]
     pub creation_condition: String,
@@ -36,11 +31,7 @@ pub struct PediaClusterLifecycleReferences {
     pub key: String,
     #[serde(rename = "nameTemplate")]
     pub name_template: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceTemplate")]
     pub namespace_template: Option<String>,
     pub resource: String,
     pub version: String,
@@ -73,3 +64,4 @@ pub struct PediaClusterLifecycleStatusReferences {
     pub resource: String,
     pub version: String,
 }
+

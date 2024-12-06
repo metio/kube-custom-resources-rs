@@ -4,40 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "oracle.db.anthosapis.com",
-    version = "v1alpha1",
-    kind = "BackupSchedule",
-    plural = "backupschedules"
-)]
+#[kube(group = "oracle.db.anthosapis.com", version = "v1alpha1", kind = "BackupSchedule", plural = "backupschedules")]
 #[kube(namespaced)]
 #[kube(status = "BackupScheduleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackupScheduleSpec {
     /// BackupLabels define the desired labels that scheduled backups will be created with.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupLabels")]
     pub backup_labels: Option<BTreeMap<String, String>>,
     /// BackupRetentionPolicy is the policy used to trigger automatic deletion of backups produced from this BackupSchedule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupRetentionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRetentionPolicy")]
     pub backup_retention_policy: Option<BackupScheduleBackupRetentionPolicy>,
     /// BackupSpec defines the Backup that will be created on the provided schedule.
     #[serde(rename = "backupSpec")]
@@ -45,11 +32,7 @@ pub struct BackupScheduleSpec {
     /// Schedule is a cron-style expression of the schedule on which Backup will be created. For allowed syntax, see en.wikipedia.org/wiki/Cron and godoc.org/github.com/robfig/cron.
     pub schedule: String,
     /// StartingDeadlineSeconds is an optional deadline in seconds for starting the backup creation if it misses scheduled time for any reason. The default is 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startingDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingDeadlineSeconds")]
     pub starting_deadline_seconds: Option<i64>,
     /// Suspend tells the controller to suspend operations - both creation of new Backup and retention actions. This will not have any effect on backups currently in progress. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,11 +43,7 @@ pub struct BackupScheduleSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupScheduleBackupRetentionPolicy {
     /// BackupRetention is the number of successful backups to keep around. The default is 7. A value of 0 means "do not delete backups based on count". Max of 512 allows for ~21 days of hourly backups or ~1.4 years of daily backups.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupRetention"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRetention")]
     pub backup_retention: Option<i32>,
 }
 
@@ -72,21 +51,13 @@ pub struct BackupScheduleBackupRetentionPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupScheduleBackupSpec {
     /// For a Physical backup this slice can be used to indicate what PDBs, schemas, tablespaces or tables to back up.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupItems"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupItems")]
     pub backup_items: Option<Vec<String>>,
     /// For a Physical backup the choices are Backupset and Image Copies. Backupset is the default, but if Image Copies are required, flip this flag to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backupset: Option<bool>,
     /// For a Physical backup, optionally turn on an additional "check logical" option. The default is off.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checkLogical"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkLogical")]
     pub check_logical: Option<bool>,
     /// For a Physical backup, optionally turn on compression, by flipping this flag to true. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -107,11 +78,7 @@ pub struct BackupScheduleBackupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instance: Option<String>,
     /// KeepDataOnDeletion defines whether to keep backup data when backup resource is removed. The default value is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepDataOnDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepDataOnDeletion")]
     pub keep_data_on_deletion: Option<bool>,
     /// For a Physical backup, optionally specify an incremental level. The default is 0 (the whole database).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -123,31 +90,19 @@ pub struct BackupScheduleBackupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<BackupScheduleBackupSpecMode>,
     /// For a Physical backup, optionally specify a section size in various units (K M G).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionSize")]
     pub section_size: Option<IntOrString>,
     /// Backup sub-type, which is only relevant for a Physical backup type (e.g. RMAN). If omitted, the default of Instance(Level) is assumed. Supported options at this point are: Instance or Database level backups.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subType")]
     pub sub_type: Option<BackupScheduleBackupSpecSubType>,
     /// For a Physical backup, optionally specify the time threshold. If a threshold is reached, the backup request would time out and error out. The threshold is expressed in minutes. Don't include the unit (minutes), just the integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeLimitMinutes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeLimitMinutes")]
     pub time_limit_minutes: Option<i32>,
     /// Type describes a type of a backup to take. Immutable. Available options are: - Snapshot: storage level disk snapshot. - Physical: database engine specific backup that relies on a redo stream / continuous archiving (WAL) and may allow a PITR. Examples include pg_backup, pgBackRest, mysqlbackup. A Physical backup may be file based or database block based (e.g. Oracle RMAN). - Logical: database engine specific backup that relies on running SQL statements, e.g. mysqldump, pg_dump, expdp. If not specified, the default of Snapshot is assumed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<BackupScheduleBackupSpecType>,
     /// VolumeSnapshotClass points to a particular CSI driver and is used for taking a volume snapshot. If requested here at the Backup level, this setting overrides the platform default as well as the default set via the Config (global user preferences).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClass")]
     pub volume_snapshot_class: Option<String>,
 }
 
@@ -178,28 +133,16 @@ pub enum BackupScheduleBackupSpecType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupScheduleStatus {
     /// BackupHistory stores the records for up to 7 of the latest backups.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupHistory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupHistory")]
     pub backup_history: Option<Vec<BackupScheduleStatusBackupHistory>>,
     /// BackupTotal stores the total number of current existing backups created by this backupSchedule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupTotal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupTotal")]
     pub backup_total: Option<i32>,
     /// Conditions of the BackupSchedule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// LastBackupTime is the time the last Backup was created for this BackupSchedule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastBackupTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastBackupTime")]
     pub last_backup_time: Option<String>,
 }
 
@@ -216,3 +159,4 @@ pub struct BackupScheduleStatusBackupHistory {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

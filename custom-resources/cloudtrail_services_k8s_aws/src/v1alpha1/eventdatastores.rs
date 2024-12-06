@@ -4,78 +4,53 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// EventDataStoreSpec defines the desired state of EventDataStore.
-///
+/// 
 /// A storage lake of event data against which you can run complex SQL-based
 /// queries. An event data store can include events that you have logged on your
 /// account from the last 90 to 2555 days (about three months to up to seven
 /// years). To select events for an event data store, use advanced event selectors
 /// (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-advanced).
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cloudtrail.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "EventDataStore",
-    plural = "eventdatastores"
-)]
+#[kube(group = "cloudtrail.services.k8s.aws", version = "v1alpha1", kind = "EventDataStore", plural = "eventdatastores")]
 #[kube(namespaced)]
 #[kube(status = "EventDataStoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EventDataStoreSpec {
     /// The advanced event selectors to use to select the events for the data store.
     /// For more information about how to use advanced event selectors, see Log events
     /// by using advanced event selectors (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-advanced)
     /// in the CloudTrail User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "advancedEventSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "advancedEventSelectors")]
     pub advanced_event_selectors: Option<Vec<EventDataStoreAdvancedEventSelectors>>,
     /// Specifies whether the event data store includes events from all regions,
     /// or only from the region in which the event data store is created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiRegionEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiRegionEnabled")]
     pub multi_region_enabled: Option<bool>,
     /// The name of the event data store.
     pub name: String,
     /// Specifies whether an event data store collects events logged for an organization
     /// in Organizations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "organizationEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "organizationEnabled")]
     pub organization_enabled: Option<bool>,
     /// The retention period of the event data store, in days. You can set a retention
     /// period of up to 2555 days, the equivalent of seven years.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retentionPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<EventDataStoreTags>>,
     /// Specifies whether termination protection is enabled for the event data store.
     /// If termination protection is enabled, you cannot delete the event data store
     /// until termination protection is disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationProtectionEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationProtectionEnabled")]
     pub termination_protection_enabled: Option<bool>,
 }
 
@@ -84,27 +59,23 @@ pub struct EventDataStoreSpec {
 /// those events that are important to you. For more information about advanced
 /// event selectors, see Logging data events for trails (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html)
 /// in the CloudTrail User Guide.
-///
+/// 
 ///    * readOnly
-///
+/// 
 ///    * eventSource
-///
+/// 
 ///    * eventName
-///
+/// 
 ///    * eventCategory
-///
+/// 
 ///    * resources.type
-///
+/// 
 ///    * resources.ARN
-///
+/// 
 /// You cannot apply both event selectors and advanced event selectors to a trail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventDataStoreAdvancedEventSelectors {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<Vec<EventDataStoreAdvancedEventSelectorsFieldSelectors>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -119,25 +90,13 @@ pub struct EventDataStoreAdvancedEventSelectorsFieldSelectors {
     pub equals: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub field: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notEndsWith"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notEndsWith")]
     pub not_ends_with: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notEquals")]
     pub not_equals: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notStartsWith"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notStartsWith")]
     pub not_starts_with: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startsWith"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startsWith")]
     pub starts_with: Option<Vec<String>>,
 }
 
@@ -156,11 +115,7 @@ pub struct EventDataStoreStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<EventDataStoreStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -169,11 +124,7 @@ pub struct EventDataStoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The timestamp that shows when the event data store was created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createdTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdTimestamp")]
     pub created_timestamp: Option<String>,
     /// The status of event data store creation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -181,11 +132,7 @@ pub struct EventDataStoreStatus {
     /// The timestamp that shows when an event data store was updated, if applicable.
     /// UpdatedTimestamp is always either the same or newer than the time shown in
     /// CreatedTimestamp.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedTimestamp")]
     pub updated_timestamp: Option<String>,
 }
 
@@ -210,3 +157,4 @@ pub struct EventDataStoreStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

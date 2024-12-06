@@ -4,49 +4,32 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tinkerbell.org",
-    version = "v1alpha2",
-    kind = "Workflow",
-    plural = "workflows"
-)]
+#[kube(group = "tinkerbell.org", version = "v1alpha2", kind = "Workflow", plural = "workflows")]
 #[kube(namespaced)]
 #[kube(status = "WorkflowStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct WorkflowSpec {
     /// HardwareRef is a reference to a Hardware resource this workflow will execute on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardwareRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareRef")]
     pub hardware_ref: Option<WorkflowHardwareRef>,
     /// TemplateParams are a list of key-value pairs that are injected into templates at render
     /// time. TemplateParams are exposed to templates using a top level .Params key.
-    ///
+    /// 
     /// For example, TemplateParams = {"foo": "bar"}, the foo key can be accessed via .Params.foo.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateParams")]
     pub template_params: Option<BTreeMap<String, String>>,
     /// TemplateRef is a reference to a Template resource used to render workflow actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
     pub template_ref: Option<WorkflowTemplateRef>,
     /// TimeoutSeconds defines the time the workflow has to complete. The timer begins when the first
     /// action is requested. When set to 0, no timeout is applied.
@@ -86,11 +69,7 @@ pub struct WorkflowStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// LastTransition is the observed time when State transitioned last.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitioned"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitioned")]
     pub last_transitioned: Option<String>,
     /// StartedAt is the time the first action was requested. Nil indicates the Workflow has not
     /// started.
@@ -106,28 +85,16 @@ pub struct WorkflowStatus {
 pub struct WorkflowStatusActions {
     /// FailureMessage is a free-form user friendly message describing why the Action entered the
     /// ActionStateFailed state. Typically, this is an elaboration on the Reason.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// FailureReason is a short CamelCase word or phrase describing why the Action entered
     /// ActionStateFailed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// ID uniquely identifies the action status.
     pub id: String,
     /// LastTransition is the observed time when State transitioned last.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitioned"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitioned")]
     pub last_transitioned: Option<String>,
     /// Rendered is the rendered action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -177,3 +144,4 @@ pub struct WorkflowStatusActionsRenderedNamespaces {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pid: Option<i64>,
 }
+

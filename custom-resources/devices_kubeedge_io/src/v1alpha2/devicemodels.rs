@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// DeviceModelSpec defines the model / template for a device.It is a blueprint which describes the device capabilities and access mechanism via property visitors.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "devices.kubeedge.io",
-    version = "v1alpha2",
-    kind = "DeviceModel",
-    plural = "devicemodels"
-)]
+#[kube(group = "devices.kubeedge.io", version = "v1alpha2", kind = "DeviceModel", plural = "devicemodels")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DeviceModelSpec {
     /// Required: List of device properties.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -64,17 +59,9 @@ pub struct DeviceModelPropertiesType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceModelPropertiesTypeBoolean {
     /// Required: Access mode of property, ReadWrite or ReadOnly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<DeviceModelPropertiesTypeBooleanAccessMode>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<bool>,
 }
 
@@ -87,11 +74,7 @@ pub enum DeviceModelPropertiesTypeBooleanAccessMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceModelPropertiesTypeBytes {
     /// Required: Access mode of property, ReadWrite or ReadOnly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<DeviceModelPropertiesTypeBytesAccessMode>,
 }
 
@@ -104,17 +87,9 @@ pub enum DeviceModelPropertiesTypeBytesAccessMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceModelPropertiesTypeDouble {
     /// Required: Access mode of property, ReadWrite or ReadOnly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<DeviceModelPropertiesTypeDoubleAccessMode>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maximum: Option<f64>,
@@ -134,17 +109,9 @@ pub enum DeviceModelPropertiesTypeDoubleAccessMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceModelPropertiesTypeFloat {
     /// Required: Access mode of property, ReadWrite or ReadOnly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<DeviceModelPropertiesTypeFloatAccessMode>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maximum: Option<f64>,
@@ -164,17 +131,9 @@ pub enum DeviceModelPropertiesTypeFloatAccessMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceModelPropertiesTypeInt {
     /// Required: Access mode of property, ReadWrite or ReadOnly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<DeviceModelPropertiesTypeIntAccessMode>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
@@ -194,17 +153,9 @@ pub enum DeviceModelPropertiesTypeIntAccessMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceModelPropertiesTypeString {
     /// Required: Access mode of property, ReadWrite or ReadOnly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<DeviceModelPropertiesTypeStringAccessMode>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
 }
 
@@ -213,3 +164,4 @@ pub enum DeviceModelPropertiesTypeStringAccessMode {
     ReadWrite,
     ReadOnly,
 }
+

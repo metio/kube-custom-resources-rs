@@ -4,30 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// UserSpec defines the desired state of User.
-///
+/// 
 /// You create users and assign them specific permissions by using an access
 /// string. You assign the users to Access Control Lists aligned with a specific
 /// role (administrators, human resources) that are then deployed to one or more
 /// MemoryDB clusters.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "memorydb.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "User",
-    plural = "users"
-)]
+#[kube(group = "memorydb.services.k8s.aws", version = "v1alpha1", kind = "User", plural = "users")]
 #[kube(namespaced)]
 #[kube(status = "UserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct UserSpec {
     /// Access permissions string used for this user.
     #[serde(rename = "accessString")]
@@ -88,11 +83,7 @@ pub struct UserStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<UserStatusAckResourceMetadata>,
     /// The names of the Access Control Lists to which the user belongs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "aclNames")]
@@ -111,11 +102,7 @@ pub struct UserStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<UserStatusEvents>>,
     /// The minimum engine version supported for the user
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumEngineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumEngineVersion")]
     pub minimum_engine_version: Option<String>,
     /// Indicates the user status. Can be "active", "modifying" or "deleting".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -147,11 +134,7 @@ pub struct UserStatusAckResourceMetadata {
 /// Denotes whether the user requires a password to authenticate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserStatusAuthentication {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordCount")]
     pub password_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
     pub r#type: Option<String>,
@@ -165,16 +148,9 @@ pub struct UserStatusEvents {
     pub date: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceName")]
     pub source_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<String>,
 }
+

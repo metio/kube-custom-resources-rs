@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// NFSGaneshaSpec represents the spec of an nfs ganesha server
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ceph.rook.io",
-    version = "v1",
-    kind = "CephNFS",
-    plural = "cephnfses"
-)]
+#[kube(group = "ceph.rook.io", version = "v1", kind = "CephNFS", plural = "cephnfses")]
 #[kube(namespaced)]
 #[kube(status = "CephNFSStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CephNFSSpec {
     /// RADOS is the Ganesha RADOS specification
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -67,37 +62,25 @@ pub struct CephNFSSecurity {
 pub struct CephNFSSecurityKerberos {
     /// ConfigFiles defines where the Kerberos configuration should be sourced from. Config files
     /// will be placed into the `/etc/krb5.conf.rook/` directory.
-    ///
+    /// 
     /// If this is left empty, Rook will not add any files. This allows you to manage the files
     /// yourself however you wish. For example, you may build them into your custom Ceph container
     /// image or use the Vault agent injector to securely add the files via annotations on the
     /// CephNFS spec (passed to the NFS server pods).
-    ///
+    /// 
     /// Rook configures Kerberos to log to stderr. We suggest removing logging sections from config
     /// files to avoid consuming unnecessary disk space from logging to files.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configFiles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFiles")]
     pub config_files: Option<CephNFSSecurityKerberosConfigFiles>,
     /// DomainName should be set to the Kerberos Realm.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "domainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
     pub domain_name: Option<String>,
     /// KeytabFile defines where the Kerberos keytab should be sourced from. The keytab file will be
     /// placed into `/etc/krb5.keytab`. If this is left empty, Rook will not add the file.
     /// This allows you to manage the `krb5.keytab` file yourself however you wish. For example, you
     /// may build it into your custom Ceph container image or use the Vault agent injector to
     /// securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keytabFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keytabFile")]
     pub keytab_file: Option<CephNFSSecurityKerberosKeytabFile>,
     /// PrincipalName corresponds directly to NFS-Ganesha's NFS_KRB5:PrincipalName config. In
     /// practice, this is the service prefix of the principal name. The default is "nfs".
@@ -105,31 +88,23 @@ pub struct CephNFSSecurityKerberos {
     /// and (b) the Realm configured in the user-provided krb5.conf to determine the full principal
     /// name: <principalName>/<namespace>-<name>@<realm>. e.g., nfs/rook-ceph-my-nfs@example.net.
     /// See https://github.com/nfs-ganesha/nfs-ganesha/wiki/RPCSEC_GSS for more detail.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "principalName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "principalName")]
     pub principal_name: Option<String>,
 }
 
 /// ConfigFiles defines where the Kerberos configuration should be sourced from. Config files
 /// will be placed into the `/etc/krb5.conf.rook/` directory.
-///
+/// 
 /// If this is left empty, Rook will not add any files. This allows you to manage the files
 /// yourself however you wish. For example, you may build them into your custom Ceph container
 /// image or use the Vault agent injector to securely add the files via annotations on the
 /// CephNFS spec (passed to the NFS server pods).
-///
+/// 
 /// Rook configures Kerberos to log to stderr. We suggest removing logging sections from config
 /// files to avoid consuming unnecessary disk space from logging to files.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFiles {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<CephNFSSecurityKerberosConfigFilesVolumeSource>,
 }
 
@@ -141,13 +116,8 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSource {
     pub empty_dir: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceEmptyDir>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceHostPath>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<CephNFSSecurityKerberosConfigFilesVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<CephNFSSecurityKerberosConfigFilesVolumeSourcePersistentVolumeClaim>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -156,11 +126,7 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceConfigMapItems>>,
@@ -203,11 +169,7 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSourcePersistentVolumeClaim {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSources>>,
@@ -215,31 +177,16 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSources {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle:
-        Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesConfigMap>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesSecret>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -264,8 +211,7 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesCluster
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -275,8 +221,7 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesCluster
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesConfigMapItems>>,
+    pub items: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesConfigMapItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -294,8 +239,7 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesConfigM
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItems>>,
+    pub items: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItems>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -311,24 +255,15 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwar
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -338,8 +273,7 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesDownwar
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesSecretItems>>,
+    pub items: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -358,32 +292,20 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesSecretI
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     pub path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosConfigFilesVolumeSourceSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -402,11 +324,7 @@ pub struct CephNFSSecurityKerberosConfigFilesVolumeSourceSecretItems {
 /// securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<CephNFSSecurityKerberosKeytabFileVolumeSource>,
 }
 
@@ -418,13 +336,8 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSource {
     pub empty_dir: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceEmptyDir>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceHostPath>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<CephNFSSecurityKerberosKeytabFileVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<CephNFSSecurityKerberosKeytabFileVolumeSourcePersistentVolumeClaim>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -433,11 +346,7 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceConfigMapItems>>,
@@ -480,11 +389,7 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSourcePersistentVolumeClaim {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSources>>,
@@ -492,31 +397,16 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSources {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle:
-        Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesConfigMap>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesSecret>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -541,8 +431,7 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterT
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -552,8 +441,7 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesClusterT
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesConfigMapItems>>,
+    pub items: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesConfigMapItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -571,8 +459,7 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesConfigMa
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItems>>,
+    pub items: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItems>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -588,24 +475,15 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownward
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -615,8 +493,7 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesDownward
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesSecretItems>>,
+    pub items: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -635,32 +512,20 @@ pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesSecretIt
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     pub path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecurityKerberosKeytabFileVolumeSourceSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecurityKerberosKeytabFileVolumeSourceSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -688,20 +553,12 @@ pub struct CephNFSSecuritySssdSidecar {
     /// AdditionalFiles defines any number of additional files that should be mounted into the SSSD
     /// sidecar with a directory root of `/etc/sssd/rook-additional/`.
     /// These files may be referenced by the sssd.conf config file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalFiles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalFiles")]
     pub additional_files: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFiles>>,
     /// DebugLevel sets the debug level for SSSD. If unset or set to 0, Rook does nothing. Otherwise,
     /// this may be a value between 1 and 10. See SSSD docs for more info:
     /// https://sssd.io/troubleshooting/basics.html#sssd-debug-logs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "debugLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugLevel")]
     pub debug_level: Option<i64>,
     /// Image defines the container image that should be used for the SSSD sidecar.
     pub image: String,
@@ -713,11 +570,7 @@ pub struct CephNFSSecuritySssdSidecar {
     /// This allows you to manage the `sssd.conf` file yourself however you wish. For example, you
     /// may build it into your custom Ceph container image or use the Vault agent injector to
     /// securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sssdConfigFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sssdConfigFile")]
     pub sssd_config_file: Option<CephNFSSecuritySssdSidecarSssdConfigFile>,
 }
 
@@ -743,13 +596,8 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSource {
     pub empty_dir: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceEmptyDir>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceHostPath>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourcePersistentVolumeClaim>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -758,11 +606,7 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceConfigMapItems>>,
@@ -805,11 +649,7 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourcePersistentVolume
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources>>,
@@ -817,34 +657,16 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle: Option<
-        CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesClusterTrustBundle,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesConfigMap>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApi>,
+    pub config_map: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesConfigMap>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesSecret>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token: Option<
-        CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesServiceAccountToken,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -869,8 +691,7 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -880,9 +701,7 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesConfigMapItems>,
-    >,
+    pub items: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesConfigMapItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -900,9 +719,7 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItems>,
-    >,
+    pub items: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItems>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -917,26 +734,16 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -946,9 +753,7 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -964,36 +769,23 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesServiceAccountToken
-{
+pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     pub path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -1010,10 +802,10 @@ pub struct CephNFSSecuritySssdSidecarAdditionalFilesVolumeSourceSecretItems {
 pub struct CephNFSSecuritySssdSidecarResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephNFSSecuritySssdSidecarResourcesClaims>>,
@@ -1050,11 +842,7 @@ pub struct CephNFSSecuritySssdSidecarResourcesClaims {
 /// securely add the file via annotations on the CephNFS spec (passed to the NFS server pods).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSource>,
 }
 
@@ -1066,13 +854,8 @@ pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSource {
     pub empty_dir: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceEmptyDir>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceHostPath>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourcePersistentVolumeClaim>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1081,11 +864,7 @@ pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceConfigMapItems>>,
@@ -1128,11 +907,7 @@ pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourcePersistentVolumeC
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSources>>,
@@ -1140,34 +915,16 @@ pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjected {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSources {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle: Option<
-        CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesClusterTrustBundle,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesConfigMap>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApi>,
+    pub config_map: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesConfigMap>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesSecret>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token: Option<
-        CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesServiceAccountToken,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1192,8 +949,7 @@ pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesC
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1203,9 +959,7 @@ pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesC
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesConfigMapItems>,
-    >,
+    pub items: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesConfigMapItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1223,9 +977,7 @@ pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesC
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItems>,
-    >,
+    pub items: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItems>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1240,26 +992,16 @@ pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesD
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -1269,9 +1011,7 @@ pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1290,32 +1030,20 @@ pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesS
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     pub path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephNFSSecuritySssdSidecarSssdConfigFileVolumeSourceSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -1336,22 +1064,14 @@ pub struct CephNFSServer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Whether host networking is enabled for the Ganesha server. If not set, the network settings from the cluster CR will be applied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// The labels-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// A liveness-probe to verify that Ganesha server has valid run-time state.
     /// If LivenessProbe.Disabled is false and LivenessProbe.Probe is nil uses default probe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<CephNFSServerLivenessProbe>,
     /// LogLevel set logging level
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -1359,11 +1079,7 @@ pub struct CephNFSServer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placement: Option<CephNFSServerPlacement>,
     /// PriorityClassName sets the priority class on the pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Resources set resource requests and limits
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1392,11 +1108,7 @@ pub struct CephNFSServerLivenessProbeProbe {
     pub exec: Option<CephNFSServerLivenessProbeProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1406,45 +1118,25 @@ pub struct CephNFSServerLivenessProbeProbe {
     pub http_get: Option<CephNFSServerLivenessProbeProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephNFSServerLivenessProbeProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1467,7 +1159,7 @@ pub struct CephNFSServerLivenessProbeProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1481,11 +1173,7 @@ pub struct CephNFSServerLivenessProbeProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<CephNFSServerLivenessProbeProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1524,57 +1212,29 @@ pub struct CephNFSServerLivenessProbeProbeTcpSocket {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacement {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<CephNFSServerPlacementNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<CephNFSServerPlacementPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<CephNFSServerPlacementPodAntiAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<CephNFSServerPlacementTolerations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<CephNFSServerPlacementTopologySpreadConstraints>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    pub preference:
-        CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
@@ -1587,8 +1247,7 @@ pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDur
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1596,8 +1255,7 @@ pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDur
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct CephNFSServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1619,8 +1277,7 @@ pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuri
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1628,8 +1285,7 @@ pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuri
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1638,22 +1294,10 @@ pub struct CephNFSServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuri
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1688,8 +1332,7 @@ pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuri
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1705,8 +1348,7 @@ pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuri
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CephNFSServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1738,8 +1380,7 @@ pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDurin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1755,8 +1396,7 @@ pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDurin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1765,22 +1405,10 @@ pub struct CephNFSServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDurin
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementPodAntiAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1815,8 +1443,7 @@ pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnored
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1832,8 +1459,7 @@ pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnored
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CephNFSServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1865,8 +1491,7 @@ pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredD
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1882,8 +1507,7 @@ pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredD
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CephNFSServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1898,11 +1522,7 @@ pub struct CephNFSServerPlacementTolerations {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -1910,37 +1530,17 @@ pub struct CephNFSServerPlacementTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementTopologySpreadConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<CephNFSServerPlacementTopologySpreadConstraintsLabelSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
@@ -1950,18 +1550,9 @@ pub struct CephNFSServerPlacementTopologySpreadConstraints {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerPlacementTopologySpreadConstraintsLabelSelector {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CephNFSServerPlacementTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CephNFSServerPlacementTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1978,10 +1569,10 @@ pub struct CephNFSServerPlacementTopologySpreadConstraintsLabelSelectorMatchExpr
 pub struct CephNFSServerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephNFSServerResourcesClaims>>,
@@ -2017,12 +1608,9 @@ pub struct CephNFSStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

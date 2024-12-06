@@ -53,12 +53,6 @@ if ! cargo run --package code-generator --bin crate_readme_generator; then
   exit 1
 fi
 
-# generate workspace Cargo.toml
-if ! cargo run --package code-generator --bin workspace_toml_generator; then
-  echo 'could not generate workspace Cargo.toml'
-  exit 1
-fi
-
 # generate GitHub actions
 if ! cargo run --package code-generator --bin github_actions_generator; then
   echo 'could not generate workspace Cargo.toml'

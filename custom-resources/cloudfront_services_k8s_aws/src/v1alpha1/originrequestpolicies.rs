@@ -4,46 +4,41 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// OriginRequestPolicySpec defines the desired state of OriginRequestPolicy.
-///
+/// 
 /// An origin request policy.
-///
+/// 
 /// When it's attached to a cache behavior, the origin request policy determines
 /// the values that CloudFront includes in requests that it sends to the origin.
 /// Each request that CloudFront sends to the origin includes the following:
-///
+/// 
 ///    * The request body and the URL path (without the domain name) from the
 ///    viewer request.
-///
+/// 
 ///    * The headers that CloudFront automatically includes in every origin request,
 ///    including Host, User-Agent, and X-Amz-Cf-Id.
-///
+/// 
 ///    * All HTTP headers, cookies, and URL query strings that are specified
 ///    in the cache policy or the origin request policy. These can include items
 ///    from the viewer request and, in the case of headers, additional ones that
 ///    are added by CloudFront.
-///
+/// 
 /// CloudFront sends a request when it can't find an object in its cache that
 /// matches the request. If you want to send values to the origin and also include
 /// them in the cache key, use CachePolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cloudfront.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "OriginRequestPolicy",
-    plural = "originrequestpolicies"
-)]
+#[kube(group = "cloudfront.services.k8s.aws", version = "v1alpha1", kind = "OriginRequestPolicy", plural = "originrequestpolicies")]
 #[kube(namespaced)]
 #[kube(status = "OriginRequestPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct OriginRequestPolicySpec {
     /// An origin request policy configuration.
     #[serde(rename = "originRequestPolicyConfig")]
@@ -58,32 +53,19 @@ pub struct OriginRequestPolicyOriginRequestPolicyConfig {
     /// An object that determines whether any cookies in viewer requests (and if
     /// so, which cookies) are included in requests that CloudFront sends to the
     /// origin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cookiesConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cookiesConfig")]
     pub cookies_config: Option<OriginRequestPolicyOriginRequestPolicyConfigCookiesConfig>,
     /// An object that determines whether any HTTP headers (and if so, which headers)
     /// are included in requests that CloudFront sends to the origin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headersConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headersConfig")]
     pub headers_config: Option<OriginRequestPolicyOriginRequestPolicyConfigHeadersConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// An object that determines whether any URL query strings in viewer requests
     /// (and if so, which query strings) are included in requests that CloudFront
     /// sends to the origin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryStringsConfig"
-    )]
-    pub query_strings_config:
-        Option<OriginRequestPolicyOriginRequestPolicyConfigQueryStringsConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryStringsConfig")]
+    pub query_strings_config: Option<OriginRequestPolicyOriginRequestPolicyConfigQueryStringsConfig>,
 }
 
 /// An object that determines whether any cookies in viewer requests (and if
@@ -91,11 +73,7 @@ pub struct OriginRequestPolicyOriginRequestPolicyConfig {
 /// origin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OriginRequestPolicyOriginRequestPolicyConfigCookiesConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cookieBehavior"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cookieBehavior")]
     pub cookie_behavior: Option<String>,
     /// Contains a list of cookie names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -113,11 +91,7 @@ pub struct OriginRequestPolicyOriginRequestPolicyConfigCookiesConfigCookies {
 /// are included in requests that CloudFront sends to the origin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OriginRequestPolicyOriginRequestPolicyConfigHeadersConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerBehavior"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerBehavior")]
     pub header_behavior: Option<String>,
     /// Contains a list of HTTP header names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -136,20 +110,11 @@ pub struct OriginRequestPolicyOriginRequestPolicyConfigHeadersConfigHeaders {
 /// sends to the origin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OriginRequestPolicyOriginRequestPolicyConfigQueryStringsConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryStringBehavior"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryStringBehavior")]
     pub query_string_behavior: Option<String>,
     /// Contains a list of query string names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryStrings"
-    )]
-    pub query_strings:
-        Option<OriginRequestPolicyOriginRequestPolicyConfigQueryStringsConfigQueryStrings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryStrings")]
+    pub query_strings: Option<OriginRequestPolicyOriginRequestPolicyConfigQueryStringsConfigQueryStrings>,
 }
 
 /// Contains a list of query string names.
@@ -165,11 +130,7 @@ pub struct OriginRequestPolicyStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<OriginRequestPolicyStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -183,11 +144,7 @@ pub struct OriginRequestPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// The date and time when the origin request policy was last modified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModifiedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
@@ -214,3 +171,4 @@ pub struct OriginRequestPolicyStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

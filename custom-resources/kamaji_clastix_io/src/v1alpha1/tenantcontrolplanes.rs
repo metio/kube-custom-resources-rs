@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TenantControlPlaneSpec defines the desired state of TenantControlPlane.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "kamaji.clastix.io",
-    version = "v1alpha1",
-    kind = "TenantControlPlane",
-    plural = "tenantcontrolplanes"
-)]
+#[kube(group = "kamaji.clastix.io", version = "v1alpha1", kind = "TenantControlPlane", plural = "tenantcontrolplanes")]
 #[kube(namespaced)]
 #[kube(status = "TenantControlPlaneStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct TenantControlPlaneSpec {
     /// Addons contain which addons are enabled
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -40,11 +35,7 @@ pub struct TenantControlPlaneSpec {
     /// Kubernetes specification for tenant control plane
     pub kubernetes: TenantControlPlaneKubernetes,
     /// NetworkProfile specifies how the network is
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkProfile")]
     pub network_profile: Option<TenantControlPlaneNetworkProfile>,
 }
 
@@ -70,11 +61,7 @@ pub struct TenantControlPlaneAddons {
 pub struct TenantControlPlaneAddonsCoreDns {
     /// ImageRepository sets the container registry to pull images from.
     /// if not set, the default ImageRepository will be used instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRepository"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRepository")]
     pub image_repository: Option<String>,
     /// ImageTag allows to specify a tag for the image.
     /// In case this value is set, kubeadm does not change automatically the version of the above components during upgrades.
@@ -133,11 +120,7 @@ pub struct TenantControlPlaneAddonsKonnectivityAgentTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -171,10 +154,10 @@ pub struct TenantControlPlaneAddonsKonnectivityServer {
 pub struct TenantControlPlaneAddonsKonnectivityServerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TenantControlPlaneAddonsKonnectivityServerResourcesClaims>>,
@@ -210,11 +193,7 @@ pub struct TenantControlPlaneAddonsKonnectivityServerResourcesClaims {
 pub struct TenantControlPlaneAddonsKubeProxy {
     /// ImageRepository sets the container registry to pull images from.
     /// if not set, the default ImageRepository will be used instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRepository"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRepository")]
     pub image_repository: Option<String>,
     /// ImageTag allows to specify a tag for the image.
     /// In case this value is set, kubeadm does not change automatically the version of the above components during upgrades.
@@ -240,43 +219,20 @@ pub struct TenantControlPlaneControlPlane {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeployment {
     /// AdditionalContainers allows adding additional containers to the Control Plane deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalContainers"
-    )]
-    pub additional_containers:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalContainers")]
+    pub additional_containers: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalContainers>>,
     /// AdditionalInitContainers allows adding additional init containers to the Control Plane deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalInitContainers"
-    )]
-    pub additional_init_containers:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalInitContainers")]
+    pub additional_init_containers: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainers>>,
     /// AdditionalMetadata defines which additional metadata, such as labels and annotations, must be attached to the created resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalMetadata")]
     pub additional_metadata: Option<TenantControlPlaneControlPlaneDeploymentAdditionalMetadata>,
     /// AdditionalVolumeMounts allows to mount an additional volume into each component of the Control Plane
     /// (kube-apiserver, controller-manager, and scheduler).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalVolumeMounts"
-    )]
-    pub additional_volume_mounts:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMounts>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalVolumeMounts")]
+    pub additional_volume_mounts: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMounts>,
     /// AdditionalVolumes allows to add additional volumes to the Control Plane deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalVolumes")]
     pub additional_volumes: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumes>>,
     /// If specified, the Tenant Control Plane pod's scheduling constraints.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/
@@ -291,27 +247,14 @@ pub struct TenantControlPlaneControlPlaneDeployment {
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// AdditionalMetadata defines which additional metadata, such as labels and annotations, must be attached to the created resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAdditionalMetadata"
-    )]
-    pub pod_additional_metadata:
-        Option<TenantControlPlaneControlPlaneDeploymentPodAdditionalMetadata>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAdditionalMetadata")]
+    pub pod_additional_metadata: Option<TenantControlPlaneControlPlaneDeploymentPodAdditionalMetadata>,
     /// RegistrySettings allows to override the default images for the given Tenant Control Plane instance.
     /// It could be used to point to a different container registry rather than the public one.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrySettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrySettings")]
     pub registry_settings: Option<TenantControlPlaneControlPlaneDeploymentRegistrySettings>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
@@ -324,18 +267,10 @@ pub struct TenantControlPlaneControlPlaneDeployment {
     /// If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an
     /// empty definition that uses the default runtime handler.
     /// More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     /// ServiceAccountName allows to specify the service account to be mounted to the pods of the Control plane deployment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Strategy describes how to replace existing pods with new ones for the given Tenant Control Plane.
     /// Default value is set to Rolling Update, with a blue/green strategy.
@@ -349,13 +284,8 @@ pub struct TenantControlPlaneControlPlaneDeployment {
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// In case of nil underlying LabelSelector, the Kamaji one for the given Tenant Control Plane will be used.
     /// All topologySpreadConstraints are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraints>>,
 }
 
 /// A single application container that you want to run within a pod.
@@ -404,11 +334,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -418,13 +344,8 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
     /// Cannot be updated.
@@ -442,21 +363,11 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -477,22 +388,13 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
@@ -500,13 +402,8 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
     /// Default is false.
@@ -528,11 +425,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -541,42 +434,24 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -598,46 +473,26 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFrom>,
+    pub value_from: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromFieldRef>,
+    pub field_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -662,11 +517,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -676,14 +527,9 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueF
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromResourceFieldRef
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -713,20 +559,14 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvValueF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvFromSecretRef>,
+    pub secret_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersEnvFromSecretRef>,
 }
 
 /// The ConfigMap to select from
@@ -768,8 +608,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecycle
     /// Other management of the container blocks until the hook completes.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStart>,
+    pub post_start: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStart>,
     /// PreStop is called immediately before a container is terminated due to an
     /// API request or management event such as liveness/startup probe failure,
     /// preemption, resource contention, etc. The handler is not called if the
@@ -780,8 +619,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecycle
     /// or until the termination grace period is reached.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStop>,
+    pub pre_stop: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStop>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -792,24 +630,18 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecycle
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStart {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStartExec>,
+    pub exec: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStartHttpGet,
-    >,
+    pub http_get: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStartSleep>,
+    pub sleep: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStartTcpSocket,
-    >,
+    pub tcp_socket: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -849,8 +681,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecycle
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -892,23 +723,18 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecycle
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStop {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStopExec>,
+    pub exec: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStopHttpGet>,
+    pub http_get: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStopSleep>,
+    pub sleep: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStopTcpSocket,
-    >,
+    pub tcp_socket: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -948,8 +774,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecycle
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLifecyclePreStopHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -989,47 +814,29 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessP
     pub exec: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessProbeHttpGet>,
+    pub http_get: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -1040,20 +847,12 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessP
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1076,7 +875,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessP
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1107,8 +906,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessP
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersLivenessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -1163,52 +961,32 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersPorts {
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbeExec>,
+    pub exec: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbeGrpc>,
+    pub grpc: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbeHttpGet>,
+    pub http_get: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbeTcpSocket>,
+    pub tcp_socket: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -1219,20 +997,12 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadiness
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1255,7 +1025,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadiness
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1286,8 +1056,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadiness
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersReadinessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -1327,14 +1096,13 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersResizePol
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalContainersResourcesClaims>>,
+    pub claims: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1373,30 +1141,18 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityC
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextAppArmorProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextCapabilities,
-    >,
+    pub capabilities: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -1413,22 +1169,14 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityC
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -1436,11 +1184,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityC
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -1454,55 +1198,32 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityC
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextSeLinuxOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextSeccompProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
 /// overrides the pod's appArmorProfile.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextAppArmorProfile
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextAppArmorProfile {
     /// localhostProfile indicates a profile loaded on the node that should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -1532,8 +1253,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityC
 /// PodSecurityContext, the value specified in SecurityContext takes precedence.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextSeLinuxOptions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
@@ -1553,21 +1273,16 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityC
 /// override the pod options.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextSeccompProfile
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1580,43 +1295,26 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityC
 /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
 /// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextWindowsOptions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1634,47 +1332,29 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupPr
     pub exec: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupProbeHttpGet>,
+    pub http_get: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupProbeTcpSocket>,
+    pub tcp_socket: Option<TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -1685,20 +1365,12 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupPr
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1721,7 +1393,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupPr
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1752,8 +1424,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupPr
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupProbeHttpGetHttpHeaders
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersStartupProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -1796,11 +1467,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersVolumeMou
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -1810,25 +1477,21 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersVolumeMou
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -1838,11 +1501,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalContainersVolumeMou
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -1880,8 +1539,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainers {
     /// Values defined by an Env with a duplicate key will take precedence.
     /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
-    pub env_from:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvFrom>>,
+    pub env_from: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvFrom>>,
     /// Container image name.
     /// More info: https://kubernetes.io/docs/concepts/containers/images
     /// This field is optional to allow higher level config management to default or override
@@ -1893,28 +1551,18 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lifecycle:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecycle>,
+    pub lifecycle: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecycle>,
     /// Periodic probe of container liveness.
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
     /// Cannot be updated.
@@ -1932,27 +1580,16 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersResources>,
+    pub resources: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersResources>,
     /// RestartPolicy defines the restart behavior of individual containers in a pod.
     /// This field may only be set for init containers, and the only allowed value is "Always".
     /// For non-init containers or when this field is not specified,
@@ -1968,22 +1605,13 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
@@ -1991,13 +1619,8 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
     /// Default is false.
@@ -2019,11 +1642,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -2032,42 +1651,24 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -2089,8 +1690,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvValueFrom>,
+    pub value_from: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -2114,8 +1714,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvVa
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvValueFromConfigMapKeyRef
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -2135,11 +1734,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvVa
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2149,14 +1744,9 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvVa
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvValueFromResourceFieldRef
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2167,8 +1757,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvVa
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvValueFromSecretKeyRef
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -2187,20 +1776,14 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvVa
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvFromSecretRef>,
+    pub secret_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersEnvFromSecretRef>,
 }
 
 /// The ConfigMap to select from
@@ -2242,8 +1825,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifec
     /// Other management of the container blocks until the hook completes.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStart>,
+    pub post_start: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStart>,
     /// PreStop is called immediately before a container is terminated due to an
     /// API request or management event such as liveness/startup probe failure,
     /// preemption, resource contention, etc. The handler is not called if the
@@ -2254,8 +1836,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifec
     /// or until the termination grace period is reached.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStop>,
+    pub pre_stop: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStop>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -2266,26 +1847,18 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifec
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStart {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartExec,
-    >,
+    pub exec: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartHttpGet,
-    >,
+    pub http_get: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartSleep,
-    >,
+    pub sleep: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartTcpSocket,
-    >,
+    pub tcp_socket: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -2325,8 +1898,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifec
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -2345,8 +1917,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifec
 /// for the backward compatibility. There are no validation of this field and
 /// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartTcpSocket
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -2369,26 +1940,18 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifec
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStop {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopExec,
-    >,
+    pub exec: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopHttpGet,
-    >,
+    pub http_get: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopSleep,
-    >,
+    pub sleep: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopTcpSocket,
-    >,
+    pub tcp_socket: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -2428,8 +1991,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifec
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -2448,8 +2010,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifec
 /// for the backward compatibility. There are no validation of this field and
 /// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopTcpSocket
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -2467,54 +2028,32 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLifec
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbeExec>,
+    pub exec: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbeGrpc>,
+    pub grpc: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbeHttpGet,
-    >,
+    pub http_get: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbeTcpSocket,
-    >,
+    pub tcp_socket: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -2525,20 +2064,12 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLiven
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2561,7 +2092,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLiven
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2592,8 +2123,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLiven
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersLivenessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -2648,54 +2178,32 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersPorts
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbeExec>,
+    pub exec: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbeGrpc>,
+    pub grpc: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbeHttpGet,
-    >,
+    pub http_get: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbeTcpSocket,
-    >,
+    pub tcp_socket: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -2706,20 +2214,12 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadi
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2742,7 +2242,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadi
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2773,8 +2273,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadi
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersReadinessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -2814,15 +2313,13 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersResiz
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2938,17 +2435,12 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecur
 /// overrides the pod's appArmorProfile.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContextAppArmorProfile
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContextAppArmorProfile {
     /// localhostProfile indicates a profile loaded on the node that should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -2963,8 +2455,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecur
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContextCapabilities
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContextCapabilities {
     /// Added capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
@@ -2979,8 +2470,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecur
 /// PodSecurityContext, the value specified in SecurityContext takes precedence.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContextSeLinuxOptions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
@@ -3000,21 +2490,16 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecur
 /// override the pod options.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContextSeccompProfile
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3027,43 +2512,26 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecur
 /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
 /// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContextWindowsOptions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3078,53 +2546,32 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersSecur
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbeExec>,
+    pub exec: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbeGrpc>,
+    pub grpc: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbeHttpGet>,
+    pub http_get: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbeTcpSocket,
-    >,
+    pub tcp_socket: Option<TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -3135,20 +2582,12 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStart
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3171,7 +2610,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStart
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3202,8 +2641,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStart
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbeHttpGetHttpHeaders
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersStartupProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -3246,11 +2684,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersVolum
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -3260,25 +2694,21 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersVolum
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -3288,11 +2718,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalInitContainersVolum
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3310,19 +2736,11 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServer")]
-    pub api_server:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsApiServer>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerManager"
-    )]
-    pub controller_manager: Option<
-        Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsControllerManager>,
-    >,
+    pub api_server: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsApiServer>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerManager")]
+    pub controller_manager: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsControllerManager>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheduler:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsScheduler>>,
+    pub scheduler: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsScheduler>>,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
@@ -3338,11 +2756,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsApiServ
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -3352,25 +2766,21 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsApiServ
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -3380,11 +2790,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsApiServ
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3401,11 +2807,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsControl
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -3415,25 +2817,21 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsControl
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -3443,11 +2841,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsControl
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3464,11 +2858,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsSchedul
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -3478,25 +2868,21 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsSchedul
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -3506,11 +2892,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumeMountsSchedul
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3520,13 +2902,8 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesAzureDisk>,
@@ -3547,11 +2924,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -3560,7 +2933,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -3570,15 +2943,15 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3588,11 +2961,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumes {
     pub fc: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3600,13 +2969,8 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
@@ -3626,11 +2990,11 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumes {
     pub host_path: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesHostPath>,
     /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
     /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
-    ///
+    /// 
     /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
     /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
-    ///
+    /// 
     /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
     /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
@@ -3656,29 +3020,14 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesPersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesPhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesPortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjected>,
@@ -3700,13 +3049,8 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
-    pub vsphere_volume:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesVsphereVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
@@ -3740,11 +3084,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesAwsElasticBl
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -3797,17 +3137,12 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesCephfsSecretRef>,
+    pub secret_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesCephfsSecretRef>,
     /// user is optional: User is the rados user name, default is admin
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3845,8 +3180,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesCinder {
     /// secretRef is optional: points to a secret object containing parameters used to connect
     /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesCinderSecretRef>,
+    pub secret_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesCinderSecretRef>,
     /// volumeID used to identify the volume in cinder.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
@@ -3876,11 +3210,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -3939,24 +3269,15 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -3987,16 +3308,11 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApi 
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiItems>>,
+    pub items: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -4004,8 +3320,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApi 
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -4018,25 +3333,15 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiI
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4046,14 +3351,9 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiI
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiItemsResourceFieldRef
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4085,7 +3385,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -4095,15 +3395,15 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4115,7 +3415,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -4124,19 +3424,13 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template: Option<
-        TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplate,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -4146,7 +3440,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -4155,10 +3449,10 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplate {
@@ -4178,8 +3472,8 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVol
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplateMetadata
-{}
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -4272,8 +3566,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVol
 /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
 /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -4309,8 +3602,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVol
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -4333,8 +3625,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVol
 /// status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplateSpecResources
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4363,8 +3654,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVol
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4394,11 +3684,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -4430,8 +3716,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesFlexVolume {
     /// contains more than one secret, all secrets are passed to the plugin
     /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesFlexVolumeSecretRef>,
 }
 
 /// secretRef is Optional: secretRef is reference to the secret object containing
@@ -4455,18 +3740,10 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesFlexVolumeSe
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -4555,11 +3832,11 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesHostPath {
 
 /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
 /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
-///
+/// 
 /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
 /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
 /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
-///
+/// 
 /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
 /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
@@ -4574,11 +3851,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesImage {
     /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
     /// Required: Image or artifact reference to be used.
     /// Behaves in the same way as pod.spec.containers[*].image.
@@ -4596,18 +3869,10 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesImage {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -4618,21 +3883,13 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -4736,17 +3993,12 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections. Each entry in this list
     /// handles one source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSources>>,
+    pub sources: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSources>>,
 }
 
 /// Projection that may be projected along with other supported volume types.
@@ -4784,12 +4036,12 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSou
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -4842,8 +4094,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSou
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4868,11 +4119,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSou
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<
-            TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesConfigMapItems,
-        >,
-    >,
+    pub items: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -4937,14 +4184,9 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSou
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesDownwardApiItemsFieldRef
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4954,14 +4196,9 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSou
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4981,9 +4218,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSou
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -5018,8 +4253,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSou
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesServiceAccountToken
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSourcesServiceAccountToken {
     /// audience is the intended audience of the token. A recipient of a token
     /// must identify itself with an identifier specified in the audience of the
     /// token, and otherwise should reject the token. The audience defaults to the
@@ -5032,11 +4266,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesProjectedSou
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -5141,11 +4371,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -5156,36 +4382,20 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: TenantControlPlaneControlPlaneDeploymentAdditionalVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -5213,11 +4423,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -5233,11 +4439,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -5276,15 +4478,10 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesStorageos {
     /// secretRef specifies the secret to use for obtaining the StorageOS API
     /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesStorageosSecretRef>,
+    pub secret_ref: Option<TenantControlPlaneControlPlaneDeploymentAdditionalVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -5292,11 +4489,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -5322,18 +4515,10 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesVsphereVolum
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -5345,25 +4530,13 @@ pub struct TenantControlPlaneControlPlaneDeploymentAdditionalVolumesVsphereVolum
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<TenantControlPlaneControlPlaneDeploymentAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinity>,
 }
 
@@ -5414,8 +4587,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityPreferred
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5433,8 +4605,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityPreferred
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5477,8 +4648,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityRequiredD
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5496,8 +4666,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityRequiredD
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5616,8 +4785,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityPreferredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5651,8 +4819,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityPreferredD
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5739,8 +4906,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityRequiredDu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5774,8 +4940,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityRequiredDu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5893,8 +5058,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5928,8 +5092,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6016,8 +5179,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6051,8 +5213,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6074,11 +5235,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentAffinityPodAntiAffinityRequir
 pub struct TenantControlPlaneControlPlaneDeploymentExtraArgs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServer")]
     pub api_server: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerManager"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerManager")]
     pub controller_manager: Option<Vec<String>>,
     /// Available only if Kamaji is running using Kine as backing storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6100,25 +5257,13 @@ pub struct TenantControlPlaneControlPlaneDeploymentPodAdditionalMetadata {
 /// It could be used to point to a different container registry rather than the public one.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneDeploymentRegistrySettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiServerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerImage")]
     pub api_server_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerManagerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerManagerImage")]
     pub controller_manager_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerImage")]
     pub scheduler_image: Option<String>,
     /// The tag to append to all the Control Plane container images.
     /// Optional.
@@ -6134,13 +5279,8 @@ pub struct TenantControlPlaneControlPlaneDeploymentResources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServer")]
     pub api_server: Option<TenantControlPlaneControlPlaneDeploymentResourcesApiServer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerManager"
-    )]
-    pub controller_manager:
-        Option<TenantControlPlaneControlPlaneDeploymentResourcesControllerManager>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerManager")]
+    pub controller_manager: Option<TenantControlPlaneControlPlaneDeploymentResourcesControllerManager>,
     /// Define the kine container resources.
     /// Available only if Kamaji is running using Kine as backing storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6155,10 +5295,10 @@ pub struct TenantControlPlaneControlPlaneDeploymentResources {
 pub struct TenantControlPlaneControlPlaneDeploymentResourcesApiServer {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TenantControlPlaneControlPlaneDeploymentResourcesApiServerClaims>>,
@@ -6193,14 +5333,13 @@ pub struct TenantControlPlaneControlPlaneDeploymentResourcesApiServerClaims {
 pub struct TenantControlPlaneControlPlaneDeploymentResourcesControllerManager {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<TenantControlPlaneControlPlaneDeploymentResourcesControllerManagerClaims>>,
+    pub claims: Option<Vec<TenantControlPlaneControlPlaneDeploymentResourcesControllerManagerClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6233,10 +5372,10 @@ pub struct TenantControlPlaneControlPlaneDeploymentResourcesControllerManagerCla
 pub struct TenantControlPlaneControlPlaneDeploymentResourcesKine {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TenantControlPlaneControlPlaneDeploymentResourcesKineClaims>>,
@@ -6271,10 +5410,10 @@ pub struct TenantControlPlaneControlPlaneDeploymentResourcesKineClaims {
 pub struct TenantControlPlaneControlPlaneDeploymentResourcesScheduler {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TenantControlPlaneControlPlaneDeploymentResourcesSchedulerClaims>>,
@@ -6310,11 +5449,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentResourcesSchedulerClaims {
 pub struct TenantControlPlaneControlPlaneDeploymentStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<TenantControlPlaneControlPlaneDeploymentStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -6348,11 +5483,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentStrategyRollingUpdate {
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -6378,11 +5509,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -6396,13 +5523,8 @@ pub struct TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -6411,13 +5533,9 @@ pub struct TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraints {
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -6448,7 +5566,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -6457,38 +5575,26 @@ pub struct TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -6542,8 +5648,7 @@ pub struct TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraintsLabe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6561,21 +5666,13 @@ pub struct TenantControlPlaneControlPlaneDeploymentTopologySpreadConstraintsLabe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneControlPlaneIngress {
     /// AdditionalMetadata defines which additional metadata, such as labels and annotations, must be attached to the created resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalMetadata")]
     pub additional_metadata: Option<TenantControlPlaneControlPlaneIngressAdditionalMetadata>,
     /// Hostname is an optional field which will be used as Ingress's Host. If it is not defined,
     /// Ingress's host will be "<tenant>.<namespace>.<domain>", where domain is specified under NetworkProfileSpec
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
 }
 
@@ -6592,11 +5689,7 @@ pub struct TenantControlPlaneControlPlaneIngressAdditionalMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantControlPlaneControlPlaneService {
     /// AdditionalMetadata defines which additional metadata, such as labels and annotations, must be attached to the created resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalMetadata")]
     pub additional_metadata: Option<TenantControlPlaneControlPlaneServiceAdditionalMetadata>,
     /// ServiceType allows specifying how to expose the Tenant Control Plane.
     #[serde(rename = "serviceType")]
@@ -6626,11 +5719,7 @@ pub enum TenantControlPlaneControlPlaneServiceServiceType {
 pub struct TenantControlPlaneKubernetes {
     /// List of enabled Admission Controllers for the Tenant cluster.
     /// Full reference available here: https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "admissionControllers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionControllers")]
     pub admission_controllers: Option<Vec<String>>,
     pub kubelet: TenantControlPlaneKubernetesKubelet,
     /// Kubernetes Version for the tenant control plane
@@ -6645,11 +5734,7 @@ pub struct TenantControlPlaneKubernetesKubelet {
     pub cgroupfs: Option<TenantControlPlaneKubernetesKubeletCgroupfs>,
     /// Ordered list of the preferred NodeAddressTypes to use for kubelet connections.
     /// Default to Hostname, InternalIP, ExternalIP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredAddressTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAddressTypes")]
     pub preferred_address_types: Option<Vec<String>>,
 }
 
@@ -6670,21 +5755,13 @@ pub struct TenantControlPlaneNetworkProfile {
     pub address: Option<String>,
     /// AllowAddressAsExternalIP will include tenantControlPlane.Spec.NetworkProfile.Address in the section of
     /// ExternalIPs of the Kubernetes Service (only ClusterIP or NodePort)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowAddressAsExternalIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowAddressAsExternalIP")]
     pub allow_address_as_external_ip: Option<bool>,
     /// CertSANs sets extra Subject Alternative Names (SANs) for the API Server signing certificate.
     /// Use this field to add additional hostnames when exposing the Tenant Control Plane with third solutions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSANs")]
     pub cert_sa_ns: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsServiceIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsServiceIPs")]
     pub dns_service_i_ps: Option<Vec<String>>,
     /// CIDR for Kubernetes Pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCidr")]
@@ -6693,11 +5770,7 @@ pub struct TenantControlPlaneNetworkProfile {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// Kubernetes Service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceCidr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceCidr")]
     pub service_cidr: Option<String>,
 }
 
@@ -6712,18 +5785,10 @@ pub struct TenantControlPlaneStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<TenantControlPlaneStatusCertificates>,
     /// ControlPlaneEndpoint contains the status of the kubernetes control plane
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<String>,
     /// KubeadmPhase contains the status of the kubeadm phases action
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeadmPhase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeadmPhase")]
     pub kubeadm_phase: Option<TenantControlPlaneStatusKubeadmPhase>,
     /// KubeadmConfig contains the status of the configuration required by kubeadm
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6732,11 +5797,7 @@ pub struct TenantControlPlaneStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubeconfig: Option<TenantControlPlaneStatusKubeconfig>,
     /// Kubernetes contains information about the reconciliation of the required Kubernetes resources deployed in the admin cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesResources")]
     pub kubernetes_resources: Option<TenantControlPlaneStatusKubernetesResources>,
     /// Storage Status contains information about Kubernetes storage system
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6761,11 +5822,7 @@ pub struct TenantControlPlaneStatusAddons {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneStatusAddonsCoreDns {
     pub enabled: bool,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
 }
 
@@ -6795,11 +5852,7 @@ pub struct TenantControlPlaneStatusAddonsKonnectivity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneStatusAddonsKonnectivityAgent {
     /// Last time when k8s object was updated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -6812,28 +5865,16 @@ pub struct TenantControlPlaneStatusAddonsKonnectivityAgent {
 pub struct TenantControlPlaneStatusAddonsKonnectivityCertificate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneStatusAddonsKonnectivityClusterrolebinding {
     /// Last time when k8s object was updated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -6854,28 +5895,16 @@ pub struct TenantControlPlaneStatusAddonsKonnectivityConfigMap {
 pub struct TenantControlPlaneStatusAddonsKonnectivityKubeconfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneStatusAddonsKonnectivitySa {
     /// Last time when k8s object was updated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -6891,11 +5920,7 @@ pub struct TenantControlPlaneStatusAddonsKonnectivityService {
     pub conditions: Option<Vec<Condition>>,
     /// LoadBalancer contains the current status of the load-balancer,
     /// if one is present.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<TenantControlPlaneStatusAddonsKonnectivityServiceLoadBalancer>,
     /// The name of the Service for the given cluster.
     pub name: String,
@@ -6938,8 +5963,7 @@ pub struct TenantControlPlaneStatusAddonsKonnectivityServiceLoadBalancerIngress 
     /// Ports is a list of records of service ports
     /// If used, every port defined in the service should have an entry in it
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ports:
-        Option<Vec<TenantControlPlaneStatusAddonsKonnectivityServiceLoadBalancerIngressPorts>>,
+    pub ports: Option<Vec<TenantControlPlaneStatusAddonsKonnectivityServiceLoadBalancerIngressPorts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6962,11 +5986,7 @@ pub struct TenantControlPlaneStatusAddonsKonnectivityServiceLoadBalancerIngressP
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneStatusAddonsKubeProxy {
     pub enabled: bool,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
 }
 
@@ -6978,13 +5998,8 @@ pub struct TenantControlPlaneStatusCertificates {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServer")]
     pub api_server: Option<TenantControlPlaneStatusCertificatesApiServer>,
     /// CertificatePrivateKeyPairStatus defines the status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiServerKubeletClient"
-    )]
-    pub api_server_kubelet_client:
-        Option<TenantControlPlaneStatusCertificatesApiServerKubeletClient>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerKubeletClient")]
+    pub api_server_kubelet_client: Option<TenantControlPlaneStatusCertificatesApiServerKubeletClient>,
     /// CertificatePrivateKeyPairStatus defines the status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<TenantControlPlaneStatusCertificatesCa>,
@@ -6992,18 +6007,10 @@ pub struct TenantControlPlaneStatusCertificates {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub etcd: Option<TenantControlPlaneStatusCertificatesEtcd>,
     /// CertificatePrivateKeyPairStatus defines the status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "frontProxyCA"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "frontProxyCA")]
     pub front_proxy_ca: Option<TenantControlPlaneStatusCertificatesFrontProxyCa>,
     /// CertificatePrivateKeyPairStatus defines the status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "frontProxyClient"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "frontProxyClient")]
     pub front_proxy_client: Option<TenantControlPlaneStatusCertificatesFrontProxyClient>,
     /// PublicKeyPrivateKeyPairStatus defines the status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7015,17 +6022,9 @@ pub struct TenantControlPlaneStatusCertificates {
 pub struct TenantControlPlaneStatusCertificatesApiServer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7034,17 +6033,9 @@ pub struct TenantControlPlaneStatusCertificatesApiServer {
 pub struct TenantControlPlaneStatusCertificatesApiServerKubeletClient {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7053,17 +6044,9 @@ pub struct TenantControlPlaneStatusCertificatesApiServerKubeletClient {
 pub struct TenantControlPlaneStatusCertificatesCa {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7083,17 +6066,9 @@ pub struct TenantControlPlaneStatusCertificatesEtcd {
 pub struct TenantControlPlaneStatusCertificatesEtcdApiServer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7102,17 +6077,9 @@ pub struct TenantControlPlaneStatusCertificatesEtcdApiServer {
 pub struct TenantControlPlaneStatusCertificatesEtcdCa {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7121,17 +6088,9 @@ pub struct TenantControlPlaneStatusCertificatesEtcdCa {
 pub struct TenantControlPlaneStatusCertificatesFrontProxyCa {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7140,17 +6099,9 @@ pub struct TenantControlPlaneStatusCertificatesFrontProxyCa {
 pub struct TenantControlPlaneStatusCertificatesFrontProxyClient {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7159,17 +6110,9 @@ pub struct TenantControlPlaneStatusCertificatesFrontProxyClient {
 pub struct TenantControlPlaneStatusCertificatesSa {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7186,11 +6129,7 @@ pub struct TenantControlPlaneStatusKubeadmPhase {
 pub struct TenantControlPlaneStatusKubeadmPhaseBootstrapToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
 }
 
@@ -7200,17 +6139,9 @@ pub struct TenantControlPlaneStatusKubeadmconfig {
     /// Checksum of the kubeadm configuration to detect changes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configmapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configmapName")]
     pub configmap_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
 }
 
@@ -7221,11 +6152,7 @@ pub struct TenantControlPlaneStatusKubeconfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub admin: Option<TenantControlPlaneStatusKubeconfigAdmin>,
     /// KubeconfigStatus contains information about the generated kubeconfig.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerManager"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerManager")]
     pub controller_manager: Option<TenantControlPlaneStatusKubeconfigControllerManager>,
     /// KubeconfigStatus contains information about the generated kubeconfig.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7237,17 +6164,9 @@ pub struct TenantControlPlaneStatusKubeconfig {
 pub struct TenantControlPlaneStatusKubeconfigAdmin {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7256,17 +6175,9 @@ pub struct TenantControlPlaneStatusKubeconfigAdmin {
 pub struct TenantControlPlaneStatusKubeconfigControllerManager {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7275,17 +6186,9 @@ pub struct TenantControlPlaneStatusKubeconfigControllerManager {
 pub struct TenantControlPlaneStatusKubeconfigScheduler {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7310,48 +6213,28 @@ pub struct TenantControlPlaneStatusKubernetesResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneStatusKubernetesResourcesDeployment {
     /// Total number of available pods (ready for at least minReadySeconds) targeted by this deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// Count of hash collisions for the Deployment. The Deployment controller uses this
     /// field as a collision avoidance mechanism when it needs to create the name for the
     /// newest ReplicaSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collisionCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
     pub collision_count: Option<i32>,
     /// Represents the latest available observations of a deployment's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Last time when deployment was updated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
     /// The name of the Deployment for the given cluster.
     pub name: String,
     /// The namespace which the Deployment for the given cluster is deployed.
     pub namespace: String,
     /// The generation observed by the deployment controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// readyReplicas is the number of pods targeted by this Deployment with a Ready Condition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this deployment (their labels match the selector).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7361,18 +6244,10 @@ pub struct TenantControlPlaneStatusKubernetesResourcesDeployment {
     /// Total number of unavailable pods targeted by this deployment. This is the total number of
     /// pods that are still required for the deployment to have 100% available capacity. They may
     /// either be pods that are running but not yet available or pods that still have not been created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unavailableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this deployment that have the desired template spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
 }
 
@@ -7380,11 +6255,7 @@ pub struct TenantControlPlaneStatusKubernetesResourcesDeployment {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantControlPlaneStatusKubernetesResourcesIngress {
     /// loadBalancer contains the current status of the load-balancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<TenantControlPlaneStatusKubernetesResourcesIngressLoadBalancer>,
     /// The name of the Ingress for the given cluster.
     pub name: String,
@@ -7411,8 +6282,7 @@ pub struct TenantControlPlaneStatusKubernetesResourcesIngressLoadBalancerIngress
     pub ip: Option<String>,
     /// ports provides information about the ports exposed by this LoadBalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ports:
-        Option<Vec<TenantControlPlaneStatusKubernetesResourcesIngressLoadBalancerIngressPorts>>,
+    pub ports: Option<Vec<TenantControlPlaneStatusKubernetesResourcesIngressLoadBalancerIngressPorts>>,
 }
 
 /// IngressPortStatus represents the error condition of a service port
@@ -7440,11 +6310,7 @@ pub struct TenantControlPlaneStatusKubernetesResourcesService {
     pub conditions: Option<Vec<Condition>>,
     /// LoadBalancer contains the current status of the load-balancer,
     /// if one is present.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<TenantControlPlaneStatusKubernetesResourcesServiceLoadBalancer>,
     /// The name of the Service for the given cluster.
     pub name: String,
@@ -7487,8 +6353,7 @@ pub struct TenantControlPlaneStatusKubernetesResourcesServiceLoadBalancerIngress
     /// Ports is a list of records of service ports
     /// If used, every port defined in the service should have an entry in it
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ports:
-        Option<Vec<TenantControlPlaneStatusKubernetesResourcesServiceLoadBalancerIngressPorts>>,
+    pub ports: Option<Vec<TenantControlPlaneStatusKubernetesResourcesServiceLoadBalancerIngressPorts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7536,11 +6401,7 @@ pub struct TenantControlPlaneStatusStorage {
     pub certificate: Option<TenantControlPlaneStatusStorageCertificate>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<TenantControlPlaneStatusStorageConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataStoreName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStoreName")]
     pub data_store_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub driver: Option<String>,
@@ -7552,17 +6413,9 @@ pub struct TenantControlPlaneStatusStorage {
 pub struct TenantControlPlaneStatusStorageCertificate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7570,11 +6423,7 @@ pub struct TenantControlPlaneStatusStorageCertificate {
 pub struct TenantControlPlaneStatusStorageConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -7582,14 +6431,11 @@ pub struct TenantControlPlaneStatusStorageConfig {
 pub struct TenantControlPlaneStatusStorageSetup {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
+

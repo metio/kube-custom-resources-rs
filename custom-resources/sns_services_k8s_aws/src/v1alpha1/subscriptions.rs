@@ -4,111 +4,82 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SubscriptionSpec defines the desired state of Subscription.
-///
+/// 
 /// A wrapper type for the attributes of an Amazon SNS subscription.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sns.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Subscription",
-    plural = "subscriptions"
-)]
+#[kube(group = "sns.services.k8s.aws", version = "v1alpha1", kind = "Subscription", plural = "subscriptions")]
 #[kube(namespaced)]
 #[kube(status = "SubscriptionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SubscriptionSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deliveryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deliveryPolicy")]
     pub delivery_policy: Option<String>,
     /// The endpoint that you want to receive notifications. Endpoints vary by protocol:
-    ///
+    /// 
     ///    * For the http protocol, the (public) endpoint is a URL beginning with
     ///    http://.
-    ///
+    /// 
     ///    * For the https protocol, the (public) endpoint is a URL beginning with
     ///    https://.
-    ///
+    /// 
     ///    * For the email protocol, the endpoint is an email address.
-    ///
+    /// 
     ///    * For the email-json protocol, the endpoint is an email address.
-    ///
+    /// 
     ///    * For the sms protocol, the endpoint is a phone number of an SMS-enabled
     ///    device.
-    ///
+    /// 
     ///    * For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue.
-    ///
+    /// 
     ///    * For the application protocol, the endpoint is the EndpointArn of a mobile
     ///    app and device.
-    ///
+    /// 
     ///    * For the lambda protocol, the endpoint is the ARN of an Lambda function.
-    ///
+    /// 
     ///    * For the firehose protocol, the endpoint is the ARN of an Amazon Kinesis
     ///    Data Firehose delivery stream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterPolicy")]
     pub filter_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterPolicyScope"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterPolicyScope")]
     pub filter_policy_scope: Option<String>,
     /// The protocol that you want to use. Supported protocols include:
-    ///
+    /// 
     ///    * http – delivery of JSON-encoded message via HTTP POST
-    ///
+    /// 
     ///    * https – delivery of JSON-encoded message via HTTPS POST
-    ///
+    /// 
     ///    * email – delivery of message via SMTP
-    ///
+    /// 
     ///    * email-json – delivery of JSON-encoded message via SMTP
-    ///
+    /// 
     ///    * sms – delivery of message via SMS
-    ///
+    /// 
     ///    * sqs – delivery of JSON-encoded message to an Amazon SQS queue
-    ///
+    /// 
     ///    * application – delivery of JSON-encoded message to an EndpointArn for
     ///    a mobile app and device
-    ///
+    /// 
     ///    * lambda – delivery of JSON-encoded message to an Lambda function
-    ///
+    /// 
     ///    * firehose – delivery of JSON-encoded message to an Amazon Kinesis Data
     ///    Firehose delivery stream.
     pub protocol: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rawMessageDelivery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rawMessageDelivery")]
     pub raw_message_delivery: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redrivePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redrivePolicy")]
     pub redrive_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subscriptionRoleARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subscriptionRoleARN")]
     pub subscription_role_arn: Option<String>,
     /// The ARN of the topic you want to subscribe to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicARN")]
@@ -117,7 +88,7 @@ pub struct SubscriptionSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicRef")]
@@ -128,7 +99,7 @@ pub struct SubscriptionSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -155,11 +126,7 @@ pub struct SubscriptionStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<SubscriptionStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -167,25 +134,13 @@ pub struct SubscriptionStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "confirmationWasAuthenticated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "confirmationWasAuthenticated")]
     pub confirmation_was_authenticated: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveDeliveryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveDeliveryPolicy")]
     pub effective_delivery_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pendingConfirmation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingConfirmation")]
     pub pending_confirmation: Option<String>,
 }
 
@@ -210,3 +165,4 @@ pub struct SubscriptionStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

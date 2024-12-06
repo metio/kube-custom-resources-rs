@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// AuthorizerSpec defines the desired state of Authorizer.
-///
+/// 
 /// Represents an authorizer.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apigatewayv2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Authorizer",
-    plural = "authorizers"
-)]
+#[kube(group = "apigatewayv2.services.k8s.aws", version = "v1alpha1", kind = "Authorizer", plural = "authorizers")]
 #[kube(namespaced)]
 #[kube(status = "AuthorizerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AuthorizerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiID")]
     pub api_id: Option<String>,
@@ -32,58 +27,30 @@ pub struct AuthorizerSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiRef")]
     pub api_ref: Option<AuthorizerApiRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizerCredentialsARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizerCredentialsARN")]
     pub authorizer_credentials_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizerPayloadFormatVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizerPayloadFormatVersion")]
     pub authorizer_payload_format_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizerResultTTLInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizerResultTTLInSeconds")]
     pub authorizer_result_ttl_in_seconds: Option<i64>,
     #[serde(rename = "authorizerType")]
     pub authorizer_type: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizerURI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizerURI")]
     pub authorizer_uri: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableSimpleResponses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableSimpleResponses")]
     pub enable_simple_responses: Option<bool>,
     #[serde(rename = "identitySource")]
     pub identity_source: Vec<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityValidationExpression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityValidationExpression")]
     pub identity_validation_expression: Option<String>,
     /// Represents the configuration of a JWT authorizer. Required for the JWT authorizer
     /// type. Supported only for HTTP APIs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jwtConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtConfiguration")]
     pub jwt_configuration: Option<AuthorizerJwtConfiguration>,
     pub name: String,
 }
@@ -92,7 +59,7 @@ pub struct AuthorizerSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -130,17 +97,9 @@ pub struct AuthorizerStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<AuthorizerStatusAckResourceMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizerID")]
     pub authorizer_id: Option<String>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -171,3 +130,4 @@ pub struct AuthorizerStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

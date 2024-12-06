@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// BackupRepositorySpec is the specification for a BackupRepository.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "velero.io",
-    version = "v1",
-    kind = "BackupRepository",
-    plural = "backuprepositories"
-)]
+#[kube(group = "velero.io", version = "v1", kind = "BackupRepository", plural = "backuprepositories")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackupRepositorySpec {
     /// BackupStorageLocation is the name of the BackupStorageLocation
     /// that should contain this repository.
@@ -31,18 +26,10 @@ pub struct BackupRepositorySpec {
     #[serde(rename = "maintenanceFrequency")]
     pub maintenance_frequency: String,
     /// RepositoryConfig is for repository-specific configuration fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "repositoryConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryConfig")]
     pub repository_config: Option<BTreeMap<String, String>>,
     /// RepositoryType indicates the type of the backend repository
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "repositoryType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryType")]
     pub repository_type: Option<BackupRepositoryRepositoryType>,
     /// ResticIdentifier is the full restic-compatible string for identifying
     /// this repository.
@@ -69,11 +56,7 @@ pub enum BackupRepositoryRepositoryType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupRepositoryStatus {
     /// LastMaintenanceTime is the last time maintenance was run.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastMaintenanceTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastMaintenanceTime")]
     pub last_maintenance_time: Option<String>,
     /// Message is a message about the current status of the BackupRepository.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -90,3 +73,4 @@ pub enum BackupRepositoryStatusPhase {
     Ready,
     NotReady,
 }
+

@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cilium.io",
-    version = "v2",
-    kind = "CiliumEgressGatewayPolicy",
-    plural = "ciliumegressgatewaypolicies"
-)]
+#[kube(group = "cilium.io", version = "v2", kind = "CiliumEgressGatewayPolicy", plural = "ciliumegressgatewaypolicies")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CiliumEgressGatewayPolicySpec {
     /// DestinationCIDRs is a list of destination CIDRs for destination IP addresses.
     /// If a destination IP matches any one CIDR, it will be selected.
@@ -32,11 +27,7 @@ pub struct CiliumEgressGatewayPolicySpec {
     /// from the egress gateway redirection and SNAT logic.
     /// Should be a subset of destinationCIDRs otherwise it will not have any
     /// effect.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedCIDRs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedCIDRs")]
     pub excluded_cid_rs: Option<Vec<String>>,
     /// Egress represents a list of rules by which egress traffic is
     /// filtered from the source pods.
@@ -48,12 +39,12 @@ pub struct CiliumEgressGatewayPolicySpec {
 pub struct CiliumEgressGatewayPolicyEgressGateway {
     /// EgressIP is the source IP address that the egress traffic is SNATed
     /// with.
-    ///
+    /// 
     /// Example:
     /// When set to "192.168.1.100", matching egress traffic will be
     /// redirected to the node matching the NodeSelector field and SNATed
     /// with IP address 192.168.1.100.
-    ///
+    /// 
     /// When none of the Interface or EgressIP fields is specified, the
     /// policy will use the first IPv4 assigned to the interface with the
     /// default route.
@@ -61,12 +52,12 @@ pub struct CiliumEgressGatewayPolicyEgressGateway {
     pub egress_ip: Option<String>,
     /// Interface is the network interface to which the egress IP address
     /// that the traffic is SNATed with is assigned.
-    ///
+    /// 
     /// Example:
     /// When set to "eth1", matching egress traffic will be redirected to the
     /// node matching the NodeSelector field and SNATed with the first IPv4
     /// address assigned to the eth1 interface.
-    ///
+    /// 
     /// When none of the Interface or EgressIP fields is specified, the
     /// policy will use the first IPv4 assigned to the interface with the
     /// default route.
@@ -89,21 +80,12 @@ pub struct CiliumEgressGatewayPolicyEgressGateway {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumEgressGatewayPolicyEgressGatewayNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumEgressGatewayPolicyEgressGatewayNodeSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumEgressGatewayPolicyEgressGatewayNodeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -138,19 +120,11 @@ pub enum CiliumEgressGatewayPolicyEgressGatewayNodeSelectorMatchExpressionsOpera
 pub struct CiliumEgressGatewayPolicySelectors {
     /// Selects Namespaces using cluster-scoped labels. This field follows standard label
     /// selector semantics; if present but empty, it selects all namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CiliumEgressGatewayPolicySelectorsNamespaceSelector>,
     /// This is a label selector which selects Pods. This field follows standard label
     /// selector semantics; if present but empty, it selects all pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<CiliumEgressGatewayPolicySelectorsPodSelector>,
 }
 
@@ -159,21 +133,12 @@ pub struct CiliumEgressGatewayPolicySelectors {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumEgressGatewayPolicySelectorsNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumEgressGatewayPolicySelectorsNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumEgressGatewayPolicySelectorsNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -209,21 +174,12 @@ pub enum CiliumEgressGatewayPolicySelectorsNamespaceSelectorMatchExpressionsOper
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumEgressGatewayPolicySelectorsPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumEgressGatewayPolicySelectorsPodSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumEgressGatewayPolicySelectorsPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -253,3 +209,4 @@ pub enum CiliumEgressGatewayPolicySelectorsPodSelectorMatchExpressionsOperator {
     Exists,
     DoesNotExist,
 }
+

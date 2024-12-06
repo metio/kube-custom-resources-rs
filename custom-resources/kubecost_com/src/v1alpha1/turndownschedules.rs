@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kubecost.com",
-    version = "v1alpha1",
-    kind = "TurndownSchedule",
-    plural = "turndownschedules"
-)]
+#[kube(group = "kubecost.com", version = "v1alpha1", kind = "TurndownSchedule", plural = "turndownschedules")]
 #[kube(status = "TurndownScheduleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TurndownScheduleSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub end: Option<String>,
@@ -44,44 +39,21 @@ pub enum TurndownScheduleRepeat {
 pub struct TurndownScheduleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub current: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nextScaleDownTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextScaleDownTime")]
     pub next_scale_down_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nextScaleUpTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextScaleUpTime")]
     pub next_scale_up_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scaleDownId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleDownId")]
     pub scale_down_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scaleDownMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleDownMetadata")]
     pub scale_down_metadata: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleUpID")]
     pub scale_up_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scaleUpMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleUpMetadata")]
     pub scale_up_metadata: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

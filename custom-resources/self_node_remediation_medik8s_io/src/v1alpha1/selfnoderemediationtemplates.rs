@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// SelfNodeRemediationTemplateSpec defines the desired state of SelfNodeRemediationTemplate
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "self-node-remediation.medik8s.io",
-    version = "v1alpha1",
-    kind = "SelfNodeRemediationTemplate",
-    plural = "selfnoderemediationtemplates"
-)]
+#[kube(group = "self-node-remediation.medik8s.io", version = "v1alpha1", kind = "SelfNodeRemediationTemplate", plural = "selfnoderemediationtemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SelfNodeRemediationTemplateSpec {
     /// Template defines the desired state of SelfNodeRemediationTemplate
     pub template: SelfNodeRemediationTemplateTemplate,
@@ -42,11 +37,7 @@ pub struct SelfNodeRemediationTemplateTemplateSpec {
     /// OutOfServiceTaint will add the out-of-service taint which is a new well-known taint "node.kubernetes.io/out-of-service"
     /// that enables automatic deletion of pv-attached pods on failed nodes, "out-of-service" taint is only supported on clusters with k8s version 1.26+ or OCP/OKD version 4.13+.
     /// Automatic will choose the most appropriate strategy during runtime.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remediationStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationStrategy")]
     pub remediation_strategy: Option<SelfNodeRemediationTemplateTemplateSpecRemediationStrategy>,
 }
 
@@ -60,4 +51,6 @@ pub enum SelfNodeRemediationTemplateTemplateSpecRemediationStrategy {
 
 /// SelfNodeRemediationTemplateStatus defines the observed state of SelfNodeRemediationTemplate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SelfNodeRemediationTemplateStatus {}
+pub struct SelfNodeRemediationTemplateStatus {
+}
+

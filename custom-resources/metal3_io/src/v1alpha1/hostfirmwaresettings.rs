@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// HostFirmwareSettingsSpec defines the desired state of HostFirmwareSettings.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "metal3.io",
-    version = "v1alpha1",
-    kind = "HostFirmwareSettings",
-    plural = "hostfirmwaresettings"
-)]
+#[kube(group = "metal3.io", version = "v1alpha1", kind = "HostFirmwareSettings", plural = "hostfirmwaresettings")]
 #[kube(namespaced)]
 #[kube(status = "HostFirmwareSettingsStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HostFirmwareSettingsSpec {
     /// Settings are the desired firmware settings stored as name/value pairs.
     pub settings: BTreeMap<String, IntOrString>,
@@ -37,11 +32,7 @@ pub struct HostFirmwareSettingsStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Time that the status was last updated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
     /// FirmwareSchema is a reference to the Schema used to describe each
     /// FirmwareSetting. By default, this will be a Schema in the same
@@ -62,3 +53,4 @@ pub struct HostFirmwareSettingsStatusSchema {
     /// `namespace` is the namespace of the where the schema is stored.
     pub namespace: String,
 }
+

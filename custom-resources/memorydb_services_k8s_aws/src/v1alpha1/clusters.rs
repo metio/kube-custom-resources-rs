@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterSpec defines the desired state of Cluster.
-///
+/// 
 /// Contains all of the attributes of a specific cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "memorydb.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Cluster",
-    plural = "clusters"
-)]
+#[kube(group = "memorydb.services.k8s.aws", version = "v1alpha1", kind = "Cluster", plural = "clusters")]
 #[kube(namespaced)]
 #[kube(status = "ClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterSpec {
     /// The name of the Access Control List to associate with the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "aclName")]
@@ -33,28 +28,20 @@ pub struct ClusterSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "aclRef")]
     pub acl_ref: Option<ClusterAclRef>,
     /// When set to true, the cluster will automatically receive minor engine version
     /// upgrades after launch.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoMinorVersionUpgrade"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMinorVersionUpgrade")]
     pub auto_minor_version_upgrade: Option<bool>,
     /// An optional description of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The version number of the Redis engine to be used for the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "engineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<String>,
     /// The ID of the KMS key used to encrypt the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
@@ -62,11 +49,7 @@ pub struct ClusterSpec {
     /// Specifies the weekly time range during which maintenance on the cluster is
     /// performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi
     /// (24H Clock UTC). The minimum maintenance window is a 60 minute period.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maintenanceWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maintenanceWindow")]
     pub maintenance_window: Option<String>,
     /// The name of the cluster. This value must be unique as it also serves as the
     /// cluster identifier.
@@ -76,143 +59,87 @@ pub struct ClusterSpec {
     pub node_type: String,
     /// The number of replicas to apply to each shard. The default value is 1. The
     /// maximum is 5.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numReplicasPerShard"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numReplicasPerShard")]
     pub num_replicas_per_shard: Option<i64>,
     /// The number of shards the cluster will contain. The default value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numShards")]
     pub num_shards: Option<i64>,
     /// The name of the parameter group associated with the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterGroupName")]
     pub parameter_group_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterGroupRef")]
     pub parameter_group_ref: Option<ClusterParameterGroupRef>,
     /// The port number on which each of the nodes accepts connections.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// A list of security group names to associate with this cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupRefs")]
     pub security_group_refs: Option<Vec<ClusterSecurityGroupRefs>>,
     /// A list of Amazon Resource Names (ARN) that uniquely identify the RDB snapshot
     /// files stored in Amazon S3. The snapshot files are used to populate the new
     /// cluster. The Amazon S3 object name in the ARN cannot contain any commas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotARNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotARNs")]
     pub snapshot_ar_ns: Option<Vec<String>>,
     /// The name of a snapshot from which to restore data into the new cluster. The
     /// snapshot status changes to restoring while the new cluster is being created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotName")]
     pub snapshot_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotRef")]
     pub snapshot_ref: Option<ClusterSnapshotRef>,
     /// The number of days for which MemoryDB retains automatic snapshots before
     /// deleting them. For example, if you set SnapshotRetentionLimit to 5, a snapshot
     /// that was taken today is retained for 5 days before being deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotRetentionLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotRetentionLimit")]
     pub snapshot_retention_limit: Option<i64>,
     /// The daily time range (in UTC) during which MemoryDB begins taking a daily
     /// snapshot of your shard.
-    ///
+    /// 
     /// Example: 05:00-09:00
-    ///
+    /// 
     /// If you do not specify this parameter, MemoryDB automatically chooses an appropriate
     /// time range.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotWindow")]
     pub snapshot_window: Option<String>,
     /// The Amazon Resource Name (ARN) of the Amazon Simple Notification Service
     /// (SNS) topic to which notifications are sent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snsTopicARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snsTopicARN")]
     pub sns_topic_arn: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snsTopicRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snsTopicRef")]
     pub sns_topic_ref: Option<ClusterSnsTopicRef>,
     /// The name of the subnet group to be used for the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetGroupName")]
     pub subnet_group_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetGroupRef")]
     pub subnet_group_ref: Option<ClusterSubnetGroupRef>,
     /// A list of tags to be added to this resource. Tags are comma-separated key,value
     /// pairs (e.g. Key=myKey, Value=myKeyValue. You can include multiple tags as
@@ -220,11 +147,7 @@ pub struct ClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<ClusterTags>>,
     /// A flag to enable in-transit encryption on the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsEnabled")]
     pub tls_enabled: Option<bool>,
 }
 
@@ -232,7 +155,7 @@ pub struct ClusterSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -257,7 +180,7 @@ pub struct ClusterAclRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -282,7 +205,7 @@ pub struct ClusterParameterGroupRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -307,7 +230,7 @@ pub struct ClusterSecurityGroupRefsFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -332,7 +255,7 @@ pub struct ClusterSnapshotRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -357,7 +280,7 @@ pub struct ClusterSnsTopicRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -397,39 +320,19 @@ pub struct ClusterStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ClusterStatusAckResourceMetadata>,
     /// A list node types which you can use to scale down your cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedScaleDownNodeTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedScaleDownNodeTypes")]
     pub allowed_scale_down_node_types: Option<Vec<String>>,
     /// A list node types which you can use to scale up your cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedScaleUpNodeTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedScaleUpNodeTypes")]
     pub allowed_scale_up_node_types: Option<Vec<String>>,
     /// Indicates if the cluster has a Multi-AZ configuration (multiaz) or not (singleaz).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityMode")]
     pub availability_mode: Option<String>,
     /// The cluster's configuration endpoint
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterEndpoint")]
     pub cluster_endpoint: Option<ClusterStatusClusterEndpoint>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -438,54 +341,30 @@ pub struct ClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The Redis engine patch version used by the cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enginePatchVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enginePatchVersion")]
     pub engine_patch_version: Option<String>,
     /// A list of events. Each element in the list contains detailed information
     /// about one event.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<ClusterStatusEvents>>,
     /// The number of shards in the cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberOfShards"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberOfShards")]
     pub number_of_shards: Option<i64>,
     /// The status of the parameter group used by the cluster, for example 'active'
     /// or 'applying'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterGroupStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterGroupStatus")]
     pub parameter_group_status: Option<String>,
     /// A group of settings that are currently being applied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pendingUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingUpdates")]
     pub pending_updates: Option<ClusterStatusPendingUpdates>,
     /// A list of security groups used by the cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<ClusterStatusSecurityGroups>>,
     /// A list of shards that are members of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shards: Option<Vec<ClusterStatusShards>>,
     /// The SNS topic must be in Active status to receive notifications
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snsTopicStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snsTopicStatus")]
     pub sns_topic_status: Option<String>,
     /// The status of the cluster. For example, Available, Updating, Creating.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -531,17 +410,9 @@ pub struct ClusterStatusEvents {
     pub date: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceName")]
     pub source_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<String>,
 }
 
@@ -554,22 +425,14 @@ pub struct ClusterStatusPendingUpdates {
     /// The status of the online resharding
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resharding: Option<ClusterStatusPendingUpdatesResharding>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceUpdates")]
     pub service_updates: Option<Vec<ClusterStatusPendingUpdatesServiceUpdates>>,
 }
 
 /// The status of the ACL update
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusPendingUpdatesAcls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aclToApply"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aclToApply")]
     pub acl_to_apply: Option<String>,
 }
 
@@ -577,22 +440,14 @@ pub struct ClusterStatusPendingUpdatesAcls {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusPendingUpdatesResharding {
     /// Represents the progress of an online resharding operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "slotMigration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slotMigration")]
     pub slot_migration: Option<ClusterStatusPendingUpdatesReshardingSlotMigration>,
 }
 
 /// Represents the progress of an online resharding operation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusPendingUpdatesReshardingSlotMigration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "progressPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "progressPercentage")]
     pub progress_percentage: Option<f64>,
 }
 
@@ -600,11 +455,7 @@ pub struct ClusterStatusPendingUpdatesReshardingSlotMigration {
 /// request
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusPendingUpdatesServiceUpdates {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceUpdateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceUpdateName")]
     pub service_update_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
@@ -613,11 +464,7 @@ pub struct ClusterStatusPendingUpdatesServiceUpdates {
 /// Represents a single security group and its status.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusSecurityGroups {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupID")]
     pub security_group_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
@@ -632,11 +479,7 @@ pub struct ClusterStatusShards {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<ClusterStatusShardsNodes>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberOfNodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberOfNodes")]
     pub number_of_nodes: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slots: Option<String>,
@@ -648,17 +491,9 @@ pub struct ClusterStatusShards {
 /// of the cluster's protocol-compliant caching software.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusShardsNodes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZone")]
     pub availability_zone: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createTime")]
     pub create_time: Option<String>,
     /// Represents the information required for client programs to connect to the
     /// cluster and its nodes.
@@ -679,3 +514,4 @@ pub struct ClusterStatusShardsNodesEndpoint {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
 }
+

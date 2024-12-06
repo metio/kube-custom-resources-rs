@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// GlobalConfigurationSpec is the spec of the GlobalConfiguration resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.nginx.org",
-    version = "v1alpha1",
-    kind = "GlobalConfiguration",
-    plural = "globalconfigurations"
-)]
+#[kube(group = "k8s.nginx.org", version = "v1alpha1", kind = "GlobalConfiguration", plural = "globalconfigurations")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GlobalConfigurationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listeners: Option<Vec<GlobalConfigurationListeners>>,
@@ -38,3 +33,4 @@ pub struct GlobalConfigurationListeners {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl: Option<bool>,
 }
+

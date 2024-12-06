@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ImageSetSpec defines the desired state of ImageSet.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "ImageSet",
-    plural = "imagesets"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "ImageSet", plural = "imagesets")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ImageSetSpec {
     /// Images is the list of images to use digests. All images that the operator will deploy
     /// must be specified.
@@ -38,3 +33,4 @@ pub struct ImageSetImages {
     /// For the image `docker.io/calico/node:v3.17.1` it should be represented as `calico/node`
     pub image: String,
 }
+

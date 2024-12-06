@@ -4,57 +4,44 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// HelmRepositorySpec specifies the required configuration to produce an
 /// Artifact for a Helm repository index YAML.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "source.toolkit.fluxcd.io",
-    version = "v1beta2",
-    kind = "HelmRepository",
-    plural = "helmrepositories"
-)]
+#[kube(group = "source.toolkit.fluxcd.io", version = "v1beta2", kind = "HelmRepository", plural = "helmrepositories")]
 #[kube(namespaced)]
 #[kube(status = "HelmRepositoryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HelmRepositorySpec {
     /// AccessFrom specifies an Access Control List for allowing cross-namespace
     /// references to this object.
     /// NOTE: Not implemented, provisional as of https://github.com/fluxcd/flux2/pull/2092
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessFrom")]
     pub access_from: Option<HelmRepositoryAccessFrom>,
     /// CertSecretRef can be given the name of a Secret containing
     /// either or both of
-    ///
+    /// 
     /// - a PEM-encoded client certificate (`tls.crt`) and private
     /// key (`tls.key`);
     /// - a PEM-encoded CA certificate (`ca.crt`)
-    ///
+    /// 
     /// and whichever are supplied, will be used for connecting to the
     /// registry. The client cert and key are useful if you are
     /// authenticating with a certificate; the CA cert is useful if
     /// you are using a self-signed server certificate. The Secret must
     /// be of type `Opaque` or `kubernetes.io/tls`.
-    ///
+    /// 
     /// It takes precedence over the values specified in the Secret referred
     /// to by `.spec.secretRef`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<HelmRepositoryCertSecretRef>,
     /// Insecure allows connecting to a non-TLS HTTP container registry.
     /// This field is only taken into account if the .spec.type field is set to 'oci'.
@@ -71,11 +58,7 @@ pub struct HelmRepositorySpec {
     /// index differ from the defined URL.
     /// Enabling this should be done with caution, as it can potentially result
     /// in credentials getting stolen in a MITM-attack.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passCredentials"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passCredentials")]
     pub pass_credentials: Option<bool>,
     /// Provider used for authentication, can be 'aws', 'azure', 'gcp' or 'generic'.
     /// This field is optional, and only taken into account if the .spec.type field is set to 'oci'.
@@ -127,27 +110,23 @@ pub struct HelmRepositoryAccessFromNamespaceSelectors {
     /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 /// CertSecretRef can be given the name of a Secret containing
 /// either or both of
-///
+/// 
 /// - a PEM-encoded client certificate (`tls.crt`) and private
 /// key (`tls.key`);
 /// - a PEM-encoded CA certificate (`ca.crt`)
-///
+/// 
 /// and whichever are supplied, will be used for connecting to the
 /// registry. The client cert and key are useful if you are
 /// authenticating with a certificate; the CA cert is useful if
 /// you are using a self-signed server certificate. The Secret must
 /// be of type `Opaque` or `kubernetes.io/tls`.
-///
+/// 
 /// It takes precedence over the values specified in the Secret referred
 /// to by `.spec.secretRef`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -204,19 +183,11 @@ pub struct HelmRepositoryStatus {
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation of the HelmRepository
     /// object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// URL is the dynamic fetch link for the latest Artifact.
     /// It is provided on a "best effort" basis, and using the precise
@@ -253,3 +224,4 @@ pub struct HelmRepositoryStatusArtifact {
     /// consumption, e.g. by another controller applying the Artifact contents.
     pub url: String,
 }
+

@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec represents the desired behavior.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "work.karmada.io",
-    version = "v1alpha1",
-    kind = "ResourceBinding",
-    plural = "resourcebindings"
-)]
+#[kube(group = "work.karmada.io", version = "v1alpha1", kind = "ResourceBinding", plural = "resourcebindings")]
 #[kube(namespaced)]
 #[kube(status = "ResourceBindingStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ResourceBindingSpec {
     /// Clusters represents target member clusters where the resource to be deployed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -63,19 +58,11 @@ pub struct ResourceBindingResource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// ReplicaResourceRequirements represents the resources required by each replica.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourcePerReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePerReplicas")]
     pub resource_per_replicas: Option<BTreeMap<String, IntOrString>>,
     /// ResourceVersion represents the internal version of the referenced object, that can be used by clients to
     /// determine when object has changed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
 }
 
@@ -83,11 +70,7 @@ pub struct ResourceBindingResource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingStatus {
     /// AggregatedStatus represents status list of the resource running in each member cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aggregatedStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aggregatedStatus")]
     pub aggregated_status: Option<Vec<ResourceBindingStatusAggregatedStatus>>,
     /// Conditions contain the different condition statuses.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -103,11 +86,7 @@ pub struct ResourceBindingStatusAggregatedStatus {
     pub applied: Option<bool>,
     /// AppliedMessage is a human readable message indicating details about the applied status.
     /// This is usually holds the error message in case of apply failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appliedMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedMessage")]
     pub applied_message: Option<String>,
     /// ClusterName represents the member cluster name which the resource deployed on.
     #[serde(rename = "clusterName")]
@@ -116,3 +95,4 @@ pub struct ResourceBindingStatusAggregatedStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<BTreeMap<String, serde_json::Value>>,
 }
+

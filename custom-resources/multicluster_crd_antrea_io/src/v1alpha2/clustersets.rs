@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterSetSpec defines the desired state of ClusterSet.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "multicluster.crd.antrea.io",
-    version = "v1alpha2",
-    kind = "ClusterSet",
-    plural = "clustersets"
-)]
+#[kube(group = "multicluster.crd.antrea.io", version = "v1alpha2", kind = "ClusterSet", plural = "clustersets")]
 #[kube(namespaced)]
 #[kube(status = "ClusterSetStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterSetSpec {
     /// ClusterID identifies the local cluster.
     #[serde(rename = "clusterID")]
@@ -55,35 +50,19 @@ pub struct ClusterSetLeaders {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSetStatus {
     /// The status of individual member clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterStatuses")]
     pub cluster_statuses: Option<Vec<ClusterSetStatusClusterStatuses>>,
     /// The overall condition of the cluster set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Total number of clusters ready and connected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyClusters")]
     pub ready_clusters: Option<i32>,
     /// Total number of member clusters configured in the ClusterSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalClusters")]
     pub total_clusters: Option<i32>,
 }
 
@@ -95,3 +74,4 @@ pub struct ClusterSetStatusClusterStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

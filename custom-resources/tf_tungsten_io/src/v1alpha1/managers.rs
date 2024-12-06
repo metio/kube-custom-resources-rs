@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ManagerSpec defines the desired state of Manager.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tf.tungsten.io",
-    version = "v1alpha1",
-    kind = "Manager",
-    plural = "managers"
-)]
+#[kube(group = "tf.tungsten.io", version = "v1alpha1", kind = "Manager", plural = "managers")]
 #[kube(namespaced)]
 #[kube(status = "ManagerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ManagerSpec {
     /// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file Add custom validation using kubebuilder tags: https://book.kubebuilder.io/beyond_basics/generating_crd.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerCommonConfiguration>,
     /// Services defines the desired state of Services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -40,45 +31,25 @@ pub struct ManagerSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerCommonConfigurationAuthParameters>,
     /// Certificate private key length
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certKeyLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKeyLength")]
     pub cert_key_length: Option<i64>,
     /// Certificate signer
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSigner"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSigner")]
     pub cert_signer: Option<String>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -92,18 +63,9 @@ pub struct ManagerCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters:
-        Option<ManagerCommonConfigurationAuthParametersKeystoneAuthParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -121,49 +83,25 @@ pub enum ManagerCommonConfigurationAuthParametersAuthMode {
 pub struct ManagerCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -197,11 +135,7 @@ pub struct ManagerCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -215,18 +149,10 @@ pub struct ManagerServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub analytics: Option<ManagerServicesAnalytics>,
     /// AnalyticsAlarmInput is the Schema for the analytics API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsAlarm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsAlarm")]
     pub analytics_alarm: Option<ManagerServicesAnalyticsAlarm>,
     /// AnalyticsSnmpInput is the Schema for the analytics API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsSnmp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsSnmp")]
     pub analytics_snmp: Option<ManagerServicesAnalyticsSnmp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cassandras: Option<Vec<ManagerServicesCassandras>>,
@@ -280,11 +206,7 @@ pub struct ManagerServicesAnalyticsMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesAnalyticsSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesAnalyticsSpecCommonConfiguration>,
     /// AnalyticsConfiguration is the Spec for the Analytics API.
     #[serde(rename = "serviceConfiguration")]
@@ -295,31 +217,19 @@ pub struct ManagerServicesAnalyticsSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesAnalyticsSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesAnalyticsSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesAnalyticsSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -333,18 +243,9 @@ pub struct ManagerServicesAnalyticsSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesAnalyticsSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters:
-        Option<ManagerServicesAnalyticsSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesAnalyticsSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -362,49 +263,25 @@ pub enum ManagerServicesAnalyticsSpecCommonConfigurationAuthParametersAuthMode {
 pub struct ManagerServicesAnalyticsSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -438,11 +315,7 @@ pub struct ManagerServicesAnalyticsSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -456,56 +329,24 @@ pub struct ManagerServicesAnalyticsSpecServiceConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "aaaMode")]
     pub aaa_mode: Option<ManagerServicesAnalyticsSpecServiceConfigurationAaaMode>,
     /// Time (in hours) the analytics config data entering the collector stays in the Cassandra database. Defaults to 2160 hours.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsConfigAuditTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsConfigAuditTTL")]
     pub analytics_config_audit_ttl: Option<i64>,
     /// Time (in hours) that the analytics object and log data stays in the Cassandra database. Defaults to 48 hours.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsDataTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsDataTTL")]
     pub analytics_data_ttl: Option<i64>,
     /// Time to live (TTL) for flow data in hours. Defaults to 2 hours.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsFlowTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsFlowTTL")]
     pub analytics_flow_ttl: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsIntrospectPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsIntrospectPort")]
     pub analytics_introspect_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsPort")]
     pub analytics_port: Option<i64>,
     /// Time to live (TTL) for statistics data in hours. Defaults to 4 hours.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsStatisticsTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsStatisticsTTL")]
     pub analytics_statistics_ttl: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectorIntrospectPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectorIntrospectPort")]
     pub collector_introspect_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectorPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectorPort")]
     pub collector_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesAnalyticsSpecServiceConfigurationContainers>>,
@@ -555,11 +396,7 @@ pub struct ManagerServicesAnalyticsAlarmMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesAnalyticsAlarmSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesAnalyticsAlarmSpecCommonConfiguration>,
     /// AnalyticsAlarmConfiguration is the Spec for the Analytics Alarm API.
     #[serde(rename = "serviceConfiguration")]
@@ -570,31 +407,19 @@ pub struct ManagerServicesAnalyticsAlarmSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesAnalyticsAlarmSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesAnalyticsAlarmSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesAnalyticsAlarmSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -606,22 +431,11 @@ pub struct ManagerServicesAnalyticsAlarmSpecCommonConfiguration {
 pub struct ManagerServicesAnalyticsAlarmSpecCommonConfigurationAuthParameters {
     /// AuthenticationMode auth mode
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
-    pub auth_mode:
-        Option<ManagerServicesAnalyticsAlarmSpecCommonConfigurationAuthParametersAuthMode>,
+    pub auth_mode: Option<ManagerServicesAnalyticsAlarmSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters: Option<
-        ManagerServicesAnalyticsAlarmSpecCommonConfigurationAuthParametersKeystoneAuthParameters,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesAnalyticsAlarmSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -636,53 +450,28 @@ pub enum ManagerServicesAnalyticsAlarmSpecCommonConfigurationAuthParametersAuthM
 
 /// KeystoneAuthParameters keystone parameters
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ManagerServicesAnalyticsAlarmSpecCommonConfigurationAuthParametersKeystoneAuthParameters
-{
+pub struct ManagerServicesAnalyticsAlarmSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -716,11 +505,7 @@ pub struct ManagerServicesAnalyticsAlarmSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -730,37 +515,17 @@ pub struct ManagerServicesAnalyticsAlarmSpecCommonConfigurationTolerations {
 /// AnalyticsAlarmConfiguration is the Spec for the Analytics Alarm API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesAnalyticsAlarmSpecServiceConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alarmgenIntrospectListenPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alarmgenIntrospectListenPort")]
     pub alarmgen_introspect_listen_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alarmgenLogFileName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alarmgenLogFileName")]
     pub alarmgen_log_file_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alarmgenPartitions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alarmgenPartitions")]
     pub alarmgen_partitions: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alarmgenRedisAggregateDbOffset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alarmgenRedisAggregateDbOffset")]
     pub alarmgen_redis_aggregate_db_offset: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesAnalyticsAlarmSpecServiceConfigurationContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFilePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFilePath")]
     pub log_file_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLocal")]
     pub log_local: Option<String>,
@@ -801,11 +566,7 @@ pub struct ManagerServicesAnalyticsSnmpMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesAnalyticsSnmpSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesAnalyticsSnmpSpecCommonConfiguration>,
     /// AnalyticsSnmpConfiguration is the Spec for the Analytics SNMP API.
     #[serde(rename = "serviceConfiguration")]
@@ -816,31 +577,19 @@ pub struct ManagerServicesAnalyticsSnmpSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesAnalyticsSnmpSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesAnalyticsSnmpSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesAnalyticsSnmpSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -852,22 +601,11 @@ pub struct ManagerServicesAnalyticsSnmpSpecCommonConfiguration {
 pub struct ManagerServicesAnalyticsSnmpSpecCommonConfigurationAuthParameters {
     /// AuthenticationMode auth mode
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
-    pub auth_mode:
-        Option<ManagerServicesAnalyticsSnmpSpecCommonConfigurationAuthParametersAuthMode>,
+    pub auth_mode: Option<ManagerServicesAnalyticsSnmpSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters: Option<
-        ManagerServicesAnalyticsSnmpSpecCommonConfigurationAuthParametersKeystoneAuthParameters,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesAnalyticsSnmpSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -885,49 +623,25 @@ pub enum ManagerServicesAnalyticsSnmpSpecCommonConfigurationAuthParametersAuthMo
 pub struct ManagerServicesAnalyticsSnmpSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -961,11 +675,7 @@ pub struct ManagerServicesAnalyticsSnmpSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -977,55 +687,23 @@ pub struct ManagerServicesAnalyticsSnmpSpecCommonConfigurationTolerations {
 pub struct ManagerServicesAnalyticsSnmpSpecServiceConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesAnalyticsSnmpSpecServiceConfigurationContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFilePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFilePath")]
     pub log_file_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLocal")]
     pub log_local: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snmpCollectorFastScanFrequency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snmpCollectorFastScanFrequency")]
     pub snmp_collector_fast_scan_frequency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snmpCollectorIntrospectListenPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snmpCollectorIntrospectListenPort")]
     pub snmp_collector_introspect_listen_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snmpCollectorLogFileName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snmpCollectorLogFileName")]
     pub snmp_collector_log_file_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snmpCollectorScanFrequency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snmpCollectorScanFrequency")]
     pub snmp_collector_scan_frequency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologyIntrospectListenPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyIntrospectListenPort")]
     pub topology_introspect_listen_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologyLogFileName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyLogFileName")]
     pub topology_log_file_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySnmpFrequency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySnmpFrequency")]
     pub topology_snmp_frequency: Option<i64>,
 }
 
@@ -1064,11 +742,7 @@ pub struct ManagerServicesCassandrasMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesCassandrasSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesCassandrasSpecCommonConfiguration>,
     /// CassandraConfiguration is the Spec for the cassandras API.
     #[serde(rename = "serviceConfiguration")]
@@ -1079,31 +753,19 @@ pub struct ManagerServicesCassandrasSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesCassandrasSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesCassandrasSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesCassandrasSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1117,19 +779,9 @@ pub struct ManagerServicesCassandrasSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesCassandrasSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters: Option<
-        ManagerServicesCassandrasSpecCommonConfigurationAuthParametersKeystoneAuthParameters,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesCassandrasSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -1147,49 +799,25 @@ pub enum ManagerServicesCassandrasSpecCommonConfigurationAuthParametersAuthMode 
 pub struct ManagerServicesCassandrasSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -1223,11 +851,7 @@ pub struct ManagerServicesCassandrasSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1238,142 +862,62 @@ pub struct ManagerServicesCassandrasSpecCommonConfigurationTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesCassandrasSpecServiceConfiguration {
     /// CassandraConfigParameters defines additional parameters for Cassandra confgiuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cassandraParameters"
-    )]
-    pub cassandra_parameters:
-        Option<ManagerServicesCassandrasSpecServiceConfigurationCassandraParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cassandraParameters")]
+    pub cassandra_parameters: Option<ManagerServicesCassandrasSpecServiceConfigurationCassandraParameters>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesCassandrasSpecServiceConfigurationContainers>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cqlPort")]
     pub cql_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jmxLocalPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmxLocalPort")]
     pub jmx_local_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenAddress")]
     pub listen_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxHeapSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxHeapSize")]
     pub max_heap_size: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minHeapSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minHeapSize")]
     pub min_heap_size: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumDiskGB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumDiskGB")]
     pub minimum_disk_gb: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reaperAdmPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reaperAdmPort")]
     pub reaper_adm_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reaperAppPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reaperAppPort")]
     pub reaper_app_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reaperEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reaperEnabled")]
     pub reaper_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslStoragePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslStoragePort")]
     pub ssl_storage_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startRPC")]
     pub start_rpc: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePort")]
     pub storage_port: Option<i64>,
 }
 
 /// CassandraConfigParameters defines additional parameters for Cassandra confgiuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesCassandrasSpecServiceConfigurationCassandraParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compactionThroughputMbPerSec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compactionThroughputMbPerSec")]
     pub compaction_throughput_mb_per_sec: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "concurrentCompactors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrentCompactors")]
     pub concurrent_compactors: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "concurrentCounterWrites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrentCounterWrites")]
     pub concurrent_counter_writes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "concurrentMaterializedViewWrites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrentMaterializedViewWrites")]
     pub concurrent_materialized_view_writes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "concurrentReads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrentReads")]
     pub concurrent_reads: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "concurrentWrites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrentWrites")]
     pub concurrent_writes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memtableAllocationType"
-    )]
-    pub memtable_allocation_type: Option<
-        ManagerServicesCassandrasSpecServiceConfigurationCassandraParametersMemtableAllocationType,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memtableFlushWriters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memtableAllocationType")]
+    pub memtable_allocation_type: Option<ManagerServicesCassandrasSpecServiceConfigurationCassandraParametersMemtableAllocationType>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memtableFlushWriters")]
     pub memtable_flush_writers: Option<i64>,
 }
 
 /// CassandraConfigParameters defines additional parameters for Cassandra confgiuration
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ManagerServicesCassandrasSpecServiceConfigurationCassandraParametersMemtableAllocationType
-{
+pub enum ManagerServicesCassandrasSpecServiceConfigurationCassandraParametersMemtableAllocationType {
     #[serde(rename = "heap_buffers")]
     HeapBuffers,
     #[serde(rename = "offheap_buffers")]
@@ -1417,11 +961,7 @@ pub struct ManagerServicesConfigMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesConfigSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesConfigSpecCommonConfiguration>,
     /// ConfigConfiguration is the Spec for the Config API.
     #[serde(rename = "serviceConfiguration")]
@@ -1432,31 +972,19 @@ pub struct ManagerServicesConfigSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesConfigSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesConfigSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesConfigSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1470,18 +998,9 @@ pub struct ManagerServicesConfigSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesConfigSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters:
-        Option<ManagerServicesConfigSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesConfigSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -1499,49 +1018,25 @@ pub enum ManagerServicesConfigSpecCommonConfigurationAuthParametersAuthMode {
 pub struct ManagerServicesConfigSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -1575,11 +1070,7 @@ pub struct ManagerServicesConfigSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1592,83 +1083,34 @@ pub struct ManagerServicesConfigSpecServiceConfiguration {
     /// AAAMode aaa mode
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "aaaMode")]
     pub aaa_mode: Option<ManagerServicesConfigSpecServiceConfigurationAaaMode>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiAdminPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiAdminPort")]
     pub api_admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiIntrospectPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiIntrospectPort")]
     pub api_introspect_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiPort")]
     pub api_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiWorkerCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiWorkerCount")]
     pub api_worker_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bgpAutoMesh"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bgpAutoMesh")]
     pub bgp_auto_mesh: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bgpEnable4Byte"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bgpEnable4Byte")]
     pub bgp_enable4_byte: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesConfigSpecServiceConfigurationContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceManagerIntrospectPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceManagerIntrospectPort")]
     pub device_manager_introspect_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fabricMgmtIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fabricMgmtIP")]
     pub fabric_mgmt_ip: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalASNNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalASNNumber")]
     pub global_asn_number: Option<i64>,
     /// LinklocalServiceConfig is the Spec for link local coniguration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linklocalServiceConfig"
-    )]
-    pub linklocal_service_config:
-        Option<ManagerServicesConfigSpecServiceConfigurationLinklocalServiceConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schemaIntrospectPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linklocalServiceConfig")]
+    pub linklocal_service_config: Option<ManagerServicesConfigSpecServiceConfigurationLinklocalServiceConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaIntrospectPort")]
     pub schema_introspect_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "svcMonitorIntrospectPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "svcMonitorIntrospectPort")]
     pub svc_monitor_introspect_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useExternalTFTP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useExternalTFTP")]
     pub use_external_tftp: Option<bool>,
 }
 
@@ -1697,17 +1139,9 @@ pub struct ManagerServicesConfigSpecServiceConfigurationContainers {
 pub struct ManagerServicesConfigSpecServiceConfigurationLinklocalServiceConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFabricServiceHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFabricServiceHost")]
     pub ip_fabric_service_host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFabricServicePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFabricServicePort")]
     pub ip_fabric_service_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1739,11 +1173,7 @@ pub struct ManagerServicesControlsMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesControlsSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesControlsSpecCommonConfiguration>,
     /// ControlConfiguration is the Spec for the controls API.
     #[serde(rename = "serviceConfiguration")]
@@ -1754,31 +1184,19 @@ pub struct ManagerServicesControlsSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesControlsSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesControlsSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesControlsSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1792,18 +1210,9 @@ pub struct ManagerServicesControlsSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesControlsSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters:
-        Option<ManagerServicesControlsSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesControlsSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -1821,49 +1230,25 @@ pub enum ManagerServicesControlsSpecCommonConfigurationAuthParametersAuthMode {
 pub struct ManagerServicesControlsSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -1897,11 +1282,7 @@ pub struct ManagerServicesControlsSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1918,17 +1299,9 @@ pub struct ManagerServicesControlsSpecServiceConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesControlsSpecServiceConfigurationContainers>>,
     /// DataSubnet allow to set alternative network in which control, nodemanager and dns services will listen. Local pod address from this subnet will be discovered and used both in configuration for hostip directive and provision script.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSubnet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSubnet")]
     pub data_subnet: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsIntrospectPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsIntrospectPort")]
     pub dns_introspect_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPort")]
     pub dns_port: Option<i64>,
@@ -1975,11 +1348,7 @@ pub struct ManagerServicesKubemanagerMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesKubemanagerSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesKubemanagerSpecCommonConfiguration>,
     /// KubemanagerConfiguration is the configuration for the kubemanager API.
     #[serde(rename = "serviceConfiguration")]
@@ -1990,31 +1359,19 @@ pub struct ManagerServicesKubemanagerSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesKubemanagerSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesKubemanagerSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesKubemanagerSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2028,19 +1385,9 @@ pub struct ManagerServicesKubemanagerSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesKubemanagerSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters: Option<
-        ManagerServicesKubemanagerSpecCommonConfigurationAuthParametersKeystoneAuthParameters,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesKubemanagerSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -2058,49 +1405,25 @@ pub enum ManagerServicesKubemanagerSpecCommonConfigurationAuthParametersAuthMode
 pub struct ManagerServicesKubemanagerSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -2134,11 +1457,7 @@ pub struct ManagerServicesKubemanagerSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2148,75 +1467,31 @@ pub struct ManagerServicesKubemanagerSpecCommonConfigurationTolerations {
 /// KubemanagerConfiguration is the configuration for the kubemanager API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesKubemanagerSpecServiceConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudOrchestrator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudOrchestrator")]
     pub cloud_orchestrator: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesKubemanagerSpecServiceConfigurationContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetworkService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetworkService")]
     pub host_network_service: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFabricForwarding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFabricForwarding")]
     pub ip_fabric_forwarding: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFabricSnat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFabricSnat")]
     pub ip_fabric_snat: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFabricSubnets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFabricSubnets")]
     pub ip_fabric_subnets: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAPIPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAPIPort")]
     pub kubernetes_api_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAPISSLPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAPISSLPort")]
     pub kubernetes_apissl_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesAPIServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAPIServer")]
     pub kubernetes_api_server: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesTokenFile")]
     pub kubernetes_token_file: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSubnet")]
     pub pod_subnet: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publicFIPPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicFIPPool")]
     pub public_fip_pool: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceSubnet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceSubnet")]
     pub service_subnet: Option<String>,
 }
 
@@ -2255,11 +1530,7 @@ pub struct ManagerServicesQueryengineMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesQueryengineSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesQueryengineSpecCommonConfiguration>,
     /// QueryEngineConfiguration is the Spec for the AnalyticsDB query engine.
     #[serde(rename = "serviceConfiguration")]
@@ -2270,31 +1541,19 @@ pub struct ManagerServicesQueryengineSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesQueryengineSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesQueryengineSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesQueryengineSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2308,19 +1567,9 @@ pub struct ManagerServicesQueryengineSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesQueryengineSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters: Option<
-        ManagerServicesQueryengineSpecCommonConfigurationAuthParametersKeystoneAuthParameters,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesQueryengineSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -2338,49 +1587,25 @@ pub enum ManagerServicesQueryengineSpecCommonConfigurationAuthParametersAuthMode
 pub struct ManagerServicesQueryengineSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -2414,11 +1639,7 @@ pub struct ManagerServicesQueryengineSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2428,17 +1649,9 @@ pub struct ManagerServicesQueryengineSpecCommonConfigurationTolerations {
 /// QueryEngineConfiguration is the Spec for the AnalyticsDB query engine.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesQueryengineSpecServiceConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsdbIntrospectPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsdbIntrospectPort")]
     pub analyticsdb_introspect_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsdbPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsdbPort")]
     pub analyticsdb_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesQueryengineSpecServiceConfigurationContainers>>,
@@ -2479,11 +1692,7 @@ pub struct ManagerServicesRabbitmqMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesRabbitmqSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesRabbitmqSpecCommonConfiguration>,
     /// RabbitmqConfiguration is the Spec for the cassandras API.
     #[serde(rename = "serviceConfiguration")]
@@ -2494,31 +1703,19 @@ pub struct ManagerServicesRabbitmqSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesRabbitmqSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesRabbitmqSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesRabbitmqSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2532,18 +1729,9 @@ pub struct ManagerServicesRabbitmqSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesRabbitmqSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters:
-        Option<ManagerServicesRabbitmqSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesRabbitmqSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -2561,49 +1749,25 @@ pub enum ManagerServicesRabbitmqSpecCommonConfigurationAuthParametersAuthMode {
 pub struct ManagerServicesRabbitmqSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -2637,11 +1801,7 @@ pub struct ManagerServicesRabbitmqSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2651,33 +1811,16 @@ pub struct ManagerServicesRabbitmqSpecCommonConfigurationTolerations {
 /// RabbitmqConfiguration is the Spec for the cassandras API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesRabbitmqSpecServiceConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterPartitionHandling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterPartitionHandling")]
     pub cluster_partition_handling: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesRabbitmqSpecServiceConfigurationContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "erlEpmdPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "erlEpmdPort")]
     pub erl_epmd_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "erlangCookie"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "erlangCookie")]
     pub erlang_cookie: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirroredQueueMode"
-    )]
-    pub mirrored_queue_mode:
-        Option<ManagerServicesRabbitmqSpecServiceConfigurationMirroredQueueMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirroredQueueMode")]
+    pub mirrored_queue_mode: Option<ManagerServicesRabbitmqSpecServiceConfigurationMirroredQueueMode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2685,11 +1828,7 @@ pub struct ManagerServicesRabbitmqSpecServiceConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// TCPListenOptionsConfig is configuration for RabbitMQ TCP listen
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpListenOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpListenOptions")]
     pub tcp_listen_options: Option<ManagerServicesRabbitmqSpecServiceConfigurationTcpListenOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
@@ -2724,19 +1863,11 @@ pub enum ManagerServicesRabbitmqSpecServiceConfigurationMirroredQueueMode {
 pub struct ManagerServicesRabbitmqSpecServiceConfigurationTcpListenOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backlog: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exitOnClose"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitOnClose")]
     pub exit_on_close: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lingerOn")]
     pub linger_on: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lingerTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lingerTimeout")]
     pub linger_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodelay: Option<bool>,
@@ -2766,11 +1897,7 @@ pub struct ManagerServicesRedisMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesRedisSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesRedisSpecCommonConfiguration>,
     /// RedisConfiguration is the Spec for the redis API.
     #[serde(rename = "serviceConfiguration")]
@@ -2781,31 +1908,19 @@ pub struct ManagerServicesRedisSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesRedisSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesRedisSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesRedisSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2819,18 +1934,9 @@ pub struct ManagerServicesRedisSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesRedisSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters:
-        Option<ManagerServicesRedisSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesRedisSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -2848,49 +1954,25 @@ pub enum ManagerServicesRedisSpecCommonConfigurationAuthParametersAuthMode {
 pub struct ManagerServicesRedisSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -2924,11 +2006,7 @@ pub struct ManagerServicesRedisSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2938,11 +2016,7 @@ pub struct ManagerServicesRedisSpecCommonConfigurationTolerations {
 /// RedisConfiguration is the Spec for the redis API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesRedisSpecServiceConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesRedisSpecServiceConfigurationContainers>>,
@@ -2985,11 +2059,7 @@ pub struct ManagerServicesVroutersMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesVroutersSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesVroutersSpecCommonConfiguration>,
     /// VrouterConfiguration is the Spec for the vrouter API.
     #[serde(rename = "serviceConfiguration")]
@@ -3000,31 +2070,19 @@ pub struct ManagerServicesVroutersSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesVroutersSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesVroutersSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesVroutersSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3038,18 +2096,9 @@ pub struct ManagerServicesVroutersSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesVroutersSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters:
-        Option<ManagerServicesVroutersSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesVroutersSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -3067,49 +2116,25 @@ pub enum ManagerServicesVroutersSpecCommonConfigurationAuthParametersAuthMode {
 pub struct ManagerServicesVroutersSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -3143,11 +2168,7 @@ pub struct ManagerServicesVroutersSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3160,232 +2181,92 @@ pub struct ManagerServicesVroutersSpecServiceConfiguration {
     /// vRouter
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentMode")]
     pub agent_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "barbicanPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "barbicanPassword")]
     pub barbican_password: Option<String>,
     /// Openstack
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "barbicanTenantName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "barbicanTenantName")]
     pub barbican_tenant_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "barbicanUser"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "barbicanUser")]
     pub barbican_user: Option<String>,
     /// New params for vrouter configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudOrchestrator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudOrchestrator")]
     pub cloud_orchestrator: Option<String>,
     /// CniMTU - mtu for virtual tap devices
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cniMTU")]
     pub cni_mtu: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectorPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectorPort")]
     pub collector_port: Option<String>,
     /// Config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configApiPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configApiPort")]
     pub config_api_port: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configApiServerCaCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configApiServerCaCertfile")]
     pub config_api_server_ca_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configApiSslEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configApiSslEnable")]
     pub config_api_ssl_enable: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesVroutersSpecServiceConfigurationContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlInstance")]
     pub control_instance: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSubnet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSubnet")]
     pub data_subnet: Option<String>,
     /// DNS
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsServerPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsServerPort")]
     pub dns_server_port: Option<String>,
     /// Host
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dpdkUioDriver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dpdkUioDriver")]
     pub dpdk_uio_driver: Option<String>,
     /// What is it doing? VrouterEncryption   bool              `json:"vrouterEncryption,omitempty"` What is it doing? What is it doing?
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envVariablesConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envVariablesConfig")]
     pub env_variables_config: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fabricSntHashTableSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fabricSntHashTableSize")]
     pub fabric_snt_hash_table_size: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hugePages1G"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hugePages1G")]
     pub huge_pages1_g: Option<i64>,
     /// HugePages
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hugePages2M"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hugePages2M")]
     pub huge_pages2_m: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hypervisorType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hypervisorType")]
     pub hypervisor_type: Option<String>,
     /// Introspect
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "introspectSslEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "introspectSslEnable")]
     pub introspect_ssl_enable: Option<bool>,
     /// Kubernetes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sToken")]
     pub k8s_token: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sTokenFile")]
     pub k8s_token_file: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthAdminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthAdminPassword")]
     pub keystone_auth_admin_password: Option<String>,
     /// Keystone authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthAdminPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthAdminPort")]
     pub keystone_auth_admin_port: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthCaCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthCaCertfile")]
     pub keystone_auth_ca_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthCertfile")]
     pub keystone_auth_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthHost")]
     pub keystone_auth_host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthInsecure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthInsecure")]
     pub keystone_auth_insecure: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthKeyfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthKeyfile")]
     pub keystone_auth_keyfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthProjectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthProjectDomainName")]
     pub keystone_auth_project_domain_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthProto"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthProto")]
     pub keystone_auth_proto: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthRegionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthRegionName")]
     pub keystone_auth_region_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthUrlTokens"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthUrlTokens")]
     pub keystone_auth_url_tokens: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthUrlVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthUrlVersion")]
     pub keystone_auth_url_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthUserDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthUserDomainName")]
     pub keystone_auth_user_domain_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesApiPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesApiPort")]
     pub kubernetes_api_port: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesApiSecurePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesApiSecurePort")]
     pub kubernetes_api_secure_port: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesPodSubnet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesPodSubnet")]
     pub kubernetes_pod_subnet: Option<String>,
     /// L3MH
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "l3mhCidr")]
@@ -3396,262 +2277,98 @@ pub struct ManagerServicesVroutersSpecServiceConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLocal")]
     pub log_local: Option<i64>,
     /// Metadata
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataProxySecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataProxySecret")]
     pub metadata_proxy_secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataSslCaCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataSslCaCertfile")]
     pub metadata_ssl_ca_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataSslCertType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataSslCertType")]
     pub metadata_ssl_cert_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataSslCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataSslCertfile")]
     pub metadata_ssl_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataSslEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataSslEnable")]
     pub metadata_ssl_enable: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataSslKeyfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataSslKeyfile")]
     pub metadata_ssl_keyfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "physicalInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "physicalInterface")]
     pub physical_interface: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityBandwidth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityBandwidth")]
     pub priority_bandwidth: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityId")]
     pub priority_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityScheduling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityScheduling")]
     pub priority_scheduling: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityTagging"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityTagging")]
     pub priority_tagging: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "qosDefHwQueue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "qosDefHwQueue")]
     pub qos_def_hw_queue: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "qosLogicalQueues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "qosLogicalQueues")]
     pub qos_logical_queues: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "qosQueueId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "qosQueueId")]
     pub qos_queue_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredKernelVrouterEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredKernelVrouterEncryption")]
     pub required_kernel_vrouter_encryption: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleDestination"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleDestination")]
     pub sample_destination: Option<String>,
     /// Sandesh
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sandeshCaCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sandeshCaCertfile")]
     pub sandesh_ca_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sandeshCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sandeshCertfile")]
     pub sandesh_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sandeshKeyfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sandeshKeyfile")]
     pub sandesh_keyfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sandeshServerCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sandeshServerCertfile")]
     pub sandesh_server_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sandeshServerKeyfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sandeshServerKeyfile")]
     pub sandesh_server_keyfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sandeshSslEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sandeshSslEnable")]
     pub sandesh_ssl_enable: Option<bool>,
     /// Server SSL
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverCaCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCaCertfile")]
     pub server_ca_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCertfile")]
     pub server_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverKeyfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverKeyfile")]
     pub server_keyfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sloDestination"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sloDestination")]
     pub slo_destination: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sriovPhysicalInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sriovPhysicalInterface")]
     pub sriov_physical_interface: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sriovPhysicalNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sriovPhysicalNetwork")]
     pub sriov_physical_network: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sriovVf")]
     pub sriov_vf: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnable")]
     pub ssl_enable: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslInsecure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslInsecure")]
     pub ssl_insecure: Option<bool>,
     /// Collector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statsCollectorDestinationPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statsCollectorDestinationPath")]
     pub stats_collector_destination_path: Option<String>,
     /// XMPP
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subcluster: Option<String>,
     /// TSN
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tsnAgentMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsnAgentMode")]
     pub tsn_agent_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vrouterCryptInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vrouterCryptInterface")]
     pub vrouter_crypt_interface: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vrouterDecryptInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vrouterDecryptInterface")]
     pub vrouter_decrypt_interface: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vrouterDecryptKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vrouterDecryptKey")]
     pub vrouter_decrypt_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vrouterEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vrouterEncryption")]
     pub vrouter_encryption: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vrouterGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vrouterGateway")]
     pub vrouter_gateway: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "xmmpSslEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xmmpSslEnable")]
     pub xmmp_ssl_enable: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "xmppServerCaCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xmppServerCaCertfile")]
     pub xmpp_server_ca_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "xmppServerCertfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xmppServerCertfile")]
     pub xmpp_server_certfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "xmppServerKeyfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xmppServerKeyfile")]
     pub xmpp_server_keyfile: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "xmppServerPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xmppServerPort")]
     pub xmpp_server_port: Option<String>,
 }
 
@@ -3690,11 +2407,7 @@ pub struct ManagerServicesWebuiMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesWebuiSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesWebuiSpecCommonConfiguration>,
     /// WebuiConfiguration is the Spec for the cassandras API.
     #[serde(rename = "serviceConfiguration")]
@@ -3705,31 +2418,19 @@ pub struct ManagerServicesWebuiSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesWebuiSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesWebuiSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesWebuiSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3743,18 +2444,9 @@ pub struct ManagerServicesWebuiSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesWebuiSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters:
-        Option<ManagerServicesWebuiSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesWebuiSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -3772,49 +2464,25 @@ pub enum ManagerServicesWebuiSpecCommonConfigurationAuthParametersAuthMode {
 pub struct ManagerServicesWebuiSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -3848,11 +2516,7 @@ pub struct ManagerServicesWebuiSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3864,11 +2528,7 @@ pub struct ManagerServicesWebuiSpecCommonConfigurationTolerations {
 pub struct ManagerServicesWebuiSpecServiceConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesWebuiSpecServiceConfigurationContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlInstance")]
     pub control_instance: Option<String>,
 }
 
@@ -3907,11 +2567,7 @@ pub struct ManagerServicesZookeeperMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesZookeeperSpec {
     /// PodConfiguration is the common services struct.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonConfiguration")]
     pub common_configuration: Option<ManagerServicesZookeeperSpecCommonConfiguration>,
     /// ZookeeperConfiguration is the Spec for the zookeeper API.
     #[serde(rename = "serviceConfiguration")]
@@ -3922,31 +2578,19 @@ pub struct ManagerServicesZookeeperSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesZookeeperSpecCommonConfiguration {
     /// AuthParameters auth parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authParameters")]
     pub auth_parameters: Option<ManagerServicesZookeeperSpecCommonConfigurationAuthParameters>,
     /// OS family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// Kubernetes Cluster Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<ManagerServicesZookeeperSpecCommonConfigurationLogLevel>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3960,18 +2604,9 @@ pub struct ManagerServicesZookeeperSpecCommonConfigurationAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
     pub auth_mode: Option<ManagerServicesZookeeperSpecCommonConfigurationAuthParametersAuthMode>,
     /// KeystoneAuthParameters keystone parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneAuthParameters"
-    )]
-    pub keystone_auth_parameters:
-        Option<ManagerServicesZookeeperSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoneSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneAuthParameters")]
+    pub keystone_auth_parameters: Option<ManagerServicesZookeeperSpecCommonConfigurationAuthParametersKeystoneAuthParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoneSecretName")]
     pub keystone_secret_name: Option<String>,
 }
 
@@ -3989,49 +2624,25 @@ pub enum ManagerServicesZookeeperSpecCommonConfigurationAuthParametersAuthMode {
 pub struct ManagerServicesZookeeperSpecCommonConfigurationAuthParametersKeystoneAuthParameters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPassword")]
     pub admin_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTenant"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTenant")]
     pub admin_tenant: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminUsername")]
     pub admin_username: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authProtocol")]
     pub auth_protocol: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectDomainName")]
     pub project_domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userDomainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDomainName")]
     pub user_domain_name: Option<String>,
 }
 
@@ -4065,11 +2676,7 @@ pub struct ManagerServicesZookeeperSpecCommonConfigurationTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4079,33 +2686,17 @@ pub struct ManagerServicesZookeeperSpecCommonConfigurationTolerations {
 /// ZookeeperConfiguration is the Spec for the zookeeper API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagerServicesZookeeperSpecServiceConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminEnabled")]
     pub admin_enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPort")]
     pub admin_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPort")]
     pub client_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ManagerServicesZookeeperSpecServiceConfigurationContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "electionPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "electionPort")]
     pub election_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverPort")]
     pub server_port: Option<i64>,
 }
 
@@ -4127,18 +2718,10 @@ pub struct ManagerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub analytics: Option<ManagerStatusAnalytics>,
     /// ServiceStatus provides information on the current status of the service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsAlarm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsAlarm")]
     pub analytics_alarm: Option<ManagerStatusAnalyticsAlarm>,
     /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file Add custom validation using kubebuilder tags: https://book.kubebuilder.io/beyond_basics/generating_crd.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsSnmp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsSnmp")]
     pub analytics_snmp: Option<ManagerStatusAnalyticsSnmp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cassandras: Option<Vec<ManagerStatusCassandras>>,
@@ -4336,3 +2919,4 @@ pub struct ManagerStatusZookeeper {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

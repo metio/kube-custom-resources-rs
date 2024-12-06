@@ -4,23 +4,18 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "scheduling.koordinator.sh",
-    version = "v1alpha1",
-    kind = "Device",
-    plural = "devices"
-)]
+#[kube(group = "scheduling.koordinator.sh", version = "v1alpha1", kind = "Device", plural = "devices")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DeviceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub devices: Option<Vec<DeviceDevices>>,
@@ -117,3 +112,4 @@ pub struct DeviceStatusAllocationsEntries {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// APIManagerRestoreSpec defines the desired state of APIManagerRestore
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.3scale.net",
-    version = "v1alpha1",
-    kind = "APIManagerRestore",
-    plural = "apimanagerrestores"
-)]
+#[kube(group = "apps.3scale.net", version = "v1alpha1", kind = "APIManagerRestore", plural = "apimanagerrestores")]
 #[kube(namespaced)]
 #[kube(status = "APIManagerRestoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct APIManagerRestoreSpec {
     /// APIManagerRestoreSource defines the backup data restore source configurability. It is a union type. Only one of the fields can be set
     #[serde(rename = "restoreSource")]
@@ -32,11 +27,7 @@ pub struct APIManagerRestoreSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIManagerRestoreRestoreSource {
     /// Restore data soure configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<APIManagerRestoreRestoreSourcePersistentVolumeClaim>,
 }
 
@@ -63,28 +54,16 @@ pub struct APIManagerRestoreRestoreSourcePersistentVolumeClaimClaimSource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIManagerRestoreStatus {
     /// Name of the APIManager to be restored
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiManagerToRestoreRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiManagerToRestoreRef")]
     pub api_manager_to_restore_ref: Option<APIManagerRestoreStatusApiManagerToRestoreRef>,
     /// Set to true when backup has been completed
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completed: Option<bool>,
     /// Restore completion time. It is represented in RFC3339 form and is in UTC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTime")]
     pub completion_time: Option<String>,
     /// Set to true when main steps have been completed. At this point restore still cannot be considered fully completed due to some remaining post-backup tasks are pending (cleanup, ...)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mainStepsCompleted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mainStepsCompleted")]
     pub main_steps_completed: Option<bool>,
     /// Restore start time. It is represented in RFC3339 form and is in UTC.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
@@ -98,3 +77,4 @@ pub struct APIManagerRestoreStatusApiManagerToRestoreRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

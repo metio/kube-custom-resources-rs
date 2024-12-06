@@ -5,149 +5,84 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VMScrapeConfigSpec defines the desired state of VMScrapeConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.victoriametrics.com",
-    version = "v1beta1",
-    kind = "VMScrapeConfig",
-    plural = "vmscrapeconfigs"
-)]
+#[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMScrapeConfig", plural = "vmscrapeconfigs")]
 #[kube(namespaced)]
 #[kube(status = "VMScrapeConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VMScrapeConfigSpec {
     /// Authorization with http header Authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VMScrapeConfigAuthorization>,
     /// AzureSDConfigs defines a list of Azure service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "azureSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureSDConfigs")]
     pub azure_sd_configs: Option<Vec<VMScrapeConfigAzureSdConfigs>>,
     /// BasicAuth allow an endpoint to authenticate over basic authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<VMScrapeConfigBasicAuth>,
     /// File to read bearer token for scraping targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Secret to mount to read bearer token for scraping targets. The secret
     /// needs to be in the same namespace as the scrape object and accessible by
     /// the victoria-metrics operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<VMScrapeConfigBearerTokenSecret>,
     /// ConsulSDConfigs defines a list of Consul service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consulSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consulSDConfigs")]
     pub consul_sd_configs: Option<Vec<VMScrapeConfigConsulSdConfigs>>,
     /// DigitalOceanSDConfigs defines a list of DigitalOcean service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "digitalOceanSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "digitalOceanSDConfigs")]
     pub digital_ocean_sd_configs: Option<Vec<VMScrapeConfigDigitalOceanSdConfigs>>,
     /// DNSSDConfigs defines a list of DNS service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsSDConfigs")]
     pub dns_sd_configs: Option<Vec<VMScrapeConfigDnsSdConfigs>>,
     /// EC2SDConfigs defines a list of EC2 service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ec2SDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ec2SDConfigs")]
     pub ec2_sd_configs: Option<Vec<VMScrapeConfigEc2SdConfigs>>,
     /// FileSDConfigs defines a list of file service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSDConfigs")]
     pub file_sd_configs: Option<Vec<VMScrapeConfigFileSdConfigs>>,
     /// FollowRedirects controls redirects for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub follow_redirects: Option<bool>,
     /// GCESDConfigs defines a list of GCE service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gceSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gceSDConfigs")]
     pub gce_sd_configs: Option<Vec<VMScrapeConfigGceSdConfigs>>,
     /// HonorLabels chooses the metric's labels on collisions with target labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
     pub honor_labels: Option<bool>,
     /// HonorTimestamps controls whether vmagent respects the timestamps present in scraped data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorTimestamps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorTimestamps")]
     pub honor_timestamps: Option<bool>,
     /// HTTPSDConfigs defines a list of HTTP service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpSDConfigs")]
     pub http_sd_configs: Option<Vec<VMScrapeConfigHttpSdConfigs>>,
     /// Interval at which metrics should be scraped
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// KubernetesSDConfigs defines a list of Kubernetes service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesSDConfigs")]
     pub kubernetes_sd_configs: Option<Vec<VMScrapeConfigKubernetesSdConfigs>>,
     /// MaxScrapeSize defines a maximum size of scraped data for a job
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_scrape_size: Option<String>,
     /// MetricRelabelConfigs to apply to samples after scrapping.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricRelabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelConfigs")]
     pub metric_relabel_configs: Option<Vec<VMScrapeConfigMetricRelabelConfigs>>,
     /// OAuth2 defines auth configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VMScrapeConfigOauth2>,
     /// OpenStackSDConfigs defines a list of OpenStack service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openstackSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openstackSDConfigs")]
     pub openstack_sd_configs: Option<Vec<VMScrapeConfigOpenstackSdConfigs>>,
     /// Optional HTTP URL parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -159,28 +94,16 @@ pub struct VMScrapeConfigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
     /// RelabelConfigs to apply to samples during service discovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelConfigs")]
     pub relabel_configs: Option<Vec<VMScrapeConfigRelabelConfigs>>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// HTTP scheme to use for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<VMScrapeConfigScheme>,
     /// Timeout after which the scrape is ended
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
     /// ScrapeInterval is the same as Interval and has priority over it.
     /// one of scrape_interval or interval can be used
@@ -188,18 +111,10 @@ pub struct VMScrapeConfigSpec {
     pub scrape_interval: Option<String>,
     /// SeriesLimit defines per-scrape limit on number of unique time series
     /// a single target can expose during all the scrapes on the time window of 24h.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seriesLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]
     pub series_limit: Option<i64>,
     /// StaticConfigs defines a list of static targets with a common label set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticConfigs")]
     pub static_configs: Option<Vec<VMScrapeConfigStaticConfigs>>,
     /// TLSConfig configuration to use when scraping the endpoint
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -216,11 +131,7 @@ pub struct VMScrapeConfigAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VMScrapeConfigAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -250,21 +161,13 @@ pub struct VMScrapeConfigAuthorizationCredentials {
 pub struct VMScrapeConfigAzureSdConfigs {
     /// # The authentication method, either OAuth or ManagedIdentity.
     /// See https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationMethod")]
     pub authentication_method: Option<VMScrapeConfigAzureSdConfigsAuthenticationMethod>,
     /// Optional client ID. Only required with the OAuth authentication method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
     /// Optional client secret. Only required with the OAuth authentication method.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<VMScrapeConfigAzureSdConfigsClientSecret>,
     /// The Azure environment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -274,11 +177,7 @@ pub struct VMScrapeConfigAzureSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// Optional resource group name. Limits discovery to this resource group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<String>,
     /// The subscription ID. Always required.
     #[serde(rename = "subscriptionID")]
@@ -391,11 +290,7 @@ pub struct VMScrapeConfigBearerTokenSecret {
 pub struct VMScrapeConfigConsulSdConfigs {
     /// Allow stale Consul results (see https://developer.hashicorp.com/consul/api-docs/features/consistency). Will reduce load on Consul.
     /// If unset, use its default value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowStale"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStale")]
     pub allow_stale: Option<bool>,
     /// Authorization header to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -408,11 +303,7 @@ pub struct VMScrapeConfigConsulSdConfigs {
     pub datacenter: Option<String>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     /// If unset, use its default value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Namespaces are only supported in Consul Enterprise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -443,11 +334,7 @@ pub struct VMScrapeConfigConsulSdConfigs {
     pub services: Option<Vec<String>>,
     /// The string by which Consul tags are joined into the tag label.
     /// If unset, use its default value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tagSeparator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
     /// An optional list of tags used to filter nodes for a given service. Services must contain all tags in the list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -467,11 +354,7 @@ pub struct VMScrapeConfigConsulSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VMScrapeConfigConsulSdConfigsAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -734,11 +617,7 @@ pub struct VMScrapeConfigConsulSdConfigsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -747,11 +626,7 @@ pub struct VMScrapeConfigConsulSdConfigsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigConsulSdConfigsProxyClientConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -888,11 +763,7 @@ pub struct VMScrapeConfigConsulSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -901,11 +772,7 @@ pub struct VMScrapeConfigConsulSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigConsulSdConfigsTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1042,11 +909,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VMScrapeConfigDigitalOceanSdConfigsAuthorization>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// OAuth2 defines auth configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1073,11 +936,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VMScrapeConfigDigitalOceanSdConfigsAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1287,11 +1146,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -1300,11 +1155,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1313,8 +1164,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfig {
 pub struct VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfigCaSecret>,
@@ -1359,8 +1209,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfigCaSecret
 pub struct VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMScrapeConfigDigitalOceanSdConfigsProxyClientConfigTlsConfigCertSecret>,
@@ -1433,11 +1282,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -1446,11 +1291,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1673,7 +1514,7 @@ pub struct VMScrapeConfigFileSdConfigs {
 /// The private IP address is used by default, but may be changed to
 /// the public IP address with relabeling.
 /// See [here](https://docs.victoriametrics.com/sd_configs#gce_sd_configs)
-///
+/// 
 /// The GCE service discovery will load the Google Cloud credentials
 /// from the file specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable.
 /// See https://cloud.google.com/kubernetes-engine/docs/tutorials/authenticating-to-cloud-platform
@@ -1691,11 +1532,7 @@ pub struct VMScrapeConfigGceSdConfigs {
     /// The Google Cloud Project ID
     pub project: String,
     /// The tag separator is used to separate the tags on concatenation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tagSeparator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
     /// The zone of the scrape targets. If you need multiple zones use multiple GCESDConfigs.
     pub zone: String,
@@ -1732,11 +1569,7 @@ pub struct VMScrapeConfigHttpSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VMScrapeConfigHttpSdConfigsAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1916,11 +1749,7 @@ pub struct VMScrapeConfigHttpSdConfigsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -1929,11 +1758,7 @@ pub struct VMScrapeConfigHttpSdConfigsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigHttpSdConfigsProxyClientConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2060,11 +1885,7 @@ pub struct VMScrapeConfigHttpSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -2073,11 +1894,7 @@ pub struct VMScrapeConfigHttpSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigHttpSdConfigsTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2209,11 +2026,7 @@ pub struct VMScrapeConfigKubernetesSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<VMScrapeConfigKubernetesSdConfigsBasicAuth>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Optional namespace discovery. If omitted, discover targets across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2254,11 +2067,7 @@ pub struct VMScrapeConfigKubernetesSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VMScrapeConfigKubernetesSdConfigsAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -2343,11 +2152,7 @@ pub struct VMScrapeConfigKubernetesSdConfigsNamespaces {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
     /// Includes the namespace in which the pod exists to the list of watched namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownNamespace")]
     pub own_namespace: Option<bool>,
 }
 
@@ -2537,11 +2342,7 @@ pub struct VMScrapeConfigKubernetesSdConfigsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -2550,11 +2351,7 @@ pub struct VMScrapeConfigKubernetesSdConfigsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigKubernetesSdConfigsProxyClientConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2608,8 +2405,7 @@ pub struct VMScrapeConfigKubernetesSdConfigsProxyClientConfigTlsConfigCaSecret {
 pub struct VMScrapeConfigKubernetesSdConfigsProxyClientConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMScrapeConfigKubernetesSdConfigsProxyClientConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<VMScrapeConfigKubernetesSdConfigsProxyClientConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMScrapeConfigKubernetesSdConfigsProxyClientConfigTlsConfigCertSecret>,
@@ -2692,11 +2488,7 @@ pub struct VMScrapeConfigKubernetesSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -2705,11 +2497,7 @@ pub struct VMScrapeConfigKubernetesSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigKubernetesSdConfigsTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2854,39 +2642,23 @@ pub struct VMScrapeConfigMetricRelabelConfigs {
     /// The source labels select values from existing labels. Their content is concatenated
     /// using the configured separator and matched against the configured regular expression
     /// for the replace, keep, and drop actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
     /// if set  both sourceLabels and source_labels, sourceLabels has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source_labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
     /// if set  both targetLabel and target_label, targetLabel has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target_label"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
@@ -2979,38 +2751,21 @@ pub struct VMScrapeConfigOauth2ClientSecret {
 pub struct VMScrapeConfigOpenstackSdConfigs {
     /// Whether the service discovery should list all instances for all projects.
     /// It is only relevant for the 'instance' role and usually requires admin permissions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allTenants"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allTenants")]
     pub all_tenants: Option<bool>,
     /// ApplicationCredentialID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationCredentialId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialId")]
     pub application_credential_id: Option<String>,
     /// The ApplicationCredentialID or ApplicationCredentialName fields are
     /// required if using an application credential to authenticate. Some providers
     /// allow you to create an application credential to authenticate rather than a
     /// password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationCredentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialName")]
     pub application_credential_name: Option<String>,
     /// The applicationCredentialSecret field is required if using an application
     /// credential to authenticate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationCredentialSecret"
-    )]
-    pub application_credential_secret:
-        Option<VMScrapeConfigOpenstackSdConfigsApplicationCredentialSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialSecret")]
+    pub application_credential_secret: Option<VMScrapeConfigOpenstackSdConfigsApplicationCredentialSecret>,
     /// Availability of the endpoint to connect to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub availability: Option<VMScrapeConfigOpenstackSdConfigsAvailability>,
@@ -3019,19 +2774,11 @@ pub struct VMScrapeConfigOpenstackSdConfigs {
     pub domain_id: Option<String>,
     /// At most one of domainId and domainName must be provided if using username
     /// with Identity V3. Otherwise, either are optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "domainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
     pub domain_name: Option<String>,
     /// IdentityEndpoint specifies the HTTP endpoint that is required to work with
     /// the Identity API of the appropriate version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityEndpoint")]
     pub identity_endpoint: Option<String>,
     /// Password for the Identity V2 and V3 APIs. Consult with your provider's
     /// control panel to discover your account's preferred method of authentication.
@@ -3048,11 +2795,7 @@ pub struct VMScrapeConfigOpenstackSdConfigs {
     /// Some providers allow you to specify a ProjectName instead of the ProjectId.
     /// Some require both. Your provider's authentication policies will determine
     /// how these fields influence authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectName")]
     pub project_name: Option<String>,
     /// The OpenStack Region.
     pub region: String,
@@ -3151,11 +2894,7 @@ pub struct VMScrapeConfigOpenstackSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -3164,11 +2903,7 @@ pub struct VMScrapeConfigOpenstackSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigOpenstackSdConfigsTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -3313,39 +3048,23 @@ pub struct VMScrapeConfigRelabelConfigs {
     /// The source labels select values from existing labels. Their content is concatenated
     /// using the configured separator and matched against the configured regular expression
     /// for the replace, keep, and drop actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
     /// if set  both sourceLabels and source_labels, sourceLabels has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source_labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
     /// if set  both targetLabel and target_label, targetLabel has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target_label"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
@@ -3386,11 +3105,7 @@ pub struct VMScrapeConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -3399,11 +3114,7 @@ pub struct VMScrapeConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -3650,11 +3361,7 @@ pub struct VMScrapeConfigVmScrapeParamsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -3663,11 +3370,7 @@ pub struct VMScrapeConfigVmScrapeParamsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMScrapeConfigVmScrapeParamsProxyClientConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -3782,13 +3485,10 @@ pub struct VMScrapeConfigVmScrapeParamsProxyClientConfigTlsConfigKeySecret {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigStatus {
     /// LastSyncError contains error message for unsuccessful config generation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
     pub last_sync_error: Option<String>,
     /// Status defines update status of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

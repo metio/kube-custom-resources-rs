@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -22,3 +22,4 @@ pub struct EgressEndpointSliceEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<String>,
 }
+

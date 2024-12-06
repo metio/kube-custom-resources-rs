@@ -4,28 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// spec is the desired state of the ReplicationSource, including the
 /// replication method to use and its configuration.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "volsync.backube",
-    version = "v1alpha1",
-    kind = "ReplicationSource",
-    plural = "replicationsources"
-)]
+#[kube(group = "volsync.backube", version = "v1alpha1", kind = "ReplicationSource", plural = "replicationsources")]
 #[kube(namespaced)]
 #[kube(status = "ReplicationSourceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ReplicationSourceSpec {
     /// external defines the configuration when using an external replication
     /// provider.
@@ -77,106 +72,58 @@ pub struct ReplicationSourceExternal {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationSourceRclone {
     /// accessModes can be used to override the accessModes of the PiT image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// capacity can be used to override the capacity of the PiT image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<IntOrString>,
     /// copyMethod describes how a point-in-time (PiT) image of the source volume
     /// should be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "copyMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "copyMethod")]
     pub copy_method: Option<ReplicationSourceRcloneCopyMethod>,
     /// customCA is a custom CA that will be used to verify the remote
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customCA")]
     pub custom_ca: Option<ReplicationSourceRcloneCustomCa>,
     /// MoverAffinity allows specifying the PodAffinity that will be used by the data mover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverAffinity")]
     pub mover_affinity: Option<ReplicationSourceRcloneMoverAffinity>,
     /// Labels that should be added to data mover pods
     /// These will be in addition to any labels that VolSync may add
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverPodLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverPodLabels")]
     pub mover_pod_labels: Option<BTreeMap<String, String>>,
     /// Resources represents compute resources required by the data mover container.
     /// Immutable.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     /// This should only be used by advanced users as this can result in a mover
     /// pod being unschedulable or crashing due to limited resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverResources")]
     pub mover_resources: Option<ReplicationSourceRcloneMoverResources>,
     /// MoverSecurityContext allows specifying the PodSecurityContext that will
     /// be used by the data mover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverSecurityContext")]
     pub mover_security_context: Option<ReplicationSourceRcloneMoverSecurityContext>,
     /// MoverServiceAccount allows specifying the name of the service account
     /// that will be used by the data mover. This should only be used by advanced
     /// users who want to override the service account normally used by the mover.
     /// The service account needs to exist in the same namespace as this CR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverServiceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverServiceAccount")]
     pub mover_service_account: Option<String>,
     /// RcloneConfig is the rclone secret name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rcloneConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rcloneConfig")]
     pub rclone_config: Option<String>,
     /// RcloneConfigSection is the section in rclone_config file to use for the current job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rcloneConfigSection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rcloneConfigSection")]
     pub rclone_config_section: Option<String>,
     /// RcloneDestPath is the remote path to sync to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rcloneDestPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rcloneDestPath")]
     pub rclone_dest_path: Option<String>,
     /// storageClassName can be used to override the StorageClass of the PiT
     /// image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeSnapshotClassName can be used to specify the VSC to be used if
     /// copyMethod is Snapshot. If not set, the default VSC is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClassName")]
     pub volume_snapshot_class_name: Option<String>,
 }
 
@@ -194,22 +141,14 @@ pub enum ReplicationSourceRcloneCopyMethod {
 pub struct ReplicationSourceRcloneCustomCa {
     /// The name of a ConfigMap that contains the custom CA certificate
     /// If ConfigMapName is used then SecretName should not be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
     /// The key within the Secret or ConfigMap containing the CA certificate
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of a Secret that contains the custom CA certificate
     /// If SecretName is used then ConfigMapName should not be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -217,25 +156,13 @@ pub struct ReplicationSourceRcloneCustomCa {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationSourceRcloneMoverAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<ReplicationSourceRcloneMoverAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<ReplicationSourceRcloneMoverAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ReplicationSourceRcloneMoverAffinityPodAntiAffinity>,
 }
 
@@ -286,8 +213,7 @@ pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityPreferredDuringSchedu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -305,8 +231,7 @@ pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityPreferredDuringSchedu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -349,8 +274,7 @@ pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityRequiredDuringSchedul
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -368,8 +292,7 @@ pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityRequiredDuringSchedul
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ReplicationSourceRcloneMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -488,8 +411,7 @@ pub struct ReplicationSourceRcloneMoverAffinityPodAffinityPreferredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceRcloneMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -523,8 +445,7 @@ pub struct ReplicationSourceRcloneMoverAffinityPodAffinityPreferredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceRcloneMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -611,8 +532,7 @@ pub struct ReplicationSourceRcloneMoverAffinityPodAffinityRequiredDuringScheduli
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceRcloneMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -646,8 +566,7 @@ pub struct ReplicationSourceRcloneMoverAffinityPodAffinityRequiredDuringScheduli
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceRcloneMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -765,8 +684,7 @@ pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityPreferredDuringSch
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -800,8 +718,7 @@ pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityPreferredDuringSch
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -888,8 +805,7 @@ pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityRequiredDuringSche
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -923,8 +839,7 @@ pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityRequiredDuringSche
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -947,10 +862,10 @@ pub struct ReplicationSourceRcloneMoverAffinityPodAntiAffinityRequiredDuringSche
 pub struct ReplicationSourceRcloneMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ReplicationSourceRcloneMoverResourcesClaims>>,
@@ -986,20 +901,16 @@ pub struct ReplicationSourceRcloneMoverResourcesClaims {
 pub struct ReplicationSourceRcloneMoverSecurityContext {
     /// appArmorProfile is the AppArmor options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<ReplicationSourceRcloneMoverSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -1011,11 +922,7 @@ pub struct ReplicationSourceRcloneMoverSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -1023,11 +930,7 @@ pub struct ReplicationSourceRcloneMoverSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -1035,11 +938,7 @@ pub struct ReplicationSourceRcloneMoverSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -1055,19 +954,11 @@ pub struct ReplicationSourceRcloneMoverSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ReplicationSourceRcloneMoverSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ReplicationSourceRcloneMoverSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in
     /// addition to the container's primary GID and fsGroup (if specified).  If
@@ -1078,22 +969,14 @@ pub struct ReplicationSourceRcloneMoverSecurityContext {
     /// defined in the container image may still be used, depending on the
     /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Defines how supplemental groups of the first container processes are calculated.
     /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
     /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
     /// and the container runtime must implement support for this feature.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroupsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
     pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -1104,11 +987,7 @@ pub struct ReplicationSourceRcloneMoverSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ReplicationSourceRcloneMoverSecurityContextWindowsOptions>,
 }
 
@@ -1120,11 +999,7 @@ pub struct ReplicationSourceRcloneMoverSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -1165,15 +1040,11 @@ pub struct ReplicationSourceRcloneMoverSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1199,38 +1070,22 @@ pub struct ReplicationSourceRcloneMoverSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1238,98 +1093,54 @@ pub struct ReplicationSourceRcloneMoverSecurityContextWindowsOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationSourceRestic {
     /// accessModes can be used to override the accessModes of the PiT image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// CacheAccessModes can be used to set the accessModes of restic metadata cache volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheAccessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheAccessModes")]
     pub cache_access_modes: Option<Vec<String>>,
     /// cacheCapacity can be used to set the size of the restic metadata cache volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheCapacity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheCapacity")]
     pub cache_capacity: Option<IntOrString>,
     /// cacheStorageClassName can be used to set the StorageClass of the restic
     /// metadata cache volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheStorageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheStorageClassName")]
     pub cache_storage_class_name: Option<String>,
     /// capacity can be used to override the capacity of the PiT image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<IntOrString>,
     /// copyMethod describes how a point-in-time (PiT) image of the source volume
     /// should be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "copyMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "copyMethod")]
     pub copy_method: Option<ReplicationSourceResticCopyMethod>,
     /// customCA is a custom CA that will be used to verify the remote
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customCA")]
     pub custom_ca: Option<ReplicationSourceResticCustomCa>,
     /// MoverAffinity allows specifying the PodAffinity that will be used by the data mover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverAffinity")]
     pub mover_affinity: Option<ReplicationSourceResticMoverAffinity>,
     /// Labels that should be added to data mover pods
     /// These will be in addition to any labels that VolSync may add
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverPodLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverPodLabels")]
     pub mover_pod_labels: Option<BTreeMap<String, String>>,
     /// Resources represents compute resources required by the data mover container.
     /// Immutable.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     /// This should only be used by advanced users as this can result in a mover
     /// pod being unschedulable or crashing due to limited resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverResources")]
     pub mover_resources: Option<ReplicationSourceResticMoverResources>,
     /// MoverSecurityContext allows specifying the PodSecurityContext that will
     /// be used by the data mover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverSecurityContext")]
     pub mover_security_context: Option<ReplicationSourceResticMoverSecurityContext>,
     /// MoverServiceAccount allows specifying the name of the service account
     /// that will be used by the data mover. This should only be used by advanced
     /// users who want to override the service account normally used by the mover.
     /// The service account needs to exist in the same namespace as this CR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverServiceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverServiceAccount")]
     pub mover_service_account: Option<String>,
     /// PruneIntervalDays define how often to prune the repository
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pruneIntervalDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pruneIntervalDays")]
     pub prune_interval_days: Option<i32>,
     /// Repository is the secret name containing repository info
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1339,11 +1150,7 @@ pub struct ReplicationSourceRestic {
     pub retain: Option<ReplicationSourceResticRetain>,
     /// storageClassName can be used to override the StorageClass of the PiT
     /// image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// unlock is a string value that schedules an unlock on the restic repository during
     /// the next sync operation.
@@ -1357,11 +1164,7 @@ pub struct ReplicationSourceRestic {
     pub unlock: Option<String>,
     /// volumeSnapshotClassName can be used to specify the VSC to be used if
     /// copyMethod is Snapshot. If not set, the default VSC is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClassName")]
     pub volume_snapshot_class_name: Option<String>,
 }
 
@@ -1379,22 +1182,14 @@ pub enum ReplicationSourceResticCopyMethod {
 pub struct ReplicationSourceResticCustomCa {
     /// The name of a ConfigMap that contains the custom CA certificate
     /// If ConfigMapName is used then SecretName should not be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
     /// The key within the Secret or ConfigMap containing the CA certificate
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// The name of a Secret that contains the custom CA certificate
     /// If SecretName is used then ConfigMapName should not be set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -1402,25 +1197,13 @@ pub struct ReplicationSourceResticCustomCa {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationSourceResticMoverAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<ReplicationSourceResticMoverAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<ReplicationSourceResticMoverAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ReplicationSourceResticMoverAffinityPodAntiAffinity>,
 }
 
@@ -1471,8 +1254,7 @@ pub struct ReplicationSourceResticMoverAffinityNodeAffinityPreferredDuringSchedu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ReplicationSourceResticMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1490,8 +1272,7 @@ pub struct ReplicationSourceResticMoverAffinityNodeAffinityPreferredDuringSchedu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ReplicationSourceResticMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1534,8 +1315,7 @@ pub struct ReplicationSourceResticMoverAffinityNodeAffinityRequiredDuringSchedul
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ReplicationSourceResticMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1553,8 +1333,7 @@ pub struct ReplicationSourceResticMoverAffinityNodeAffinityRequiredDuringSchedul
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ReplicationSourceResticMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1673,8 +1452,7 @@ pub struct ReplicationSourceResticMoverAffinityPodAffinityPreferredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceResticMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1708,8 +1486,7 @@ pub struct ReplicationSourceResticMoverAffinityPodAffinityPreferredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceResticMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1796,8 +1573,7 @@ pub struct ReplicationSourceResticMoverAffinityPodAffinityRequiredDuringScheduli
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceResticMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1831,8 +1607,7 @@ pub struct ReplicationSourceResticMoverAffinityPodAffinityRequiredDuringScheduli
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceResticMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1950,8 +1725,7 @@ pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityPreferredDuringSch
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1985,8 +1759,7 @@ pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityPreferredDuringSch
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2073,8 +1846,7 @@ pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityRequiredDuringSche
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2108,8 +1880,7 @@ pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityRequiredDuringSche
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2132,10 +1903,10 @@ pub struct ReplicationSourceResticMoverAffinityPodAntiAffinityRequiredDuringSche
 pub struct ReplicationSourceResticMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ReplicationSourceResticMoverResourcesClaims>>,
@@ -2171,20 +1942,16 @@ pub struct ReplicationSourceResticMoverResourcesClaims {
 pub struct ReplicationSourceResticMoverSecurityContext {
     /// appArmorProfile is the AppArmor options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<ReplicationSourceResticMoverSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -2196,11 +1963,7 @@ pub struct ReplicationSourceResticMoverSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -2208,11 +1971,7 @@ pub struct ReplicationSourceResticMoverSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -2220,11 +1979,7 @@ pub struct ReplicationSourceResticMoverSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -2240,19 +1995,11 @@ pub struct ReplicationSourceResticMoverSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ReplicationSourceResticMoverSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ReplicationSourceResticMoverSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in
     /// addition to the container's primary GID and fsGroup (if specified).  If
@@ -2263,22 +2010,14 @@ pub struct ReplicationSourceResticMoverSecurityContext {
     /// defined in the container image may still be used, depending on the
     /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Defines how supplemental groups of the first container processes are calculated.
     /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
     /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
     /// and the container runtime must implement support for this feature.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroupsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
     pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -2289,11 +2028,7 @@ pub struct ReplicationSourceResticMoverSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ReplicationSourceResticMoverSecurityContextWindowsOptions>,
 }
 
@@ -2305,11 +2040,7 @@ pub struct ReplicationSourceResticMoverSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -2350,15 +2081,11 @@ pub struct ReplicationSourceResticMoverSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -2384,38 +2111,22 @@ pub struct ReplicationSourceResticMoverSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -2449,11 +2160,7 @@ pub struct ReplicationSourceResticRetain {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationSourceRsync {
     /// accessModes can be used to override the accessModes of the PiT image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// address is the remote address to connect to for replication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2463,40 +2170,24 @@ pub struct ReplicationSourceRsync {
     pub capacity: Option<IntOrString>,
     /// copyMethod describes how a point-in-time (PiT) image of the source volume
     /// should be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "copyMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "copyMethod")]
     pub copy_method: Option<ReplicationSourceRsyncCopyMethod>,
     /// Labels that should be added to data mover pods
     /// These will be in addition to any labels that VolSync may add
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverPodLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverPodLabels")]
     pub mover_pod_labels: Option<BTreeMap<String, String>>,
     /// Resources represents compute resources required by the data mover container.
     /// Immutable.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     /// This should only be used by advanced users as this can result in a mover
     /// pod being unschedulable or crashing due to limited resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverResources")]
     pub mover_resources: Option<ReplicationSourceRsyncMoverResources>,
     /// MoverServiceAccount allows specifying the name of the service account
     /// that will be used by the data mover. This should only be used by advanced
     /// users who want to override the service account normally used by the mover.
     /// The service account needs to exist in the same namespace as the ReplicationSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverServiceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverServiceAccount")]
     pub mover_service_account: Option<String>,
     /// path is the remote path to rsync to. Defaults to "/"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2506,11 +2197,7 @@ pub struct ReplicationSourceRsync {
     pub port: Option<i32>,
     /// serviceType determines the Service type that will be created for incoming
     /// SSH connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
     /// sshKeys is the name of a Secret that contains the SSH keys to be used for
     /// authentication. If not provided, the keys will be generated.
@@ -2521,19 +2208,11 @@ pub struct ReplicationSourceRsync {
     pub ssh_user: Option<String>,
     /// storageClassName can be used to override the StorageClass of the PiT
     /// image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeSnapshotClassName can be used to specify the VSC to be used if
     /// copyMethod is Snapshot. If not set, the default VSC is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClassName")]
     pub volume_snapshot_class_name: Option<String>,
 }
 
@@ -2555,10 +2234,10 @@ pub enum ReplicationSourceRsyncCopyMethod {
 pub struct ReplicationSourceRsyncMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ReplicationSourceRsyncMoverResourcesClaims>>,
@@ -2592,11 +2271,7 @@ pub struct ReplicationSourceRsyncMoverResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationSourceRsyncTls {
     /// accessModes can be used to override the accessModes of the PiT image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// address is the remote address to connect to for replication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2606,78 +2281,46 @@ pub struct ReplicationSourceRsyncTls {
     pub capacity: Option<IntOrString>,
     /// copyMethod describes how a point-in-time (PiT) image of the source volume
     /// should be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "copyMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "copyMethod")]
     pub copy_method: Option<ReplicationSourceRsyncTlsCopyMethod>,
     /// keySecret is the name of a Secret that contains the TLS pre-shared key to
     /// be used for authentication. If not provided, the key will be generated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<String>,
     /// MoverAffinity allows specifying the PodAffinity that will be used by the data mover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverAffinity")]
     pub mover_affinity: Option<ReplicationSourceRsyncTlsMoverAffinity>,
     /// Labels that should be added to data mover pods
     /// These will be in addition to any labels that VolSync may add
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverPodLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverPodLabels")]
     pub mover_pod_labels: Option<BTreeMap<String, String>>,
     /// Resources represents compute resources required by the data mover container.
     /// Immutable.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     /// This should only be used by advanced users as this can result in a mover
     /// pod being unschedulable or crashing due to limited resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverResources")]
     pub mover_resources: Option<ReplicationSourceRsyncTlsMoverResources>,
     /// MoverSecurityContext allows specifying the PodSecurityContext that will
     /// be used by the data mover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverSecurityContext")]
     pub mover_security_context: Option<ReplicationSourceRsyncTlsMoverSecurityContext>,
     /// MoverServiceAccount allows specifying the name of the service account
     /// that will be used by the data mover. This should only be used by advanced
     /// users who want to override the service account normally used by the mover.
     /// The service account needs to exist in the same namespace as this CR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverServiceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverServiceAccount")]
     pub mover_service_account: Option<String>,
     /// port is the port to connect to for replication. Defaults to 8000.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// storageClassName can be used to override the StorageClass of the PiT
     /// image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeSnapshotClassName can be used to specify the VSC to be used if
     /// copyMethod is Snapshot. If not set, the default VSC is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClassName")]
     pub volume_snapshot_class_name: Option<String>,
 }
 
@@ -2694,25 +2337,13 @@ pub enum ReplicationSourceRsyncTlsCopyMethod {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationSourceRsyncTlsMoverAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<ReplicationSourceRsyncTlsMoverAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<ReplicationSourceRsyncTlsMoverAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinity>,
 }
 
@@ -2763,8 +2394,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityPreferredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2782,8 +2412,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityPreferredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2826,8 +2455,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityRequiredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2845,8 +2473,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityRequiredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2965,8 +2592,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3000,8 +2626,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3088,8 +2713,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3123,8 +2747,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3242,8 +2865,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityPreferredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3277,8 +2899,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityPreferredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3365,8 +2986,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityRequiredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3400,8 +3020,7 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityRequiredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3424,10 +3043,10 @@ pub struct ReplicationSourceRsyncTlsMoverAffinityPodAntiAffinityRequiredDuringSc
 pub struct ReplicationSourceRsyncTlsMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ReplicationSourceRsyncTlsMoverResourcesClaims>>,
@@ -3463,20 +3082,16 @@ pub struct ReplicationSourceRsyncTlsMoverResourcesClaims {
 pub struct ReplicationSourceRsyncTlsMoverSecurityContext {
     /// appArmorProfile is the AppArmor options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<ReplicationSourceRsyncTlsMoverSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -3488,11 +3103,7 @@ pub struct ReplicationSourceRsyncTlsMoverSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -3500,11 +3111,7 @@ pub struct ReplicationSourceRsyncTlsMoverSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -3512,11 +3119,7 @@ pub struct ReplicationSourceRsyncTlsMoverSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -3532,19 +3135,11 @@ pub struct ReplicationSourceRsyncTlsMoverSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ReplicationSourceRsyncTlsMoverSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ReplicationSourceRsyncTlsMoverSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in
     /// addition to the container's primary GID and fsGroup (if specified).  If
@@ -3555,22 +3150,14 @@ pub struct ReplicationSourceRsyncTlsMoverSecurityContext {
     /// defined in the container image may still be used, depending on the
     /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Defines how supplemental groups of the first container processes are calculated.
     /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
     /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
     /// and the container runtime must implement support for this feature.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroupsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
     pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -3581,11 +3168,7 @@ pub struct ReplicationSourceRsyncTlsMoverSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ReplicationSourceRsyncTlsMoverSecurityContextWindowsOptions>,
 }
 
@@ -3597,11 +3180,7 @@ pub struct ReplicationSourceRsyncTlsMoverSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -3642,15 +3221,11 @@ pub struct ReplicationSourceRsyncTlsMoverSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3676,38 +3251,22 @@ pub struct ReplicationSourceRsyncTlsMoverSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3715,79 +3274,43 @@ pub struct ReplicationSourceRsyncTlsMoverSecurityContextWindowsOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationSourceSyncthing {
     /// Used to set the accessModes of Syncthing config volume.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configAccessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configAccessModes")]
     pub config_access_modes: Option<Vec<String>>,
     /// Used to set the size of the Syncthing config volume.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configCapacity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configCapacity")]
     pub config_capacity: Option<IntOrString>,
     /// Used to set the StorageClass of the Syncthing config volume.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configStorageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configStorageClassName")]
     pub config_storage_class_name: Option<String>,
     /// MoverAffinity allows specifying the PodAffinity that will be used by the data mover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverAffinity")]
     pub mover_affinity: Option<ReplicationSourceSyncthingMoverAffinity>,
     /// Labels that should be added to data mover pods
     /// These will be in addition to any labels that VolSync may add
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverPodLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverPodLabels")]
     pub mover_pod_labels: Option<BTreeMap<String, String>>,
     /// Resources represents compute resources required by the data mover container.
     /// Immutable.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     /// This should only be used by advanced users as this can result in a mover
     /// pod being unschedulable or crashing due to limited resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverResources")]
     pub mover_resources: Option<ReplicationSourceSyncthingMoverResources>,
     /// MoverSecurityContext allows specifying the PodSecurityContext that will
     /// be used by the data mover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverSecurityContext")]
     pub mover_security_context: Option<ReplicationSourceSyncthingMoverSecurityContext>,
     /// MoverServiceAccount allows specifying the name of the service account
     /// that will be used by the data mover. This should only be used by advanced
     /// users who want to override the service account normally used by the mover.
     /// The service account needs to exist in the same namespace as this CR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moverServiceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverServiceAccount")]
     pub mover_service_account: Option<String>,
     /// List of Syncthing peers to be connected for syncing
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peers: Option<Vec<ReplicationSourceSyncthingPeers>>,
     /// Type of service to be used when exposing the Syncthing peer
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
 }
 
@@ -3795,25 +3318,13 @@ pub struct ReplicationSourceSyncthing {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationSourceSyncthingMoverAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<ReplicationSourceSyncthingMoverAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<ReplicationSourceSyncthingMoverAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ReplicationSourceSyncthingMoverAffinityPodAntiAffinity>,
 }
 
@@ -3864,8 +3375,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityPreferredDuringSch
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3883,8 +3393,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityPreferredDuringSch
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3927,8 +3436,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityRequiredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3946,8 +3454,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityRequiredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ReplicationSourceSyncthingMoverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4066,8 +3573,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityPreferredDuringSche
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4101,8 +3607,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityPreferredDuringSche
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4189,8 +3694,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityRequiredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4224,8 +3728,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityRequiredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceSyncthingMoverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4343,8 +3846,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityPreferredDuring
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4378,8 +3880,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityPreferredDuring
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4466,8 +3967,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityRequiredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4501,8 +4001,7 @@ pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityRequiredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4525,10 +4024,10 @@ pub struct ReplicationSourceSyncthingMoverAffinityPodAntiAffinityRequiredDuringS
 pub struct ReplicationSourceSyncthingMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ReplicationSourceSyncthingMoverResourcesClaims>>,
@@ -4564,20 +4063,16 @@ pub struct ReplicationSourceSyncthingMoverResourcesClaims {
 pub struct ReplicationSourceSyncthingMoverSecurityContext {
     /// appArmorProfile is the AppArmor options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<ReplicationSourceSyncthingMoverSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -4589,11 +4084,7 @@ pub struct ReplicationSourceSyncthingMoverSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -4601,11 +4092,7 @@ pub struct ReplicationSourceSyncthingMoverSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -4613,11 +4100,7 @@ pub struct ReplicationSourceSyncthingMoverSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -4633,19 +4116,11 @@ pub struct ReplicationSourceSyncthingMoverSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ReplicationSourceSyncthingMoverSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ReplicationSourceSyncthingMoverSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in
     /// addition to the container's primary GID and fsGroup (if specified).  If
@@ -4656,22 +4131,14 @@ pub struct ReplicationSourceSyncthingMoverSecurityContext {
     /// defined in the container image may still be used, depending on the
     /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Defines how supplemental groups of the first container processes are calculated.
     /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
     /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
     /// and the container runtime must implement support for this feature.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroupsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
     pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -4682,11 +4149,7 @@ pub struct ReplicationSourceSyncthingMoverSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ReplicationSourceSyncthingMoverSecurityContextWindowsOptions>,
 }
 
@@ -4698,11 +4161,7 @@ pub struct ReplicationSourceSyncthingMoverSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -4743,15 +4202,11 @@ pub struct ReplicationSourceSyncthingMoverSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -4777,38 +4232,22 @@ pub struct ReplicationSourceSyncthingMoverSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -4863,48 +4302,24 @@ pub struct ReplicationSourceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub external: Option<BTreeMap<String, String>>,
     /// lastManualSync is set to the last spec.trigger.manual when the manual sync is done.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastManualSync"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastManualSync")]
     pub last_manual_sync: Option<String>,
     /// lastSyncDuration is the amount of time required to send the most recent
     /// update.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncDuration")]
     pub last_sync_duration: Option<String>,
     /// lastSyncStartTime is the time the most recent synchronization started.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncStartTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncStartTime")]
     pub last_sync_start_time: Option<String>,
     /// lastSyncTime is the time of the most recent successful synchronization.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncTime")]
     pub last_sync_time: Option<String>,
     /// Logs/Summary from latest mover job
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latestMoverStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestMoverStatus")]
     pub latest_mover_status: Option<ReplicationSourceStatusLatestMoverStatus>,
     /// nextSyncTime is the time when the next volume synchronization is
     /// scheduled to start (for schedule-based synchronization).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nextSyncTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextSyncTime")]
     pub next_sync_time: Option<String>,
     /// restic contains status information for Restic-based replication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4933,19 +4348,11 @@ pub struct ReplicationSourceStatusLatestMoverStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationSourceStatusRestic {
     /// lastPruned in the object holding the time of last pruned
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPruned"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPruned")]
     pub last_pruned: Option<String>,
     /// lastUnlocked is set to the last spec.restic.unlock when a sync is done that unlocks the
     /// restic repository.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUnlocked"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUnlocked")]
     pub last_unlocked: Option<String>,
 }
 
@@ -5004,13 +4411,10 @@ pub struct ReplicationSourceStatusSyncthingPeers {
     /// Flag indicating whether peer is currently connected.
     pub connected: bool,
     /// The ID of the Syncthing peer that this one was introduced by.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "introducedBy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "introducedBy")]
     pub introduced_by: Option<String>,
     /// A friendly name to associate the given device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

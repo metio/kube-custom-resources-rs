@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// NodeClaimSpec describes the desired state of the NodeClaim
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "karpenter.sh",
-    version = "v1beta1",
-    kind = "NodeClaim",
-    plural = "nodeclaims"
-)]
+#[kube(group = "karpenter.sh", version = "v1beta1", kind = "NodeClaim", plural = "nodeclaims")]
 #[kube(status = "NodeClaimStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeClaimSpec {
     /// Kubelet defines args to be used when configuring kubelet on provisioned nodes.
     /// They are a subset of the upstream types, recognizing not all options may be supported.
@@ -42,11 +37,7 @@ pub struct NodeClaimSpec {
     /// within a short period of time, typically by a DaemonSet that tolerates the taint. These are commonly used by
     /// daemonsets to allow initialization and enforce startup ordering.  StartupTaints are ignored for provisioning
     /// purposes in that pods are not required to tolerate a StartupTaint in order to have nodes provisioned for them.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupTaints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupTaints")]
     pub startup_taints: Option<Vec<NodeClaimStartupTaints>>,
     /// Taints will be applied to the NodeClaim's node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,75 +51,39 @@ pub struct NodeClaimSpec {
 pub struct NodeClaimKubelet {
     /// clusterDNS is a list of IP addresses for the cluster DNS server.
     /// Note that not all providers may use all addresses.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterDNS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDNS")]
     pub cluster_dns: Option<Vec<String>>,
     /// CPUCFSQuota enables CPU CFS quota enforcement for containers that specify CPU limits.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuCFSQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuCFSQuota")]
     pub cpu_cfs_quota: Option<bool>,
     /// EvictionHard is the map of signal names to quantities that define hard eviction thresholds
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionHard"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionHard")]
     pub eviction_hard: Option<BTreeMap<String, String>>,
     /// EvictionMaxPodGracePeriod is the maximum allowed grace period (in seconds) to use when terminating pods in
     /// response to soft eviction thresholds being met.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionMaxPodGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionMaxPodGracePeriod")]
     pub eviction_max_pod_grace_period: Option<i32>,
     /// EvictionSoft is the map of signal names to quantities that define soft eviction thresholds
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionSoft"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionSoft")]
     pub eviction_soft: Option<BTreeMap<String, String>>,
     /// EvictionSoftGracePeriod is the map of signal names to quantities that define grace periods for each eviction signal
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionSoftGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionSoftGracePeriod")]
     pub eviction_soft_grace_period: Option<BTreeMap<String, String>>,
     /// ImageGCHighThresholdPercent is the percent of disk usage after which image
     /// garbage collection is always run. The percent is calculated by dividing this
     /// field value by 100, so this field must be between 0 and 100, inclusive.
     /// When specified, the value must be greater than ImageGCLowThresholdPercent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageGCHighThresholdPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageGCHighThresholdPercent")]
     pub image_gc_high_threshold_percent: Option<i32>,
     /// ImageGCLowThresholdPercent is the percent of disk usage before which image
     /// garbage collection is never run. Lowest disk usage to garbage collect to.
     /// The percent is calculated by dividing this field value by 100,
     /// so the field value must be between 0 and 100, inclusive.
     /// When specified, the value must be less than imageGCHighThresholdPercent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageGCLowThresholdPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageGCLowThresholdPercent")]
     pub image_gc_low_threshold_percent: Option<i32>,
     /// KubeReserved contains resources reserved for Kubernetes system components.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeReserved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeReserved")]
     pub kube_reserved: Option<BTreeMap<String, String>>,
     /// MaxPods is an override for the maximum number of pods that can run on
     /// a worker node instance.
@@ -137,18 +92,10 @@ pub struct NodeClaimKubelet {
     /// PodsPerCore is an override for the number of pods that can run on a worker node
     /// instance based on the number of cpu cores. This value cannot exceed MaxPods, so, if
     /// MaxPods is a lower value, that value will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podsPerCore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podsPerCore")]
     pub pods_per_core: Option<i32>,
     /// SystemReserved contains resources reserved for OS system daemons and kernel memory.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemReserved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemReserved")]
     pub system_reserved: Option<BTreeMap<String, String>>,
 }
 
@@ -156,11 +103,7 @@ pub struct NodeClaimKubelet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeClaimNodeClassRef {
     /// API version of the referent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -286,10 +229,7 @@ pub struct NodeClaimStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
     /// ProviderID of the corresponding node object
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
 }
+

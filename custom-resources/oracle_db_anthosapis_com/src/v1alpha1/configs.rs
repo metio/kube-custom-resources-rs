@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// ConfigSpec defines the desired state of Config.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "oracle.db.anthosapis.com",
-    version = "v1alpha1",
-    kind = "Config",
-    plural = "configs"
-)]
+#[kube(group = "oracle.db.anthosapis.com", version = "v1alpha1", kind = "Config", plural = "configs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ConfigSpec {
     /// Disks slice describes at minimum two disks: data and log (archive log), and optionally a backup disk.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disks: Option<Vec<ConfigDisks>>,
     /// HostAntiAffinityNamespaces is an optional list of namespaces that need to be included in anti-affinity by hostname rule. The effect of the rule is forbidding scheduling a database pod in the current namespace on a host that already runs a database pod in any of the listed namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAntiAffinityNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAntiAffinityNamespaces")]
     pub host_anti_affinity_namespaces: Option<Vec<String>>,
     /// Service agent and other data plane agent images. This is an optional map that allows a customer to specify agent images different from those chosen/provided by the operator by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -44,18 +35,10 @@ pub struct ConfigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platform: Option<ConfigPlatform>,
     /// Storage class to use for dynamic provisioning. This value varies depending on a platform. For GCP (the default), it is "standard-rwo".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
     /// Volume Snapshot class to use for storage snapshots. This value varies from platform to platform. For GCP (the default), it is "csi-gce-pd-snapshot-class".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClass")]
     pub volume_snapshot_class: Option<String>,
 }
 
@@ -63,11 +46,7 @@ pub struct ConfigSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigDisks {
     /// AccessModes contains the desired access modes the volume should have.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// A map of string keys and values to be stored in the annotations of the PVC. These can be read and write by external tools through Kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -81,18 +60,10 @@ pub struct ConfigDisks {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<IntOrString>,
     /// StorageClass points to a particular CSI driver and is used for disk provisioning.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
     /// VolumeName is the binding reference to the PersistentVolume tied to this disk.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -100,18 +71,10 @@ pub struct ConfigDisks {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigDisksSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ConfigDisksSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -139,4 +102,6 @@ pub enum ConfigPlatform {
 
 /// ConfigStatus defines the observed state of Config.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigStatus {}
+pub struct ConfigStatus {
+}
+

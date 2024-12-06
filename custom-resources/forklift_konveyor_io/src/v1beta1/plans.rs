@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// PlanSpec defines the desired state of Plan.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "forklift.konveyor.io",
-    version = "v1beta1",
-    kind = "Plan",
-    plural = "plans"
-)]
+#[kube(group = "forklift.konveyor.io", version = "v1beta1", kind = "Plan", plural = "plans")]
 #[kube(namespaced)]
 #[kube(status = "PlanStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PlanSpec {
     /// Whether this plan should be archived.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -35,18 +30,10 @@ pub struct PlanSpec {
     /// Resource mapping.
     pub map: PlanMap,
     /// Preserve the CPU model and flags the VM runs with in its oVirt cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preserveClusterCpuModel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveClusterCpuModel")]
     pub preserve_cluster_cpu_model: Option<bool>,
     /// Preserve static IPs of VMs in vSphere
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preserveStaticIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveStaticIPs")]
     pub preserve_static_i_ps: Option<bool>,
     /// Providers.
     pub provider: PlanProvider,
@@ -54,11 +41,7 @@ pub struct PlanSpec {
     #[serde(rename = "targetNamespace")]
     pub target_namespace: String,
     /// The network attachment definition that should be used for disk transfer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transferNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transferNetwork")]
     pub transfer_network: Option<ObjectReference>,
     /// List of VMs.
     pub vms: Vec<PlanVms>,
@@ -80,11 +63,7 @@ pub struct PlanMap {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanMapNetwork {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -110,11 +89,7 @@ pub struct PlanMapNetwork {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -126,11 +101,7 @@ pub struct PlanMapNetwork {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanMapStorage {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -156,11 +127,7 @@ pub struct PlanMapStorage {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -181,11 +148,7 @@ pub struct PlanProvider {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanProviderDestination {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -211,11 +174,7 @@ pub struct PlanProviderDestination {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -227,11 +186,7 @@ pub struct PlanProviderDestination {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanProviderSource {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -257,11 +212,7 @@ pub struct PlanProviderSource {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -273,11 +224,7 @@ pub struct PlanProviderSource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanTransferNetwork {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -303,11 +250,7 @@ pub struct PlanTransferNetwork {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -327,11 +270,7 @@ pub struct PlanVms {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Selected InstanceType that will override the VM properties.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     /// Disk decryption LUKS keys
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -366,11 +305,7 @@ pub struct PlanVmsHooks {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanVmsHooksHook {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -396,11 +331,7 @@ pub struct PlanVmsHooksHook {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -412,11 +343,7 @@ pub struct PlanVmsHooksHook {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanVmsLuks {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -442,11 +369,7 @@ pub struct PlanVmsLuks {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -464,11 +387,7 @@ pub struct PlanStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub migration: Option<PlanStatusMigration>,
     /// The most recent generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
 
@@ -619,11 +538,7 @@ pub struct PlanStatusMigrationVms {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Selected InstanceType that will override the VM properties.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     /// Disk decryption LUKS keys
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -641,22 +556,14 @@ pub struct PlanStatusMigrationVms {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "newName")]
     pub new_name: Option<String>,
     /// The Operating System detected by virt-v2v.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatingSystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatingSystem")]
     pub operating_system: Option<String>,
     /// Phase
     pub phase: String,
     /// Migration pipeline.
     pub pipeline: Vec<PlanStatusMigrationVmsPipeline>,
     /// Source VM power state before migration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restorePowerState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restorePowerState")]
     pub restore_power_state: Option<String>,
     /// Choose the primary disk the VM boots from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootDisk")]
@@ -692,11 +599,7 @@ pub struct PlanStatusMigrationVmsHooks {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanStatusMigrationVmsHooksHook {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -722,11 +625,7 @@ pub struct PlanStatusMigrationVmsHooksHook {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -738,11 +637,7 @@ pub struct PlanStatusMigrationVmsHooksHook {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanStatusMigrationVmsLuks {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -768,11 +663,7 @@ pub struct PlanStatusMigrationVmsLuks {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -881,11 +772,7 @@ pub struct PlanStatusMigrationVmsWarm {
     #[serde(rename = "consecutiveFailures")]
     pub consecutive_failures: i64,
     pub failures: i64,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nextPrecopyAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextPrecopyAt")]
     pub next_precopy_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub precopies: Option<Vec<PlanStatusMigrationVmsWarmPrecopies>>,
@@ -902,3 +789,4 @@ pub struct PlanStatusMigrationVmsWarmPrecopies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
 }
+

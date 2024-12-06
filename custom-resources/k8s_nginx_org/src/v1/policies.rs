@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -13,24 +13,15 @@ use self::prelude::*;
 /// The spec includes multiple fields, where each field represents a different policy.
 /// Only one policy (field) is allowed.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.nginx.org",
-    version = "v1",
-    kind = "Policy",
-    plural = "policies"
-)]
+#[kube(group = "k8s.nginx.org", version = "v1", kind = "Policy", plural = "policies")]
 #[kube(namespaced)]
 #[kube(status = "PolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PolicySpec {
     /// AccessControl defines an access policy based on the source IP of a request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessControl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessControl")]
     pub access_control: Option<PolicyAccessControl>,
     /// APIKey defines an API Key policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
@@ -39,24 +30,12 @@ pub struct PolicySpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PolicyBasicAuth>,
     /// EgressMTLS defines an Egress MTLS policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressMTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressMTLS")]
     pub egress_mtls: Option<PolicyEgressMtls>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// IngressMTLS defines an Ingress MTLS policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressMTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressMTLS")]
     pub ingress_mtls: Option<PolicyIngressMtls>,
     /// JWTAuth holds JWT authentication configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -84,18 +63,10 @@ pub struct PolicyAccessControl {
 /// APIKey defines an API Key policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyApiKey {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<String>,
     /// SuppliedIn defines the locations API Key should be supplied in.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "suppliedIn"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suppliedIn")]
     pub supplied_in: Option<PolicyApiKeySuppliedIn>,
 }
 
@@ -124,68 +95,32 @@ pub struct PolicyEgressMtls {
     pub ciphers: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocols: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionReuse"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionReuse")]
     pub session_reuse: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslName")]
     pub ssl_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecret")]
     pub tls_secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedCertSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedCertSecret")]
     pub trusted_cert_secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyDepth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDepth")]
     pub verify_depth: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyServer")]
     pub verify_server: Option<bool>,
 }
 
 /// IngressMTLS defines an Ingress MTLS policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyIngressMtls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertSecret")]
     pub client_cert_secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "crlFileName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "crlFileName")]
     pub crl_file_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyClient"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyClient")]
     pub verify_client: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyDepth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDepth")]
     pub verify_depth: Option<i64>,
 }
 
@@ -207,65 +142,29 @@ pub struct PolicyJwt {
 /// OIDC defines an Open ID Connect policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyOidc {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTokenEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenEnable")]
     pub access_token_enable: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authEndpoint")]
     pub auth_endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authExtraArgs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authExtraArgs")]
     pub auth_extra_args: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endSessionEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endSessionEndpoint")]
     pub end_session_endpoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwksURI")]
     pub jwks_uri: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postLogoutRedirectURI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postLogoutRedirectURI")]
     pub post_logout_redirect_uri: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redirectURI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectURI")]
     pub redirect_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpoint")]
     pub token_endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "zoneSyncLeeway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zoneSyncLeeway")]
     pub zone_sync_leeway: Option<i64>,
 }
 
@@ -286,11 +185,7 @@ pub struct PolicyRateLimit {
     pub no_delay: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rejectCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rejectCode")]
     pub reject_code: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scale: Option<bool>,
@@ -308,28 +203,16 @@ pub struct PolicyWaf {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// SecurityLog defines the security log of a WAF policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityLog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityLog")]
     pub security_log: Option<PolicyWafSecurityLog>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityLogs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityLogs")]
     pub security_logs: Option<Vec<PolicyWafSecurityLogs>>,
 }
 
 /// SecurityLog defines the security log of a WAF policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyWafSecurityLog {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apLogBundle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogBundle")]
     pub ap_log_bundle: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogConf")]
     pub ap_log_conf: Option<String>,
@@ -342,11 +225,7 @@ pub struct PolicyWafSecurityLog {
 /// SecurityLog defines the security log of a WAF policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyWafSecurityLogs {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apLogBundle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogBundle")]
     pub ap_log_bundle: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogConf")]
     pub ap_log_conf: Option<String>,
@@ -366,3 +245,4 @@ pub struct PolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

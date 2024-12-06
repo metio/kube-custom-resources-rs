@@ -4,161 +4,91 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SPODStatus defines the desired state of SPOD.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "security-profiles-operator.x-k8s.io",
-    version = "v1alpha1",
-    kind = "SecurityProfilesOperatorDaemon",
-    plural = "securityprofilesoperatordaemons"
-)]
+#[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha1", kind = "SecurityProfilesOperatorDaemon", plural = "securityprofilesoperatordaemons")]
 #[kube(namespaced)]
 #[kube(status = "SecurityProfilesOperatorDaemonStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SecurityProfilesOperatorDaemonSpec {
     /// Affinity if specified, the SPOD's affinity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<SecurityProfilesOperatorDaemonAffinity>,
     /// AllowedSeccompActions if specified, a list of allowed seccomp actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedSeccompActions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedSeccompActions")]
     pub allowed_seccomp_actions: Option<Vec<String>>,
     /// AllowedSyscalls if specified, a list of system calls which are allowed
     /// in seccomp profiles.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedSyscalls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedSyscalls")]
     pub allowed_syscalls: Option<Vec<String>>,
     /// DaemonResourceRequirements if defined, overwrites the default resource requirements
     /// of SPOD daemon.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "daemonResourceRequirements"
-    )]
-    pub daemon_resource_requirements:
-        Option<SecurityProfilesOperatorDaemonDaemonResourceRequirements>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "daemonResourceRequirements")]
+    pub daemon_resource_requirements: Option<SecurityProfilesOperatorDaemonDaemonResourceRequirements>,
     /// DisableOCIArtifactSignatureVerification can be used to disable OCI
     /// artifact signature verification.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableOciArtifactSignatureVerification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableOciArtifactSignatureVerification")]
     pub disable_oci_artifact_signature_verification: Option<bool>,
     /// tells the operator whether or not to enable AppArmor support for this
     /// SPOD instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableAppArmor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableAppArmor")]
     pub enable_app_armor: Option<bool>,
     /// tells the operator whether or not to enable bpf recorder support for this
     /// SPOD instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableBpfRecorder"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableBpfRecorder")]
     pub enable_bpf_recorder: Option<bool>,
     /// tells the operator whether or not to enable log enrichment support for this
     /// SPOD instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableLogEnricher"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableLogEnricher")]
     pub enable_log_enricher: Option<bool>,
     /// EnableMemoryOptimization enables memory optimization in the controller
     /// running inside of SPOD instance and watching for pods in the cluster.
     /// This will make the controller loading in the cache memory only the pods
     /// labelled explicitly for profile recording with 'spo.x-k8s.io/enable-recording=true'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableMemoryOptimization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMemoryOptimization")]
     pub enable_memory_optimization: Option<bool>,
     /// EnableProfiling tells the operator whether or not to enable profiling
     /// support for this SPOD instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableProfiling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableProfiling")]
     pub enable_profiling: Option<bool>,
     /// tells the operator whether or not to enable SELinux support for this
     /// SPOD instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableSelinux"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableSelinux")]
     pub enable_selinux: Option<bool>,
     /// HostProcVolumePath is the path for specifying a custom host /proc
     /// volume, which is required for the log-enricher as well as bpf-recorder
     /// to retrieve the container ID for a process ID. This can be helpful for
     /// nested environments, for example when using "kind".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcVolumePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcVolumePath")]
     pub host_proc_volume_path: Option<String>,
     /// ImagePullSecrets if defined, list of references to secrets in the security-profiles-operator's
     /// namespace to use for pulling the images from SPOD pod from a private registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<SecurityProfilesOperatorDaemonImagePullSecrets>>,
     /// PriorityClassName if defined, indicates the spod pod priority class.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Defines options specific to the SELinux
     /// functionality of the SecurityProfilesOperator
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selinuxOptions")]
     pub selinux_options: Option<SecurityProfilesOperatorDaemonSelinuxOptions>,
     /// If specified, the SELinux type tag applied to the security context of SPOD.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selinuxTypeTag"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selinuxTypeTag")]
     pub selinux_type_tag: Option<String>,
     /// StaticWebhookConfig indicates whether the webhook configuration and its
     /// related resources are statically deployed. In this case, the operator will
     /// not create or update the webhook configuration and its related resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticWebhookConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticWebhookConfig")]
     pub static_webhook_config: Option<bool>,
     /// If specified, the SPOD's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -168,11 +98,7 @@ pub struct SecurityProfilesOperatorDaemonSpec {
     pub verbosity: Option<i64>,
     /// WebhookOpts set custom namespace selectors and failure mode for
     /// SPO's webhooks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webhookOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookOptions")]
     pub webhook_options: Option<Vec<SecurityProfilesOperatorDaemonWebhookOptions>>,
 }
 
@@ -180,25 +106,13 @@ pub struct SecurityProfilesOperatorDaemonSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityProfilesOperatorDaemonAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<SecurityProfilesOperatorDaemonAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<SecurityProfilesOperatorDaemonAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<SecurityProfilesOperatorDaemonAffinityPodAntiAffinity>,
 }
 
@@ -249,8 +163,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityPreferredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -268,8 +181,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityPreferredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -312,8 +224,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityRequiredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -331,8 +242,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityRequiredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct SecurityProfilesOperatorDaemonAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -451,8 +361,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -486,8 +395,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -574,8 +482,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -609,8 +516,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -728,8 +634,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityPreferredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -763,8 +668,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityPreferredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -851,8 +755,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityRequiredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -886,8 +789,7 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityRequiredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -907,12 +809,12 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityRequiredDuringSc
 pub struct SecurityProfilesOperatorDaemonDaemonResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<SecurityProfilesOperatorDaemonDaemonResourceRequirementsClaims>>,
@@ -956,11 +858,7 @@ pub struct SecurityProfilesOperatorDaemonSelinuxOptions {
     /// allowed to be inherited by workloads. Use this with care,
     /// as this might provide a lot of permissions depending on the
     /// policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedSystemProfiles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedSystemProfiles")]
     pub allowed_system_profiles: Option<Vec<String>>,
 }
 
@@ -986,11 +884,7 @@ pub struct SecurityProfilesOperatorDaemonTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1001,28 +895,16 @@ pub struct SecurityProfilesOperatorDaemonTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityProfilesOperatorDaemonWebhookOptions {
     /// FailurePolicy sets the webhook failure policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failurePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<String>,
     /// Name specifies which webhook do we configure
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// NamespaceSelector sets webhook's namespace selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<SecurityProfilesOperatorDaemonWebhookOptionsNamespaceSelector>,
     /// ObjectSelector sets webhook's object selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSelector")]
     pub object_selector: Option<SecurityProfilesOperatorDaemonWebhookOptionsObjectSelector>,
 }
 
@@ -1030,21 +912,12 @@ pub struct SecurityProfilesOperatorDaemonWebhookOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityProfilesOperatorDaemonWebhookOptionsNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<SecurityProfilesOperatorDaemonWebhookOptionsNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<SecurityProfilesOperatorDaemonWebhookOptionsNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1069,21 +942,12 @@ pub struct SecurityProfilesOperatorDaemonWebhookOptionsNamespaceSelectorMatchExp
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityProfilesOperatorDaemonWebhookOptionsObjectSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<SecurityProfilesOperatorDaemonWebhookOptionsObjectSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<SecurityProfilesOperatorDaemonWebhookOptionsObjectSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1115,3 +979,4 @@ pub struct SecurityProfilesOperatorDaemonStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

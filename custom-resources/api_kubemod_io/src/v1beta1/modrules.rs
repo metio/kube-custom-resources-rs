@@ -5,35 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ModRuleSpec defines the desired state of ModRule
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "api.kubemod.io",
-    version = "v1beta1",
-    kind = "ModRule",
-    plural = "modrules"
-)]
+#[kube(group = "api.kubemod.io", version = "v1beta1", kind = "ModRule", plural = "modrules")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct ModRuleSpec {
     /// AdmissionOperations specifies which admission hook operations this ModRule applies to. Valid values are: - "CREATE" - the rule applies to all matching resources as they are created. - "UPDATE" - the rule applies to all matching resources as they are updated. - "DELETE" - the rule applies to all matching resources as they are deleted. By default, a ModRule applies to all admission operations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "admissionOperations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionOperations")]
     pub admission_operations: Option<Vec<String>>,
     /// ExecutionTier is a value between -32767 and 32766. ExecutionTier controls when this ModRule will be executed as it relates to the other ModRules loaded in the system. ModRules are matched and executed in tiers, starting with the lowest tier. The results of executing all ModRules in a tier are passed as input to the ModRules in the next tier. This cascading execution continues until the highest tier of ModRules has been executed. ModRules in the same tier are executed in indeterminate order.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionTier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionTier")]
     pub execution_tier: Option<i64>,
     /// Match is a list of match items which consist of select queries and expected match values or regular expressions. When all match items for an object are positive, the rule is in effect.
     #[serde(rename = "match")]
@@ -42,18 +29,10 @@ pub struct ModRuleSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patch: Option<Vec<ModRulePatch>>,
     /// RejectMessage is an optional message displayed when a resource is rejected by a Reject ModRule. The field is a Golang template evaluated in the context of the object being rejected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rejectMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rejectMessage")]
     pub reject_message: Option<String>,
     /// TargetNamespaceRegex is optional and only applies to ModRules in "kubemod-system" namespace. Its usage enables cluster-wide matching of namespaced resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetNamespaceRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNamespaceRegex")]
     pub target_namespace_regex: Option<String>,
     /// Type describes the type of a ModRule. Valid values are: - "Patch" - the rule performs modifications on all the matching resources as they are created. - "Reject" - the rule rejects the creation of all matching resources.
     #[serde(rename = "type")]
@@ -67,25 +46,13 @@ pub struct ModRuleMatch {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFor")]
     pub match_for: Option<ModRuleMatchMatchFor>,
     /// MatchRegex specifies the regular expression to compare the result of Select by. The match is considered positive if at least one of the results of evaluating the select query yields a match when compared to value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchRegex")]
     pub match_regex: Option<String>,
     /// MatchValue specifies the exact value to match the result of Select by. The match is considered positive if at least one of the results of evaluating the select query yields a match when compared to matchValue.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchValue")]
     pub match_value: Option<String>,
     /// MatchValues specifies a list of values to match the result of Select by. The match is considered positive if at least one of the results of evaluating the select query yields a match when compared to any of the values in the array.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchValues")]
     pub match_values: Option<Vec<String>>,
     /// Negate indicates whether the match result should be to inverted. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -136,4 +103,6 @@ pub enum ModRuleType {
 
 /// ModRuleStatus defines the observed state of ModRule
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ModRuleStatus {}
+pub struct ModRuleStatus {
+}
+

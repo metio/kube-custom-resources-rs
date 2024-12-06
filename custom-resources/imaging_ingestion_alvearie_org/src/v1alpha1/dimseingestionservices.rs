@@ -5,100 +5,55 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DimseIngestionServiceSpec defines the desired state of DimseIngestionService
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "imaging-ingestion.alvearie.org",
-    version = "v1alpha1",
-    kind = "DimseIngestionService",
-    plural = "dimseingestionservices"
-)]
+#[kube(group = "imaging-ingestion.alvearie.org", version = "v1alpha1", kind = "DimseIngestionService", plural = "dimseingestionservices")]
 #[kube(namespaced)]
 #[kube(status = "DimseIngestionServiceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DimseIngestionServiceSpec {
     /// Application Entity Title
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationEntityTitle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationEntityTitle")]
     pub application_entity_title: Option<String>,
     /// Bucket Config Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketConfigName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketConfigName")]
     pub bucket_config_name: Option<String>,
     /// Bucket Secret Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketSecretName")]
     pub bucket_secret_name: Option<String>,
     /// DICOM Event Driven Ingestion Name
     #[serde(rename = "dicomEventDrivenIngestionName")]
     pub dicom_event_driven_ingestion_name: String,
     /// DIMSE Service Spec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dimseService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dimseService")]
     pub dimse_service: Option<DimseIngestionServiceDimseService>,
     /// Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Image Pull Secrets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<DimseIngestionServiceImagePullSecrets>>,
     /// Make NATS Connection Secure
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "natsSecure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "natsSecure")]
     pub nats_secure: Option<bool>,
     /// NATS Subject Root
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "natsSubjectRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "natsSubjectRoot")]
     pub nats_subject_root: Option<String>,
     /// NATS Token Secret Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "natsTokenSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "natsTokenSecret")]
     pub nats_token_secret: Option<String>,
     /// NATS URL
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "natsUrl")]
     pub nats_url: Option<String>,
     /// Provider Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerName")]
     pub provider_name: Option<String>,
 }
 
@@ -128,10 +83,7 @@ pub struct DimseIngestionServiceStatus {
     /// True if all resources are in a ready state and all work is done
     pub ready: bool,
     /// A map of all the secondary resources types and names created for this CR. e.g "Deployment": [ "DeploymentName1", "DeploymentName2" ]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryResources")]
     pub secondary_resources: Option<BTreeMap<String, String>>,
 }
+

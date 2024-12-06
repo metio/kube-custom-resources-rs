@@ -4,23 +4,18 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "policy.clusterpedia.io",
-    version = "v1alpha1",
-    kind = "ClusterImportPolicy",
-    plural = "clusterimportpolicies"
-)]
+#[kube(group = "policy.clusterpedia.io", version = "v1alpha1", kind = "ClusterImportPolicy", plural = "clusterimportpolicies")]
 #[kube(status = "ClusterImportPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterImportPolicySpec {
     #[serde(rename = "creationCondition")]
     pub creation_condition: String,
@@ -38,11 +33,7 @@ pub struct ClusterImportPolicyReferences {
     pub key: String,
     #[serde(rename = "nameTemplate")]
     pub name_template: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceTemplate")]
     pub namespace_template: Option<String>,
     pub resource: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -53,11 +44,7 @@ pub struct ClusterImportPolicyReferences {
 pub struct ClusterImportPolicySource {
     pub group: String,
     pub resource: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selectorTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectorTemplate")]
     pub selector_template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub versions: Option<Vec<String>>,
@@ -68,3 +55,4 @@ pub struct ClusterImportPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

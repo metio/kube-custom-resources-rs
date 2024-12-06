@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the Kuma MeshTrace resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshTrace",
-    plural = "meshtraces"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshTrace", plural = "meshtraces")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshTraceSpec {
     /// MeshTrace configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -62,11 +57,7 @@ pub struct MeshTraceDefaultBackends {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datadog: Option<MeshTraceDefaultBackendsDatadog>,
     /// OpenTelemetry backend configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openTelemetry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
     pub open_telemetry: Option<MeshTraceDefaultBackendsOpenTelemetry>,
     #[serde(rename = "type")]
     pub r#type: MeshTraceDefaultBackendsType,
@@ -83,11 +74,7 @@ pub struct MeshTraceDefaultBackendsDatadog {
     /// `backend` service that communicates with a couple of databases, you would
     /// get service names like `backend_INBOUND`, `backend_OUTBOUND_db1`, and
     /// `backend_OUTBOUND_db2` in Datadog.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "splitService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitService")]
     pub split_service: Option<bool>,
     /// Address of Datadog collector, only host and port are allowed (no paths,
     /// fragments etc.)
@@ -114,27 +101,15 @@ pub enum MeshTraceDefaultBackendsType {
 pub struct MeshTraceDefaultBackendsZipkin {
     /// Version of the API.
     /// https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/trace/v3/zipkin.proto#L66
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<MeshTraceDefaultBackendsZipkinApiVersion>,
     /// Determines whether client and server spans will share the same span
     /// context.
     /// https://github.com/envoyproxy/envoy/blob/v1.22.0/api/envoy/config/trace/v3/zipkin.proto#L63
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sharedSpanContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedSpanContext")]
     pub shared_span_context: Option<bool>,
     /// Generate 128bit traces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "traceId128bit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "traceId128bit")]
     pub trace_id128bit: Option<bool>,
     /// Address of Zipkin collector.
     pub url: String,
@@ -231,19 +206,11 @@ pub struct MeshTraceTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -266,3 +233,4 @@ pub enum MeshTraceTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
 }
+

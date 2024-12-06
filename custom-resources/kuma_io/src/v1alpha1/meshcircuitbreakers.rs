@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the Kuma MeshCircuitBreaker resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshCircuitBreaker",
-    plural = "meshcircuitbreakers"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshCircuitBreaker", plural = "meshcircuitbreakers")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshCircuitBreakerSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -58,11 +53,7 @@ pub struct MeshCircuitBreakerFromDefault {
     /// which when exceeded makes the circuit breaker to become open (no traffic
     /// is allowed like no current is allowed in the circuits when physical
     /// circuit breaker ir open)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionLimits"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionLimits")]
     pub connection_limits: Option<MeshCircuitBreakerFromDefaultConnectionLimits>,
     /// OutlierDetection contains the configuration of the process of dynamically
     /// determining whether some number of hosts in an upstream cluster are
@@ -70,11 +61,7 @@ pub struct MeshCircuitBreakerFromDefault {
     /// balancing set. Performance might be along different axes such as
     /// consecutive failures, temporal success rate, temporal latency, etc.
     /// Outlier detection is a form of passive health checking.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outlierDetection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outlierDetection")]
     pub outlier_detection: Option<MeshCircuitBreakerFromDefaultOutlierDetection>,
 }
 
@@ -87,44 +74,24 @@ pub struct MeshCircuitBreakerFromDefaultConnectionLimits {
     /// The maximum number of connection pools per cluster that are concurrently
     /// supported at once. Set this for clusters which create a large number of
     /// connection pools.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionPools"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionPools")]
     pub max_connection_pools: Option<i32>,
     /// The maximum number of connections allowed to be made to the upstream
     /// cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// The maximum number of pending requests that are allowed to the upstream
     /// cluster. This limit is applied as a connection limit for non-HTTP
     /// traffic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingRequests")]
     pub max_pending_requests: Option<i32>,
     /// The maximum number of parallel requests that are allowed to be made
     /// to the upstream cluster. This limit does not apply to non-HTTP traffic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequests")]
     pub max_requests: Option<i32>,
     /// The maximum number of parallel retries that will be allowed to
     /// the upstream cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
 }
 
@@ -139,11 +106,7 @@ pub struct MeshCircuitBreakerFromDefaultOutlierDetection {
     /// The base time that a host is ejected for. The real time is equal to
     /// the base time multiplied by the number of times the host has been
     /// ejected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseEjectionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseEjectionTime")]
     pub base_ejection_time: Option<String>,
     /// Contains configuration for supported outlier detectors
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -158,20 +121,12 @@ pub struct MeshCircuitBreakerFromDefaultOutlierDetection {
     /// The maximum % of an upstream cluster that can be ejected due to outlier
     /// detection. Defaults to 10% but will eject at least one host regardless of
     /// the value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEjectionPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEjectionPercent")]
     pub max_ejection_percent: Option<i32>,
     /// Determines whether to distinguish local origin failures from external
     /// errors. If set to true the following configuration parameters are taken
     /// into account: detectors.localOriginFailures.consecutive
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "splitExternalAndLocalErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitExternalAndLocalErrors")]
     pub split_external_and_local_errors: Option<bool>,
 }
 
@@ -192,13 +147,8 @@ pub struct MeshCircuitBreakerFromDefaultOutlierDetectionDetectors {
     /// Detection also will not be performed for a cluster if the number of hosts
     /// with the minimum required request volume in an interval is less than the
     /// outlierDetection.detectors.failurePercentage.minimumHosts value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failurePercentage"
-    )]
-    pub failure_percentage:
-        Option<MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsFailurePercentage>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePercentage")]
+    pub failure_percentage: Option<MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsFailurePercentage>,
     /// In the default mode (outlierDetection.splitExternalLocalOriginErrors is
     /// false) this detection type takes into account a subset of 5xx errors,
     /// called "gateway errors" (502, 503 or 504 status code) and local origin
@@ -207,13 +157,8 @@ pub struct MeshCircuitBreakerFromDefaultOutlierDetectionDetectors {
     /// this detection type takes into account a subset of 5xx errors, called
     /// "gateway errors" (502, 503 or 504 status code) and is supported only by
     /// the http router.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayFailures"
-    )]
-    pub gateway_failures:
-        Option<MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsGatewayFailures>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayFailures")]
+    pub gateway_failures: Option<MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsGatewayFailures>,
     /// This detection type is enabled only when
     /// outlierDetection.splitExternalLocalOriginErrors is true and takes into
     /// account only locally originated errors (timeout, reset, etc).
@@ -222,13 +167,8 @@ pub struct MeshCircuitBreakerFromDefaultOutlierDetectionDetectors {
     /// Various locally originated problems are detected: timeout, TCP reset,
     /// ICMP errors, etc. This detection type is supported by http router and
     /// tcp proxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localOriginFailures"
-    )]
-    pub local_origin_failures:
-        Option<MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsLocalOriginFailures>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localOriginFailures")]
+    pub local_origin_failures: Option<MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsLocalOriginFailures>,
     /// Success Rate based outlier detection aggregates success rate data from
     /// every host in a cluster. Then at given intervals ejects hosts based on
     /// statistical outlier detection. Success Rate outlier detection will not be
@@ -245,11 +185,7 @@ pub struct MeshCircuitBreakerFromDefaultOutlierDetectionDetectors {
     /// In split mode (outlierDetection.splitExternalLocalOriginErrors is true),
     /// locally originated errors and externally originated (transaction) errors
     /// are counted and treated separately.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successRate")]
     pub success_rate: Option<MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsSuccessRate>,
     /// In the default mode (outlierDetection.splitExternalAndLocalErrors is
     /// false) this detection type takes into account all generated errors:
@@ -261,11 +197,7 @@ pub struct MeshCircuitBreakerFromDefaultOutlierDetectionDetectors {
     /// into account (see Consecutive Gateway Failure for exceptions).
     /// Properly formatted responses, even when they carry an operational error
     /// (like index not found, access denied) are not taken into account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalFailures")]
     pub total_failures: Option<MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsTotalFailures>,
 }
 
@@ -289,22 +221,14 @@ pub struct MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsFailurePercenta
     /// percentage-based ejection. If the total number of hosts in the cluster is
     /// less than this value, failure percentage-based ejection will not be
     /// performed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumHosts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumHosts")]
     pub minimum_hosts: Option<i32>,
     /// The minimum number of total requests that must be collected in one
     /// interval (as defined by the interval duration above) to perform failure
     /// percentage-based ejection for this host. If the volume is lower than this
     /// setting, failure percentage-based ejection will not be performed for this
     /// host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestVolume")]
     pub request_volume: Option<i32>,
     /// The failure percentage to use when determining failure percentage-based
     /// outlier detection. If the failure percentage of a given host is greater
@@ -368,22 +292,14 @@ pub struct MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsSuccessRate {
     /// detect success rate outliers. If the number of hosts is less than this
     /// setting, outlier detection via success rate statistics is not performed
     /// for any host in the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumHosts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumHosts")]
     pub minimum_hosts: Option<i32>,
     /// The minimum number of total requests that must be collected in one
     /// interval (as defined by the interval duration configured in
     /// outlierDetection section) to include this host in success rate based
     /// outlier detection. If the volume is lower than this setting, outlier
     /// detection via success rate statistics is not performed for that host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestVolume")]
     pub request_volume: Option<i32>,
     /// This factor is used to determine the ejection threshold for success rate
     /// outlier ejection. The ejection threshold is the difference between
@@ -391,11 +307,7 @@ pub struct MeshCircuitBreakerFromDefaultOutlierDetectionDetectorsSuccessRate {
     /// deviation of the mean success rate: mean - (standard_deviation *
     /// success_rate_standard_deviation_factor).
     /// Either int or decimal represented as string.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "standardDeviationFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "standardDeviationFactor")]
     pub standard_deviation_factor: Option<IntOrString>,
 }
 
@@ -443,19 +355,11 @@ pub struct MeshCircuitBreakerFromTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -503,19 +407,11 @@ pub struct MeshCircuitBreakerTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -559,11 +455,7 @@ pub struct MeshCircuitBreakerToDefault {
     /// which when exceeded makes the circuit breaker to become open (no traffic
     /// is allowed like no current is allowed in the circuits when physical
     /// circuit breaker ir open)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionLimits"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionLimits")]
     pub connection_limits: Option<MeshCircuitBreakerToDefaultConnectionLimits>,
     /// OutlierDetection contains the configuration of the process of dynamically
     /// determining whether some number of hosts in an upstream cluster are
@@ -571,11 +463,7 @@ pub struct MeshCircuitBreakerToDefault {
     /// balancing set. Performance might be along different axes such as
     /// consecutive failures, temporal success rate, temporal latency, etc.
     /// Outlier detection is a form of passive health checking.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outlierDetection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outlierDetection")]
     pub outlier_detection: Option<MeshCircuitBreakerToDefaultOutlierDetection>,
 }
 
@@ -588,44 +476,24 @@ pub struct MeshCircuitBreakerToDefaultConnectionLimits {
     /// The maximum number of connection pools per cluster that are concurrently
     /// supported at once. Set this for clusters which create a large number of
     /// connection pools.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionPools"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionPools")]
     pub max_connection_pools: Option<i32>,
     /// The maximum number of connections allowed to be made to the upstream
     /// cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// The maximum number of pending requests that are allowed to the upstream
     /// cluster. This limit is applied as a connection limit for non-HTTP
     /// traffic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingRequests")]
     pub max_pending_requests: Option<i32>,
     /// The maximum number of parallel requests that are allowed to be made
     /// to the upstream cluster. This limit does not apply to non-HTTP traffic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequests")]
     pub max_requests: Option<i32>,
     /// The maximum number of parallel retries that will be allowed to
     /// the upstream cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
 }
 
@@ -640,11 +508,7 @@ pub struct MeshCircuitBreakerToDefaultOutlierDetection {
     /// The base time that a host is ejected for. The real time is equal to
     /// the base time multiplied by the number of times the host has been
     /// ejected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseEjectionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseEjectionTime")]
     pub base_ejection_time: Option<String>,
     /// Contains configuration for supported outlier detectors
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -659,20 +523,12 @@ pub struct MeshCircuitBreakerToDefaultOutlierDetection {
     /// The maximum % of an upstream cluster that can be ejected due to outlier
     /// detection. Defaults to 10% but will eject at least one host regardless of
     /// the value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEjectionPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEjectionPercent")]
     pub max_ejection_percent: Option<i32>,
     /// Determines whether to distinguish local origin failures from external
     /// errors. If set to true the following configuration parameters are taken
     /// into account: detectors.localOriginFailures.consecutive
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "splitExternalAndLocalErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitExternalAndLocalErrors")]
     pub split_external_and_local_errors: Option<bool>,
 }
 
@@ -693,13 +549,8 @@ pub struct MeshCircuitBreakerToDefaultOutlierDetectionDetectors {
     /// Detection also will not be performed for a cluster if the number of hosts
     /// with the minimum required request volume in an interval is less than the
     /// outlierDetection.detectors.failurePercentage.minimumHosts value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failurePercentage"
-    )]
-    pub failure_percentage:
-        Option<MeshCircuitBreakerToDefaultOutlierDetectionDetectorsFailurePercentage>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePercentage")]
+    pub failure_percentage: Option<MeshCircuitBreakerToDefaultOutlierDetectionDetectorsFailurePercentage>,
     /// In the default mode (outlierDetection.splitExternalLocalOriginErrors is
     /// false) this detection type takes into account a subset of 5xx errors,
     /// called "gateway errors" (502, 503 or 504 status code) and local origin
@@ -708,13 +559,8 @@ pub struct MeshCircuitBreakerToDefaultOutlierDetectionDetectors {
     /// this detection type takes into account a subset of 5xx errors, called
     /// "gateway errors" (502, 503 or 504 status code) and is supported only by
     /// the http router.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayFailures"
-    )]
-    pub gateway_failures:
-        Option<MeshCircuitBreakerToDefaultOutlierDetectionDetectorsGatewayFailures>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayFailures")]
+    pub gateway_failures: Option<MeshCircuitBreakerToDefaultOutlierDetectionDetectorsGatewayFailures>,
     /// This detection type is enabled only when
     /// outlierDetection.splitExternalLocalOriginErrors is true and takes into
     /// account only locally originated errors (timeout, reset, etc).
@@ -723,13 +569,8 @@ pub struct MeshCircuitBreakerToDefaultOutlierDetectionDetectors {
     /// Various locally originated problems are detected: timeout, TCP reset,
     /// ICMP errors, etc. This detection type is supported by http router and
     /// tcp proxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localOriginFailures"
-    )]
-    pub local_origin_failures:
-        Option<MeshCircuitBreakerToDefaultOutlierDetectionDetectorsLocalOriginFailures>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localOriginFailures")]
+    pub local_origin_failures: Option<MeshCircuitBreakerToDefaultOutlierDetectionDetectorsLocalOriginFailures>,
     /// Success Rate based outlier detection aggregates success rate data from
     /// every host in a cluster. Then at given intervals ejects hosts based on
     /// statistical outlier detection. Success Rate outlier detection will not be
@@ -746,11 +587,7 @@ pub struct MeshCircuitBreakerToDefaultOutlierDetectionDetectors {
     /// In split mode (outlierDetection.splitExternalLocalOriginErrors is true),
     /// locally originated errors and externally originated (transaction) errors
     /// are counted and treated separately.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successRate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successRate")]
     pub success_rate: Option<MeshCircuitBreakerToDefaultOutlierDetectionDetectorsSuccessRate>,
     /// In the default mode (outlierDetection.splitExternalAndLocalErrors is
     /// false) this detection type takes into account all generated errors:
@@ -762,11 +599,7 @@ pub struct MeshCircuitBreakerToDefaultOutlierDetectionDetectors {
     /// into account (see Consecutive Gateway Failure for exceptions).
     /// Properly formatted responses, even when they carry an operational error
     /// (like index not found, access denied) are not taken into account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalFailures")]
     pub total_failures: Option<MeshCircuitBreakerToDefaultOutlierDetectionDetectorsTotalFailures>,
 }
 
@@ -790,22 +623,14 @@ pub struct MeshCircuitBreakerToDefaultOutlierDetectionDetectorsFailurePercentage
     /// percentage-based ejection. If the total number of hosts in the cluster is
     /// less than this value, failure percentage-based ejection will not be
     /// performed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumHosts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumHosts")]
     pub minimum_hosts: Option<i32>,
     /// The minimum number of total requests that must be collected in one
     /// interval (as defined by the interval duration above) to perform failure
     /// percentage-based ejection for this host. If the volume is lower than this
     /// setting, failure percentage-based ejection will not be performed for this
     /// host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestVolume")]
     pub request_volume: Option<i32>,
     /// The failure percentage to use when determining failure percentage-based
     /// outlier detection. If the failure percentage of a given host is greater
@@ -869,22 +694,14 @@ pub struct MeshCircuitBreakerToDefaultOutlierDetectionDetectorsSuccessRate {
     /// detect success rate outliers. If the number of hosts is less than this
     /// setting, outlier detection via success rate statistics is not performed
     /// for any host in the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumHosts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumHosts")]
     pub minimum_hosts: Option<i32>,
     /// The minimum number of total requests that must be collected in one
     /// interval (as defined by the interval duration configured in
     /// outlierDetection section) to include this host in success rate based
     /// outlier detection. If the volume is lower than this setting, outlier
     /// detection via success rate statistics is not performed for that host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestVolume")]
     pub request_volume: Option<i32>,
     /// This factor is used to determine the ejection threshold for success rate
     /// outlier ejection. The ejection threshold is the difference between
@@ -892,11 +709,7 @@ pub struct MeshCircuitBreakerToDefaultOutlierDetectionDetectorsSuccessRate {
     /// deviation of the mean success rate: mean - (standard_deviation *
     /// success_rate_standard_deviation_factor).
     /// Either int or decimal represented as string.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "standardDeviationFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "standardDeviationFactor")]
     pub standard_deviation_factor: Option<IntOrString>,
 }
 
@@ -944,19 +757,11 @@ pub struct MeshCircuitBreakerToTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -978,3 +783,4 @@ pub enum MeshCircuitBreakerToTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
 }
+

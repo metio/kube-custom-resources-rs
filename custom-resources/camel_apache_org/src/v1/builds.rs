@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BuildSpec defines the list of tasks to be execute for a Build. From Camel K version 2, it would be more appropriate
 /// to think it as pipeline.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "camel.apache.org",
-    version = "v1",
-    kind = "Build",
-    plural = "builds"
-)]
+#[kube(group = "camel.apache.org", version = "v1", kind = "Build", plural = "builds")]
 #[kube(namespaced)]
 #[kube(status = "BuildStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BuildSpec {
     /// The configuration that should be used to perform the Build.
     /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
@@ -32,19 +27,11 @@ pub struct BuildSpec {
     pub configuration: Option<BuildConfiguration>,
     /// the maximum amount of parallel running builds started by this operator instance
     /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRunningBuilds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRunningBuilds")]
     pub max_running_builds: Option<i32>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
     /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// The sequence of tasks (pipeline) to be performed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -72,49 +59,25 @@ pub struct BuildConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// The maximum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
     /// The node selector for the builder pod. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// the build order strategy to adopt
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildConfigurationOrderStrategy>,
     /// The list of platforms used in order to build a container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestCPU"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// The minimum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
     /// the strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -190,18 +153,10 @@ pub struct BuildTasksBuildah {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BuildTasksBuildahConfiguration>,
     /// can be useful to share info with other tasks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contextDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contextDir")]
     pub context_dir: Option<String>,
     /// docker image to use
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executorImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executorImage")]
     pub executor_image: Option<String>,
     /// final image name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -230,49 +185,25 @@ pub struct BuildTasksBuildahConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// The maximum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
     /// The node selector for the builder pod. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// the build order strategy to adopt
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksBuildahConfigurationOrderStrategy>,
     /// The list of platforms used in order to build a container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestCPU"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// The minimum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
     /// the strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -364,49 +295,25 @@ pub struct BuildTasksBuilderConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// The maximum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
     /// The node selector for the builder pod. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// the build order strategy to adopt
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksBuilderConfigurationOrderStrategy>,
     /// The list of platforms used in order to build a container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestCPU"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// The minimum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
     /// the strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -450,22 +357,14 @@ pub struct BuildTasksBuilderMaven {
     /// The CLI options that are appended to the list of arguments for Maven commands,
     /// e.g., `-V,--no-transfer-progress,-Dstyle.color=never`.
     /// See https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cliOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOptions")]
     pub cli_options: Option<Vec<String>>,
     /// The Maven build extensions.
     /// See https://maven.apache.org/guides/mini/guide-using-extensions.html.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extension: Option<Vec<BuildTasksBuilderMavenExtension>>,
     /// The path of the local Maven repository.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localRepository"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localRepository")]
     pub local_repository: Option<String>,
     /// A reference to the ConfigMap or Secret key that contains
     /// the Maven profile.
@@ -486,11 +385,7 @@ pub struct BuildTasksBuilderMaven {
     pub settings: Option<BuildTasksBuilderMavenSettings>,
     /// A reference to the ConfigMap or Secret key that contains
     /// the security of the Maven settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "settingsSecurity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "settingsSecurity")]
     pub settings_security: Option<BuildTasksBuilderMavenSettingsSecurity>,
 }
 
@@ -533,18 +428,10 @@ pub struct BuildTasksBuilderMavenExtension {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderMavenProfiles {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<BuildTasksBuilderMavenProfilesConfigMapKeyRef>,
     /// Selects a key of a secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<BuildTasksBuilderMavenProfilesSecretKeyRef>,
 }
 
@@ -601,22 +488,14 @@ pub struct BuildTasksBuilderMavenRepositories {
 pub struct BuildTasksBuilderMavenRepositoriesReleases {
     /// When Maven deploys files to the repository, it also deploys corresponding checksum files.
     /// Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checksumPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checksumPolicy")]
     pub checksum_policy: Option<String>,
     /// is the policy activated or not
     pub enabled: bool,
     /// This element specifies how often updates should attempt to occur.
     /// Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote.
     /// The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<String>,
 }
 
@@ -625,22 +504,14 @@ pub struct BuildTasksBuilderMavenRepositoriesReleases {
 pub struct BuildTasksBuilderMavenRepositoriesSnapshots {
     /// When Maven deploys files to the repository, it also deploys corresponding checksum files.
     /// Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checksumPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checksumPolicy")]
     pub checksum_policy: Option<String>,
     /// is the policy activated or not
     pub enabled: bool,
     /// This element specifies how often updates should attempt to occur.
     /// Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote.
     /// The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<String>,
 }
 
@@ -663,18 +534,10 @@ pub struct BuildTasksBuilderMavenServers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderMavenSettings {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<BuildTasksBuilderMavenSettingsConfigMapKeyRef>,
     /// Selects a key of a secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<BuildTasksBuilderMavenSettingsSecretKeyRef>,
 }
 
@@ -713,18 +576,10 @@ pub struct BuildTasksBuilderMavenSettingsSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderMavenSettingsSecurity {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<BuildTasksBuilderMavenSettingsSecurityConfigMapKeyRef>,
     /// Selects a key of a secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<BuildTasksBuilderMavenSettingsSecuritySecretKeyRef>,
 }
 
@@ -782,11 +637,7 @@ pub struct BuildTasksBuilderRuntime {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuilderRuntimeCapabilities {
     /// Set of required Camel build time properties
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "buildTimeProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildTimeProperties")]
     pub build_time_properties: Option<Vec<BuildTasksBuilderRuntimeCapabilitiesBuildTimeProperties>>,
     /// List of required Maven dependencies
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -795,11 +646,7 @@ pub struct BuildTasksBuilderRuntimeCapabilities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BTreeMap<String, String>>,
     /// Set of required Camel runtime properties
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeProperties")]
     pub runtime_properties: Option<Vec<BuildTasksBuilderRuntimeCapabilitiesRuntimeProperties>>,
 }
 
@@ -869,32 +716,16 @@ pub struct BuildTasksBuilderSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     /// the confimap key holding the source content
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentKey")]
     pub content_key: Option<String>,
     /// the confimap reference holding the source content
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentRef")]
     pub content_ref: Option<String>,
     /// the content type (tipically text or binary)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     /// True if the spec is generated from a Kamelet
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "from-kamelet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
     /// uses to pre/post process sources
@@ -915,18 +746,10 @@ pub struct BuildTasksBuilderSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// List of property names defined in the source (e.g. if type is "template")
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "property-names"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "property-names")]
     pub property_names: Option<Vec<String>>,
     /// the source code (binary)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rawContent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rawContent")]
     pub raw_content: Option<String>,
     /// Type defines the kind of source described by this object
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -953,11 +776,7 @@ pub struct BuildTasksCustom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// the desired image build name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publishingImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishingImage")]
     pub publishing_image: Option<String>,
     /// the user id used to run the container
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userId")]
@@ -974,49 +793,25 @@ pub struct BuildTasksCustomConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// The maximum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
     /// The node selector for the builder pod. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// the build order strategy to adopt
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksCustomConfigurationOrderStrategy>,
     /// The list of platforms used in order to build a container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestCPU"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// The minimum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
     /// the strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1056,11 +851,7 @@ pub struct BuildTasksJib {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BuildTasksJibConfiguration>,
     /// can be useful to share info with other tasks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contextDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contextDir")]
     pub context_dir: Option<String>,
     /// final image name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1083,49 +874,25 @@ pub struct BuildTasksJibConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// The maximum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
     /// The node selector for the builder pod. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// the build order strategy to adopt
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksJibConfigurationOrderStrategy>,
     /// The list of platforms used in order to build a container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestCPU"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// The minimum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
     /// the strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1189,18 +956,10 @@ pub struct BuildTasksKaniko {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BuildTasksKanikoConfiguration>,
     /// can be useful to share info with other tasks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contextDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contextDir")]
     pub context_dir: Option<String>,
     /// docker image to use
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executorImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executorImage")]
     pub executor_image: Option<String>,
     /// final image name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1223,11 +982,7 @@ pub struct BuildTasksKanikoCache {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// the PVC used to store the cache
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<String>,
 }
 
@@ -1241,49 +996,25 @@ pub struct BuildTasksKanikoConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// The maximum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
     /// The node selector for the builder pod. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// the build order strategy to adopt
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksKanikoConfigurationOrderStrategy>,
     /// The list of platforms used in order to build a container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestCPU"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// The minimum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
     /// the strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1376,49 +1107,25 @@ pub struct BuildTasksPackageConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// The maximum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
     /// The node selector for the builder pod. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// the build order strategy to adopt
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksPackageConfigurationOrderStrategy>,
     /// The list of platforms used in order to build a container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestCPU"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// The minimum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
     /// the strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1462,22 +1169,14 @@ pub struct BuildTasksPackageMaven {
     /// The CLI options that are appended to the list of arguments for Maven commands,
     /// e.g., `-V,--no-transfer-progress,-Dstyle.color=never`.
     /// See https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cliOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOptions")]
     pub cli_options: Option<Vec<String>>,
     /// The Maven build extensions.
     /// See https://maven.apache.org/guides/mini/guide-using-extensions.html.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extension: Option<Vec<BuildTasksPackageMavenExtension>>,
     /// The path of the local Maven repository.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localRepository"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localRepository")]
     pub local_repository: Option<String>,
     /// A reference to the ConfigMap or Secret key that contains
     /// the Maven profile.
@@ -1498,11 +1197,7 @@ pub struct BuildTasksPackageMaven {
     pub settings: Option<BuildTasksPackageMavenSettings>,
     /// A reference to the ConfigMap or Secret key that contains
     /// the security of the Maven settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "settingsSecurity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "settingsSecurity")]
     pub settings_security: Option<BuildTasksPackageMavenSettingsSecurity>,
 }
 
@@ -1545,18 +1240,10 @@ pub struct BuildTasksPackageMavenExtension {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageMavenProfiles {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<BuildTasksPackageMavenProfilesConfigMapKeyRef>,
     /// Selects a key of a secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<BuildTasksPackageMavenProfilesSecretKeyRef>,
 }
 
@@ -1613,22 +1300,14 @@ pub struct BuildTasksPackageMavenRepositories {
 pub struct BuildTasksPackageMavenRepositoriesReleases {
     /// When Maven deploys files to the repository, it also deploys corresponding checksum files.
     /// Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checksumPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checksumPolicy")]
     pub checksum_policy: Option<String>,
     /// is the policy activated or not
     pub enabled: bool,
     /// This element specifies how often updates should attempt to occur.
     /// Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote.
     /// The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<String>,
 }
 
@@ -1637,22 +1316,14 @@ pub struct BuildTasksPackageMavenRepositoriesReleases {
 pub struct BuildTasksPackageMavenRepositoriesSnapshots {
     /// When Maven deploys files to the repository, it also deploys corresponding checksum files.
     /// Your options are to `ignore`, `fail`, or `warn` on missing or incorrect checksums.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checksumPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checksumPolicy")]
     pub checksum_policy: Option<String>,
     /// is the policy activated or not
     pub enabled: bool,
     /// This element specifies how often updates should attempt to occur.
     /// Maven will compare the local POM's timestamp (stored in a repository's maven-metadata file) to the remote.
     /// The choices are: `always`, `daily` (default), `interval:X` (where X is an integer in minutes) or `never`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<String>,
 }
 
@@ -1675,18 +1346,10 @@ pub struct BuildTasksPackageMavenServers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageMavenSettings {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<BuildTasksPackageMavenSettingsConfigMapKeyRef>,
     /// Selects a key of a secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<BuildTasksPackageMavenSettingsSecretKeyRef>,
 }
 
@@ -1725,18 +1388,10 @@ pub struct BuildTasksPackageMavenSettingsSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageMavenSettingsSecurity {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<BuildTasksPackageMavenSettingsSecurityConfigMapKeyRef>,
     /// Selects a key of a secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<BuildTasksPackageMavenSettingsSecuritySecretKeyRef>,
 }
 
@@ -1794,11 +1449,7 @@ pub struct BuildTasksPackageRuntime {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksPackageRuntimeCapabilities {
     /// Set of required Camel build time properties
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "buildTimeProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildTimeProperties")]
     pub build_time_properties: Option<Vec<BuildTasksPackageRuntimeCapabilitiesBuildTimeProperties>>,
     /// List of required Maven dependencies
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1807,11 +1458,7 @@ pub struct BuildTasksPackageRuntimeCapabilities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BTreeMap<String, String>>,
     /// Set of required Camel runtime properties
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeProperties")]
     pub runtime_properties: Option<Vec<BuildTasksPackageRuntimeCapabilitiesRuntimeProperties>>,
 }
 
@@ -1881,32 +1528,16 @@ pub struct BuildTasksPackageSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     /// the confimap key holding the source content
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentKey")]
     pub content_key: Option<String>,
     /// the confimap reference holding the source content
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentRef")]
     pub content_ref: Option<String>,
     /// the content type (tipically text or binary)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     /// True if the spec is generated from a Kamelet
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "from-kamelet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
     /// uses to pre/post process sources
@@ -1927,18 +1558,10 @@ pub struct BuildTasksPackageSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// List of property names defined in the source (e.g. if type is "template")
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "property-names"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "property-names")]
     pub property_names: Option<Vec<String>>,
     /// the source code (binary)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rawContent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rawContent")]
     pub raw_content: Option<String>,
     /// Type defines the kind of source described by this object
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1955,11 +1578,7 @@ pub struct BuildTasksS2i {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BuildTasksS2iConfiguration>,
     /// can be useful to share info with other tasks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contextDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contextDir")]
     pub context_dir: Option<String>,
     /// final image name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1985,49 +1604,25 @@ pub struct BuildTasksS2iConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// The maximum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
     /// The node selector for the builder pod. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// the build order strategy to adopt
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksS2iConfigurationOrderStrategy>,
     /// The list of platforms used in order to build a container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestCPU"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// The minimum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
     /// the strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2088,11 +1683,7 @@ pub struct BuildTasksSpectrum {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BuildTasksSpectrumConfiguration>,
     /// can be useful to share info with other tasks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contextDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contextDir")]
     pub context_dir: Option<String>,
     /// final image name
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2115,49 +1706,25 @@ pub struct BuildTasksSpectrumConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// The maximum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
     /// The node selector for the builder pod. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
     /// the build order strategy to adopt
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
     pub order_strategy: Option<BuildTasksSpectrumConfigurationOrderStrategy>,
     /// The list of platforms used in order to build a container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platforms: Option<Vec<String>>,
     /// The minimum amount of CPU required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestCPU"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// The minimum amount of memory required. Only used for `pod` strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestMemory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
     /// the strategy to adopt
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2237,11 +1804,7 @@ pub struct BuildStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ObservedGeneration is the most recent generation observed for this Build.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// describes the phase
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2290,10 +1853,7 @@ pub struct BuildStatusFailureRecovery {
     #[serde(rename = "attemptMax")]
     pub attempt_max: i64,
     /// time of the attempt execution
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attemptTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attemptTime")]
     pub attempt_time: Option<String>,
 }
+

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// SriovNetworkSpec defines the desired state of SriovNetwork
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sriovnetwork.openshift.io",
-    version = "v1",
-    kind = "SriovNetwork",
-    plural = "sriovnetworks"
-)]
+#[kube(group = "sriovnetwork.openshift.io", version = "v1", kind = "SriovNetwork", plural = "sriovnetworks")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SriovNetworkSpec {
     /// Capabilities to be configured for this network.
     /// Capabilities supported: (mac|ips), e.g. '{"mac": true}'
@@ -45,21 +40,13 @@ pub struct SriovNetworkSpec {
     pub max_tx_rate: Option<i64>,
     /// MetaPluginsConfig configuration to be used in order to chain metaplugins to the sriov interface returned
     /// by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metaPlugins"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metaPlugins")]
     pub meta_plugins: Option<String>,
     /// Minimum tx rate, in Mbps, for the VF. Defaults to 0 (no rate limiting). min_tx_rate should be <= max_tx_rate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minTxRate")]
     pub min_tx_rate: Option<i64>,
     /// Namespace of the NetworkAttachmentDefinition custom resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkNamespace")]
     pub network_namespace: Option<String>,
     /// SRIOV Network device plugin endpoint resource name
     #[serde(rename = "resourceName")]
@@ -142,4 +129,6 @@ pub enum SriovNetworkVlanProto {
 
 /// SriovNetworkStatus defines the observed state of SriovNetwork
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SriovNetworkStatus {}
+pub struct SriovNetworkStatus {
+}
+

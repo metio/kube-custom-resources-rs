@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// FilesystemSpec represents the spec of a file system
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ceph.rook.io",
-    version = "v1",
-    kind = "CephFilesystem",
-    plural = "cephfilesystems"
-)]
+#[kube(group = "ceph.rook.io", version = "v1", kind = "CephFilesystem", plural = "cephfilesystems")]
 #[kube(namespaced)]
 #[kube(status = "CephFilesystemStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CephFilesystemSpec {
     /// The data pool settings, with optional predefined pool name.
     #[serde(rename = "dataPools")]
@@ -39,25 +34,13 @@ pub struct CephFilesystemSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mirroring: Option<CephFilesystemMirroring>,
     /// Preserve the fs in the cluster on CephFilesystem CR deletion. Setting this to true automatically implies PreservePoolsOnDelete is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preserveFilesystemOnDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveFilesystemOnDelete")]
     pub preserve_filesystem_on_delete: Option<bool>,
     /// Preserve pools on filesystem deletion
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preservePoolsOnDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservePoolsOnDelete")]
     pub preserve_pools_on_delete: Option<bool>,
     /// The mirroring statusCheck
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCheck")]
     pub status_check: Option<CephFilesystemStatusCheck>,
 }
 
@@ -70,49 +53,25 @@ pub struct CephFilesystemDataPools {
     /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
     /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
     /// Do NOT set a default value for kubebuilder as this will override the Parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephFilesystemDataPoolsCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crushRoot")]
     pub crush_root: Option<String>,
     /// The device class the OSD should set to for use in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceClass")]
     pub device_class: Option<String>,
     /// Allow rook operator to change the pool CRUSH tunables once the pool is created
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCrushUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCrushUpdates")]
     pub enable_crush_updates: Option<bool>,
     /// EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableRBDStats"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRBDStats")]
     pub enable_rbd_stats: Option<bool>,
     /// The erasure code settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "erasureCoded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephFilesystemDataPoolsErasureCoded>,
     /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -130,11 +89,7 @@ pub struct CephFilesystemDataPools {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicated: Option<CephFilesystemDataPoolsReplicated>,
     /// The mirroring statusCheck
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCheck")]
     pub status_check: Option<CephFilesystemDataPoolsStatusCheck>,
 }
 
@@ -183,11 +138,7 @@ pub struct CephFilesystemDataPoolsMirroring {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peers: Option<CephFilesystemDataPoolsMirroringPeers>,
     /// SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
     pub snapshot_schedules: Option<Vec<CephFilesystemDataPoolsMirroringSnapshotSchedules>>,
 }
 
@@ -195,11 +146,7 @@ pub struct CephFilesystemDataPoolsMirroring {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemDataPoolsMirroringPeers {
     /// SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNames")]
     pub secret_names: Option<Vec<String>>,
 }
 
@@ -225,11 +172,7 @@ pub struct CephFilesystemDataPoolsQuotas {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxObjects")]
     pub max_objects: Option<i64>,
     /// MaxSize represents the quota in bytes as a string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
@@ -240,41 +183,21 @@ pub struct CephFilesystemDataPoolsQuotas {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemDataPoolsReplicated {
     /// HybridStorage represents hybrid storage tier settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hybridStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hybridStorage")]
     pub hybrid_storage: Option<CephFilesystemDataPoolsReplicatedHybridStorage>,
     /// ReplicasPerFailureDomain the number of replica in the specified failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasPerFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasPerFailureDomain")]
     pub replicas_per_failure_domain: Option<i64>,
     /// RequireSafeReplicaSize if false allows you to set replica 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireSafeReplicaSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
     /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
     /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetSizeRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }
 
@@ -318,49 +241,25 @@ pub struct CephFilesystemMetadataPool {
     /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
     /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
     /// Do NOT set a default value for kubebuilder as this will override the Parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephFilesystemMetadataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crushRoot")]
     pub crush_root: Option<String>,
     /// The device class the OSD should set to for use in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceClass")]
     pub device_class: Option<String>,
     /// Allow rook operator to change the pool CRUSH tunables once the pool is created
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCrushUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCrushUpdates")]
     pub enable_crush_updates: Option<bool>,
     /// EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableRBDStats"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRBDStats")]
     pub enable_rbd_stats: Option<bool>,
     /// The erasure code settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "erasureCoded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephFilesystemMetadataPoolErasureCoded>,
     /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -375,11 +274,7 @@ pub struct CephFilesystemMetadataPool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicated: Option<CephFilesystemMetadataPoolReplicated>,
     /// The mirroring statusCheck
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCheck")]
     pub status_check: Option<CephFilesystemMetadataPoolStatusCheck>,
 }
 
@@ -428,11 +323,7 @@ pub struct CephFilesystemMetadataPoolMirroring {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peers: Option<CephFilesystemMetadataPoolMirroringPeers>,
     /// SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
     pub snapshot_schedules: Option<Vec<CephFilesystemMetadataPoolMirroringSnapshotSchedules>>,
 }
 
@@ -440,11 +331,7 @@ pub struct CephFilesystemMetadataPoolMirroring {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataPoolMirroringPeers {
     /// SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNames")]
     pub secret_names: Option<Vec<String>>,
 }
 
@@ -470,11 +357,7 @@ pub struct CephFilesystemMetadataPoolQuotas {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxObjects")]
     pub max_objects: Option<i64>,
     /// MaxSize represents the quota in bytes as a string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
@@ -485,41 +368,21 @@ pub struct CephFilesystemMetadataPoolQuotas {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataPoolReplicated {
     /// HybridStorage represents hybrid storage tier settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hybridStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hybridStorage")]
     pub hybrid_storage: Option<CephFilesystemMetadataPoolReplicatedHybridStorage>,
     /// ReplicasPerFailureDomain the number of replica in the specified failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasPerFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasPerFailureDomain")]
     pub replicas_per_failure_domain: Option<i64>,
     /// RequireSafeReplicaSize if false allows you to set replica 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireSafeReplicaSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
     /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
     /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetSizeRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }
 
@@ -562,11 +425,7 @@ pub struct CephFilesystemMetadataServer {
     pub active_count: i32,
     /// Whether each active MDS instance will have an active standby with a warm metadata cache for faster failover.
     /// If false, standbys will still be available, but will not have a warm metadata cache.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeStandby"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeStandby")]
     pub active_standby: Option<bool>,
     /// The annotations-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -575,30 +434,18 @@ pub struct CephFilesystemMetadataServer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// ProbeSpec is a wrapper around Probe so it can be enabled or disabled for a Ceph daemon
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<CephFilesystemMetadataServerLivenessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placement: Option<CephFilesystemMetadataServerPlacement>,
     /// PriorityClassName sets priority classes on components
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The resource requirements for the mds pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<CephFilesystemMetadataServerResources>,
     /// ProbeSpec is a wrapper around Probe so it can be enabled or disabled for a Ceph daemon
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<CephFilesystemMetadataServerStartupProbe>,
 }
 
@@ -623,11 +470,7 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbe {
     pub exec: Option<CephFilesystemMetadataServerLivenessProbeProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -637,45 +480,25 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbe {
     pub http_get: Option<CephFilesystemMetadataServerLivenessProbeProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephFilesystemMetadataServerLivenessProbeProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -698,7 +521,7 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -712,11 +535,7 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<CephFilesystemMetadataServerLivenessProbeProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -755,33 +574,16 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeTcpSocket {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerPlacement {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<CephFilesystemMetadataServerPlacementNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<CephFilesystemMetadataServerPlacementPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<CephFilesystemMetadataServerPlacementPodAntiAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<CephFilesystemMetadataServerPlacementTolerations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<CephFilesystemMetadataServerPlacementTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<CephFilesystemMetadataServerPlacementTopologySpreadConstraints>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -807,8 +609,7 @@ pub struct CephFilesystemMetadataServerPlacementNodeAffinityPreferredDuringSched
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -816,8 +617,7 @@ pub struct CephFilesystemMetadataServerPlacementNodeAffinityPreferredDuringSched
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct CephFilesystemMetadataServerPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -839,8 +639,7 @@ pub struct CephFilesystemMetadataServerPlacementNodeAffinityRequiredDuringSchedu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -848,8 +647,7 @@ pub struct CephFilesystemMetadataServerPlacementNodeAffinityRequiredDuringSchedu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct CephFilesystemMetadataServerPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -896,8 +694,7 @@ pub struct CephFilesystemMetadataServerPlacementPodAffinityPreferredDuringSchedu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -913,8 +710,7 @@ pub struct CephFilesystemMetadataServerPlacementPodAffinityPreferredDuringSchedu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -946,8 +742,7 @@ pub struct CephFilesystemMetadataServerPlacementPodAffinityRequiredDuringSchedul
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -963,8 +758,7 @@ pub struct CephFilesystemMetadataServerPlacementPodAffinityRequiredDuringSchedul
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1011,8 +805,7 @@ pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityPreferredDuringSc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1028,8 +821,7 @@ pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityPreferredDuringSc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1061,8 +853,7 @@ pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityRequiredDuringSch
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1078,8 +869,7 @@ pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityRequiredDuringSch
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1094,11 +884,7 @@ pub struct CephFilesystemMetadataServerPlacementTolerations {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -1106,38 +892,17 @@ pub struct CephFilesystemMetadataServerPlacementTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerPlacementTopologySpreadConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<CephFilesystemMetadataServerPlacementTopologySpreadConstraintsLabelSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<CephFilesystemMetadataServerPlacementTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
@@ -1154,8 +919,7 @@ pub struct CephFilesystemMetadataServerPlacementTopologySpreadConstraintsLabelSe
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephFilesystemMetadataServerPlacementTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct CephFilesystemMetadataServerPlacementTopologySpreadConstraintsLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1167,10 +931,10 @@ pub struct CephFilesystemMetadataServerPlacementTopologySpreadConstraintsLabelSe
 pub struct CephFilesystemMetadataServerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephFilesystemMetadataServerResourcesClaims>>,
@@ -1221,11 +985,7 @@ pub struct CephFilesystemMetadataServerStartupProbeProbe {
     pub exec: Option<CephFilesystemMetadataServerStartupProbeProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1235,45 +995,25 @@ pub struct CephFilesystemMetadataServerStartupProbeProbe {
     pub http_get: Option<CephFilesystemMetadataServerStartupProbeProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephFilesystemMetadataServerStartupProbeProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1296,7 +1036,7 @@ pub struct CephFilesystemMetadataServerStartupProbeProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1310,11 +1050,7 @@ pub struct CephFilesystemMetadataServerStartupProbeProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<CephFilesystemMetadataServerStartupProbeProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1363,18 +1099,10 @@ pub struct CephFilesystemMirroring {
     /// Retention is the retention policy for a snapshot schedule
     /// One path has exactly one retention policy.
     /// A policy can however contain multiple count-time period pairs in order to specify complex retention policies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotRetention"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotRetention")]
     pub snapshot_retention: Option<Vec<CephFilesystemMirroringSnapshotRetention>>,
     /// SnapshotSchedules is the scheduling of snapshot for mirrored filesystems
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
     pub snapshot_schedules: Option<Vec<CephFilesystemMirroringSnapshotSchedules>>,
 }
 
@@ -1382,11 +1110,7 @@ pub struct CephFilesystemMirroring {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMirroringPeers {
     /// SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNames")]
     pub secret_names: Option<Vec<String>>,
 }
 
@@ -1444,28 +1168,16 @@ pub struct CephFilesystemStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub info: Option<BTreeMap<String, String>>,
     /// MirroringStatus is the filesystem mirroring status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirroringStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirroringStatus")]
     pub mirroring_status: Option<CephFilesystemStatusMirroringStatus>,
     /// ObservedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ConditionType represent a resource's status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     /// FilesystemSnapshotScheduleStatusSpec is the status of the snapshot schedule
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotScheduleStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotScheduleStatus")]
     pub snapshot_schedule_status: Option<CephFilesystemStatusSnapshotScheduleStatus>,
 }
 
@@ -1473,28 +1185,16 @@ pub struct CephFilesystemStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemStatusMirroringStatus {
     /// PoolMirroringStatus is the mirroring status of a filesystem
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "daemonsStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "daemonsStatus")]
     pub daemons_status: Option<Vec<CephFilesystemStatusMirroringStatusDaemonsStatus>>,
     /// Details contains potential status errors
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,
     /// LastChanged is the last time time the status last changed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChanged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChanged")]
     pub last_changed: Option<String>,
     /// LastChecked is the last time time the status was checked
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChecked"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChecked")]
     pub last_checked: Option<String>,
 }
 
@@ -1572,27 +1272,14 @@ pub struct CephFilesystemStatusSnapshotScheduleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,
     /// LastChanged is the last time time the status last changed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChanged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChanged")]
     pub last_changed: Option<String>,
     /// LastChecked is the last time time the status was checked
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChecked"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChecked")]
     pub last_checked: Option<String>,
     /// SnapshotSchedules is the list of snapshots scheduled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
-    pub snapshot_schedules:
-        Option<Vec<CephFilesystemStatusSnapshotScheduleStatusSnapshotSchedules>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
+    pub snapshot_schedules: Option<Vec<CephFilesystemStatusSnapshotScheduleStatusSnapshotSchedules>>,
 }
 
 /// FilesystemSnapshotSchedulesSpec is the list of snapshot scheduled for images in a pool
@@ -1644,3 +1331,4 @@ pub struct CephFilesystemStatusSnapshotScheduleStatusSnapshotSchedulesRetention 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
 }
+

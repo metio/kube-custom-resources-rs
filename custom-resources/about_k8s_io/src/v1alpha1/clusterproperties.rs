@@ -5,22 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec represents the desired behavior.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "about.k8s.io",
-    version = "v1alpha1",
-    kind = "ClusterProperty",
-    plural = "clusterproperties"
-)]
+#[kube(group = "about.k8s.io", version = "v1alpha1", kind = "ClusterProperty", plural = "clusterproperties")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterPropertySpec {
     /// Value is the property-dependent string.
     pub value: String,
 }
+

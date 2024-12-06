@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// AzureKeyVaultSecretSpec is the spec for a AzureKeyVaultSecret resource
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "spv.no",
-    version = "v2alpha1",
-    kind = "AzureKeyVaultSecret",
-    plural = "azurekeyvaultsecrets"
-)]
+#[kube(group = "spv.no", version = "v2alpha1", kind = "AzureKeyVaultSecret", plural = "azurekeyvaultsecrets")]
 #[kube(namespaced)]
 #[kube(status = "AzureKeyVaultSecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct AzureKeyVaultSecretSpec {
     /// AzureKeyVaultOutput defines output sources, supports Secret and Configmap
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -56,11 +51,7 @@ pub struct AzureKeyVaultSecretOutputConfigMap {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AzureKeyVaultSecretOutputSecret {
     /// By setting chainOrder to ensureserverfirst the server certificate will be moved first in the chain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chainOrder"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chainOrder")]
     pub chain_order: Option<AzureKeyVaultSecretOutputSecretChainOrder>,
     /// The key to use in Kubernetes secret when setting the value from Azure Key Vault object data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataKey")]
@@ -83,11 +74,7 @@ pub enum AzureKeyVaultSecretOutputSecretChainOrder {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AzureKeyVaultSecretVault {
     /// AzureIdentity has information about the azure identity used for Azure Key Vault authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "azureIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureIdentity")]
     pub azure_identity: Option<AzureKeyVaultSecretVaultAzureIdentity>,
     /// Name of the Azure Key Vault
     pub name: String,
@@ -106,11 +93,7 @@ pub struct AzureKeyVaultSecretVaultAzureIdentity {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AzureKeyVaultSecretVaultObject {
     /// AzureKeyVaultObjectContentType defines what content type a secret contains, only used when type is multi-key-value-secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<AzureKeyVaultSecretVaultObjectContentType>,
     /// The object name in Azure Key Vault
     pub name: String,
@@ -147,34 +130,15 @@ pub enum AzureKeyVaultSecretVaultObjectType {
 /// AzureKeyVaultSecretStatus is the status for a AzureKeyVaultSecret resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AzureKeyVaultSecretStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapHash")]
     pub config_map_hash: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAzureUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAzureUpdate")]
     pub last_azure_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretHash")]
     pub secret_hash: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
+

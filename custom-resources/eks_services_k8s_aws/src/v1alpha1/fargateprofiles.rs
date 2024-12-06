@@ -4,56 +4,39 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// FargateProfileSpec defines the desired state of FargateProfile.
-///
+/// 
 /// An object representing an Fargate profile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "eks.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "FargateProfile",
-    plural = "fargateprofiles"
-)]
+#[kube(group = "eks.services.k8s.aws", version = "v1alpha1", kind = "FargateProfile", plural = "fargateprofiles")]
 #[kube(namespaced)]
 #[kube(status = "FargateProfileStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FargateProfileSpec {
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency
     /// of the request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientRequestToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRequestToken")]
     pub client_request_token: Option<String>,
     /// The name of your cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
     pub cluster_ref: Option<FargateProfileClusterRef>,
     /// The name of the Fargate profile.
     pub name: String,
@@ -63,24 +46,16 @@ pub struct FargateProfileSpec {
     /// it provides read access to Amazon ECR image repositories. For more information,
     /// see Pod execution role (https://docs.aws.amazon.com/eks/latest/userguide/pod-execution-role.html)
     /// in the Amazon EKS User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podExecutionRoleARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podExecutionRoleARN")]
     pub pod_execution_role_arn: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podExecutionRoleRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podExecutionRoleRef")]
     pub pod_execution_role_ref: Option<FargateProfilePodExecutionRoleRef>,
     /// The selectors to match for a Pod to use this Fargate profile. Each selector
     /// must have an associated Kubernetes namespace. Optionally, you can also specify
@@ -88,11 +63,7 @@ pub struct FargateProfileSpec {
     /// profile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selectors: Option<Vec<FargateProfileSelectors>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRefs")]
     pub subnet_refs: Option<Vec<FargateProfileSubnetRefs>>,
     /// The IDs of subnets to launch a Pod into. A Pod running on Fargate isn't assigned
     /// a public IP address, so only private subnets (with no direct route to an
@@ -110,7 +81,7 @@ pub struct FargateProfileSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -135,7 +106,7 @@ pub struct FargateProfileClusterRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -169,7 +140,7 @@ pub struct FargateProfileSelectors {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -196,11 +167,7 @@ pub struct FargateProfileStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<FargateProfileStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -257,10 +224,7 @@ pub struct FargateProfileStatusHealthIssues {
     pub code: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceIDs")]
     pub resource_i_ds: Option<Vec<String>>,
 }
+

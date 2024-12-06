@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// VMPodScrapeSpec defines the desired state of VMPodScrape
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.victoriametrics.com",
-    version = "v1beta1",
-    kind = "VMPodScrape",
-    plural = "vmpodscrapes"
-)]
+#[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMPodScrape", plural = "vmpodscrapes")]
 #[kube(namespaced)]
 #[kube(status = "VMPodScrapeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VMPodScrapeSpec {
     /// AttachMetadata configures metadata attaching from service discovery
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -32,39 +27,23 @@ pub struct VMPodScrapeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobLabel")]
     pub job_label: Option<String>,
     /// Selector to select which namespaces the Endpoints objects are discovered from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<VMPodScrapeNamespaceSelector>,
     /// A list of endpoints allowed as part of this PodMonitor.
     #[serde(rename = "podMetricsEndpoints")]
     pub pod_metrics_endpoints: Vec<VMPodScrapePodMetricsEndpoints>,
     /// PodTargetLabels transfers labels on the Kubernetes Pod onto the target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podTargetLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTargetLabels")]
     pub pod_target_labels: Option<Vec<String>>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// Selector to select Pod objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<VMPodScrapeSelector>,
     /// SeriesLimit defines per-scrape limit on number of unique time series
     /// a single target can expose during all the scrapes on the time window of 24h.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seriesLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]
     pub series_limit: Option<i64>,
 }
 
@@ -85,11 +64,7 @@ pub struct VMPodScrapeNamespaceSelector {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<bool>,
     /// List of namespace names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchNames")]
     pub match_names: Option<Vec<String>>,
 }
 
@@ -106,46 +81,26 @@ pub struct VMPodScrapePodMetricsEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<VMPodScrapePodMetricsEndpointsBasicAuth>,
     /// File to read bearer token for scraping targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Secret to mount to read bearer token for scraping targets. The secret
     /// needs to be in the same namespace as the scrape object and accessible by
     /// the victoria-metrics operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<VMPodScrapePodMetricsEndpointsBearerTokenSecret>,
     /// FilterRunning applies filter with pod status == running
     /// it prevents from scrapping metrics at failed or succeed state pods.
     /// enabled by default
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterRunning"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRunning")]
     pub filter_running: Option<bool>,
     /// FollowRedirects controls redirects for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub follow_redirects: Option<bool>,
     /// HonorLabels chooses the metric's labels on collisions with target labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
     pub honor_labels: Option<bool>,
     /// HonorTimestamps controls whether vmagent respects the timestamps present in scraped data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorTimestamps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorTimestamps")]
     pub honor_timestamps: Option<bool>,
     /// Interval at which metrics should be scraped
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -154,11 +109,7 @@ pub struct VMPodScrapePodMetricsEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_scrape_size: Option<String>,
     /// MetricRelabelConfigs to apply to samples after scrapping.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricRelabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelConfigs")]
     pub metric_relabel_configs: Option<Vec<VMPodScrapePodMetricsEndpointsMetricRelabelConfigs>>,
     /// OAuth2 defines auth configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -176,28 +127,16 @@ pub struct VMPodScrapePodMetricsEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
     /// RelabelConfigs to apply to samples during service discovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelConfigs")]
     pub relabel_configs: Option<Vec<VMPodScrapePodMetricsEndpointsRelabelConfigs>>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// HTTP scheme to use for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<VMPodScrapePodMetricsEndpointsScheme>,
     /// Timeout after which the scrape is ended
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
     /// ScrapeInterval is the same as Interval and has priority over it.
     /// one of scrape_interval or interval can be used
@@ -205,19 +144,11 @@ pub struct VMPodScrapePodMetricsEndpoints {
     pub scrape_interval: Option<String>,
     /// SeriesLimit defines per-scrape limit on number of unique time series
     /// a single target can expose during all the scrapes on the time window of 24h.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seriesLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]
     pub series_limit: Option<i64>,
     /// TargetPort
     /// Name or number of the pod port this endpoint refers to. Mutually exclusive with port.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
     /// TLSConfig configuration to use when scraping the endpoint
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -243,11 +174,7 @@ pub struct VMPodScrapePodMetricsEndpointsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VMPodScrapePodMetricsEndpointsAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -377,39 +304,23 @@ pub struct VMPodScrapePodMetricsEndpointsMetricRelabelConfigs {
     /// The source labels select values from existing labels. Their content is concatenated
     /// using the configured separator and matched against the configured regular expression
     /// for the replace, keep, and drop actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
     /// if set  both sourceLabels and source_labels, sourceLabels has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source_labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
     /// if set  both targetLabel and target_label, targetLabel has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target_label"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
@@ -530,39 +441,23 @@ pub struct VMPodScrapePodMetricsEndpointsRelabelConfigs {
     /// The source labels select values from existing labels. Their content is concatenated
     /// using the configured separator and matched against the configured regular expression
     /// for the replace, keep, and drop actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
     /// if set  both sourceLabels and source_labels, sourceLabels has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source_labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
     /// if set  both targetLabel and target_label, targetLabel has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target_label"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
@@ -591,11 +486,7 @@ pub struct VMPodScrapePodMetricsEndpointsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -604,11 +495,7 @@ pub struct VMPodScrapePodMetricsEndpointsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMPodScrapePodMetricsEndpointsTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -761,8 +648,7 @@ pub struct VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfig {
     pub basic_auth: Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigBasicAuth>,
     /// SecretKeySelector selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bearer_token:
-        Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigBearerToken>,
+    pub bearer_token: Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigBearerToken>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_file: Option<String>,
     /// TLSConfig specifies TLSConfig configuration parameters.
@@ -776,8 +662,7 @@ pub struct VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigBasicAut
     /// Password defines reference for secret with password value
     /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub password:
-        Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigBasicAuthPassword>,
+    pub password: Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigBasicAuthPassword>,
     /// PasswordFile defines path to password file at disk
     /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -785,8 +670,7 @@ pub struct VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigBasicAut
     /// Username defines reference for secret with username value
     /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub username:
-        Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigBasicAuthUsername>,
+    pub username: Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigBasicAuthUsername>,
 }
 
 /// Password defines reference for secret with password value
@@ -858,25 +742,16 @@ pub struct VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfi
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigKeySecret>,
+    pub key_secret: Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -885,12 +760,10 @@ pub struct VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfi
 pub struct VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigCaSecret>,
+    pub secret: Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigCaSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -932,12 +805,10 @@ pub struct VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfi
 pub struct VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigCertSecret>,
+    pub secret: Option<VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfigCertSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -995,20 +866,12 @@ pub struct VMPodScrapePodMetricsEndpointsVmScrapeParamsProxyClientConfigTlsConfi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMPodScrapeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<VMPodScrapeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1033,13 +896,10 @@ pub struct VMPodScrapeSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMPodScrapeStatus {
     /// LastSyncError contains error message for unsuccessful config generation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
     pub last_sync_error: Option<String>,
     /// Status defines update status of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

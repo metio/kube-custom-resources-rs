@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VaultStaticSecretSpec defines the desired state of VaultStaticSecret
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "secrets.hashicorp.com",
-    version = "v1beta1",
-    kind = "VaultStaticSecret",
-    plural = "vaultstaticsecrets"
-)]
+#[kube(group = "secrets.hashicorp.com", version = "v1beta1", kind = "VaultStaticSecret", plural = "vaultstaticsecrets")]
 #[kube(namespaced)]
 #[kube(status = "VaultStaticSecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct VaultStaticSecretSpec {
     /// Destination provides configuration necessary for syncing the Vault secret to Kubernetes.
     pub destination: VaultStaticSecretDestination,
@@ -30,11 +25,7 @@ pub struct VaultStaticSecretSpec {
     /// the resource's Status.SecretMac field, and will be used for drift detection
     /// and during incoming Vault secret comparison.
     /// Enabling this feature is recommended to ensure that Secret's data stays consistent with Vault.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hmacSecretData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hmacSecretData")]
     pub hmac_secret_data: Option<bool>,
     /// Mount for the secret in Vault
     pub mount: String,
@@ -47,11 +38,7 @@ pub struct VaultStaticSecretSpec {
     /// kv-v2: https://developer.hashicorp.com/vault/api-docs/secret/kv/kv-v2#read-secret-version
     pub path: String,
     /// RefreshAfter a period of time, in duration notation e.g. 30s, 1m, 24h
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshAfter")]
     pub refresh_after: Option<String>,
     /// RolloutRestartTargets should be configured whenever the application(s) consuming the Vault secret does
     /// not support dynamically reloading a rotated secret.
@@ -59,18 +46,10 @@ pub struct VaultStaticSecretSpec {
     /// trigger a "rollout-restart" for each target whenever the Vault secret changes between reconciliation events.
     /// All configured targets wil be ignored if HMACSecretData is set to false.
     /// See RolloutRestartTarget for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rolloutRestartTargets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutRestartTargets")]
     pub rollout_restart_targets: Option<Vec<VaultStaticSecretRolloutRestartTargets>>,
     /// SyncConfig configures sync behavior from Vault to VSO
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncConfig")]
     pub sync_config: Option<VaultStaticSecretSyncConfig>,
     /// Type of the Vault static secret
     #[serde(rename = "type")]
@@ -79,11 +58,7 @@ pub struct VaultStaticSecretSpec {
     /// eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to the
     /// namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator will
     /// default to the `default` VaultAuth, configured in the operator's namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vaultAuthRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultAuthRef")]
     pub vault_auth_ref: Option<String>,
     /// Version of the secret to fetch. Only valid for type kv-v2. Corresponds to version query parameter:
     /// https://developer.hashicorp.com/vault/api-docs/secret/kv/kv-v2#version
@@ -128,11 +103,7 @@ pub struct VaultStaticSecretDestinationTransformation {
     /// globally by including 'exclude-raw` in the '--global-transformation-options'
     /// command line flag. If set, the command line flag always takes precedence over
     /// this configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeRaw"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeRaw")]
     pub exclude_raw: Option<bool>,
     /// Excludes contains regex patterns used to filter top-level source secret data
     /// fields for exclusion from the final K8s Secret data. These pattern filters are
@@ -154,13 +125,8 @@ pub struct VaultStaticSecretDestinationTransformation {
     pub templates: Option<BTreeMap<String, VaultStaticSecretDestinationTransformationTemplates>>,
     /// TransformationRefs contain references to template configuration from
     /// SecretTransformation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transformationRefs"
-    )]
-    pub transformation_refs:
-        Option<Vec<VaultStaticSecretDestinationTransformationTransformationRefs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformationRefs")]
+    pub transformation_refs: Option<Vec<VaultStaticSecretDestinationTransformationTransformationRefs>>,
 }
 
 /// Templates maps a template name to its Template. Templates are always included
@@ -185,19 +151,11 @@ pub struct VaultStaticSecretDestinationTransformationTemplates {
 pub struct VaultStaticSecretDestinationTransformationTransformationRefs {
     /// IgnoreExcludes controls whether to use the SecretTransformation's Excludes
     /// data key filters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreExcludes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreExcludes")]
     pub ignore_excludes: Option<bool>,
     /// IgnoreIncludes controls whether to use the SecretTransformation's Includes
     /// data key filters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreIncludes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreIncludes")]
     pub ignore_includes: Option<bool>,
     /// Name of the SecretTransformation resource.
     pub name: String,
@@ -206,13 +164,8 @@ pub struct VaultStaticSecretDestinationTransformationTransformationRefs {
     pub namespace: Option<String>,
     /// TemplateRefs map to a Template found in this TransformationRef. If empty, then
     /// all templates from the SecretTransformation will be rendered to the K8s Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRefs"
-    )]
-    pub template_refs:
-        Option<Vec<VaultStaticSecretDestinationTransformationTransformationRefsTemplateRefs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRefs")]
+    pub template_refs: Option<Vec<VaultStaticSecretDestinationTransformationTransformationRefsTemplateRefs>>,
 }
 
 /// TemplateRef points to templating text that is stored in a
@@ -222,11 +175,7 @@ pub struct VaultStaticSecretDestinationTransformationTransformationRefsTemplateR
     /// KeyOverride to the rendered template in the Destination secret. If Key is
     /// empty, then the Key from reference spec will be used. Set this to override the
     /// Key set from the reference spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyOverride"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyOverride")]
     pub key_override: Option<String>,
     /// Name of the Template in SecretTransformationSpec.Templates.
     /// the rendered secret data.
@@ -239,7 +188,7 @@ pub struct VaultStaticSecretDestinationTransformationTransformationRefsTemplateR
 /// 'spec.template.metadata.annotations' to include 'vso.secrets.hashicorp.com/restartedAt'
 /// with a timestamp value of when the trigger was executed.
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
-///
+/// 
 /// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VaultStaticSecretRolloutRestartTargets {
@@ -255,7 +204,7 @@ pub struct VaultStaticSecretRolloutRestartTargets {
 /// 'spec.template.metadata.annotations' to include 'vso.secrets.hashicorp.com/restartedAt'
 /// with a timestamp value of when the trigger was executed.
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
-///
+/// 
 /// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VaultStaticSecretRolloutRestartTargetsKind {
@@ -271,11 +220,7 @@ pub enum VaultStaticSecretRolloutRestartTargetsKind {
 pub struct VaultStaticSecretSyncConfig {
     /// InstantUpdates is a flag to indicate that event-driven updates are
     /// enabled for this VaultStaticSecret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instantUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instantUpdates")]
     pub instant_updates: Option<bool>,
 }
 
@@ -295,12 +240,13 @@ pub struct VaultStaticSecretStatus {
     #[serde(rename = "lastGeneration")]
     pub last_generation: i64,
     /// SecretMAC used when deciding whether new Vault secret data should be synced.
-    ///
+    /// 
     /// The controller will compare the "new" Vault secret data to this value using HMAC,
     /// if they are different, then the data will be synced to the Destination.
-    ///
+    /// 
     /// The SecretMac is also used to detect drift in the Destination Secret's Data.
     /// If drift is detected the data will be synced to the Destination.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretMAC")]
     pub secret_mac: Option<String>,
 }
+

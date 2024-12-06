@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ApplicationSpec defines the desired state of Application
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "capabilities.3scale.net",
-    version = "v1beta1",
-    kind = "Application",
-    plural = "applications"
-)]
+#[kube(group = "capabilities.3scale.net", version = "v1beta1", kind = "Application", plural = "applications")]
 #[kube(namespaced)]
 #[kube(status = "ApplicationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ApplicationSpec {
     /// AccountCRName name of account custom resource under which the application will be created
     #[serde(rename = "accountCR")]
@@ -61,29 +56,18 @@ pub struct ApplicationProductCr {
 /// ApplicationStatus defines the observed state of Application
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationID")]
     pub application_id: Option<i64>,
     /// Current state of the 3scale application. Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration reflects the generation of the most recently observed Application Spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// 3scale control plane host
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerAccountHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerAccountHost")]
     pub provider_account_host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

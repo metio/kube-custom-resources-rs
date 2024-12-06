@@ -4,50 +4,33 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// EndpointConfigSpec defines the desired state of EndpointConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sagemaker.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "EndpointConfig",
-    plural = "endpointconfigs"
-)]
+#[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "EndpointConfig", plural = "endpointconfigs")]
 #[kube(namespaced)]
 #[kube(status = "EndpointConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EndpointConfigSpec {
     /// Specifies configuration for how an endpoint performs asynchronous inference.
     /// This is a required field in order for your Endpoint to be invoked using InvokeEndpointAsync
     /// (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "asyncInferenceConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "asyncInferenceConfig")]
     pub async_inference_config: Option<EndpointConfigAsyncInferenceConfig>,
     /// Configuration to control how SageMaker captures inference data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataCaptureConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataCaptureConfig")]
     pub data_capture_config: Option<EndpointConfigDataCaptureConfig>,
     /// Sets whether all model containers deployed to the endpoint are isolated.
     /// If they are, no inbound or outbound network calls can be made to or from
     /// the model containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableNetworkIsolation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
     /// The name of the endpoint configuration. You specify this name in a CreateEndpoint
     /// (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html)
@@ -57,42 +40,38 @@ pub struct EndpointConfigSpec {
     /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
     /// to perform actions on your behalf. For more information, see SageMaker Roles
     /// (https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).
-    ///
-    ///
+    /// 
+    /// 
     /// To be able to pass this role to Amazon SageMaker, the caller of this action
     /// must have the iam:PassRole permission.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionRoleARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRoleARN")]
     pub execution_role_arn: Option<String>,
     /// The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service
     /// key that SageMaker uses to encrypt data on the storage volume attached to
     /// the ML compute instance that hosts the endpoint.
-    ///
-    ///
+    /// 
+    /// 
     /// The KmsKeyId can be any of the following formats:
-    ///
-    ///
+    /// 
+    /// 
     ///    * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
-    ///
-    ///
+    /// 
+    /// 
     ///    * Key ARN: arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab
-    ///
-    ///
+    /// 
+    /// 
     ///    * Alias name: alias/ExampleAlias
-    ///
-    ///
+    /// 
+    /// 
     ///    * Alias name ARN: arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias
-    ///
-    ///
+    /// 
+    /// 
     /// The KMS key policy must grant permission to the IAM role that you specify
     /// in your CreateEndpoint, UpdateEndpoint requests. For more information, refer
     /// to the Amazon Web Services Key Management Service section Using Key Policies
     /// in Amazon Web Services KMS (https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html)
-    ///
-    ///
+    /// 
+    /// 
     /// Certain Nitro-based instances include local storage, dependent on the instance
     /// type. Local storage volumes are encrypted using a hardware module on the
     /// instance. You can't request a KmsKeyId when using an instance type with local
@@ -101,12 +80,12 @@ pub struct EndpointConfigSpec {
     /// value for the KmsKeyId parameter. If you specify a value for KmsKeyId when
     /// using any nitro-based instances with local storage, the call to CreateEndpointConfig
     /// fails.
-    ///
-    ///
+    /// 
+    /// 
     /// For a list of instance types that support local instance storage, see Instance
     /// Store Volumes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html#instance-store-volumes).
-    ///
-    ///
+    /// 
+    /// 
     /// For more information about local instance storage encryption, see SSD Instance
     /// Store Volumes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
@@ -136,18 +115,10 @@ pub struct EndpointConfigSpec {
 pub struct EndpointConfigAsyncInferenceConfig {
     /// Configures the behavior of the client used by SageMaker to interact with
     /// the model container during asynchronous inference.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientConfig")]
     pub client_config: Option<EndpointConfigAsyncInferenceConfigClientConfig>,
     /// Specifies the configuration for asynchronous inference invocation outputs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputConfig")]
     pub output_config: Option<EndpointConfigAsyncInferenceConfigOutputConfig>,
 }
 
@@ -155,11 +126,7 @@ pub struct EndpointConfigAsyncInferenceConfig {
 /// the model container during asynchronous inference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigAsyncInferenceConfigClientConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrentInvocationsPerInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentInvocationsPerInstance")]
     pub max_concurrent_invocations_per_instance: Option<i64>,
 }
 
@@ -170,24 +137,11 @@ pub struct EndpointConfigAsyncInferenceConfigOutputConfig {
     pub kms_key_id: Option<String>,
     /// Specifies the configuration for notifications of inference results for asynchronous
     /// inference.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notificationConfig"
-    )]
-    pub notification_config:
-        Option<EndpointConfigAsyncInferenceConfigOutputConfigNotificationConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3FailurePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationConfig")]
+    pub notification_config: Option<EndpointConfigAsyncInferenceConfigOutputConfigNotificationConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3FailurePath")]
     pub s3_failure_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
 
@@ -195,23 +149,11 @@ pub struct EndpointConfigAsyncInferenceConfigOutputConfig {
 /// inference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigAsyncInferenceConfigOutputConfigNotificationConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorTopic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorTopic")]
     pub error_topic: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeInferenceResponseIn"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeInferenceResponseIn")]
     pub include_inference_response_in: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successTopic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successTopic")]
     pub success_topic: Option<String>,
 }
 
@@ -221,36 +163,15 @@ pub struct EndpointConfigDataCaptureConfig {
     /// Configuration specifying how to treat different headers. If no headers are
     /// specified Amazon SageMaker will by default base64 encode when capturing the
     /// data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "captureContentTypeHeader"
-    )]
-    pub capture_content_type_header:
-        Option<EndpointConfigDataCaptureConfigCaptureContentTypeHeader>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "captureOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureContentTypeHeader")]
+    pub capture_content_type_header: Option<EndpointConfigDataCaptureConfigCaptureContentTypeHeader>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureOptions")]
     pub capture_options: Option<Vec<EndpointConfigDataCaptureConfigCaptureOptions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationS3URI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationS3URI")]
     pub destination_s3uri: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCapture"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCapture")]
     pub enable_capture: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialSamplingPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialSamplingPercentage")]
     pub initial_sampling_percentage: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
@@ -261,28 +182,16 @@ pub struct EndpointConfigDataCaptureConfig {
 /// data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigDataCaptureConfigCaptureContentTypeHeader {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csvContentTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csvContentTypes")]
     pub csv_content_types: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jsonContentTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonContentTypes")]
     pub json_content_types: Option<Vec<String>>,
 }
 
 /// Specifies data Model Monitor will capture.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigDataCaptureConfigCaptureOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "captureMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureMode")]
     pub capture_mode: Option<String>,
 }
 
@@ -292,92 +201,40 @@ pub struct EndpointConfigDataCaptureConfigCaptureOptions {
 /// more information on production variants, check Production variants (https://docs.aws.amazon.com/sagemaker/latest/dg/model-ab-testing.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigProductionVariants {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "acceleratorType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceleratorType")]
     pub accelerator_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerStartupHealthCheckTimeoutInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerStartupHealthCheckTimeoutInSeconds")]
     pub container_startup_health_check_timeout_in_seconds: Option<i64>,
     /// Specifies configuration for a core dump from the model container when the
     /// process crashes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreDumpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreDumpConfig")]
     pub core_dump_config: Option<EndpointConfigProductionVariantsCoreDumpConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableSSMAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableSSMAccess")]
     pub enable_ssm_access: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialInstanceCount")]
     pub initial_instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialVariantWeight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialVariantWeight")]
     pub initial_variant_weight: Option<f64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     /// Settings that control the range in the number of instances that the endpoint
     /// provisions as it scales up or down to accommodate traffic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managedInstanceScaling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedInstanceScaling")]
     pub managed_instance_scaling: Option<EndpointConfigProductionVariantsManagedInstanceScaling>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelDataDownloadTimeoutInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataDownloadTimeoutInSeconds")]
     pub model_data_download_timeout_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelName")]
     pub model_name: Option<String>,
     /// Settings that control how the endpoint routes incoming traffic to the instances
     /// that the endpoint hosts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routingConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingConfig")]
     pub routing_config: Option<EndpointConfigProductionVariantsRoutingConfig>,
     /// Specifies the serverless configuration for an endpoint variant.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverlessConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverlessConfig")]
     pub serverless_config: Option<EndpointConfigProductionVariantsServerlessConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "variantName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "variantName")]
     pub variant_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSizeInGB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSizeInGB")]
     pub volume_size_in_gb: Option<i64>,
 }
 
@@ -385,11 +242,7 @@ pub struct EndpointConfigProductionVariants {
 /// process crashes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigProductionVariantsCoreDumpConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationS3URI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationS3URI")]
     pub destination_s3uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
@@ -399,17 +252,9 @@ pub struct EndpointConfigProductionVariantsCoreDumpConfig {
 /// provisions as it scales up or down to accommodate traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigProductionVariantsManagedInstanceScaling {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInstanceCount")]
     pub max_instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minInstanceCount")]
     pub min_instance_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
@@ -419,47 +264,31 @@ pub struct EndpointConfigProductionVariantsManagedInstanceScaling {
 /// that the endpoint hosts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigProductionVariantsRoutingConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routingStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingStrategy")]
     pub routing_strategy: Option<String>,
 }
 
 /// Specifies the serverless configuration for an endpoint variant.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigProductionVariantsServerlessConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrency")]
     pub max_concurrency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memorySizeInMB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySizeInMB")]
     pub memory_size_in_mb: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionedConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedConcurrency")]
     pub provisioned_concurrency: Option<i64>,
 }
 
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
-///
-///
+/// 
+/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-///
-///
+/// 
+/// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
 /// For advice on best practices for managing Amazon Web Services resources with
@@ -479,11 +308,7 @@ pub struct EndpointConfigTags {
 /// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigVpcConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<String>>,
@@ -495,11 +320,7 @@ pub struct EndpointConfigStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<EndpointConfigStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -531,3 +352,4 @@ pub struct EndpointConfigStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

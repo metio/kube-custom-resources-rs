@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ManagedNotificationSpec defines the desired state of ManagedNotification
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ocmagent.managed.openshift.io",
-    version = "v1alpha1",
-    kind = "ManagedNotification",
-    plural = "managednotifications"
-)]
+#[kube(group = "ocmagent.managed.openshift.io", version = "v1alpha1", kind = "ManagedNotification", plural = "managednotifications")]
 #[kube(namespaced)]
 #[kube(status = "ManagedNotificationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ManagedNotificationSpec {
     /// AgentConfig refers to OCM agent config fields separated
     pub notifications: Vec<ManagedNotificationNotifications>,
@@ -44,11 +39,7 @@ pub struct ManagedNotificationNotifications {
     #[serde(rename = "resendWait")]
     pub resend_wait: i32,
     /// The body text of the Service Log notification when the alert is resolved
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolvedBody"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvedBody")]
     pub resolved_body: Option<String>,
     /// The severity of the Service Log notification
     pub severity: ManagedNotificationNotificationsSeverity,
@@ -68,11 +59,7 @@ pub enum ManagedNotificationNotificationsSeverity {
 /// ManagedNotificationStatus defines the observed state of ManagedNotification
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagedNotificationStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notificationRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationRecords")]
     pub notification_records: Option<Vec<ManagedNotificationStatusNotificationRecords>>,
 }
 
@@ -84,22 +71,14 @@ pub struct ManagedNotificationStatusNotificationRecords {
     /// Name of the notification
     pub name: String,
     /// ServiceLogSentCount records the number of service logs sent for the notification
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceLogSentCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceLogSentCount")]
     pub service_log_sent_count: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagedNotificationStatusNotificationRecordsConditions {
     /// Last time the condition transit from one status to another.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     /// (brief) reason for the condition's last transition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -117,3 +96,4 @@ pub enum ManagedNotificationStatusNotificationRecordsConditionsType {
     AlertResolved,
     ServiceLogSent,
 }
+

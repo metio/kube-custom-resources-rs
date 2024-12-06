@@ -4,23 +4,18 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kyverno.io",
-    version = "v1alpha2",
-    kind = "ClusterAdmissionReport",
-    plural = "clusteradmissionreports"
-)]
+#[kube(group = "kyverno.io", version = "v1alpha2", kind = "ClusterAdmissionReport", plural = "clusteradmissionreports")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterAdmissionReportSpec {
     /// Owner is a reference to the report owner (e.g. a Deployment, Namespace, or Node)
     pub owner: ClusterAdmissionReportOwner,
@@ -46,11 +41,7 @@ pub struct ClusterAdmissionReportOwner {
     /// Defaults to false.
     /// To set this field, a user needs "delete" permission of the owner,
     /// otherwise 422 (Unprocessable Entity) will be returned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockOwnerDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockOwnerDeletion")]
     pub block_owner_deletion: Option<bool>,
     /// If true, this reference points to the managing controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -84,11 +75,7 @@ pub struct ClusterAdmissionReportResults {
     /// For example, a policy result may apply to all pods that match a label.
     /// Either a Subject or a SubjectSelector can be specified.
     /// If neither are provided, the result is assumed to be for the policy report scope.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceSelector")]
     pub resource_selector: Option<ClusterAdmissionReportResultsResourceSelector>,
     /// Subjects is an optional reference to the checked Kubernetes resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -120,21 +107,12 @@ pub struct ClusterAdmissionReportResults {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterAdmissionReportResultsResourceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<ClusterAdmissionReportResultsResourceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterAdmissionReportResultsResourceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -218,3 +196,4 @@ pub struct ClusterAdmissionReportSummary {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub warn: Option<i64>,
 }
+

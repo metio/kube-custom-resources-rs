@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// TinkerbellTemplateConfigSpec defines the desired state of TinkerbellTemplateConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "anywhere.eks.amazonaws.com",
-    version = "v1alpha1",
-    kind = "TinkerbellTemplateConfig",
-    plural = "tinkerbelltemplateconfigs"
-)]
+#[kube(group = "anywhere.eks.amazonaws.com", version = "v1alpha1", kind = "TinkerbellTemplateConfig", plural = "tinkerbelltemplateconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TinkerbellTemplateConfigSpec {
     /// Template defines a Tinkerbell workflow template with specific tasks and actions.
     pub template: TinkerbellTemplateConfigTemplate,
@@ -58,17 +53,9 @@ pub struct TinkerbellTemplateConfigTemplateTasksActions {
     pub environment: Option<BTreeMap<String, String>>,
     pub image: String,
     pub name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "on-failure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "on-failure")]
     pub on_failure: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "on-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "on-timeout")]
     pub on_timeout: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pid: Option<String>,
@@ -79,4 +66,6 @@ pub struct TinkerbellTemplateConfigTemplateTasksActions {
 
 /// TinkerbellTemplateConfigStatus defines the observed state of TinkerbellTemplateConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TinkerbellTemplateConfigStatus {}
+pub struct TinkerbellTemplateConfigStatus {
+}
+

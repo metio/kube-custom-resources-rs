@@ -5,40 +5,27 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// GlobalizationSpec defines the desired state of Globalization
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.clusternet.io",
-    version = "v1alpha1",
-    kind = "Globalization",
-    plural = "globalizations"
-)]
+#[kube(group = "apps.clusternet.io", version = "v1alpha1", kind = "Globalization", plural = "globalizations")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GlobalizationSpec {
     /// ClusterAffinity is a label query over managed clusters by labels.
     /// If no labels are specified, all clusters will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAffinity")]
     pub cluster_affinity: Option<GlobalizationClusterAffinity>,
     /// Feed holds references to the objects the Globalization applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub feed: Option<GlobalizationFeed>,
     /// OverridePolicy specifies the override policy for this Globalization.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overridePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overridePolicy")]
     pub override_policy: Option<GlobalizationOverridePolicy>,
     /// Overrides holds all the OverrideConfig.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -56,20 +43,12 @@ pub struct GlobalizationSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GlobalizationClusterAffinity {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<GlobalizationClusterAffinityMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -120,11 +99,7 @@ pub struct GlobalizationOverrides {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// OverrideChart indicates whether the override value for the HelmChart CR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overrideChart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overrideChart")]
     pub override_chart: Option<bool>,
     /// Type specifies the override type for override value.
     #[serde(rename = "type")]
@@ -141,3 +116,4 @@ pub enum GlobalizationOverridesType {
     JsonPatch,
     MergePatch,
 }
+

@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ClusterOutputSpec defines the desired state of ClusterOutput
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "fluentd.fluent.io",
-    version = "v1alpha1",
-    kind = "ClusterOutput",
-    plural = "clusteroutputs"
-)]
+#[kube(group = "fluentd.fluent.io", version = "v1alpha1", kind = "ClusterOutput", plural = "clusteroutputs")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterOutputSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<ClusterOutputOutputs>>,
@@ -32,21 +27,13 @@ pub struct ClusterOutputOutputs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buffer: Option<ClusterOutputOutputsBuffer>,
     /// out_cloudwatch plugin
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudWatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudWatch")]
     pub cloud_watch: Option<ClusterOutputOutputsCloudWatch>,
     /// copy plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub copy: Option<ClusterOutputOutputsCopy>,
     /// Custom plugin type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customPlugin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPlugin")]
     pub custom_plugin: Option<ClusterOutputOutputsCustomPlugin>,
     /// datadog plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -55,11 +42,7 @@ pub struct ClusterOutputOutputs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub elasticsearch: Option<ClusterOutputOutputsElasticsearch>,
     /// out_es datastreams plugin
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "elasticsearchDataStream"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearchDataStream")]
     pub elasticsearch_data_stream: Option<ClusterOutputOutputsElasticsearchDataStream>,
     /// format section
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -100,34 +83,18 @@ pub struct ClusterOutputOutputs {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterOutputOutputsBuffer {
     /// Calculates the number of records, chunk size, during chunk resume.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calcNumRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calcNumRecords")]
     pub calc_num_records: Option<String>,
     /// ChunkFormat specifies the chunk format for calc_num_records.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chunkFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkFormat")]
     pub chunk_format: Option<ClusterOutputOutputsBufferChunkFormat>,
     /// The max number of events that each chunks can store in it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chunkLimitRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkLimitRecords")]
     pub chunk_limit_records: Option<String>,
     /// Buffer parameters
     /// The max size of each chunks: events will be written into chunks until the size of chunks become this size
     /// Default: 8MB (memory) / 256MB (file)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chunkLimitSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkLimitSize")]
     pub chunk_limit_size: Option<String>,
     /// Fluentd will decompress these compressed chunks automatically before passing them to the output plugin
     /// If gzip is set, Fluentd compresses data records before writing to buffer chunks.
@@ -135,33 +102,17 @@ pub struct ClusterOutputOutputsBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compress: Option<ClusterOutputOutputsBufferCompress>,
     /// The timeout (seconds) until output plugin decides if the async write operation has failed. Default is 60s
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "delayedCommitTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "delayedCommitTimeout")]
     pub delayed_commit_timeout: Option<String>,
     /// Instead of storing unrecoverable chunks in the backup directory, just discard them. This option is new in Fluentd v1.2.6.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableChunkBackup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableChunkBackup")]
     pub disable_chunk_backup: Option<bool>,
     /// Flush parameters
     /// This specifies whether to flush/write all buffer chunks on shutdown or not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushAtShutdown"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushAtShutdown")]
     pub flush_at_shutdown: Option<bool>,
     /// FlushInterval defines the flush interval
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushInterval")]
     pub flush_interval: Option<String>,
     /// FlushMode defines the flush mode:
     /// lazy: flushes/writes chunks once per timekey
@@ -171,11 +122,7 @@ pub struct ClusterOutputOutputsBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushMode")]
     pub flush_mode: Option<ClusterOutputOutputsBufferFlushMode>,
     /// The number of threads to flush/write chunks in parallel
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushThreadCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushThreadCount")]
     pub flush_thread_count: Option<String>,
     /// The @id parameter specifies a unique name for the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -188,89 +135,45 @@ pub struct ClusterOutputOutputsBuffer {
     pub log_level: Option<String>,
     /// OverflowAtction defines the output plugin behave when its buffer queue is full.
     /// Default: throw_exception
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overflowAction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overflowAction")]
     pub overflow_action: Option<String>,
     /// The path where buffer chunks are stored. This field would make no effect in memory buffer plugin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Changes the suffix of the buffer file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathSuffix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathSuffix")]
     pub path_suffix: Option<String>,
     /// The queue length limitation of this buffer plugin instance. Default: 0.95
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queueLimitLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueLimitLength")]
     pub queue_limit_length: Option<String>,
     /// Limit the number of queued chunks. Default: 1
     /// If a smaller flush_interval is set, e.g. 1s,
     /// there are lots of small queued chunks in the buffer.
     /// With file buffer, it may consume a lot of fd resources when output destination has a problem.
     /// This parameter mitigates such situations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queuedChunksLimitSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuedChunksLimitSize")]
     pub queued_chunks_limit_size: Option<i64>,
     /// The base number of exponential backoff for retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryExponentialBackoffBase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryExponentialBackoffBase")]
     pub retry_exponential_backoff_base: Option<String>,
     /// If true, plugin will ignore retry_timeout and retry_max_times options and retry flushing forever.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryForever"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryForever")]
     pub retry_forever: Option<bool>,
     /// The maximum interval (seconds) for exponential backoff between retries while failing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryMaxInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryMaxInterval")]
     pub retry_max_interval: Option<String>,
     /// The maximum number of times to retry to flush the failed chunks. Default: none
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryMaxTimes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryMaxTimes")]
     pub retry_max_times: Option<i64>,
     /// If true, the output plugin will retry after randomized interval not to do burst retries
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryRandomize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryRandomize")]
     pub retry_randomize: Option<bool>,
     /// The ratio of retry_timeout to switch to use the secondary while failing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retrySecondaryThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retrySecondaryThreshold")]
     pub retry_secondary_threshold: Option<String>,
     /// Retry parameters
     /// The maximum time (seconds) to retry to flush again the failed chunks, until the plugin discards the buffer chunks
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryTimeout")]
     pub retry_timeout: Option<String>,
     /// Output plugin will retry periodically with fixed intervals.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryType")]
@@ -286,18 +189,10 @@ pub struct ClusterOutputOutputsBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
     /// Process value according to the specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Uses the specified time format as a fallback in the specified order. You can parse undetermined time format by using time_format_fallbacks. This options is enabled when time_type is mixed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormatFallbacks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormatFallbacks")]
     pub time_format_fallbacks: Option<String>,
     /// parses/formats value according to this type, default is string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeType")]
@@ -306,22 +201,14 @@ pub struct ClusterOutputOutputsBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timekey: Option<String>,
     /// Output plugin will write chunks after timekey_wait seconds later after timekey expiration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timekeyWait"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timekeyWait")]
     pub timekey_wait: Option<String>,
     /// Uses the specified timezone.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
     /// The size limitation of this buffer plugin instance
     /// Default: 512MB (memory) / 64GB (file)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalLimitSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalLimitSize")]
     pub total_limit_size: Option<String>,
     /// The @type parameter specifies the type of the plugin.
     #[serde(rename = "type")]
@@ -391,17 +278,9 @@ pub enum ClusterOutputOutputsBufferType {
 /// out_cloudwatch plugin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsCloudWatch {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoCreateStream"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoCreateStream")]
     pub auto_create_stream: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsEcsAuthentication"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsEcsAuthentication")]
     pub aws_ecs_authentication: Option<bool>,
     /// Secret defines the key of a value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsKeyId")]
@@ -409,224 +288,92 @@ pub struct ClusterOutputOutputsCloudWatch {
     /// Secret defines the key of a value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsSecKey")]
     pub aws_sec_key: Option<ClusterOutputOutputsCloudWatchAwsSecKey>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsStsDurationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsStsDurationSeconds")]
     pub aws_sts_duration_seconds: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsStsEndpointUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsStsEndpointUrl")]
     pub aws_sts_endpoint_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsStsExternalId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsStsExternalId")]
     pub aws_sts_external_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsStsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsStsPolicy")]
     pub aws_sts_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsStsRoleArn"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsStsRoleArn")]
     pub aws_sts_role_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsStsSessionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsStsSessionName")]
     pub aws_sts_session_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsUseSts")]
     pub aws_use_sts: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub concurrency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "durationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "durationSeconds")]
     pub duration_seconds: Option<String>,
     /// Specify an AWS endpoint to send data to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeTimeKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeTimeKey")]
     pub include_time_key: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jsonHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonHandler")]
     pub json_handler: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub localtime: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logGroupAwsTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logGroupAwsTags")]
     pub log_group_aws_tags: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logGroupAwsTagsKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logGroupAwsTagsKey")]
     pub log_group_aws_tags_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logGroupName")]
     pub log_group_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logGroupNameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logGroupNameKey")]
     pub log_group_name_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logRejectedRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logRejectedRequest")]
     pub log_rejected_request: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logStreamName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logStreamName")]
     pub log_stream_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logStreamNameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logStreamNameKey")]
     pub log_stream_name_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEventsPerBatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEventsPerBatch")]
     pub max_events_per_batch: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxMessageLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxMessageLength")]
     pub max_message_length: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageKeys")]
     pub message_keys: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "putLogEventsDisableRetryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "putLogEventsDisableRetryLimit")]
     pub put_log_events_disable_retry_limit: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "putLogEventsRetryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "putLogEventsRetryLimit")]
     pub put_log_events_retry_limit: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "putLogEventsRetryWait"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "putLogEventsRetryWait")]
     pub put_log_events_retry_wait: Option<String>,
     /// The AWS region.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removeLogGroupAwsTagsKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeLogGroupAwsTagsKey")]
     pub remove_log_group_aws_tags_key: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removeLogGroupNameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeLogGroupNameKey")]
     pub remove_log_group_name_key: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removeLogStreamNameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeLogStreamNameKey")]
     pub remove_log_stream_name_key: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removeRetentionInDaysKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRetentionInDaysKey")]
     pub remove_retention_in_days_key: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retentionInDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionInDays")]
     pub retention_in_days: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retentionInDaysKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionInDaysKey")]
     pub retention_in_days_key: Option<String>,
     /// ARN of an IAM role to assume (for cross account access).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleArn")]
     pub role_arn: Option<String>,
     /// Role Session name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleSessionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSessionName")]
     pub role_session_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslVerifyPeer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerifyPeer")]
     pub ssl_verify_peer: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useTagAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useTagAsGroup")]
     pub use_tag_as_group: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useTagAsStream"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useTagAsStream")]
     pub use_tag_as_stream: Option<String>,
     /// Web identity token file
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webIdentityTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webIdentityTokenFile")]
     pub web_identity_token_file: Option<String>,
 }
 
@@ -642,11 +389,7 @@ pub struct ClusterOutputOutputsCloudWatchAwsKeyId {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsCloudWatchAwsKeyIdValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsCloudWatchAwsKeyIdValueFromSecretKeyRef>,
 }
 
@@ -681,11 +424,7 @@ pub struct ClusterOutputOutputsCloudWatchAwsSecKey {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsCloudWatchAwsSecKeyValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsCloudWatchAwsSecKeyValueFromSecretKeyRef>,
 }
 
@@ -742,28 +481,16 @@ pub struct ClusterOutputOutputsDatadog {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
     pub api_key: Option<ClusterOutputOutputsDatadogApiKey>,
     /// Set the log compression level for HTTP (1 to 9, 9 being the best ratio)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionLevel")]
     pub compression_level: Option<i32>,
     /// Used by Datadog to identify the host submitting the logs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ddHostname"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ddHostname")]
     pub dd_hostname: Option<String>,
     /// This tells Datadog what integration it is
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ddSource")]
     pub dd_source: Option<String>,
     /// Multiple value attribute. Can be used to refine the source attribute
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ddSourcecategory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ddSourcecategory")]
     pub dd_sourcecategory: Option<String>,
     /// Custom tags with the following format "key1:value1, key2:value2"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ddTags")]
@@ -775,32 +502,16 @@ pub struct ClusterOutputOutputsDatadog {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
     /// Automatically include the Fluentd tag in the record.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeTagKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeTagKey")]
     pub include_tag_key: Option<bool>,
     /// The maximum time waited between each retry in seconds
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxBackoff"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBackoff")]
     pub max_backoff: Option<i32>,
     /// The number of retries before the output plugin stops. Set to -1 for unlimited retries
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
     /// Disable SSL validation (useful for proxy forwarding)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noSSLValidation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noSSLValidation")]
     pub no_ssl_validation: Option<bool>,
     /// Proxy port when logs are not directly forwarded to Datadog and ssl is not used
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -815,18 +526,10 @@ pub struct ClusterOutputOutputsDatadog {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagKey")]
     pub tag_key: Option<String>,
     /// Name of the attribute which will contain timestamp of the log event. If nil, timestamp attribute is not added.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timestampKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timestampKey")]
     pub timestamp_key: Option<String>,
     /// Enable log compression for HTTP
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useCompression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useCompression")]
     pub use_compression: Option<bool>,
     /// Enable HTTP forwarding. If you disable it, make sure to change the port to 10514 or ssl_port to 10516
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useHTTP")]
@@ -851,11 +554,7 @@ pub struct ClusterOutputOutputsDatadogApiKey {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsDatadogApiKeyValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsDatadogApiKeyValueFromSecretKeyRef>,
 }
 
@@ -885,21 +584,13 @@ pub struct ClusterOutputOutputsElasticsearch {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
     /// Optional, Absolute path to client Certificate file
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<String>,
     /// Optional, Absolute path to client private Key file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKey")]
     pub client_key: Option<String>,
     /// Optional, password for ClientKey file
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientKeyPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKeyPassword")]
     pub client_key_password: Option<ClusterOutputOutputsElasticsearchClientKeyPassword>,
     /// Authenticate towards Elastic Cloud using cloudAuth.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudAuth")]
@@ -912,11 +603,7 @@ pub struct ClusterOutputOutputsElasticsearch {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableIlm")]
     pub enable_ilm: Option<bool>,
     /// Optional, Indicates whether to fail when max_retry_putting_template is exceeded. If you have multiple output plugin, you could use this property to do not fail on fluentd statup (default: false)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failOnPuttingTemplateRetryExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOnPuttingTemplateRetryExceeded")]
     pub fail_on_putting_template_retry_exceeded: Option<bool>,
     /// The hostname of your Elasticsearch node (default: localhost).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -928,49 +615,25 @@ pub struct ClusterOutputOutputsElasticsearch {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicy")]
     pub ilm_policy: Option<String>,
     /// Optional, Specify ILM policy id
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ilmPolicyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicyId")]
     pub ilm_policy_id: Option<String>,
     /// Optional, Specify whether overwriting ilm policy or not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ilmPolicyOverride"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicyOverride")]
     pub ilm_policy_override: Option<bool>,
     /// IndexName defines the placeholder syntax of Fluentd plugin API. See https://docs.fluentd.org/configuration/buffer-section.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexName")]
     pub index_name: Option<String>,
     /// Optional, Enable logging of 400 reason without enabling debug log level
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logEs400Reason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logEs400Reason")]
     pub log_es400_reason: Option<bool>,
     /// If true, Fluentd uses the conventional index name format logstash-%Y.%m.%d (default: false). This option supersedes the index_name option.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logstashFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashFormat")]
     pub logstash_format: Option<bool>,
     /// LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logstashPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashPrefix")]
     pub logstash_prefix: Option<String>,
     /// Optional, You can specify times of retry putting template (default: 10)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetryPuttingTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryPuttingTemplate")]
     pub max_retry_putting_template: Option<i32>,
     /// Optional, The login credentials to connect to Elasticsearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -982,32 +645,16 @@ pub struct ClusterOutputOutputsElasticsearch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconnectOnError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconnectOnError")]
     pub reconnect_on_error: Option<bool>,
     /// Optional, Automatically reload connection after 10000 documents (default: true)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reloadConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadConnections")]
     pub reload_connections: Option<bool>,
     /// Optional, Indicates that the elasticsearch-transport will try to reload the nodes addresses if there is a failure while making the request, this can be useful to quickly remove a dead node from the list of addresses (default: false)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reloadOnFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadOnFailure")]
     pub reload_on_failure: Option<bool>,
     /// Optional, HTTP Timeout (default: 5)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
     pub request_timeout: Option<String>,
     /// Specify https if your Elasticsearch endpoint supports SSL (default: http).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1016,18 +663,10 @@ pub struct ClusterOutputOutputsElasticsearch {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerify")]
     pub ssl_verify: Option<bool>,
     /// Optional, Suppress '[types removal]' warnings on elasticsearch 7.x
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "suppressTypeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suppressTypeName")]
     pub suppress_type_name: Option<bool>,
     /// Optional, Always update the template, even if it already exists (default: false)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateOverwrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateOverwrite")]
     pub template_overwrite: Option<bool>,
     /// Optional, The login credentials to connect to Elasticsearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1046,13 +685,8 @@ pub struct ClusterOutputOutputsElasticsearchClientKeyPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsElasticsearchClientKeyPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOutputsElasticsearchClientKeyPasswordValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsElasticsearchClientKeyPasswordValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a secret in the pod's namespace
@@ -1086,11 +720,7 @@ pub struct ClusterOutputOutputsElasticsearchCloudAuth {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsElasticsearchCloudAuthValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsElasticsearchCloudAuthValueFromSecretKeyRef>,
 }
 
@@ -1126,11 +756,7 @@ pub struct ClusterOutputOutputsElasticsearchCloudId {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsElasticsearchCloudIdValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsElasticsearchCloudIdValueFromSecretKeyRef>,
 }
 
@@ -1165,11 +791,7 @@ pub struct ClusterOutputOutputsElasticsearchPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsElasticsearchPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsElasticsearchPasswordValueFromSecretKeyRef>,
 }
 
@@ -1204,11 +826,7 @@ pub struct ClusterOutputOutputsElasticsearchUser {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsElasticsearchUserValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsElasticsearchUserValueFromSecretKeyRef>,
 }
 
@@ -1238,21 +856,13 @@ pub struct ClusterOutputOutputsElasticsearchDataStream {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
     /// Optional, Absolute path to client Certificate file
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<String>,
     /// Optional, Absolute path to client private Key file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKey")]
     pub client_key: Option<String>,
     /// Optional, password for ClientKey file
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientKeyPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKeyPassword")]
     pub client_key_password: Option<ClusterOutputOutputsElasticsearchDataStreamClientKeyPassword>,
     /// Authenticate towards Elastic Cloud using cloudAuth.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudAuth")]
@@ -1262,52 +872,28 @@ pub struct ClusterOutputOutputsElasticsearchDataStream {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudId")]
     pub cloud_id: Option<ClusterOutputOutputsElasticsearchDataStreamCloudId>,
     /// Optional, You can specify the name of an existing ILM policy, which will be applied to the data stream. If not present, it creates a new ILM default policy (unless data_stream_template_name is defined, in that case the ILM will be set to the one specified in the matching index template)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataStreamIlmName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStreamIlmName")]
     pub data_stream_ilm_name: Option<String>,
     /// Optional, You can specify the ILM policy contents as hash. If not present, it will apply the ILM default policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataStreamIlmPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStreamIlmPolicy")]
     pub data_stream_ilm_policy: Option<String>,
     /// Optional, Specify whether the data stream ILM policy should be overwritten
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataStreamIlmPolicyOverwrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStreamIlmPolicyOverwrite")]
     pub data_stream_ilm_policy_overwrite: Option<bool>,
     /// You can specify Elasticsearch data stream name by this parameter. This parameter is mandatory for elasticsearch_data_stream
     #[serde(rename = "dataStreamName")]
     pub data_stream_name: String,
     /// Optional, You can specify an existing matching index template for the data stream. If not present, it creates a new matching index template
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataStreamTemplateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStreamTemplateName")]
     pub data_stream_template_name: Option<String>,
     /// Optional, Specify whether index patterns should include a wildcard (*) when creating an index template. This is particularly useful to prevent errors in scenarios where index templates are generated automatically, and multiple services with distinct suffixes are in use
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataStreamTemplateUseIndexPatternsWildcard"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataStreamTemplateUseIndexPatternsWildcard")]
     pub data_stream_template_use_index_patterns_wildcard: Option<bool>,
     /// Optional, Enable Index Lifecycle Management (ILM)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableIlm")]
     pub enable_ilm: Option<bool>,
     /// Optional, Indicates whether to fail when max_retry_putting_template is exceeded. If you have multiple output plugin, you could use this property to do not fail on fluentd statup (default: false)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failOnPuttingTemplateRetryExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOnPuttingTemplateRetryExceeded")]
     pub fail_on_putting_template_retry_exceeded: Option<bool>,
     /// The hostname of your Elasticsearch node (default: localhost).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1319,32 +905,16 @@ pub struct ClusterOutputOutputsElasticsearchDataStream {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicy")]
     pub ilm_policy: Option<String>,
     /// Optional, Specify ILM policy id
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ilmPolicyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicyId")]
     pub ilm_policy_id: Option<String>,
     /// Optional, Specify whether overwriting ilm policy or not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ilmPolicyOverride"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ilmPolicyOverride")]
     pub ilm_policy_override: Option<bool>,
     /// Optional, Enable logging of 400 reason without enabling debug log level
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logEs400Reason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logEs400Reason")]
     pub log_es400_reason: Option<bool>,
     /// Optional, You can specify times of retry putting template (default: 10)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetryPuttingTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryPuttingTemplate")]
     pub max_retry_putting_template: Option<i32>,
     /// Optional, The login credentials to connect to Elasticsearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1356,32 +926,16 @@ pub struct ClusterOutputOutputsElasticsearchDataStream {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconnectOnError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconnectOnError")]
     pub reconnect_on_error: Option<bool>,
     /// Optional, Automatically reload connection after 10000 documents (default: true)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reloadConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadConnections")]
     pub reload_connections: Option<bool>,
     /// Optional, Indicates that the elasticsearch-transport will try to reload the nodes addresses if there is a failure while making the request, this can be useful to quickly remove a dead node from the list of addresses (default: false)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reloadOnFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadOnFailure")]
     pub reload_on_failure: Option<bool>,
     /// Optional, HTTP Timeout (default: 5)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
     pub request_timeout: Option<String>,
     /// Specify https if your Elasticsearch endpoint supports SSL (default: http).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1390,18 +944,10 @@ pub struct ClusterOutputOutputsElasticsearchDataStream {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerify")]
     pub ssl_verify: Option<bool>,
     /// Optional, Suppress '[types removal]' warnings on elasticsearch 7.x
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "suppressTypeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suppressTypeName")]
     pub suppress_type_name: Option<bool>,
     /// Optional, Always update the template, even if it already exists (default: false)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateOverwrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateOverwrite")]
     pub template_overwrite: Option<bool>,
     /// Optional, The login credentials to connect to Elasticsearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1420,13 +966,8 @@ pub struct ClusterOutputOutputsElasticsearchDataStreamClientKeyPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsElasticsearchDataStreamClientKeyPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOutputsElasticsearchDataStreamClientKeyPasswordValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsElasticsearchDataStreamClientKeyPasswordValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a secret in the pod's namespace
@@ -1460,13 +1001,8 @@ pub struct ClusterOutputOutputsElasticsearchDataStreamCloudAuth {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsElasticsearchDataStreamCloudAuthValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOutputsElasticsearchDataStreamCloudAuthValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsElasticsearchDataStreamCloudAuthValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a secret in the pod's namespace
@@ -1501,13 +1037,8 @@ pub struct ClusterOutputOutputsElasticsearchDataStreamCloudId {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsElasticsearchDataStreamCloudIdValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOutputsElasticsearchDataStreamCloudIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsElasticsearchDataStreamCloudIdValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a secret in the pod's namespace
@@ -1541,13 +1072,8 @@ pub struct ClusterOutputOutputsElasticsearchDataStreamPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsElasticsearchDataStreamPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOutputsElasticsearchDataStreamPasswordValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsElasticsearchDataStreamPasswordValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a secret in the pod's namespace
@@ -1581,13 +1107,8 @@ pub struct ClusterOutputOutputsElasticsearchDataStreamUser {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsElasticsearchDataStreamUserValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOutputsElasticsearchDataStreamUserValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsElasticsearchDataStreamUserValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a secret in the pod's namespace
@@ -1631,25 +1152,13 @@ pub struct ClusterOutputOutputsFormat {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputTag")]
     pub output_tag: Option<bool>,
     /// Output time field if true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputTime")]
     pub output_time: Option<bool>,
     /// Process value according to the specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Uses the specified time format as a fallback in the specified order. You can parse undetermined time format by using time_format_fallbacks. This options is enabled when time_type is mixed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormatFallbacks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormatFallbacks")]
     pub time_format_fallbacks: Option<String>,
     /// parses/formats value according to this type, default is string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeType")]
@@ -1710,209 +1219,97 @@ pub enum ClusterOutputOutputsFormatType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsForward {
     /// This option is used when require_ack_response is true. This default value is based on popular tcp_syn_retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResponseTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResponseTimeout")]
     pub ack_response_timeout: Option<String>,
     /// The connection timeout for the socket. When the connection is timed out during the connection establishment, Errno::ETIMEDOUT error is raised.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
     /// Enable client-side DNS round robin. Uniform randomly pick an IP address to send data when a hostname has several IP addresses.
     /// heartbeat_type udp is not available with dns_round_robintrue. Use heartbeat_type tcp or heartbeat_type none.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsRoundRobin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsRoundRobin")]
     pub dns_round_robin: Option<bool>,
     /// Sets TTL to expire DNS cache in seconds. Set 0 not to use DNS Cache.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expireDnsCache"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expireDnsCache")]
     pub expire_dns_cache: Option<String>,
     /// The hard timeout used to detect server failure. The default value is equal to the send_timeout parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardTimeout")]
     pub hard_timeout: Option<String>,
     /// The interval of the heartbeat packer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "heartbeatInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "heartbeatInterval")]
     pub heartbeat_interval: Option<String>,
     /// Specifies the transport protocol for heartbeats. Set none to disable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "heartbeatType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "heartbeatType")]
     pub heartbeat_type: Option<ClusterOutputOutputsForwardHeartbeatType>,
     /// Ignores DNS resolution and errors at startup time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreNetworkErrorsAtStartup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreNetworkErrorsAtStartup")]
     pub ignore_network_errors_at_startup: Option<bool>,
     /// Enables the keepalive connection.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keepalive: Option<bool>,
     /// Timeout for keepalive. Default value is nil which means to keep the connection alive as long as possible.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepaliveTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveTimeout")]
     pub keepalive_timeout: Option<String>,
     /// Use the "Phi accrual failure detector" to detect server failure.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "phiFailureDetector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "phiFailureDetector")]
     pub phi_failure_detector: Option<bool>,
     /// The threshold parameter used to detect server faults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "phiThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "phiThreshold")]
     pub phi_threshold: Option<i64>,
     /// The wait time before accepting a server fault recovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recoverWait"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoverWait")]
     pub recover_wait: Option<String>,
     /// Changes the protocol to at-least-once. The plugin waits the ack from destination's in_forward plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireAckResponse"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAckResponse")]
     pub require_ack_response: Option<bool>,
     /// ServiceDiscovery defines the security section
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<ClusterOutputOutputsForwardSecurity>,
     /// The timeout time when sending event logs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendTimeout")]
     pub send_timeout: Option<String>,
     /// Servers defines the servers section, at least one is required
     pub servers: Vec<ClusterOutputOutputsForwardServers>,
     /// ServiceDiscovery defines the service_discovery section
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDiscovery")]
     pub service_discovery: Option<ClusterOutputOutputsForwardServiceDiscovery>,
     /// Allows self-signed certificates or not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsAllowSelfSignedCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsAllowSelfSignedCert")]
     pub tls_allow_self_signed_cert: Option<bool>,
     /// The certificate logical store name on Windows system certstore. This parameter is for Windows only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsCertLogicalStoreName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCertLogicalStoreName")]
     pub tls_cert_logical_store_name: Option<String>,
     /// The additional CA certificate path for TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsCertPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCertPath")]
     pub tls_cert_path: Option<String>,
     /// The certificate thumbprint for searching from Windows system certstore. This parameter is for Windows only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsCertThumbprint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCertThumbprint")]
     pub tls_cert_thumbprint: Option<String>,
     /// Enables the certificate enterprise store on Windows system certstore. This parameter is for Windows only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsCertUseEnterpriseStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCertUseEnterpriseStore")]
     pub tls_cert_use_enterprise_store: Option<bool>,
     /// The cipher configuration of TLS transport.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsCiphers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCiphers")]
     pub tls_ciphers: Option<String>,
     /// The client certificate path for TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientCertPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientCertPath")]
     pub tls_client_cert_path: Option<String>,
     /// The TLS private key passphrase for the client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientPrivateKeyPassphrase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientPrivateKeyPassphrase")]
     pub tls_client_private_key_passphrase: Option<String>,
     /// The client private key path for TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientPrivateKeyPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientPrivateKeyPath")]
     pub tls_client_private_key_path: Option<String>,
     /// Skips all verification of certificates or not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsInsecureMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsInsecureMode")]
     pub tls_insecure_mode: Option<bool>,
     /// Verifies hostname of servers and certificates or not in TLS transport.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsVerifyHostname"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsVerifyHostname")]
     pub tls_verify_hostname: Option<bool>,
     /// The default version of TLS transport.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsVersion")]
     pub tls_version: Option<ClusterOutputOutputsForwardTlsVersion>,
     /// Verify that a connection can be made with one of out_forward nodes at the time of startup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyConnectionAtStartup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyConnectionAtStartup")]
     pub verify_connection_at_startup: Option<bool>,
 }
 
@@ -1933,18 +1330,10 @@ pub enum ClusterOutputOutputsForwardHeartbeatType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsForwardSecurity {
     /// Allows the anonymous source. <client> sections are required, if disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowAnonymousSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowAnonymousSource")]
     pub allow_anonymous_source: Option<String>,
     /// The hostname.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selfHostname"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selfHostname")]
     pub self_hostname: Option<String>,
     /// The shared key for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedKey")]
@@ -1980,13 +1369,8 @@ pub struct ClusterOutputOutputsForwardSecurityUserPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsForwardSecurityUserPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOutputsForwardSecurityUserPasswordValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsForwardSecurityUserPasswordValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a secret in the pod's namespace
@@ -2020,13 +1404,8 @@ pub struct ClusterOutputOutputsForwardSecurityUserUsername {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsForwardSecurityUserUsernameValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOutputsForwardSecurityUserUsernameValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsForwardSecurityUserUsernameValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a secret in the pod's namespace
@@ -2098,11 +1477,7 @@ pub struct ClusterOutputOutputsForwardServersPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsForwardServersPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsForwardServersPasswordValueFromSecretKeyRef>,
 }
 
@@ -2137,11 +1512,7 @@ pub struct ClusterOutputOutputsForwardServersUsername {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsForwardServersUsernameValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsForwardServersUsernameValueFromSecretKeyRef>,
 }
 
@@ -2168,21 +1539,13 @@ pub struct ClusterOutputOutputsForwardServersUsernameValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterOutputOutputsForwardServiceDiscovery {
     /// The encoding of the configuration file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "confEncoding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "confEncoding")]
     pub conf_encoding: Option<String>,
     /// DnsLookup resolves the hostname to IP address of the SRV's Target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsLookup")]
     pub dns_lookup: Option<String>,
     /// DnsServerHost defines the hostname of the DNS server to request the SRV record.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsServerHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsServerHost")]
     pub dns_server_host: Option<String>,
     /// The name in RFC2782.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2263,13 +1626,8 @@ pub struct ClusterOutputOutputsForwardServiceDiscoveryServerPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsForwardServiceDiscoveryServerPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOutputsForwardServiceDiscoveryServerPasswordValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsForwardServiceDiscoveryServerPasswordValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a secret in the pod's namespace
@@ -2303,13 +1661,8 @@ pub struct ClusterOutputOutputsForwardServiceDiscoveryServerUsername {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsForwardServiceDiscoveryServerUsernameValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOutputsForwardServiceDiscoveryServerUsernameValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsForwardServiceDiscoveryServerUsernameValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a secret in the pod's namespace
@@ -2358,121 +1711,61 @@ pub struct ClusterOutputOutputsHttp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<ClusterOutputOutputsHttpAuth>,
     /// ContentType defines Content-Type for HTTP request. out_http automatically set Content-Type for built-in formatters when this parameter is not specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     /// Endpoint defines the endpoint for HTTP request. If you want to use HTTPS, use https prefix.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     /// Raise UnrecoverableError when the response code is not SUCCESS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorResponseAsUnrecoverable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorResponseAsUnrecoverable")]
     pub error_response_as_unrecoverable: Option<bool>,
     /// Headers defines the additional headers for HTTP request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<String>,
     /// Additional placeholder based headers for HTTP request. If you want to use tag or record field, use this parameter instead of headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headersFromPlaceholders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headersFromPlaceholders")]
     pub headers_from_placeholders: Option<String>,
     /// HttpMethod defines the method for HTTP request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpMethod")]
     pub http_method: Option<ClusterOutputOutputsHttpHttpMethod>,
     /// JsonArray defines whether to use the array format of JSON or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonArray")]
     pub json_array: Option<bool>,
     /// OpenTimeout defines the connection open timeout in seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTimeout")]
     pub open_timeout: Option<i64>,
     /// Proxy defines the proxy for HTTP request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<String>,
     /// ReadTimeout defines the read timeout in seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeout")]
     pub read_timeout: Option<i64>,
     /// The list of retryable response codes. If the response code is included in this list, out_http retries the buffer flush.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryableResponseCodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryableResponseCodes")]
     pub retryable_response_codes: Option<String>,
     /// SslTimeout defines the TLS timeout in seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslTimeout")]
     pub ssl_timeout: Option<i64>,
     /// TlsCaCertPath defines the CA certificate path for TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsCaCertPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCaCertPath")]
     pub tls_ca_cert_path: Option<String>,
     /// TlsCiphers defines the cipher suites configuration of TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsCiphers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCiphers")]
     pub tls_ciphers: Option<String>,
     /// TlsClientCertPath defines the client certificate path for TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientCertPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientCertPath")]
     pub tls_client_cert_path: Option<String>,
     /// TlsPrivateKeyPassphrase defines the client private key passphrase for TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsPrivateKeyPassphrase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsPrivateKeyPassphrase")]
     pub tls_private_key_passphrase: Option<String>,
     /// TlsPrivateKeyPath defines the client private key path for TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsPrivateKeyPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsPrivateKeyPath")]
     pub tls_private_key_path: Option<String>,
     /// TlsVerifyMode defines the verify mode of TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsVerifyMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsVerifyMode")]
     pub tls_verify_mode: Option<ClusterOutputOutputsHttpTlsVerifyMode>,
     /// TlsVersion defines the default version of TLS transport.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsVersion")]
     pub tls_version: Option<ClusterOutputOutputsHttpTlsVersion>,
 }
 
@@ -2502,11 +1795,7 @@ pub struct ClusterOutputOutputsHttpAuthPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsHttpAuthPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsHttpAuthPasswordValueFromSecretKeyRef>,
 }
 
@@ -2541,11 +1830,7 @@ pub struct ClusterOutputOutputsHttpAuthUsername {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsHttpAuthUsernameValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsHttpAuthUsernameValueFromSecretKeyRef>,
 }
 
@@ -2602,11 +1887,7 @@ pub struct ClusterOutputOutputsInject {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// The field name to inject hostname
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostnameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameKey")]
     pub hostname_key: Option<String>,
     /// Time section
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2618,11 +1899,7 @@ pub struct ClusterOutputOutputsInject {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
     pub time_key: Option<String>,
     /// The field name to inject worker_id
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerIdKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerIdKey")]
     pub worker_id_key: Option<String>,
 }
 
@@ -2633,18 +1910,10 @@ pub struct ClusterOutputOutputsInjectInline {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub localtime: Option<bool>,
     /// Process value according to the specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Uses the specified time format as a fallback in the specified order. You can parse undetermined time format by using time_format_fallbacks. This options is enabled when time_type is mixed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormatFallbacks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormatFallbacks")]
     pub time_format_fallbacks: Option<String>,
     /// parses/formats value according to this type, default is string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeType")]
@@ -2677,35 +1946,19 @@ pub struct ClusterOutputOutputsKafka {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub brokers: Option<String>,
     /// The codec the producer uses to compress messages (default: nil).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionCodec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionCodec")]
     pub compression_codec: Option<ClusterOutputOutputsKafkaCompressionCodec>,
     /// The name of the default topic. (default: nil)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultTopic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTopic")]
     pub default_topic: Option<String>,
     /// The number of acks required per request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredAcks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredAcks")]
     pub required_acks: Option<i64>,
     /// The field name for the target topic. If the field value is app, this plugin writes events to the app topic.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicKey")]
     pub topic_key: Option<String>,
     /// Set fluentd event time to Kafka's CreateTime.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useEventTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useEventTime")]
     pub use_event_time: Option<bool>,
 }
 
@@ -2723,43 +1976,23 @@ pub enum ClusterOutputOutputsKafkaCompressionCodec {
 pub struct ClusterOutputOutputsLoki {
     /// Set path to file with bearer authentication token
     /// Can be used as alterntative to HTTP basic authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// If a record only has 1 key, then just set the log line to the value and discard the key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dropSingleKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dropSingleKey")]
     pub drop_single_key: Option<bool>,
     /// If set to true, it will add all Kubernetes labels to the Stream labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extractKubernetesLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extractKubernetesLabels")]
     pub extract_kubernetes_labels: Option<bool>,
     /// Password for user defined in HTTP_User
     /// Set HTTP basic authentication password
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpPassword")]
     pub http_password: Option<ClusterOutputOutputsLokiHttpPassword>,
     /// Set HTTP basic authentication user name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpUser")]
     pub http_user: Option<ClusterOutputOutputsLokiHttpUser>,
     /// Whether or not to include the fluentd_thread label when multiple threads are used for flushing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeThreadLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeThreadLabel")]
     pub include_thread_label: Option<bool>,
     /// Disable certificate validation
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2775,44 +2008,24 @@ pub struct ClusterOutputOutputsLoki {
     /// Format to use when flattening the record to a log line. Valid values are json or key_value.
     /// If set to json,  the log line sent to Loki will be the Fluentd record dumped as JSON.
     /// If set to key_value, the log line will be each item in the record concatenated together (separated by a single space) in the format.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lineFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lineFormat")]
     pub line_format: Option<ClusterOutputOutputsLokiLineFormat>,
     /// Optional list of record keys that will be removed from stream labels.
     /// This configuration property is for records key only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "removeKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeKeys")]
     pub remove_keys: Option<Vec<String>>,
     /// Tenant ID used by default to push logs to Loki.
     /// If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
     pub tenant_id: Option<ClusterOutputOutputsLokiTenantId>,
     /// TlsCaCert defines the CA certificate file for TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsCaCertFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCaCertFile")]
     pub tls_ca_cert_file: Option<String>,
     /// TlsClientCert defines the client certificate file for TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientCertFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientCertFile")]
     pub tls_client_cert_file: Option<String>,
     /// TlsPrivateKey defines the client private key file for TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsPrivateKeyFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsPrivateKeyFile")]
     pub tls_private_key_file: Option<String>,
     /// Loki URL.
     pub url: String,
@@ -2831,11 +2044,7 @@ pub struct ClusterOutputOutputsLokiHttpPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsLokiHttpPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsLokiHttpPasswordValueFromSecretKeyRef>,
 }
 
@@ -2870,11 +2079,7 @@ pub struct ClusterOutputOutputsLokiHttpUser {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsLokiHttpUserValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsLokiHttpUserValueFromSecretKeyRef>,
 }
 
@@ -2919,11 +2124,7 @@ pub struct ClusterOutputOutputsLokiTenantId {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsLokiTenantIdValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsLokiTenantIdValueFromSecretKeyRef>,
 }
 
@@ -2959,18 +2160,10 @@ pub struct ClusterOutputOutputsOpensearch {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexName")]
     pub index_name: Option<String>,
     /// If true, Fluentd uses the conventional index name format logstash-%Y.%m.%d (default: false). This option supersedes the index_name option.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logstashFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashFormat")]
     pub logstash_format: Option<bool>,
     /// LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logstashPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashPrefix")]
     pub logstash_prefix: Option<String>,
     /// Optional, The login credentials to connect to Opensearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3004,11 +2197,7 @@ pub struct ClusterOutputOutputsOpensearchPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsOpensearchPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsOpensearchPasswordValueFromSecretKeyRef>,
 }
 
@@ -3043,11 +2232,7 @@ pub struct ClusterOutputOutputsOpensearchUser {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsOpensearchUserValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOutputsOpensearchUserValueFromSecretKeyRef>,
 }
 
@@ -3080,11 +2265,7 @@ pub struct ClusterOutputOutputsS3 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsSecKey")]
     pub aws_sec_key: Option<String>,
     /// This prevents AWS SDK from breaking endpoint URL
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forcePathStyle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forcePathStyle")]
     pub force_path_style: Option<bool>,
     /// The path prefix of the files on S3.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3096,73 +2277,37 @@ pub struct ClusterOutputOutputsS3 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Bucket")]
     pub s3_bucket: Option<String>,
     /// The endpoint URL (like "http://localhost:9000/")
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3Endpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Endpoint")]
     pub s3_endpoint: Option<String>,
     /// The actual S3 path. This is interpolated to the actual path.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3ObjectKeyFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3ObjectKeyFormat")]
     pub s3_object_key_format: Option<String>,
     /// The Amazon S3 region name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Region")]
     pub s3_region: Option<String>,
     /// The AWS KMS enctyption algorithm.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sseCustomerAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseCustomerAlgorithm")]
     pub sse_customer_algorithm: Option<String>,
     /// The AWS KMS key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sseCustomerKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseCustomerKey")]
     pub sse_customer_key: Option<String>,
     /// The AWS KMS key MD5.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sseCustomerKeyMd5"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseCustomerKeyMd5")]
     pub sse_customer_key_md5: Option<String>,
     /// The AWS KMS key ID.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ssekmsKeyId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ssekmsKeyId")]
     pub ssekms_key_id: Option<String>,
     /// Verify the SSL certificate of the endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslVerifyPeer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerifyPeer")]
     pub ssl_verify_peer: Option<bool>,
     /// The compression type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storeAs")]
     pub store_as: Option<ClusterOutputOutputsS3StoreAs>,
     /// This timestamp is added to each file name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeSliceFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeSliceFormat")]
     pub time_slice_format: Option<String>,
     /// the following parameters are for S3 kms https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useServerSideEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useServerSideEncryption")]
     pub use_server_side_encryption: Option<String>,
 }
 
@@ -3181,8 +2326,11 @@ pub enum ClusterOutputOutputsS3StoreAs {
 
 /// out_stdout plugin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterOutputOutputsStdout {}
+pub struct ClusterOutputOutputsStdout {
+}
 
 /// ClusterOutputStatus defines the observed state of ClusterOutput
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterOutputStatus {}
+pub struct ClusterOutputStatus {
+}
+

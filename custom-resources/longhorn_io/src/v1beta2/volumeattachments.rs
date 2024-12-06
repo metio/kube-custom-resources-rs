@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VolumeAttachmentSpec defines the desired state of Longhorn VolumeAttachment
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "VolumeAttachment",
-    plural = "volumeattachments"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "VolumeAttachment", plural = "volumeattachments")]
 #[kube(namespaced)]
 #[kube(status = "VolumeAttachmentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VolumeAttachmentSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attachmentTickets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachmentTickets")]
     pub attachment_tickets: Option<BTreeMap<String, VolumeAttachmentAttachmentTickets>>,
     /// The name of Longhorn volume of this VolumeAttachment
     pub volume: String,
@@ -57,13 +48,8 @@ pub struct VolumeAttachmentAttachmentTickets {
 /// VolumeAttachmentStatus defines the observed state of Longhorn VolumeAttachment
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeAttachmentStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attachmentTicketStatuses"
-    )]
-    pub attachment_ticket_statuses:
-        Option<BTreeMap<String, VolumeAttachmentStatusAttachmentTicketStatuses>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachmentTicketStatuses")]
+    pub attachment_ticket_statuses: Option<BTreeMap<String, VolumeAttachmentStatusAttachmentTicketStatuses>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -82,3 +68,4 @@ pub struct VolumeAttachmentStatusAttachmentTicketStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub satisfied: Option<bool>,
 }
+

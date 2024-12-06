@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// CapsuleConfigurationSpec defines the Capsule configuration.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "capsule.clastix.io",
-    version = "v1beta2",
-    kind = "CapsuleConfiguration",
-    plural = "capsuleconfigurations"
-)]
+#[kube(group = "capsule.clastix.io", version = "v1beta2", kind = "CapsuleConfiguration", plural = "capsuleconfigurations")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CapsuleConfigurationSpec {
     /// Toggles the TLS reconciler, the controller that is able to generate CA and certificates for the webhooks
     /// when not using an already provided CA and certificate, or when these are managed externally with Vault, or cert-manager.
@@ -27,37 +22,21 @@ pub struct CapsuleConfigurationSpec {
     pub enable_tls_reconciler: bool,
     /// Enforces the Tenant owner, during Namespace creation, to name it using the selected Tenant name as prefix,
     /// separated by a dash. This is useful to avoid Namespace name collision in a public CaaS environment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forceTenantPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceTenantPrefix")]
     pub force_tenant_prefix: Option<bool>,
     /// Allows to set the forbidden metadata for the worker nodes that could be patched by a Tenant.
     /// This applies only if the Tenant has an active NodeSelector, and the Owner have right to patch their nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMetadata")]
     pub node_metadata: Option<CapsuleConfigurationNodeMetadata>,
     /// Allows to set different name rather than the canonical one for the Capsule configuration objects,
     /// such as webhook secret or configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<CapsuleConfigurationOverrides>,
     /// Disallow creation of namespaces, whose name matches this regexp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectedNamespaceRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectedNamespaceRegex")]
     pub protected_namespace_regex: Option<String>,
     /// Names of the groups for Capsule users.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userGroups")]
     pub user_groups: Option<Vec<String>>,
 }
 
@@ -78,11 +57,7 @@ pub struct CapsuleConfigurationNodeMetadata {
 pub struct CapsuleConfigurationNodeMetadataForbiddenAnnotations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub denied: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deniedRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deniedRegex")]
     pub denied_regex: Option<String>,
 }
 
@@ -91,11 +66,7 @@ pub struct CapsuleConfigurationNodeMetadataForbiddenAnnotations {
 pub struct CapsuleConfigurationNodeMetadataForbiddenLabels {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub denied: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deniedRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deniedRegex")]
     pub denied_regex: Option<String>,
 }
 
@@ -114,3 +85,4 @@ pub struct CapsuleConfigurationOverrides {
     #[serde(rename = "validatingWebhookConfigurationName")]
     pub validating_webhook_configuration_name: String,
 }
+

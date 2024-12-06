@@ -4,64 +4,39 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Spec defines the desired state of a member cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kubean.io",
-    version = "v1alpha1",
-    kind = "ClusterOperation",
-    plural = "clusteroperations"
-)]
+#[kube(group = "kubean.io", version = "v1alpha1", kind = "ClusterOperation", plural = "clusteroperations")]
 #[kube(status = "ClusterOperationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterOperationSpec {
     pub action: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "actionSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionSource")]
     pub action_source: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "actionSourceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionSourceRef")]
     pub action_source_ref: Option<ClusterOperationActionSourceRef>,
     #[serde(rename = "actionType")]
     pub action_type: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// Cluster the name of Cluster.kubean.io.
     pub cluster: String,
     /// EntrypointSHRef will be filled by operator when it renders entrypoint.sh.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "entrypointSHRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "entrypointSHRef")]
     pub entrypoint_sh_ref: Option<ClusterOperationEntrypointShRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraArgs")]
     pub extra_args: Option<String>,
     /// HostsConfRef will be filled by operator when it performs backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostsConfRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostsConfRef")]
     pub hosts_conf_ref: Option<ClusterOperationHostsConfRef>,
     pub image: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postHook")]
@@ -72,18 +47,10 @@ pub struct ClusterOperationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterOperationResources>,
     /// SSHAuthRef will be filled by operator when it performs backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sshAuthRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshAuthRef")]
     pub ssh_auth_ref: Option<ClusterOperationSshAuthRef>,
     /// VarsConfRef will be filled by operator when it performs backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "varsConfRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "varsConfRef")]
     pub vars_conf_ref: Option<ClusterOperationVarsConfRef>,
 }
 
@@ -110,17 +77,9 @@ pub struct ClusterOperationHostsConfRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOperationPostHook {
     pub action: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "actionSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionSource")]
     pub action_source: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "actionSourceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionSourceRef")]
     pub action_source_ref: Option<ClusterOperationPostHookActionSourceRef>,
     #[serde(rename = "actionType")]
     pub action_type: String,
@@ -137,17 +96,9 @@ pub struct ClusterOperationPostHookActionSourceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOperationPreHook {
     pub action: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "actionSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionSource")]
     pub action_source: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "actionSourceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionSourceRef")]
     pub action_source_ref: Option<ClusterOperationPreHookActionSourceRef>,
     #[serde(rename = "actionType")]
     pub action_type: String,
@@ -164,8 +115,8 @@ pub struct ClusterOperationPreHookActionSourceRef {
 /// ResourceRequirements describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOperationResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container.
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate.
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ClusterOperationResourcesClaims>>,
@@ -209,11 +160,7 @@ pub struct ClusterOperationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
     pub end_time: Option<String>,
     /// HasModified indicates the spec has been modified by others after created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hasModified"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hasModified")]
     pub has_modified: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobRef")]
     pub job_ref: Option<ClusterOperationStatusJobRef>,
@@ -228,3 +175,4 @@ pub struct ClusterOperationStatusJobRef {
     pub name: String,
     pub namespace: String,
 }
+

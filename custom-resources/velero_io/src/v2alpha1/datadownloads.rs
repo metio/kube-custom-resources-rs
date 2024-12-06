@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DataDownloadSpec is the specification for a DataDownload.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "velero.io",
-    version = "v2alpha1",
-    kind = "DataDownload",
-    plural = "datadownloads"
-)]
+#[kube(group = "velero.io", version = "v2alpha1", kind = "DataDownload", plural = "datadownloads")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DataDownloadSpec {
     /// BackupStorageLocation is the name of the backup storage location
     /// where the backup repository is stored.
@@ -32,11 +27,7 @@ pub struct DataDownloadSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cancel: Option<bool>,
     /// DataMoverConfig is for data-mover-specific configuration fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataMoverConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataMoverConfig")]
     pub data_mover_config: Option<BTreeMap<String, String>>,
     /// DataMover specifies the data mover to be used by the backup.
     /// If DataMover is "" or "velero", the built-in data mover will be used.
@@ -75,11 +66,7 @@ pub struct DataDownloadStatus {
     /// CompletionTimestamp records the time a restore was completed.
     /// Completion time is recorded even on failed restores.
     /// The server's time is used for CompletionTimestamps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTimestamp")]
     pub completion_timestamp: Option<String>,
     /// Message is a message about the DataDownload's status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -97,11 +84,7 @@ pub struct DataDownloadStatus {
     pub progress: Option<DataDownloadStatusProgress>,
     /// StartTimestamp records the time a restore was started.
     /// The server's time is used for StartTimestamps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
 }
 
@@ -125,10 +108,7 @@ pub enum DataDownloadStatusPhase {
 pub struct DataDownloadStatusProgress {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bytesDone")]
     pub bytes_done: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalBytes")]
     pub total_bytes: Option<i64>,
 }
+

@@ -4,50 +4,37 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// PipeSpec defines the desired state of Pipe.
-///
+/// 
 /// An object that represents a pipe. Amazon EventBridgePipes connect event sources
 /// to targets and reduces the need for specialized knowledge and integration
 /// code.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "pipes.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Pipe",
-    plural = "pipes"
-)]
+#[kube(group = "pipes.services.k8s.aws", version = "v1alpha1", kind = "Pipe", plural = "pipes")]
 #[kube(namespaced)]
 #[kube(status = "PipeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PipeSpec {
     /// A description of the pipe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The state the pipe should be in.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredState")]
     pub desired_state: Option<String>,
     /// The ARN of the enrichment resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enrichment: Option<String>,
     /// The parameters required to set up enrichment on your pipe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enrichmentParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enrichmentParameters")]
     pub enrichment_parameters: Option<PipeEnrichmentParameters>,
     /// The name of the pipe.
     pub name: String,
@@ -57,11 +44,7 @@ pub struct PipeSpec {
     /// The ARN of the source resource.
     pub source: String,
     /// The parameters required to set up a source for your pipe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceParameters")]
     pub source_parameters: Option<PipeSourceParameters>,
     /// The list of key-value pairs to associate with the pipe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -69,11 +52,7 @@ pub struct PipeSpec {
     /// The ARN of the target resource.
     pub target: String,
     /// The parameters required to set up a target for your pipe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetParameters")]
     pub target_parameters: Option<PipeTargetParameters>,
 }
 
@@ -84,17 +63,9 @@ pub struct PipeEnrichmentParameters {
     /// APIs or EventBridge ApiDestinations. In the latter case, these are merged
     /// with any InvocationParameters specified on the Connection, with any values
     /// from the Connection taking precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpParameters")]
     pub http_parameters: Option<PipeEnrichmentParametersHttpParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inputTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputTemplate")]
     pub input_template: Option<String>,
 }
 
@@ -104,23 +75,11 @@ pub struct PipeEnrichmentParameters {
 /// from the Connection taking precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeEnrichmentParametersHttpParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerParameters")]
     pub header_parameters: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathParameterValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathParameterValues")]
     pub path_parameter_values: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryStringParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryStringParameters")]
     pub query_string_parameters: Option<BTreeMap<String, String>>,
 }
 
@@ -128,63 +87,30 @@ pub struct PipeEnrichmentParametersHttpParameters {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeSourceParameters {
     /// The parameters for using an Active MQ broker as a source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeMQBrokerParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeMQBrokerParameters")]
     pub active_mq_broker_parameters: Option<PipeSourceParametersActiveMqBrokerParameters>,
     /// The parameters for using a DynamoDB stream as a source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dynamoDBStreamParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamoDBStreamParameters")]
     pub dynamo_db_stream_parameters: Option<PipeSourceParametersDynamoDbStreamParameters>,
     /// The collection of event patterns used to filter events. For more information,
     /// see Events and Event Patterns (https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html)
     /// in the Amazon EventBridge User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterCriteria"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterCriteria")]
     pub filter_criteria: Option<PipeSourceParametersFilterCriteria>,
     /// The parameters for using a Kinesis stream as a source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kinesisStreamParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kinesisStreamParameters")]
     pub kinesis_stream_parameters: Option<PipeSourceParametersKinesisStreamParameters>,
     /// The parameters for using an MSK stream as a source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managedStreamingKafkaParameters"
-    )]
-    pub managed_streaming_kafka_parameters:
-        Option<PipeSourceParametersManagedStreamingKafkaParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedStreamingKafkaParameters")]
+    pub managed_streaming_kafka_parameters: Option<PipeSourceParametersManagedStreamingKafkaParameters>,
     /// The parameters for using a Rabbit MQ broker as a source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rabbitMQBrokerParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rabbitMQBrokerParameters")]
     pub rabbit_mq_broker_parameters: Option<PipeSourceParametersRabbitMqBrokerParameters>,
     /// The parameters for using a self-managed Apache Kafka stream as a source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selfManagedKafkaParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selfManagedKafkaParameters")]
     pub self_managed_kafka_parameters: Option<PipeSourceParametersSelfManagedKafkaParameters>,
     /// The parameters for using a Amazon SQS stream as a source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sqsQueueParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sqsQueueParameters")]
     pub sqs_queue_parameters: Option<PipeSourceParametersSqsQueueParameters>,
 }
 
@@ -196,11 +122,7 @@ pub struct PipeSourceParametersActiveMqBrokerParameters {
     /// The Secrets Manager secret that stores your broker credentials.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<PipeSourceParametersActiveMqBrokerParametersCredentials>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumBatchingWindowInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumBatchingWindowInSeconds")]
     pub maximum_batching_window_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueName")]
     pub queue_name: Option<String>,
@@ -221,47 +143,19 @@ pub struct PipeSourceParametersDynamoDbStreamParameters {
     pub batch_size: Option<i64>,
     /// A DeadLetterConfig object that contains information about a dead-letter queue
     /// configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deadLetterConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deadLetterConfig")]
     pub dead_letter_config: Option<PipeSourceParametersDynamoDbStreamParametersDeadLetterConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumBatchingWindowInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumBatchingWindowInSeconds")]
     pub maximum_batching_window_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumRecordAgeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRecordAgeInSeconds")]
     pub maximum_record_age_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumRetryAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRetryAttempts")]
     pub maximum_retry_attempts: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onPartialBatchItemFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onPartialBatchItemFailure")]
     pub on_partial_batch_item_failure: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parallelizationFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelizationFactor")]
     pub parallelization_factor: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startingPosition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingPosition")]
     pub starting_position: Option<String>,
 }
 
@@ -298,53 +192,21 @@ pub struct PipeSourceParametersKinesisStreamParameters {
     pub batch_size: Option<i64>,
     /// A DeadLetterConfig object that contains information about a dead-letter queue
     /// configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deadLetterConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deadLetterConfig")]
     pub dead_letter_config: Option<PipeSourceParametersKinesisStreamParametersDeadLetterConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumBatchingWindowInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumBatchingWindowInSeconds")]
     pub maximum_batching_window_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumRecordAgeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRecordAgeInSeconds")]
     pub maximum_record_age_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumRetryAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRetryAttempts")]
     pub maximum_retry_attempts: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onPartialBatchItemFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onPartialBatchItemFailure")]
     pub on_partial_batch_item_failure: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parallelizationFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelizationFactor")]
     pub parallelization_factor: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startingPosition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingPosition")]
     pub starting_position: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startingPositionTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingPositionTimestamp")]
     pub starting_position_timestamp: Option<String>,
 }
 
@@ -361,26 +223,14 @@ pub struct PipeSourceParametersKinesisStreamParametersDeadLetterConfig {
 pub struct PipeSourceParametersManagedStreamingKafkaParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSize")]
     pub batch_size: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consumerGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerGroupID")]
     pub consumer_group_id: Option<String>,
     /// The Secrets Manager secret that stores your stream credentials.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<PipeSourceParametersManagedStreamingKafkaParametersCredentials>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumBatchingWindowInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumBatchingWindowInSeconds")]
     pub maximum_batching_window_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startingPosition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingPosition")]
     pub starting_position: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicName")]
     pub topic_name: Option<String>,
@@ -390,18 +240,10 @@ pub struct PipeSourceParametersManagedStreamingKafkaParameters {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeSourceParametersManagedStreamingKafkaParametersCredentials {
     /// // Optional SecretManager ARN which stores the database credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificateTLSAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificateTLSAuth")]
     pub client_certificate_tls_auth: Option<String>,
     /// // Optional SecretManager ARN which stores the database credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "saslSCRAM512Auth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslSCRAM512Auth")]
     pub sasl_scram512_auth: Option<String>,
 }
 
@@ -413,19 +255,11 @@ pub struct PipeSourceParametersRabbitMqBrokerParameters {
     /// The Secrets Manager secret that stores your broker credentials.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<PipeSourceParametersRabbitMqBrokerParametersCredentials>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumBatchingWindowInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumBatchingWindowInSeconds")]
     pub maximum_batching_window_in_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueName")]
     pub queue_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualHost")]
     pub virtual_host: Option<String>,
 }
 
@@ -440,41 +274,21 @@ pub struct PipeSourceParametersRabbitMqBrokerParametersCredentials {
 /// The parameters for using a self-managed Apache Kafka stream as a source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeSourceParametersSelfManagedKafkaParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalBootstrapServers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalBootstrapServers")]
     pub additional_bootstrap_servers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSize")]
     pub batch_size: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consumerGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerGroupID")]
     pub consumer_group_id: Option<String>,
     /// The Secrets Manager secret that stores your stream credentials.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<PipeSourceParametersSelfManagedKafkaParametersCredentials>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumBatchingWindowInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumBatchingWindowInSeconds")]
     pub maximum_batching_window_in_seconds: Option<i64>,
     /// // Optional SecretManager ARN which stores the database credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverRootCaCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverRootCaCertificate")]
     pub server_root_ca_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startingPosition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingPosition")]
     pub starting_position: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicName")]
     pub topic_name: Option<String>,
@@ -491,25 +305,13 @@ pub struct PipeSourceParametersSelfManagedKafkaParametersCredentials {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<String>,
     /// // Optional SecretManager ARN which stores the database credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificateTLSAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificateTLSAuth")]
     pub client_certificate_tls_auth: Option<String>,
     /// // Optional SecretManager ARN which stores the database credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "saslSCRAM256Auth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslSCRAM256Auth")]
     pub sasl_scram256_auth: Option<String>,
     /// // Optional SecretManager ARN which stores the database credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "saslSCRAM512Auth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslSCRAM512Auth")]
     pub sasl_scram512_auth: Option<String>,
 }
 
@@ -518,11 +320,7 @@ pub struct PipeSourceParametersSelfManagedKafkaParametersCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeSourceParametersSelfManagedKafkaParametersVpc {
     /// List of SecurityGroupId.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroup")]
     pub security_group: Option<Vec<String>>,
     /// List of SubnetId.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -534,11 +332,7 @@ pub struct PipeSourceParametersSelfManagedKafkaParametersVpc {
 pub struct PipeSourceParametersSqsQueueParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSize")]
     pub batch_size: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumBatchingWindowInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumBatchingWindowInSeconds")]
     pub maximum_batching_window_in_seconds: Option<i64>,
 }
 
@@ -546,92 +340,42 @@ pub struct PipeSourceParametersSqsQueueParameters {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParameters {
     /// The parameters for using an Batch job as a target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batchJobParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchJobParameters")]
     pub batch_job_parameters: Option<PipeTargetParametersBatchJobParameters>,
     /// The parameters for using an CloudWatch Logs log stream as a target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudWatchLogsParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudWatchLogsParameters")]
     pub cloud_watch_logs_parameters: Option<PipeTargetParametersCloudWatchLogsParameters>,
     /// The parameters for using an Amazon ECS task as a target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ecsTaskParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ecsTaskParameters")]
     pub ecs_task_parameters: Option<PipeTargetParametersEcsTaskParameters>,
     /// The parameters for using an EventBridge event bus as a target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventBridgeEventBusParameters"
-    )]
-    pub event_bridge_event_bus_parameters:
-        Option<PipeTargetParametersEventBridgeEventBusParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventBridgeEventBusParameters")]
+    pub event_bridge_event_bus_parameters: Option<PipeTargetParametersEventBridgeEventBusParameters>,
     /// These are custom parameter to be used when the target is an API Gateway REST
     /// APIs or EventBridge ApiDestinations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpParameters")]
     pub http_parameters: Option<PipeTargetParametersHttpParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inputTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputTemplate")]
     pub input_template: Option<String>,
     /// The parameters for using a Kinesis stream as a source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kinesisStreamParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kinesisStreamParameters")]
     pub kinesis_stream_parameters: Option<PipeTargetParametersKinesisStreamParameters>,
     /// The parameters for using a Lambda function as a target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lambdaFunctionParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lambdaFunctionParameters")]
     pub lambda_function_parameters: Option<PipeTargetParametersLambdaFunctionParameters>,
     /// These are custom parameters to be used when the target is a Amazon Redshift
     /// cluster to invoke the Amazon Redshift Data API ExecuteStatement.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redshiftDataParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redshiftDataParameters")]
     pub redshift_data_parameters: Option<PipeTargetParametersRedshiftDataParameters>,
     /// The parameters for using a SageMaker pipeline as a target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerPipelineParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerPipelineParameters")]
     pub sage_maker_pipeline_parameters: Option<PipeTargetParametersSageMakerPipelineParameters>,
     /// The parameters for using a Amazon SQS stream as a source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sqsQueueParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sqsQueueParameters")]
     pub sqs_queue_parameters: Option<PipeTargetParametersSqsQueueParameters>,
     /// The parameters for using a Step Functions state machine as a target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stepFunctionStateMachineParameters"
-    )]
-    pub step_function_state_machine_parameters:
-        Option<PipeTargetParametersStepFunctionStateMachineParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stepFunctionStateMachineParameters")]
+    pub step_function_state_machine_parameters: Option<PipeTargetParametersStepFunctionStateMachineParameters>,
 }
 
 /// The parameters for using an Batch job as a target.
@@ -641,26 +385,14 @@ pub struct PipeTargetParametersBatchJobParameters {
     /// The array size can be between 2 and 10,000. If you specify array properties
     /// for a job, it becomes an array job. This parameter is used only if the target
     /// is an Batch job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "arrayProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "arrayProperties")]
     pub array_properties: Option<PipeTargetParametersBatchJobParametersArrayProperties>,
     /// The overrides that are sent to a container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerOverrides")]
     pub container_overrides: Option<PipeTargetParametersBatchJobParametersContainerOverrides>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
     pub depends_on: Option<Vec<PipeTargetParametersBatchJobParametersDependsOn>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobDefinition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobDefinition")]
     pub job_definition: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobName")]
     pub job_name: Option<String>,
@@ -669,11 +401,7 @@ pub struct PipeTargetParametersBatchJobParameters {
     /// The retry strategy that's associated with a job. For more information, see
     /// Automated job retries (https://docs.aws.amazon.com/batch/latest/userguide/job_retries.html)
     /// in the Batch User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryStrategy")]
     pub retry_strategy: Option<PipeTargetParametersBatchJobParametersRetryStrategy>,
 }
 
@@ -693,27 +421,17 @@ pub struct PipeTargetParametersBatchJobParametersContainerOverrides {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub environment:
-        Option<Vec<PipeTargetParametersBatchJobParametersContainerOverridesEnvironment>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    pub environment: Option<Vec<PipeTargetParametersBatchJobParametersContainerOverridesEnvironment>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
-    pub resource_requirements:
-        Option<Vec<PipeTargetParametersBatchJobParametersContainerOverridesResourceRequirements>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
+    pub resource_requirements: Option<Vec<PipeTargetParametersBatchJobParametersContainerOverridesResourceRequirements>>,
 }
 
 /// The environment variables to send to the container. You can add new environment
 /// variables, which are added to the container at launch, or you can override
 /// the existing environment variables from the Docker image or the task definition.
-///
+/// 
 /// Environment variables cannot start with "Batch". This naming convention is
 /// reserved for variables that Batch sets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -755,11 +473,7 @@ pub struct PipeTargetParametersBatchJobParametersRetryStrategy {
 /// The parameters for using an CloudWatch Logs log stream as a target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersCloudWatchLogsParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logStreamName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logStreamName")]
     pub log_stream_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timestamp: Option<String>,
@@ -768,83 +482,37 @@ pub struct PipeTargetParametersCloudWatchLogsParameters {
 /// The parameters for using an Amazon ECS task as a target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersEcsTaskParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "capacityProviderStrategy"
-    )]
-    pub capacity_provider_strategy:
-        Option<Vec<PipeTargetParametersEcsTaskParametersCapacityProviderStrategy>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableECSManagedTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityProviderStrategy")]
+    pub capacity_provider_strategy: Option<Vec<PipeTargetParametersEcsTaskParametersCapacityProviderStrategy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableECSManagedTags")]
     pub enable_ecs_managed_tags: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableExecuteCommand"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableExecuteCommand")]
     pub enable_execute_command: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "launchType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "launchType")]
     pub launch_type: Option<String>,
     /// This structure specifies the network configuration for an Amazon ECS task.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkConfiguration")]
     pub network_configuration: Option<PipeTargetParametersEcsTaskParametersNetworkConfiguration>,
     /// The overrides that are associated with a task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<PipeTargetParametersEcsTaskParametersOverrides>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "placementConstraints"
-    )]
-    pub placement_constraints:
-        Option<Vec<PipeTargetParametersEcsTaskParametersPlacementConstraints>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "placementStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "placementConstraints")]
+    pub placement_constraints: Option<Vec<PipeTargetParametersEcsTaskParametersPlacementConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "placementStrategy")]
     pub placement_strategy: Option<Vec<PipeTargetParametersEcsTaskParametersPlacementStrategy>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "platformVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "platformVersion")]
     pub platform_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propagateTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propagateTags")]
     pub propagate_tags: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "referenceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "referenceID")]
     pub reference_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<PipeTargetParametersEcsTaskParametersTags>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskCount")]
     pub task_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "taskDefinitionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskDefinitionARN")]
     pub task_definition_arn: Option<String>,
 }
 
@@ -855,11 +523,7 @@ pub struct PipeTargetParametersEcsTaskParameters {
 pub struct PipeTargetParametersEcsTaskParametersCapacityProviderStrategy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub base: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "capacityProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityProvider")]
     pub capacity_provider: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub weight: Option<i64>,
@@ -871,13 +535,8 @@ pub struct PipeTargetParametersEcsTaskParametersNetworkConfiguration {
     /// This structure specifies the VPC subnets and security groups for the task,
     /// and whether a public IP address is to be used. This structure is relevant
     /// only for ECS tasks that use the awsvpc network mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsVPCConfiguration"
-    )]
-    pub aws_vpc_configuration:
-        Option<PipeTargetParametersEcsTaskParametersNetworkConfigurationAwsVpcConfiguration>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsVPCConfiguration")]
+    pub aws_vpc_configuration: Option<PipeTargetParametersEcsTaskParametersNetworkConfigurationAwsVpcConfiguration>,
 }
 
 /// This structure specifies the VPC subnets and security groups for the task,
@@ -885,17 +544,9 @@ pub struct PipeTargetParametersEcsTaskParametersNetworkConfiguration {
 /// only for ECS tasks that use the awsvpc network mode.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersEcsTaskParametersNetworkConfigurationAwsVpcConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "assignPublicIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignPublicIP")]
     pub assign_public_ip: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<String>>,
@@ -904,13 +555,8 @@ pub struct PipeTargetParametersEcsTaskParametersNetworkConfigurationAwsVpcConfig
 /// The overrides that are associated with a task.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersEcsTaskParametersOverrides {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerOverrides"
-    )]
-    pub container_overrides:
-        Option<Vec<PipeTargetParametersEcsTaskParametersOverridesContainerOverrides>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerOverrides")]
+    pub container_overrides: Option<Vec<PipeTargetParametersEcsTaskParametersOverridesContainerOverrides>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
     /// The amount of ephemeral storage to allocate for the task. This parameter
@@ -918,36 +564,19 @@ pub struct PipeTargetParametersEcsTaskParametersOverrides {
     /// the default amount, for tasks hosted on Fargate. For more information, see
     /// Fargate task storage (https://docs.aws.amazon.com/AmazonECS/latest/userguide/using_data_volumes.html)
     /// in the Amazon ECS User Guide for Fargate.
-    ///
+    /// 
     /// This parameter is only supported for tasks hosted on Fargate using Linux
     /// platform version 1.4.0 or later. This parameter is not supported for Windows
     /// containers on Fargate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeralStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralStorage")]
     pub ephemeral_storage: Option<PipeTargetParametersEcsTaskParametersOverridesEphemeralStorage>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionRoleARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRoleARN")]
     pub execution_role_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inferenceAcceleratorOverrides"
-    )]
-    pub inference_accelerator_overrides:
-        Option<Vec<PipeTargetParametersEcsTaskParametersOverridesInferenceAcceleratorOverrides>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferenceAcceleratorOverrides")]
+    pub inference_accelerator_overrides: Option<Vec<PipeTargetParametersEcsTaskParametersOverridesInferenceAcceleratorOverrides>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "taskRoleARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskRoleARN")]
     pub task_role_arn: Option<String>,
 }
 
@@ -962,34 +591,17 @@ pub struct PipeTargetParametersEcsTaskParametersOverridesContainerOverrides {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub environment:
-        Option<Vec<PipeTargetParametersEcsTaskParametersOverridesContainerOverridesEnvironment>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "environmentFiles"
-    )]
-    pub environment_files: Option<
-        Vec<PipeTargetParametersEcsTaskParametersOverridesContainerOverridesEnvironmentFiles>,
-    >,
+    pub environment: Option<Vec<PipeTargetParametersEcsTaskParametersOverridesContainerOverridesEnvironment>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "environmentFiles")]
+    pub environment_files: Option<Vec<PipeTargetParametersEcsTaskParametersOverridesContainerOverridesEnvironmentFiles>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memoryReservation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryReservation")]
     pub memory_reservation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
-    pub resource_requirements: Option<
-        Vec<PipeTargetParametersEcsTaskParametersOverridesContainerOverridesResourceRequirements>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
+    pub resource_requirements: Option<Vec<PipeTargetParametersEcsTaskParametersOverridesContainerOverridesResourceRequirements>>,
 }
 
 /// The environment variables to send to the container. You can add new environment
@@ -1010,7 +622,7 @@ pub struct PipeTargetParametersEcsTaskParametersOverridesContainerOverridesEnvir
 /// variable in VARIABLE=VALUE format. Lines beginning with # are treated as
 /// comments and are ignored. For more information about the environment variable
 /// file syntax, see Declare default environment variables in file (https://docs.docker.com/compose/env-file/).
-///
+/// 
 /// If there are environment variables specified using the environment parameter
 /// in a container definition, they take precedence over the variables contained
 /// within an environment file. If multiple environment files are specified that
@@ -1018,12 +630,12 @@ pub struct PipeTargetParametersEcsTaskParametersOverridesContainerOverridesEnvir
 /// that you use unique variable names. For more information, see Specifying
 /// environment variables (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/taskdef-envfiles.html)
 /// in the Amazon Elastic Container Service Developer Guide.
-///
+/// 
 /// This parameter is only supported for tasks hosted on Fargate using the following
 /// platform versions:
-///
+/// 
 ///    * Linux platform version 1.4.0 or later.
-///
+/// 
 ///    * Windows platform version 1.0.0 or later.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersEcsTaskParametersOverridesContainerOverridesEnvironmentFiles {
@@ -1051,7 +663,7 @@ pub struct PipeTargetParametersEcsTaskParametersOverridesContainerOverridesResou
 /// the default amount, for tasks hosted on Fargate. For more information, see
 /// Fargate task storage (https://docs.aws.amazon.com/AmazonECS/latest/userguide/using_data_volumes.html)
 /// in the Amazon ECS User Guide for Fargate.
-///
+/// 
 /// This parameter is only supported for tasks hosted on Fargate using Linux
 /// platform version 1.4.0 or later. This parameter is not supported for Windows
 /// containers on Fargate.
@@ -1068,17 +680,9 @@ pub struct PipeTargetParametersEcsTaskParametersOverridesEphemeralStorage {
 /// in the Amazon Elastic Container Service Developer Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersEcsTaskParametersOverridesInferenceAcceleratorOverrides {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceName")]
     pub device_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceType")]
     pub device_type: Option<String>,
 }
 
@@ -1117,17 +721,9 @@ pub struct PipeTargetParametersEcsTaskParametersTags {
 /// The parameters for using an EventBridge event bus as a target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersEventBridgeEventBusParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "detailType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "detailType")]
     pub detail_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointID")]
     pub endpoint_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<String>>,
@@ -1141,45 +737,25 @@ pub struct PipeTargetParametersEventBridgeEventBusParameters {
 /// APIs or EventBridge ApiDestinations.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersHttpParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerParameters")]
     pub header_parameters: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathParameterValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathParameterValues")]
     pub path_parameter_values: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryStringParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryStringParameters")]
     pub query_string_parameters: Option<BTreeMap<String, String>>,
 }
 
 /// The parameters for using a Kinesis stream as a source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersKinesisStreamParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "partitionKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "partitionKey")]
     pub partition_key: Option<String>,
 }
 
 /// The parameters for using a Lambda function as a target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersLambdaFunctionParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "invocationType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "invocationType")]
     pub invocation_type: Option<String>,
 }
 
@@ -1194,22 +770,14 @@ pub struct PipeTargetParametersRedshiftDataParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbUser")]
     pub db_user: Option<String>,
     /// // For targets, can either specify an ARN or a jsonpath pointing to the ARN.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretManagerARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretManagerARN")]
     pub secret_manager_arn: Option<String>,
     /// // A list of SQLs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sqls: Option<Vec<String>>,
     /// // A name for Redshift DataAPI statement which can be used as filter of //
     /// ListStatement.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statementName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statementName")]
     pub statement_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "withEvent")]
     pub with_event: Option<bool>,
@@ -1218,13 +786,8 @@ pub struct PipeTargetParametersRedshiftDataParameters {
 /// The parameters for using a SageMaker pipeline as a target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersSageMakerPipelineParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pipelineParameterList"
-    )]
-    pub pipeline_parameter_list:
-        Option<Vec<PipeTargetParametersSageMakerPipelineParametersPipelineParameterList>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pipelineParameterList")]
+    pub pipeline_parameter_list: Option<Vec<PipeTargetParametersSageMakerPipelineParametersPipelineParameterList>>,
 }
 
 /// Name/Value pair of a parameter to start execution of a SageMaker Model Building
@@ -1240,28 +803,16 @@ pub struct PipeTargetParametersSageMakerPipelineParametersPipelineParameterList 
 /// The parameters for using a Amazon SQS stream as a source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersSqsQueueParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageDeduplicationID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageDeduplicationID")]
     pub message_deduplication_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageGroupID")]
     pub message_group_id: Option<String>,
 }
 
 /// The parameters for using a Step Functions state machine as a target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersStepFunctionStateMachineParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "invocationType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "invocationType")]
     pub invocation_type: Option<String>,
 }
 
@@ -1271,11 +822,7 @@ pub struct PipeStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<PipeStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -1284,33 +831,17 @@ pub struct PipeStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The time the pipe was created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     /// The state the pipe is in.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentState")]
     pub current_state: Option<String>,
     /// When the pipe was last updated, in ISO-8601 format (https://www.w3.org/TR/NOTE-datetime)
     /// (YYYY-MM-DDThh:mm:ss.sTZD).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModifiedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
     /// The reason the pipe is in its current state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stateReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateReason")]
     pub state_reason: Option<String>,
 }
 
@@ -1335,3 +866,4 @@ pub struct PipeStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

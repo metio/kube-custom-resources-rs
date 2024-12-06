@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the FederatedHPA.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "autoscaling.karmada.io",
-    version = "v1alpha1",
-    kind = "FederatedHPA",
-    plural = "federatedhpas"
-)]
+#[kube(group = "autoscaling.karmada.io", version = "v1alpha1", kind = "FederatedHPA", plural = "federatedhpas")]
 #[kube(namespaced)]
 #[kube(status = "FederatedHPAStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FederatedHPASpec {
     /// Behavior configures the scaling behavior of the target
     /// in both Up and Down directions (scaleUp and scaleDown fields respectively).
@@ -49,11 +44,7 @@ pub struct FederatedHPASpec {
     /// MinReplicas is the lower limit for the number of replicas to which the
     /// autoscaler can scale down.
     /// It defaults to 1 pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
     /// ScaleTargetRef points to the target resource to scale, and is used to
     /// the pods for which metrics should be collected, as well as to actually
@@ -94,11 +85,7 @@ pub struct FederatedHPABehaviorScaleDown {
     pub policies: Option<Vec<FederatedHPABehaviorScaleDownPolicies>>,
     /// selectPolicy is used to specify which policy should be used.
     /// If not set, the default value Max is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selectPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
     /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
     /// considered while scaling up or scaling down.
@@ -106,11 +93,7 @@ pub struct FederatedHPABehaviorScaleDown {
     /// If not set, use the default values:
     /// - For scale up: 0 (i.e. no stabilization is done).
     /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stabilizationWindowSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
 
@@ -142,11 +125,7 @@ pub struct FederatedHPABehaviorScaleUp {
     pub policies: Option<Vec<FederatedHPABehaviorScaleUpPolicies>>,
     /// selectPolicy is used to specify which policy should be used.
     /// If not set, the default value Max is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selectPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
     /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
     /// considered while scaling up or scaling down.
@@ -154,11 +133,7 @@ pub struct FederatedHPABehaviorScaleUp {
     /// If not set, use the default values:
     /// - For scale up: 0 (i.e. no stabilization is done).
     /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stabilizationWindowSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
 
@@ -187,11 +162,7 @@ pub struct FederatedHPAMetrics {
     /// built in to Kubernetes, and have special scaling options on top of those
     /// available to normal per-pod metrics using the "pods" source.
     /// This is an alpha feature and can be enabled by the HPAContainerMetrics feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerResource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResource")]
     pub container_resource: Option<FederatedHPAMetricsContainerResource>,
     /// external refers to a global metric that is not associated
     /// with any Kubernetes object. It allows autoscaling based on information
@@ -247,19 +218,11 @@ pub struct FederatedHPAMetricsContainerResourceTarget {
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
     /// Currently only valid for Resource metric source type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the target value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
     #[serde(rename = "type")]
@@ -300,20 +263,12 @@ pub struct FederatedHPAMetricsExternalMetric {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPAMetricsExternalMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<FederatedHPAMetricsExternalMetricSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -341,19 +296,11 @@ pub struct FederatedHPAMetricsExternalTarget {
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
     /// Currently only valid for Resource metric source type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the target value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
     #[serde(rename = "type")]
@@ -380,11 +327,7 @@ pub struct FederatedHPAMetricsObject {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPAMetricsObjectDescribedObject {
     /// apiVersion is the API version of the referent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
@@ -410,20 +353,12 @@ pub struct FederatedHPAMetricsObjectMetric {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPAMetricsObjectMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<FederatedHPAMetricsObjectMetricSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -451,19 +386,11 @@ pub struct FederatedHPAMetricsObjectTarget {
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
     /// Currently only valid for Resource metric source type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the target value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
     #[serde(rename = "type")]
@@ -502,20 +429,12 @@ pub struct FederatedHPAMetricsPodsMetric {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPAMetricsPodsMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<FederatedHPAMetricsPodsMetricSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -543,19 +462,11 @@ pub struct FederatedHPAMetricsPodsTarget {
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
     /// Currently only valid for Resource metric source type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the target value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
     #[serde(rename = "type")]
@@ -585,19 +496,11 @@ pub struct FederatedHPAMetricsResourceTarget {
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
     /// Currently only valid for Resource metric source type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the target value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
     #[serde(rename = "type")]
@@ -613,11 +516,7 @@ pub struct FederatedHPAMetricsResourceTarget {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPAScaleTargetRef {
     /// apiVersion is the API version of the referent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
@@ -633,19 +532,11 @@ pub struct FederatedHPAStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// currentMetrics is the last read state of the metrics used by this autoscaler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentMetrics"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentMetrics")]
     pub current_metrics: Option<Vec<FederatedHPAStatusCurrentMetrics>>,
     /// currentReplicas is current number of replicas of pods managed by this autoscaler,
     /// as last seen by the autoscaler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentReplicas")]
     pub current_replicas: Option<i32>,
     /// desiredReplicas is the desired number of replicas of pods managed by this autoscaler,
     /// as last calculated by the autoscaler.
@@ -653,18 +544,10 @@ pub struct FederatedHPAStatus {
     pub desired_replicas: i32,
     /// lastScaleTime is the last time the HorizontalPodAutoscaler scaled the number of pods,
     /// used by the autoscaler to control how often the number of pods is changed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastScaleTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastScaleTime")]
     pub last_scale_time: Option<String>,
     /// observedGeneration is the most recent generation observed by this autoscaler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
 
@@ -676,11 +559,7 @@ pub struct FederatedHPAStatusCurrentMetrics {
     /// current scale target (e.g. CPU or memory). Such metrics are built in to
     /// Kubernetes, and have special scaling options on top of those available
     /// to normal per-pod metrics using the "pods" source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerResource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResource")]
     pub container_resource: Option<FederatedHPAStatusCurrentMetricsContainerResource>,
     /// external refers to a global metric that is not associated
     /// with any Kubernetes object. It allows autoscaling based on information
@@ -734,19 +613,11 @@ pub struct FederatedHPAStatusCurrentMetricsContainerResourceCurrent {
     /// currentAverageUtilization is the current value of the average of the
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the current value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// value is the current value of the metric (as a quantity).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -772,19 +643,11 @@ pub struct FederatedHPAStatusCurrentMetricsExternalCurrent {
     /// currentAverageUtilization is the current value of the average of the
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the current value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// value is the current value of the metric (as a quantity).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -809,21 +672,12 @@ pub struct FederatedHPAStatusCurrentMetricsExternalMetric {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPAStatusCurrentMetricsExternalMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<FederatedHPAStatusCurrentMetricsExternalMetricSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<FederatedHPAStatusCurrentMetricsExternalMetricSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -863,19 +717,11 @@ pub struct FederatedHPAStatusCurrentMetricsObjectCurrent {
     /// currentAverageUtilization is the current value of the average of the
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the current value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// value is the current value of the metric (as a quantity).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -886,11 +732,7 @@ pub struct FederatedHPAStatusCurrentMetricsObjectCurrent {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPAStatusCurrentMetricsObjectDescribedObject {
     /// apiVersion is the API version of the referent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     pub kind: String,
@@ -916,21 +758,12 @@ pub struct FederatedHPAStatusCurrentMetricsObjectMetric {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPAStatusCurrentMetricsObjectMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<FederatedHPAStatusCurrentMetricsObjectMetricSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<FederatedHPAStatusCurrentMetricsObjectMetricSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -968,19 +801,11 @@ pub struct FederatedHPAStatusCurrentMetricsPodsCurrent {
     /// currentAverageUtilization is the current value of the average of the
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the current value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// value is the current value of the metric (as a quantity).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1005,21 +830,12 @@ pub struct FederatedHPAStatusCurrentMetricsPodsMetric {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPAStatusCurrentMetricsPodsMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<FederatedHPAStatusCurrentMetricsPodsMetricSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<FederatedHPAStatusCurrentMetricsPodsMetricSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1059,21 +875,14 @@ pub struct FederatedHPAStatusCurrentMetricsResourceCurrent {
     /// currentAverageUtilization is the current value of the average of the
     /// resource metric across all relevant pods, represented as a percentage of
     /// the requested value of the resource for the pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageUtilization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
     /// averageValue is the current value of the average of the
     /// metric across all relevant pods (as a quantity)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "averageValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// value is the current value of the metric (as a quantity).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<IntOrString>,
 }
+

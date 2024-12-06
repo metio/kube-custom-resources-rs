@@ -5,35 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// S3BucketSpec defines the desired state of S3Bucket
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "s3.snappcloud.io",
-    version = "v1alpha1",
-    kind = "S3Bucket",
-    plural = "s3buckets"
-)]
+#[kube(group = "s3.snappcloud.io", version = "v1alpha1", kind = "S3Bucket", plural = "s3buckets")]
 #[kube(namespaced)]
 #[kube(status = "S3BucketStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct S3BucketSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DeletionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DeletionPolicy")]
     pub s3_deletion_policy: Option<S3BucketS3DeletionPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3SubuserBinding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3SubuserBinding")]
     pub s3_subuser_binding: Option<Vec<S3BucketS3SubuserBinding>>,
     #[serde(rename = "s3UserRef")]
     pub s3_user_ref: String,
@@ -75,3 +62,4 @@ pub struct S3BucketStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
+

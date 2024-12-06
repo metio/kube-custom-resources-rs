@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ReceiverSpec defines the desired state of the Receiver.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "notification.toolkit.fluxcd.io",
-    version = "v1beta2",
-    kind = "Receiver",
-    plural = "receivers"
-)]
+#[kube(group = "notification.toolkit.fluxcd.io", version = "v1beta2", kind = "Receiver", plural = "receivers")]
 #[kube(namespaced)]
 #[kube(status = "ReceiverStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct ReceiverSpec {
     /// Events specifies the list of event types to handle,
     /// e.g. 'push' for GitHub or 'Push Hook' for GitLab.
@@ -52,11 +47,7 @@ pub struct ReceiverSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ReceiverResources {
     /// API version of the referent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the referent
     pub kind: ReceiverResourcesKind,
@@ -64,11 +55,7 @@ pub struct ReceiverResources {
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     /// MatchLabels requires the name to be set to `*`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
     /// Name of the referent
     /// If multiple resources are targeted `*` may be set.
@@ -139,18 +126,10 @@ pub struct ReceiverStatus {
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation of the Receiver object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// URL is the generated incoming webhook address in the format
     /// of '/hook/sha256sum(token+name+namespace)'.
@@ -159,10 +138,7 @@ pub struct ReceiverStatus {
     pub url: Option<String>,
     /// WebhookPath is the generated incoming webhook address in the format
     /// of '/hook/sha256sum(token+name+namespace)'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webhookPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookPath")]
     pub webhook_path: Option<String>,
 }
+

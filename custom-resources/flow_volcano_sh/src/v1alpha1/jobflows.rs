@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "flow.volcano.sh",
-    version = "v1alpha1",
-    kind = "JobFlow",
-    plural = "jobflows"
-)]
+#[kube(group = "flow.volcano.sh", version = "v1alpha1", kind = "JobFlow", plural = "jobflows")]
 #[kube(namespaced)]
 #[kube(status = "JobFlowStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct JobFlowSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flows: Option<Vec<JobFlowFlows>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobRetainPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobRetainPolicy")]
     pub job_retain_policy: Option<String>,
 }
 
@@ -50,33 +41,17 @@ pub struct JobFlowFlowsDependsOn {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowFlowsDependsOnProbe {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpGetList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGetList")]
     pub http_get_list: Option<Vec<JobFlowFlowsDependsOnProbeHttpGetList>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "taskStatusList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskStatusList")]
     pub task_status_list: Option<Vec<JobFlowFlowsDependsOnProbeTaskStatusList>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpSocketList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocketList")]
     pub tcp_socket_list: Option<Vec<JobFlowFlowsDependsOnProbeTcpSocketList>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowFlowsDependsOnProbeHttpGetList {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeader")]
     pub http_header: Option<JobFlowFlowsDependsOnProbeHttpGetListHttpHeader>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -109,75 +84,35 @@ pub struct JobFlowFlowsDependsOnProbeTcpSocketList {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completedJobs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completedJobs")]
     pub completed_jobs: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<BTreeMap<String, JobFlowStatusConditions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedJobs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobs")]
     pub failed_jobs: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobStatusList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobStatusList")]
     pub job_status_list: Option<Vec<JobFlowStatusJobStatusList>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pendingJobs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingJobs")]
     pub pending_jobs: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runningJobs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningJobs")]
     pub running_jobs: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<JobFlowStatusState>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminatedJobs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminatedJobs")]
     pub terminated_jobs: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unKnowJobs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unKnowJobs")]
     pub un_know_jobs: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowStatusConditions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createTime")]
     pub create_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runningDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningDuration")]
     pub running_duration: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "taskStatusCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskStatusCount")]
     pub task_status_count: Option<BTreeMap<String, JobFlowStatusConditionsTaskStatusCount>>,
 }
 
@@ -189,31 +124,15 @@ pub struct JobFlowStatusConditionsTaskStatusCount {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowStatusJobStatusList {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTimestamp")]
     pub end_timestamp: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartCount")]
     pub restart_count: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runningHistories"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningHistories")]
     pub running_histories: Option<Vec<JobFlowStatusJobStatusListRunningHistories>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
@@ -221,17 +140,9 @@ pub struct JobFlowStatusJobStatusList {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowStatusJobStatusListRunningHistories {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTimestamp")]
     pub end_timestamp: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
@@ -242,3 +153,4 @@ pub struct JobFlowStatusState {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

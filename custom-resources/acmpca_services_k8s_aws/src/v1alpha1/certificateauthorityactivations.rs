@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// CertificateAuthorityActivationSpec defines the desired state of CertificateAuthorityActivation.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "acmpca.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "CertificateAuthorityActivation",
-    plural = "certificateauthorityactivations"
-)]
+#[kube(group = "acmpca.services.k8s.aws", version = "v1alpha1", kind = "CertificateAuthorityActivation", plural = "certificateauthorityactivations")]
 #[kube(namespaced)]
 #[kube(status = "CertificateAuthorityActivationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CertificateAuthorityActivationSpec {
     /// SecretKeyReference combines a k8s corev1.SecretReference with a
     /// specific key within the referred-to Secret
@@ -30,44 +25,27 @@ pub struct CertificateAuthorityActivationSpec {
     /// The Amazon Resource Name (ARN) that was returned when you called CreateCertificateAuthority
     /// (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CreateCertificateAuthority.html).
     /// This must be of the form:
-    ///
+    /// 
     /// arn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateAuthorityARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityARN")]
     pub certificate_authority_arn: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateAuthorityRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityRef")]
     pub certificate_authority_ref: Option<CertificateAuthorityActivationCertificateAuthorityRef>,
     /// SecretKeyReference combines a k8s corev1.SecretReference with a
     /// specific key within the referred-to Secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateChain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChain")]
     pub certificate_chain: Option<CertificateAuthorityActivationCertificateChain>,
     /// SecretKeyReference combines a k8s corev1.SecretReference with a
     /// specific key within the referred-to Secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completeCertificateChainOutput"
-    )]
-    pub complete_certificate_chain_output:
-        Option<CertificateAuthorityActivationCompleteCertificateChainOutput>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completeCertificateChainOutput")]
+    pub complete_certificate_chain_output: Option<CertificateAuthorityActivationCompleteCertificateChainOutput>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
@@ -90,7 +68,7 @@ pub struct CertificateAuthorityActivationCertificate {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -145,11 +123,7 @@ pub struct CertificateAuthorityActivationStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<CertificateAuthorityActivationStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -180,3 +154,4 @@ pub struct CertificateAuthorityActivationStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

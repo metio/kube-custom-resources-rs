@@ -4,43 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VirtualGatewaySpec defines the desired state of VirtualGateway refers to https://docs.aws.amazon.com/app-mesh/latest/userguide/virtual_gateways.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appmesh.k8s.aws",
-    version = "v1beta2",
-    kind = "VirtualGateway",
-    plural = "virtualgateways"
-)]
+#[kube(group = "appmesh.k8s.aws", version = "v1beta2", kind = "VirtualGateway", plural = "virtualgateways")]
 #[kube(namespaced)]
 #[kube(status = "VirtualGatewayStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VirtualGatewaySpec {
     /// AWSName is the AppMesh VirtualGateway object's name. If unspecified or empty, it defaults to be "${name}_${namespace}" of k8s VirtualGateway
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsName")]
     pub aws_name: Option<String>,
     /// A reference to an object that represents the defaults for backend GatewayRoutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendDefaults"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendDefaults")]
     pub backend_defaults: Option<VirtualGatewayBackendDefaults>,
     /// GatewayRouteSelector selects GatewayRoutes using labels to designate GatewayRoute membership. If not specified it selects all GatewayRoutes in that namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayRouteSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayRouteSelector")]
     pub gateway_route_selector: Option<VirtualGatewayGatewayRouteSelector>,
     /// The listener that the virtual gateway is expected to receive inbound traffic from
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -48,23 +35,15 @@ pub struct VirtualGatewaySpec {
     /// The inbound and outbound access logging information for the virtual gateway.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<VirtualGatewayLogging>,
-    /// A reference to k8s Mesh CR that this VirtualGateway belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+    /// A reference to k8s Mesh CR that this VirtualGateway belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
     ///  Populated by the system. Read-only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshRef")]
     pub mesh_ref: Option<VirtualGatewayMeshRef>,
     /// NamespaceSelector selects Namespaces using labels to designate GatewayRoute membership. This field follows standard label selector semantics; if present but empty, it selects all namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<VirtualGatewayNamespaceSelector>,
     /// PodSelector selects Pods using labels to designate VirtualGateway membership. This field follows standard label selector semantics: 	if present but empty, it selects all pods within namespace. 	if absent, it selects no pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<VirtualGatewayPodSelector>,
 }
 
@@ -72,11 +51,7 @@ pub struct VirtualGatewaySpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualGatewayBackendDefaults {
     /// A reference to an object that represents a client policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPolicy")]
     pub client_policy: Option<VirtualGatewayBackendDefaultsClientPolicy>,
 }
 
@@ -138,13 +113,8 @@ pub struct VirtualGatewayBackendDefaultsClientPolicyTlsCertificateSds {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualGatewayBackendDefaultsClientPolicyTlsValidation {
     /// Possible alternative names to consider
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAlternativeNames"
-    )]
-    pub subject_alternative_names:
-        Option<VirtualGatewayBackendDefaultsClientPolicyTlsValidationSubjectAlternativeNames>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAlternativeNames")]
+    pub subject_alternative_names: Option<VirtualGatewayBackendDefaultsClientPolicyTlsValidationSubjectAlternativeNames>,
     /// A reference to an object that represents a TLS validation context trust
     pub trust: VirtualGatewayBackendDefaultsClientPolicyTlsValidationTrust,
 }
@@ -206,18 +176,10 @@ pub struct VirtualGatewayBackendDefaultsClientPolicyTlsValidationTrustSds {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualGatewayGatewayRouteSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<VirtualGatewayGatewayRouteSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -237,18 +199,10 @@ pub struct VirtualGatewayGatewayRouteSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VirtualGatewayListeners {
     /// The connection pool settings for the listener
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionPool")]
     pub connection_pool: Option<VirtualGatewayListenersConnectionPool>,
     /// The health check information for the listener.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<VirtualGatewayListenersHealthCheck>,
     /// The port mapping information for the listener.
     #[serde(rename = "portMapping")]
@@ -287,11 +241,7 @@ pub struct VirtualGatewayListenersConnectionPoolHttp {
     #[serde(rename = "maxConnections")]
     pub max_connections: i64,
     /// Represents the number of overflowing requests after max_connections that an envoy will queue to an upstream cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingRequests")]
     pub max_pending_requests: Option<i64>,
 }
 
@@ -307,11 +257,7 @@ pub struct VirtualGatewayListenersConnectionPoolHttp2 {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VirtualGatewayListenersHealthCheck {
     /// The number of consecutive successful health checks that must occur before declaring listener healthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthyThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyThreshold")]
     pub healthy_threshold: Option<i64>,
     /// The time period in milliseconds between each health check execution.
     #[serde(rename = "intervalMillis")]
@@ -431,13 +377,8 @@ pub enum VirtualGatewayListenersTlsMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualGatewayListenersTlsValidation {
     /// Possible alternate names to consider
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAlternativeNames"
-    )]
-    pub subject_alternative_names:
-        Option<VirtualGatewayListenersTlsValidationSubjectAlternativeNames>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAlternativeNames")]
+    pub subject_alternative_names: Option<VirtualGatewayListenersTlsValidationSubjectAlternativeNames>,
     pub trust: VirtualGatewayListenersTlsValidationTrust,
 }
 
@@ -538,7 +479,7 @@ pub struct VirtualGatewayLoggingAccessLogFileFormatJson {
     pub value: String,
 }
 
-/// A reference to k8s Mesh CR that this VirtualGateway belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+/// A reference to k8s Mesh CR that this VirtualGateway belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
 ///  Populated by the system. Read-only.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualGatewayMeshRef {
@@ -552,18 +493,10 @@ pub struct VirtualGatewayMeshRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualGatewayNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<VirtualGatewayNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -583,18 +516,10 @@ pub struct VirtualGatewayNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualGatewayPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<VirtualGatewayPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -617,17 +542,10 @@ pub struct VirtualGatewayStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The generation observed by the VirtualGateway controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// VirtualGatewayARN is the AppMesh VirtualGateway object's Amazon Resource Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualGatewayARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualGatewayARN")]
     pub virtual_gateway_arn: Option<String>,
 }
+

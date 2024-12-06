@@ -5,32 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// BackupSpec defines the specification for a Velero backup.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "velero.io",
-    version = "v1",
-    kind = "Backup",
-    plural = "backups"
-)]
+#[kube(group = "velero.io", version = "v1", kind = "Backup", plural = "backups")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackupSpec {
     /// CSISnapshotTimeout specifies the time used to wait for CSI VolumeSnapshot status turns to
     /// ReadyToUse during creation, before returning error as timeout.
     /// The default value is 10 minute.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiSnapshotTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiSnapshotTimeout")]
     pub csi_snapshot_timeout: Option<String>,
     /// DataMover specifies the data mover to be used by the backup.
     /// If DataMover is "" or "velero", the built-in data mover will be used.
@@ -38,122 +29,70 @@ pub struct BackupSpec {
     pub datamover: Option<String>,
     /// DefaultVolumesToFsBackup specifies whether pod volume file system backup should be used
     /// for all volumes by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultVolumesToFsBackup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultVolumesToFsBackup")]
     pub default_volumes_to_fs_backup: Option<bool>,
     /// DefaultVolumesToRestic specifies whether restic should be used to take a
     /// backup of all pod volumes by default.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated: this field is no longer used and will be removed entirely in future. Use DefaultVolumesToFsBackup instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultVolumesToRestic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultVolumesToRestic")]
     pub default_volumes_to_restic: Option<bool>,
     /// ExcludedClusterScopedResources is a slice of cluster-scoped
     /// resource type names to exclude from the backup.
     /// If set to "*", all cluster-scoped resource types are excluded.
     /// The default value is empty.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedClusterScopedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedClusterScopedResources")]
     pub excluded_cluster_scoped_resources: Option<Vec<String>>,
     /// ExcludedNamespaceScopedResources is a slice of namespace-scoped
     /// resource type names to exclude from the backup.
     /// If set to "*", all namespace-scoped resource types are excluded.
     /// The default value is empty.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedNamespaceScopedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedNamespaceScopedResources")]
     pub excluded_namespace_scoped_resources: Option<Vec<String>>,
     /// ExcludedNamespaces contains a list of namespaces that are not
     /// included in the backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedNamespaces")]
     pub excluded_namespaces: Option<Vec<String>>,
     /// ExcludedResources is a slice of resource names that are not
     /// included in the backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedResources")]
     pub excluded_resources: Option<Vec<String>>,
     /// Hooks represent custom behaviors that should be executed at different phases of the backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hooks: Option<BackupHooks>,
     /// IncludeClusterResources specifies whether cluster-scoped resources
     /// should be included for consideration in the backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeClusterResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeClusterResources")]
     pub include_cluster_resources: Option<bool>,
     /// IncludedClusterScopedResources is a slice of cluster-scoped
     /// resource type names to include in the backup.
     /// If set to "*", all cluster-scoped resource types are included.
     /// The default value is empty, which means only related
     /// cluster-scoped resources are included.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includedClusterScopedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedClusterScopedResources")]
     pub included_cluster_scoped_resources: Option<Vec<String>>,
     /// IncludedNamespaceScopedResources is a slice of namespace-scoped
     /// resource type names to include in the backup.
     /// The default value is "*".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includedNamespaceScopedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedNamespaceScopedResources")]
     pub included_namespace_scoped_resources: Option<Vec<String>>,
     /// IncludedNamespaces is a slice of namespace names to include objects
     /// from. If empty, all namespaces are included.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedNamespaces")]
     pub included_namespaces: Option<Vec<String>>,
     /// IncludedResources is a slice of resource names to include
     /// in the backup. If empty, all resources are included.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedResources")]
     pub included_resources: Option<Vec<String>>,
     /// ItemOperationTimeout specifies the time used to wait for asynchronous BackupItemAction operations
     /// The default value is 4 hour.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "itemOperationTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "itemOperationTimeout")]
     pub item_operation_timeout: Option<String>,
     /// LabelSelector is a metav1.LabelSelector to filter with
     /// when adding individual objects to the backup. If empty
     /// or nil, all objects are included. Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<BackupLabelSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BackupMetadata>,
@@ -162,68 +101,36 @@ pub struct BackupSpec {
     /// they will be joined by the OR operator. LabelSelector as well as
     /// OrLabelSelectors cannot co-exist in backup request, only one of them
     /// can be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orLabelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orLabelSelectors")]
     pub or_label_selectors: Option<Vec<BackupOrLabelSelectors>>,
     /// OrderedResources specifies the backup order of resources of specific Kind.
     /// The map key is the resource name and value is a list of object names separated by commas.
     /// Each resource name has format "namespace/objectname".  For cluster resources, simply use "objectname".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orderedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderedResources")]
     pub ordered_resources: Option<BTreeMap<String, String>>,
     /// ResourcePolicy specifies the referenced resource policies that backup should follow
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourcePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePolicy")]
     pub resource_policy: Option<BackupResourcePolicy>,
     /// SnapshotMoveData specifies whether snapshot data should be moved
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotMoveData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMoveData")]
     pub snapshot_move_data: Option<bool>,
     /// SnapshotVolumes specifies whether to take snapshots
     /// of any PV's referenced in the set of objects included
     /// in the Backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotVolumes")]
     pub snapshot_volumes: Option<bool>,
     /// StorageLocation is a string containing the name of a BackupStorageLocation where the backup should be stored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageLocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageLocation")]
     pub storage_location: Option<String>,
     /// TTL is a time.Duration-parseable string describing how long
     /// the Backup should be retained for.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ttl: Option<String>,
     /// UploaderConfig specifies the configuration for the uploader.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uploaderConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploaderConfig")]
     pub uploader_config: Option<BackupUploaderConfig>,
     /// VolumeSnapshotLocations is a list containing names of VolumeSnapshotLocations associated with this backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotLocations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotLocations")]
     pub volume_snapshot_locations: Option<Vec<String>>,
 }
 
@@ -240,41 +147,21 @@ pub struct BackupHooks {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupHooksResources {
     /// ExcludedNamespaces specifies the namespaces to which this hook spec does not apply.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedNamespaces")]
     pub excluded_namespaces: Option<Vec<String>>,
     /// ExcludedResources specifies the resources to which this hook spec does not apply.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedResources")]
     pub excluded_resources: Option<Vec<String>>,
     /// IncludedNamespaces specifies the namespaces to which this hook spec applies. If empty, it applies
     /// to all namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedNamespaces")]
     pub included_namespaces: Option<Vec<String>>,
     /// IncludedResources specifies the resources to which this hook spec applies. If empty, it applies
     /// to all resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedResources")]
     pub included_resources: Option<Vec<String>>,
     /// LabelSelector, if specified, filters the resources to which this hook spec applies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<BackupHooksResourcesLabelSelector>,
     /// Name is the name of this hook.
     pub name: String,
@@ -292,20 +179,12 @@ pub struct BackupHooksResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupHooksResourcesLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BackupHooksResourcesLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -396,20 +275,12 @@ pub enum BackupHooksResourcesPreExecOnError {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BackupLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -442,20 +313,12 @@ pub struct BackupMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupOrLabelSelectors {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BackupOrLabelSelectorsMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -494,11 +357,7 @@ pub struct BackupResourcePolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupUploaderConfig {
     /// ParallelFilesUpload is the number of files parallel uploads to perform when using the uploader.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parallelFilesUpload"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelFilesUpload")]
     pub parallel_files_upload: Option<i64>,
 }
 
@@ -507,53 +366,29 @@ pub struct BackupUploaderConfig {
 pub struct BackupStatus {
     /// BackupItemOperationsAttempted is the total number of attempted
     /// async BackupItemAction operations for this backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupItemOperationsAttempted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupItemOperationsAttempted")]
     pub backup_item_operations_attempted: Option<i64>,
     /// BackupItemOperationsCompleted is the total number of successfully completed
     /// async BackupItemAction operations for this backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupItemOperationsCompleted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupItemOperationsCompleted")]
     pub backup_item_operations_completed: Option<i64>,
     /// BackupItemOperationsFailed is the total number of async
     /// BackupItemAction operations for this backup which ended with an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupItemOperationsFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupItemOperationsFailed")]
     pub backup_item_operations_failed: Option<i64>,
     /// CompletionTimestamp records the time a backup was completed.
     /// Completion time is recorded even on failed backups.
     /// Completion time is recorded before uploading the backup object.
     /// The server's time is used for CompletionTimestamps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTimestamp")]
     pub completion_timestamp: Option<String>,
     /// CSIVolumeSnapshotsAttempted is the total number of attempted
     /// CSI VolumeSnapshots for this backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiVolumeSnapshotsAttempted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiVolumeSnapshotsAttempted")]
     pub csi_volume_snapshots_attempted: Option<i64>,
     /// CSIVolumeSnapshotsCompleted is the total number of successfully
     /// completed CSI VolumeSnapshots for this backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiVolumeSnapshotsCompleted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiVolumeSnapshotsCompleted")]
     pub csi_volume_snapshots_completed: Option<i64>,
     /// Errors is a count of all error messages that were generated during
     /// execution of the backup.  The actual errors are in the backup's log
@@ -564,25 +399,13 @@ pub struct BackupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expiration: Option<String>,
     /// FailureReason is an error that caused the entire backup to fail.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// FormatVersion is the backup format version, including major, minor, and patch version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "formatVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "formatVersion")]
     pub format_version: Option<String>,
     /// HookStatus contains information about the status of the hooks.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hookStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookStatus")]
     pub hook_status: Option<BackupStatusHookStatus>,
     /// Phase is the current state of the Backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -596,19 +419,11 @@ pub struct BackupStatus {
     /// Separate from CreationTimestamp, since that value changes
     /// on restores.
     /// The server's time is used for StartTimestamps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
     /// ValidationErrors is a slice of all validation errors (if
     /// applicable).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationErrors")]
     pub validation_errors: Option<Vec<String>>,
     /// Version is the backup format major version.
     /// Deprecated: Please see FormatVersion
@@ -616,19 +431,11 @@ pub struct BackupStatus {
     pub version: Option<i64>,
     /// VolumeSnapshotsAttempted is the total number of attempted
     /// volume snapshots for this backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotsAttempted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotsAttempted")]
     pub volume_snapshots_attempted: Option<i64>,
     /// VolumeSnapshotsCompleted is the total number of successfully
     /// completed volume snapshots for this backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotsCompleted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotsCompleted")]
     pub volume_snapshots_completed: Option<i64>,
     /// Warnings is a count of all warning messages that were generated during
     /// execution of the backup. The actual warnings are in the backup's log
@@ -643,18 +450,10 @@ pub struct BackupStatusHookStatus {
     /// HooksAttempted is the total number of attempted hooks
     /// Specifically, HooksAttempted represents the number of hooks that failed to execute
     /// and the number of hooks that executed successfully.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hooksAttempted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hooksAttempted")]
     pub hooks_attempted: Option<i64>,
     /// HooksFailed is the total number of hooks which ended with an error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hooksFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hooksFailed")]
     pub hooks_failed: Option<i64>,
 }
 
@@ -681,20 +480,13 @@ pub enum BackupStatusPhase {
 pub struct BackupStatusProgress {
     /// ItemsBackedUp is the number of items that have actually been written to the
     /// backup tarball so far.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "itemsBackedUp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "itemsBackedUp")]
     pub items_backed_up: Option<i64>,
     /// TotalItems is the total number of items to be backed up. This number may change
     /// throughout the execution of the backup due to plugins that return additional related
     /// items to back up, the velero.io/exclude-from-backup label, and various other
     /// filters that happen as items are processed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalItems"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalItems")]
     pub total_items: Option<i64>,
 }
+

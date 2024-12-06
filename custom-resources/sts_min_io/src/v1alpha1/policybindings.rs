@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sts.min.io",
-    version = "v1alpha1",
-    kind = "PolicyBinding",
-    plural = "policybindings"
-)]
+#[kube(group = "sts.min.io", version = "v1alpha1", kind = "PolicyBinding", plural = "policybindings")]
 #[kube(namespaced)]
 #[kube(status = "PolicyBindingStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PolicyBindingSpec {
     pub application: PolicyBindingApplication,
     pub policies: Vec<String>,
@@ -44,3 +39,4 @@ pub struct PolicyBindingStatusUsage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authotizations: Option<i64>,
 }
+

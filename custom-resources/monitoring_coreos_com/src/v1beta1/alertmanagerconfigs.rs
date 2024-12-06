@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -14,24 +14,15 @@ use self::prelude::*;
 /// By definition, the Alertmanager configuration only applies to alerts for which
 /// the `namespace` label is equal to the namespace of the AlertmanagerConfig resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "monitoring.coreos.com",
-    version = "v1beta1",
-    kind = "AlertmanagerConfig",
-    plural = "alertmanagerconfigs"
-)]
+#[kube(group = "monitoring.coreos.com", version = "v1beta1", kind = "AlertmanagerConfig", plural = "alertmanagerconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AlertmanagerConfigSpec {
     /// List of inhibition rules. The rules will only apply to alerts matching
     /// the resource's namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inhibitRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inhibitRules")]
     pub inhibit_rules: Option<Vec<AlertmanagerConfigInhibitRules>>,
     /// List of receivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,11 +33,7 @@ pub struct AlertmanagerConfigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<AlertmanagerConfigRoute>,
     /// List of TimeInterval specifying when the routes should be muted or active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeIntervals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeIntervals")]
     pub time_intervals: Option<Vec<AlertmanagerConfigTimeIntervals>>,
 }
 
@@ -62,19 +49,11 @@ pub struct AlertmanagerConfigInhibitRules {
     /// Matchers for which one or more alerts have to exist for the inhibition
     /// to take effect. The operator enforces that the alert matches the
     /// resource's namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceMatch")]
     pub source_match: Option<Vec<AlertmanagerConfigInhibitRulesSourceMatch>>,
     /// Matchers that have to be fulfilled in the alerts to be muted. The
     /// operator enforces that the alert matches the resource's namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetMatch")]
     pub target_match: Option<Vec<AlertmanagerConfigInhibitRulesTargetMatch>>,
 }
 
@@ -138,98 +117,46 @@ pub enum AlertmanagerConfigInhibitRulesTargetMatchMatchType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerConfigReceivers {
     /// List of Slack configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "discordConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discordConfigs")]
     pub discord_configs: Option<Vec<AlertmanagerConfigReceiversDiscordConfigs>>,
     /// List of Email configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emailConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailConfigs")]
     pub email_configs: Option<Vec<AlertmanagerConfigReceiversEmailConfigs>>,
     /// List of MSTeams configurations.
     /// It requires Alertmanager >= 0.26.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "msteamsConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "msteamsConfigs")]
     pub msteams_configs: Option<Vec<AlertmanagerConfigReceiversMsteamsConfigs>>,
     /// Name of the receiver. Must be unique across all items from the list.
     pub name: String,
     /// List of OpsGenie configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "opsgenieConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "opsgenieConfigs")]
     pub opsgenie_configs: Option<Vec<AlertmanagerConfigReceiversOpsgenieConfigs>>,
     /// List of PagerDuty configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pagerdutyConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pagerdutyConfigs")]
     pub pagerduty_configs: Option<Vec<AlertmanagerConfigReceiversPagerdutyConfigs>>,
     /// List of Pushover configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pushoverConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pushoverConfigs")]
     pub pushover_configs: Option<Vec<AlertmanagerConfigReceiversPushoverConfigs>>,
     /// List of Slack configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "slackConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slackConfigs")]
     pub slack_configs: Option<Vec<AlertmanagerConfigReceiversSlackConfigs>>,
     /// List of SNS configurations
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snsConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snsConfigs")]
     pub sns_configs: Option<Vec<AlertmanagerConfigReceiversSnsConfigs>>,
     /// List of Telegram configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "telegramConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "telegramConfigs")]
     pub telegram_configs: Option<Vec<AlertmanagerConfigReceiversTelegramConfigs>>,
     /// List of VictorOps configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "victoropsConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "victoropsConfigs")]
     pub victorops_configs: Option<Vec<AlertmanagerConfigReceiversVictoropsConfigs>>,
     /// List of Webex configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webexConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webexConfigs")]
     pub webex_configs: Option<Vec<AlertmanagerConfigReceiversWebexConfigs>>,
     /// List of webhook configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webhookConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookConfigs")]
     pub webhook_configs: Option<Vec<AlertmanagerConfigReceiversWebhookConfigs>>,
     /// List of WeChat configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wechatConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wechatConfigs")]
     pub wechat_configs: Option<Vec<AlertmanagerConfigReceiversWechatConfigs>>,
 }
 
@@ -243,21 +170,13 @@ pub struct AlertmanagerConfigReceiversDiscordConfigs {
     #[serde(rename = "apiURL")]
     pub api_url: AlertmanagerConfigReceiversDiscordConfigsApiUrl,
     /// HTTP client configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfig>,
     /// The template of the message's body.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// Whether or not to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
     /// The template of the message's title.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -298,24 +217,15 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -324,24 +234,14 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversDiscordConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversDiscordConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -357,12 +257,11 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -460,42 +359,25 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<
-            String,
-            AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ProxyConnectHeader,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -518,8 +400,7 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdSecret>,
@@ -605,42 +486,23 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -649,8 +511,7 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfig {
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCaSecret>,
@@ -695,12 +556,10 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCaS
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCertSecret>,
+    pub secret: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2TlsConfigCertSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -809,39 +668,23 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -895,8 +738,7 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaSecret 
 pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertSecret>,
@@ -983,36 +825,20 @@ pub enum AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigMinVersion 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerConfigReceiversEmailConfigs {
     /// The identity to use for authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authIdentity")]
     pub auth_identity: Option<String>,
     /// The secret's key that contains the password to use for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authPassword")]
     pub auth_password: Option<AlertmanagerConfigReceiversEmailConfigsAuthPassword>,
     /// The secret's key that contains the CRAM-MD5 secret.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authSecret")]
     pub auth_secret: Option<AlertmanagerConfigReceiversEmailConfigsAuthSecret>,
     /// The username to use for authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authUsername")]
     pub auth_username: Option<String>,
     /// The sender address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1029,18 +855,10 @@ pub struct AlertmanagerConfigReceiversEmailConfigs {
     pub html: Option<String>,
     /// The SMTP TLS requirement.
     /// Note that Go does not support unencrypted connections to remote SMTP endpoints.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireTLS")]
     pub require_tls: Option<bool>,
     /// Whether or not to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
     /// The SMTP host and port through which emails are sent. E.g. example.com:25
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1097,39 +915,23 @@ pub struct AlertmanagerConfigReceiversEmailConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversEmailConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversEmailConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<AlertmanagerConfigReceiversEmailConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<AlertmanagerConfigReceiversEmailConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1271,18 +1073,10 @@ pub enum AlertmanagerConfigReceiversEmailConfigsTlsConfigMinVersion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerConfigReceiversMsteamsConfigs {
     /// HTTP client configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfig>,
     /// Whether to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
     /// Message summary template.
     /// It requires Alertmanager >= 0.27.0.
@@ -1314,24 +1108,15 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -1340,24 +1125,14 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversMsteamsConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversMsteamsConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -1373,12 +1148,11 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1476,42 +1250,25 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<
-            String,
-            AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ProxyConnectHeader,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -1534,8 +1291,7 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdSecret>,
@@ -1621,42 +1377,23 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1665,8 +1402,7 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfig {
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCaSecret>,
@@ -1711,12 +1447,10 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCaS
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCertSecret>,
+    pub secret: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2TlsConfigCertSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -1825,39 +1559,23 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1911,8 +1629,7 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaSecret 
 pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertSecret>,
@@ -2037,11 +1754,7 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entity: Option<String>,
     /// HTTP client configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfig>,
     /// Alert text limited to 130 characters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2056,11 +1769,7 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub responders: Option<Vec<AlertmanagerConfigReceiversOpsgenieConfigsResponders>>,
     /// Whether or not to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
     /// Backlink to the sender of the notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2105,24 +1814,15 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -2131,24 +1831,14 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -2164,12 +1854,11 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -2267,42 +1956,25 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<
-            String,
-            AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ProxyConnectHeader,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -2325,8 +1997,7 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2ClientIdSecret>,
@@ -2412,42 +2083,23 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2456,8 +2108,7 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfig {
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCaSecret>,
@@ -2502,12 +2153,10 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCa
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCertSecret>,
+    pub secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigOauth2TlsConfigCertSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -2616,41 +2265,23 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2659,8 +2290,7 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfig {
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCaSecret>,
@@ -2705,8 +2335,7 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCaSecret
 pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfigCertSecret>,
@@ -2849,55 +2478,29 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     /// HTTP client configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfig>,
     /// A list of image details to attach that provide further detail about an incident.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pagerDutyImageConfigs"
-    )]
-    pub pager_duty_image_configs:
-        Option<Vec<AlertmanagerConfigReceiversPagerdutyConfigsPagerDutyImageConfigs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pagerDutyImageConfigs")]
+    pub pager_duty_image_configs: Option<Vec<AlertmanagerConfigReceiversPagerdutyConfigsPagerDutyImageConfigs>>,
     /// A list of link details to attach that provide further detail about an incident.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pagerDutyLinkConfigs"
-    )]
-    pub pager_duty_link_configs:
-        Option<Vec<AlertmanagerConfigReceiversPagerdutyConfigsPagerDutyLinkConfigs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pagerDutyLinkConfigs")]
+    pub pager_duty_link_configs: Option<Vec<AlertmanagerConfigReceiversPagerdutyConfigsPagerDutyLinkConfigs>>,
     /// The secret's key that contains the PagerDuty integration key (when using
     /// Events API v2). Either this field or `serviceKey` needs to be defined.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingKey")]
     pub routing_key: Option<AlertmanagerConfigReceiversPagerdutyConfigsRoutingKey>,
     /// Whether or not to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
     /// The secret's key that contains the PagerDuty service key (when using
     /// integration type "Prometheus"). Either this field or `routingKey` needs to
     /// be defined.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceKey")]
     pub service_key: Option<AlertmanagerConfigReceiversPagerdutyConfigsServiceKey>,
     /// Severity of the incident.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2934,24 +2537,15 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -2960,24 +2554,14 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -2993,12 +2577,11 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -3096,42 +2679,25 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<
-            String,
-            AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ProxyConnectHeader,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -3154,8 +2720,7 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2ClientIdSecret>,
@@ -3241,42 +2806,23 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfig 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -3285,12 +2831,10 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfig 
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCaSecret>,
+    pub secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCaSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -3332,12 +2876,10 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigC
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCertSecret>,
+    pub secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigOauth2TlsConfigCertSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -3446,41 +2988,23 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -3489,8 +3013,7 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfig {
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCaSecret>,
@@ -3535,8 +3058,7 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCaSecre
 pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfigCertSecret>,
@@ -3684,11 +3206,7 @@ pub struct AlertmanagerConfigReceiversPushoverConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub html: Option<bool>,
     /// HTTP client configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfig>,
     /// Notification message.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3701,11 +3219,7 @@ pub struct AlertmanagerConfigReceiversPushoverConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry: Option<String>,
     /// Whether or not to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
     /// The name of one of the sounds supported by device clients to override the user's default sound choice
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3742,11 +3256,7 @@ pub struct AlertmanagerConfigReceiversPushoverConfigs {
     /// The user key file that contains the recipient user's user key.
     /// Either `userKey` or `userKeyFile` is required.
     /// It requires Alertmanager >= v0.26.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userKeyFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userKeyFile")]
     pub user_key_file: Option<String>,
 }
 
@@ -3765,24 +3275,15 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -3791,24 +3292,14 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversPushoverConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversPushoverConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -3824,12 +3315,11 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -3927,42 +3417,25 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<
-            String,
-            AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ProxyConnectHeader,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -3985,8 +3458,7 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2ClientIdSecret>,
@@ -4072,42 +3544,23 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -4116,8 +3569,7 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfig {
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCaSecret>,
@@ -4162,12 +3614,10 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCa
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCertSecret>,
+    pub secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigOauth2TlsConfigCertSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -4276,41 +3726,23 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -4319,8 +3751,7 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfig {
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCaSecret>,
@@ -4365,8 +3796,7 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCaSecret
 pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfigCertSecret>,
@@ -4485,11 +3915,7 @@ pub struct AlertmanagerConfigReceiversSlackConfigs {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
     pub api_url: Option<AlertmanagerConfigReceiversSlackConfigsApiUrl>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "callbackId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "callbackId")]
     pub callback_id: Option<String>,
     /// The channel or user to send notifications to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4504,11 +3930,7 @@ pub struct AlertmanagerConfigReceiversSlackConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
     /// HTTP client configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iconEmoji")]
     pub icon_emoji: Option<String>,
@@ -4523,17 +3945,9 @@ pub struct AlertmanagerConfigReceiversSlackConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pretext: Option<String>,
     /// Whether or not to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shortFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shortFields")]
     pub short_fields: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
@@ -4580,11 +3994,7 @@ pub struct AlertmanagerConfigReceiversSlackConfigsActions {
 /// for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerConfigReceiversSlackConfigsActionsConfirm {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dismissText"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dismissText")]
     pub dismiss_text: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "okText")]
     pub ok_text: Option<String>,
@@ -4631,24 +4041,15 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -4657,24 +4058,14 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversSlackConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversSlackConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -4690,12 +4081,11 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -4793,39 +4183,25 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -4848,8 +4224,7 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2ClientIdSecret>,
@@ -4935,42 +4310,23 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -4979,8 +4335,7 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfig {
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigCaSecret>,
@@ -5025,8 +4380,7 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigCaSec
 pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigOauth2TlsConfigCertSecret>,
@@ -5138,39 +4492,23 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -5319,29 +4657,17 @@ pub struct AlertmanagerConfigReceiversSnsConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// HTTP client configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfig>,
     /// The message content of the SNS notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// Phone number if message is delivered via SMS in E.164 format.
     /// If you don't specify this value, you must specify a value for the TopicARN or TargetARN.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "phoneNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "phoneNumber")]
     pub phone_number: Option<String>,
     /// Whether or not to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
     /// Configures AWS's Signature Verification 4 signing process to sign requests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5374,24 +4700,15 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -5400,23 +4717,14 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, AlertmanagerConfigReceiversSnsConfigsHttpConfigProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversSnsConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -5432,12 +4740,11 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -5535,39 +4842,25 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -5676,41 +4969,23 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -5719,8 +4994,7 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfig {
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigCaSecret>,
@@ -5765,8 +5039,7 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigCaSecre
 pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2TlsConfigCertSecret>,
@@ -5878,39 +5151,23 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -6116,64 +5373,44 @@ pub struct AlertmanagerConfigReceiversTelegramConfigs {
     /// Telegram bot token. It is mutually exclusive with `botTokenFile`.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    ///
+    /// 
     /// Either `botToken` or `botTokenFile` is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "botToken")]
     pub bot_token: Option<AlertmanagerConfigReceiversTelegramConfigsBotToken>,
     /// File to read the Telegram bot token from. It is mutually exclusive with `botToken`.
     /// Either `botToken` or `botTokenFile` is required.
-    ///
+    /// 
     /// It requires Alertmanager >= v0.26.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "botTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "botTokenFile")]
     pub bot_token_file: Option<String>,
     /// The Telegram chat ID.
     #[serde(rename = "chatID")]
     pub chat_id: i64,
     /// Disable telegram notifications
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableNotifications"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableNotifications")]
     pub disable_notifications: Option<bool>,
     /// HTTP client configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfig>,
     /// Message template
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// The Telegram Group Topic ID.
     /// It requires Alertmanager >= 0.26.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageThreadID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageThreadID")]
     pub message_thread_id: Option<i64>,
     /// Parse mode for telegram message
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parseMode")]
     pub parse_mode: Option<AlertmanagerConfigReceiversTelegramConfigsParseMode>,
     /// Whether to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
 }
 
 /// Telegram bot token. It is mutually exclusive with `botTokenFile`.
 /// The secret needs to be in the same namespace as the AlertmanagerConfig
 /// object and accessible by the Prometheus Operator.
-///
+/// 
 /// Either `botToken` or `botTokenFile` is required.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerConfigReceiversTelegramConfigsBotToken {
@@ -6198,24 +5435,15 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -6224,24 +5452,14 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversTelegramConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversTelegramConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -6257,12 +5475,11 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -6360,42 +5577,25 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<
-            String,
-            AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ProxyConnectHeader,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -6418,8 +5618,7 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2ClientIdSecret>,
@@ -6505,42 +5704,23 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -6549,8 +5729,7 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfig {
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCaSecret>,
@@ -6595,12 +5774,10 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCa
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCertSecret>,
+    pub secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigOauth2TlsConfigCertSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -6709,41 +5886,23 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -6752,8 +5911,7 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfig {
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCaSecret>,
@@ -6798,8 +5956,7 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCaSecret
 pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfigCertSecret>,
@@ -6905,60 +6062,28 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiUrl")]
     pub api_url: Option<String>,
     /// Additional custom fields for notification.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customFields")]
     pub custom_fields: Option<Vec<AlertmanagerConfigReceiversVictoropsConfigsCustomFields>>,
     /// Contains summary of the alerted problem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "entityDisplayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "entityDisplayName")]
     pub entity_display_name: Option<String>,
     /// The HTTP client's configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfig>,
     /// Describes the behavior of the alert (CRITICAL, WARNING, INFO).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageType")]
     pub message_type: Option<String>,
     /// The monitoring tool the state message is from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitoringTool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitoringTool")]
     pub monitoring_tool: Option<String>,
     /// A key used to map the alert to a team.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingKey")]
     pub routing_key: Option<String>,
     /// Whether or not to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
     /// Contains long explanation of the alerted problem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stateMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateMessage")]
     pub state_message: Option<String>,
 }
 
@@ -6997,24 +6122,15 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -7023,24 +6139,14 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversVictoropsConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversVictoropsConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -7056,12 +6162,11 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -7159,42 +6264,25 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<
-            String,
-            AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ProxyConnectHeader,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -7217,8 +6305,7 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdSecret>,
@@ -7304,42 +6391,23 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfig 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -7348,12 +6416,10 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfig 
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCaSecret>,
+    pub secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCaSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -7395,12 +6461,10 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigC
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCertSecret>,
+    pub secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2TlsConfigCertSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -7509,41 +6573,23 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -7552,8 +6598,7 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfig {
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaSecret>,
@@ -7598,8 +6643,7 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaSecre
 pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertSecret>,
@@ -7691,11 +6735,7 @@ pub struct AlertmanagerConfigReceiversWebexConfigs {
     pub api_url: Option<String>,
     /// The HTTP client's configuration.
     /// You must use this configuration to supply the bot token as part of the HTTP `Authorization` header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfig>,
     /// Message template
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7704,11 +6744,7 @@ pub struct AlertmanagerConfigReceiversWebexConfigs {
     #[serde(rename = "roomID")]
     pub room_id: String,
     /// Whether to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
 }
 
@@ -7728,24 +6764,15 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -7754,24 +6781,14 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversWebexConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversWebexConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -7787,12 +6804,11 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -7890,39 +6906,25 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -7945,8 +6947,7 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdSecret>,
@@ -8032,42 +7033,23 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -8076,8 +7058,7 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfig {
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigCaSecret>,
@@ -8122,8 +7103,7 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigCaSec
 pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2TlsConfigCertSecret>,
@@ -8235,39 +7215,23 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -8409,21 +7373,13 @@ pub enum AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigMinVersion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerConfigReceiversWebhookConfigs {
     /// HTTP client configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfig>,
     /// Maximum number of alerts to be sent per webhook message. When 0, all alerts are included.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAlerts")]
     pub max_alerts: Option<i32>,
     /// Whether or not to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
     /// The URL to send HTTP POST requests to. `urlSecret` takes precedence over
     /// `url`. One of `urlSecret` and `url` should be defined.
@@ -8453,24 +7409,15 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -8479,24 +7426,14 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversWebhookConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversWebhookConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -8512,12 +7449,11 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -8615,42 +7551,25 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<
-            String,
-            AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ProxyConnectHeader,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -8673,8 +7592,7 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2ClientIdSecret>,
@@ -8760,42 +7678,23 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -8804,8 +7703,7 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfig {
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCaSecret>,
@@ -8850,12 +7748,10 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCaS
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCertSecret>,
+    pub secret: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigOauth2TlsConfigCertSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -8964,39 +7860,23 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -9050,8 +7930,7 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCaSecret 
 pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfigCertSecret>,
@@ -9165,27 +8044,15 @@ pub struct AlertmanagerConfigReceiversWechatConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "corpID")]
     pub corp_id: Option<String>,
     /// HTTP client configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfig>,
     /// API request data as defined by the WeChat API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageType")]
     pub message_type: Option<String>,
     /// Whether or not to notify about resolved alerts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendResolved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toParty")]
     pub to_party: Option<String>,
@@ -9221,24 +8088,15 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfig {
     /// for authentication.
     /// The secret needs to be in the same namespace as the AlertmanagerConfig
     /// object and accessible by the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
-    pub bearer_token_secret:
-        Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
+    pub bearer_token_secret: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret>,
     /// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -9247,24 +8105,14 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfig {
     pub oauth2: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<String, AlertmanagerConfigReceiversWechatConfigsHttpConfigProxyConnectHeader>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversWechatConfigsHttpConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -9280,12 +8128,11 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfig {
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -9383,42 +8230,25 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2 {
     pub client_secret: AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header: Option<
-        BTreeMap<
-            String,
-            AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ProxyConnectHeader,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -9441,8 +8271,7 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2 {
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdSecret>,
@@ -9528,42 +8357,23 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigKeySecret>,
+    pub key_secret: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
-    pub max_version:
-        Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigMaxVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
-    pub min_version:
-        Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigMinVersion>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -9572,8 +8382,7 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfig {
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigCaSecret>,
@@ -9618,8 +8427,7 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigCaSe
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2TlsConfigCertSecret>,
@@ -9731,39 +8539,23 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -9817,8 +8609,7 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaSecret {
 pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertSecret>,
@@ -9907,11 +8698,7 @@ pub enum AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigMinVersion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerConfigRoute {
     /// ActiveTimeIntervals is a list of TimeInterval names when this route should be active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeTimeIntervals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeTimeIntervals")]
     pub active_time_intervals: Option<Vec<String>>,
     /// Boolean indicating whether an alert should continue matching subsequent
     /// sibling nodes. It will always be overridden to true for the first-level
@@ -9926,11 +8713,7 @@ pub struct AlertmanagerConfigRoute {
     /// How long to wait before sending an updated notification.
     /// Must match the regular expression`^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$`
     /// Example: "5m"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupInterval")]
     pub group_interval: Option<String>,
     /// How long to wait before sending the initial notification.
     /// Must match the regular expression`^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$`
@@ -9951,11 +8734,7 @@ pub struct AlertmanagerConfigRoute {
     /// the Kube API can't validate the data beyond the fact that it is a valid
     /// JSON representation.
     /// MuteTimeIntervals is a list of TimeInterval names that will mute this route when matched.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "muteTimeIntervals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "muteTimeIntervals")]
     pub mute_time_intervals: Option<Vec<String>>,
     /// Name of the receiver for this route. If not empty, it should be listed in
     /// the `receivers` field.
@@ -9964,11 +8743,7 @@ pub struct AlertmanagerConfigRoute {
     /// How long to wait before repeating the last notification.
     /// Must match the regular expression`^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$`
     /// Example: "4h"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "repeatInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repeatInterval")]
     pub repeat_interval: Option<String>,
     /// Child routes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10009,11 +8784,7 @@ pub struct AlertmanagerConfigTimeIntervals {
     /// Name of the time interval.
     pub name: String,
     /// TimeIntervals is a list of TimePeriod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeIntervals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeIntervals")]
     pub time_intervals: Option<Vec<AlertmanagerConfigTimeIntervalsTimeIntervals>>,
 }
 
@@ -10021,11 +8792,7 @@ pub struct AlertmanagerConfigTimeIntervals {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerConfigTimeIntervalsTimeIntervals {
     /// DaysOfMonth is a list of DayOfMonthRange
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "daysOfMonth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "daysOfMonth")]
     pub days_of_month: Option<Vec<AlertmanagerConfigTimeIntervalsTimeIntervalsDaysOfMonth>>,
     /// Months is a list of MonthRange
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10062,3 +8829,4 @@ pub struct AlertmanagerConfigTimeIntervalsTimeIntervalsTimes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
 }
+

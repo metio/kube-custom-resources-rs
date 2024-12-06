@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// TinkerbellMachineTemplateSpec defines the desired state of TinkerbellMachineTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "TinkerbellMachineTemplate",
-    plural = "tinkerbellmachinetemplates"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta1", kind = "TinkerbellMachineTemplate", plural = "tinkerbellmachinetemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TinkerbellMachineTemplateSpec {
     /// TinkerbellMachineTemplateResource describes the data needed to create am TinkerbellMachine from a template.
     pub template: TinkerbellMachineTemplateTemplate,
@@ -38,34 +33,18 @@ pub struct TinkerbellMachineTemplateTemplate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TinkerbellMachineTemplateTemplateSpec {
     /// BootOptions are options that control the booting of Hardware.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bootOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootOptions")]
     pub boot_options: Option<TinkerbellMachineTemplateTemplateSpecBootOptions>,
     /// HardwareAffinity allows filtering for hardware.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardwareAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareAffinity")]
     pub hardware_affinity: Option<TinkerbellMachineTemplateTemplateSpecHardwareAffinity>,
     /// Those fields are set programmatically, but they cannot be re-constructed from "state of the world", so
     /// we put them in spec instead of status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardwareName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareName")]
     pub hardware_name: Option<String>,
     /// ImageLookupBaseRegistry is the base Registry URL that is used for pulling images,
     /// if not set, the default will be to use ghcr.io/tinkerbell/cluster-api-provider-tinkerbell.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageLookupBaseRegistry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageLookupBaseRegistry")]
     pub image_lookup_base_registry: Option<String>,
     /// ImageLookupFormat is the URL naming format to use for machine images when
     /// a machine does not specify. When set, this will be used for all cluster machines
@@ -79,41 +58,21 @@ pub struct TinkerbellMachineTemplateTemplateSpec {
     /// kubernetes/release: v1.13.0, v1.12.5-mybuild.1, or v1.17.3. For example, the default
     /// image format of {{.BaseRegistry}}/{{.OSDistro}}-{{.OSVersion}}:{{.KubernetesVersion}}.gz will
     /// attempt to pull the image from that location. See also: https://golang.org/pkg/text/template/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageLookupFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageLookupFormat")]
     pub image_lookup_format: Option<String>,
     /// ImageLookupOSDistro is the name of the OS distro to use when fetching machine images,
     /// if not set it will default to ubuntu.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageLookupOSDistro"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageLookupOSDistro")]
     pub image_lookup_os_distro: Option<String>,
     /// ImageLookupOSVersion is the version of the OS distribution to use when fetching machine
     /// images. If not set it will default based on ImageLookupOSDistro.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageLookupOSVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageLookupOSVersion")]
     pub image_lookup_os_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
     /// TemplateOverride overrides the default Tinkerbell template used by CAPT.
     /// You can learn more about Tinkerbell templates here: https://tinkerbell.org/docs/concepts/templates/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateOverride"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateOverride")]
     pub template_override: Option<String>,
 }
 
@@ -161,8 +120,7 @@ pub struct TinkerbellMachineTemplateTemplateSpecHardwareAffinity {
 pub struct TinkerbellMachineTemplateTemplateSpecHardwareAffinityPreferred {
     /// HardwareAffinityTerm is the term associated with the corresponding weight.
     #[serde(rename = "hardwareAffinityTerm")]
-    pub hardware_affinity_term:
-        TinkerbellMachineTemplateTemplateSpecHardwareAffinityPreferredHardwareAffinityTerm,
+    pub hardware_affinity_term: TinkerbellMachineTemplateTemplateSpecHardwareAffinityPreferredHardwareAffinityTerm,
     /// Weight associated with matching the corresponding hardwareAffinityTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -191,8 +149,7 @@ pub struct TinkerbellMachineTemplateTemplateSpecHardwareAffinityPreferredHardwar
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TinkerbellMachineTemplateTemplateSpecHardwareAffinityPreferredHardwareAffinityTermLabelSelectorMatchExpressions
-{
+pub struct TinkerbellMachineTemplateTemplateSpecHardwareAffinityPreferredHardwareAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -230,8 +187,7 @@ pub struct TinkerbellMachineTemplateTemplateSpecHardwareAffinityRequiredLabelSel
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TinkerbellMachineTemplateTemplateSpecHardwareAffinityRequiredLabelSelectorMatchExpressions
-{
+pub struct TinkerbellMachineTemplateTemplateSpecHardwareAffinityRequiredLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -244,3 +200,4 @@ pub struct TinkerbellMachineTemplateTemplateSpecHardwareAffinityRequiredLabelSel
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
+

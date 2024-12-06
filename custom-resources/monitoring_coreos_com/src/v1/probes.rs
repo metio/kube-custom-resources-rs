@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Specification of desired Ingress selection for target discovery by Prometheus.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "monitoring.coreos.com",
-    version = "v1",
-    kind = "Probe",
-    plural = "probes"
-)]
+#[kube(group = "monitoring.coreos.com", version = "v1", kind = "Probe", plural = "probes")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ProbeSpec {
     /// Authorization section for this endpoint
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -34,11 +29,7 @@ pub struct ProbeSpec {
     /// Secret to mount to read bearer token for scraping targets. The secret
     /// needs to be in the same namespace as the probe and accessible by
     /// the Prometheus Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<ProbeBearerTokenSecret>,
     /// Interval at which targets are probed using the configured prober.
     /// If not specified Prometheus' global scrape interval is used.
@@ -49,44 +40,24 @@ pub struct ProbeSpec {
     pub job_name: Option<String>,
     /// Per-scrape limit on the number of targets dropped by relabeling
     /// that will be kept in memory. 0 means no limit.
-    ///
+    /// 
     /// It requires Prometheus >= v2.47.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepDroppedTargets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepDroppedTargets")]
     pub keep_dropped_targets: Option<i64>,
     /// Per-scrape limit on number of labels that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.27.0 and newer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelLimit")]
     pub label_limit: Option<i64>,
     /// Per-scrape limit on length of labels name that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.27.0 and newer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelNameLengthLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelNameLengthLimit")]
     pub label_name_length_limit: Option<i64>,
     /// Per-scrape limit on length of labels value that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.27.0 and newer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelValueLengthLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelValueLengthLimit")]
     pub label_value_length_limit: Option<i64>,
     /// MetricRelabelConfigs to apply to samples before ingestion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricRelabelings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
     pub metric_relabelings: Option<Vec<ProbeMetricRelabelings>>,
     /// The module to use for probing specifying how to probe the target.
     /// Example module configuring in the blackbox exporter:
@@ -96,20 +67,12 @@ pub struct ProbeSpec {
     /// If there are more than this many buckets in a native histogram,
     /// buckets will be merged to stay within the limit.
     /// It requires Prometheus >= v2.45.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nativeHistogramBucketLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeHistogramBucketLimit")]
     pub native_histogram_bucket_limit: Option<i64>,
     /// If the growth factor of one bucket to the next is smaller than this,
     /// buckets will be merged to increase the factor sufficiently.
     /// It requires Prometheus >= v2.50.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nativeHistogramMinBucketFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeHistogramMinBucketFactor")]
     pub native_histogram_min_bucket_factor: Option<IntOrString>,
     /// OAuth2 for the URL. Only valid in Prometheus versions 2.27.0 and newer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -119,53 +82,29 @@ pub struct ProbeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prober: Option<ProbeProber>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// The scrape class to apply.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClass")]
     pub scrape_class: Option<String>,
     /// Whether to scrape a classic histogram that is also exposed as a native histogram.
     /// It requires Prometheus >= v2.45.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeClassicHistograms"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
     pub scrape_classic_histograms: Option<bool>,
     /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
-    ///
+    /// 
     /// If unset, Prometheus uses its default value.
-    ///
+    /// 
     /// It requires Prometheus >= v2.49.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeProtocols"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
     pub scrape_protocols: Option<Vec<String>>,
     /// Timeout for scraping metrics from the Prometheus exporter.
     /// If not specified, the Prometheus global scrape timeout is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
     /// TargetLimit defines a limit on the number of scraped targets that will be accepted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLimit")]
     pub target_limit: Option<i64>,
     /// Targets defines a set of static or dynamically discovered targets to probe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -182,9 +121,9 @@ pub struct ProbeAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProbeAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -278,20 +217,20 @@ pub struct ProbeBearerTokenSecret {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeMetricRelabelings {
     /// Action to perform based on the regex matching.
-    ///
+    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    ///
+    /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<ProbeMetricRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    ///
+    /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
@@ -300,7 +239,7 @@ pub struct ProbeMetricRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    ///
+    /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
@@ -310,29 +249,21 @@ pub struct ProbeMetricRelabelings {
     /// The source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
-    ///
+    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    ///
+    /// 
     /// Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ProbeMetricRelabelingsAction {
@@ -389,37 +320,25 @@ pub struct ProbeOauth2 {
     pub client_secret: ProbeOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ProbeOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -528,39 +447,23 @@ pub struct ProbeOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ProbeOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ProbeOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ProbeOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ProbeOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -741,11 +644,7 @@ pub struct ProbeTargets {
     /// relabeling configuration.
     /// If `ingress` is also defined, `staticConfig` takes precedence.
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#static_config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticConfig")]
     pub static_config: Option<ProbeTargetsStaticConfig>,
 }
 
@@ -755,11 +654,7 @@ pub struct ProbeTargets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeTargetsIngress {
     /// From which namespaces to select Ingress objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ProbeTargetsIngressNamespaceSelector>,
     /// RelabelConfigs to apply to the label set of the target before it gets
     /// scraped.
@@ -768,11 +663,7 @@ pub struct ProbeTargetsIngress {
     /// probed URL.
     /// The original scrape job's name is available via the `__tmp_prometheus_job_name` label.
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relabelingConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelingConfigs")]
     pub relabeling_configs: Option<Vec<ProbeTargetsIngressRelabelingConfigs>>,
     /// Selector to select the Ingress objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -787,30 +678,26 @@ pub struct ProbeTargetsIngressNamespaceSelector {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<bool>,
     /// List of namespace names to select from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchNames")]
     pub match_names: Option<Vec<String>>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeTargetsIngressRelabelingConfigs {
     /// Action to perform based on the regex matching.
-    ///
+    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    ///
+    /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<ProbeTargetsIngressRelabelingConfigsAction>,
     /// Modulus to take of the hash of the source label values.
-    ///
+    /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
@@ -819,7 +706,7 @@ pub struct ProbeTargetsIngressRelabelingConfigs {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    ///
+    /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
@@ -829,29 +716,21 @@ pub struct ProbeTargetsIngressRelabelingConfigs {
     /// The source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
-    ///
+    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    ///
+    /// 
     /// Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ProbeTargetsIngressRelabelingConfigsAction {
@@ -899,20 +778,12 @@ pub enum ProbeTargetsIngressRelabelingConfigsAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeTargetsIngressSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ProbeTargetsIngressSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -945,11 +816,7 @@ pub struct ProbeTargetsStaticConfig {
     /// RelabelConfigs to apply to the label set of the targets before it gets
     /// scraped.
     /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relabelingConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelingConfigs")]
     pub relabeling_configs: Option<Vec<ProbeTargetsStaticConfigRelabelingConfigs>>,
     /// The list of hosts to probe.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "static")]
@@ -958,20 +825,20 @@ pub struct ProbeTargetsStaticConfig {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeTargetsStaticConfigRelabelingConfigs {
     /// Action to perform based on the regex matching.
-    ///
+    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    ///
+    /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<ProbeTargetsStaticConfigRelabelingConfigsAction>,
     /// Modulus to take of the hash of the source label values.
-    ///
+    /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
@@ -980,7 +847,7 @@ pub struct ProbeTargetsStaticConfigRelabelingConfigs {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    ///
+    /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
@@ -990,29 +857,21 @@ pub struct ProbeTargetsStaticConfigRelabelingConfigs {
     /// The source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
-    ///
+    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    ///
+    /// 
     /// Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ProbeTargetsStaticConfigRelabelingConfigsAction {
@@ -1066,39 +925,23 @@ pub struct ProbeTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ProbeTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ProbeTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ProbeTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ProbeTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1234,3 +1077,4 @@ pub enum ProbeTlsConfigMinVersion {
     #[serde(rename = "TLS13")]
     Tls13,
 }
+

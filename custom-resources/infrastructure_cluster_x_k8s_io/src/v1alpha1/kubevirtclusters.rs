@@ -4,52 +4,35 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// KubevirtClusterSpec defines the desired state of KubevirtCluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1alpha1",
-    kind = "KubevirtCluster",
-    plural = "kubevirtclusters"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1alpha1", kind = "KubevirtCluster", plural = "kubevirtclusters")]
 #[kube(namespaced)]
 #[kube(status = "KubevirtClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KubevirtClusterSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<KubevirtClusterControlPlaneEndpoint>,
     /// ControlPlaneServiceTemplate can be used to modify service that fronts the control plane nodes to handle the
     /// api-server traffic (port 6443). This field is optional, by default control plane nodes will use a service
     /// of type ClusterIP, which will make workload cluster only accessible within the same cluster. Note, this does
     /// not aim to expose the entire Service spec to users, but only provides capability to modify the service metadata
     /// and the service type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneServiceTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneServiceTemplate")]
     pub control_plane_service_template: Option<KubevirtClusterControlPlaneServiceTemplate>,
     /// InfraClusterSecretRef is a reference to a secret with a kubeconfig for external cluster used for infra.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "infraClusterSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infraClusterSecretRef")]
     pub infra_cluster_secret_ref: Option<ObjectReference>,
     /// SSHKeys is a reference to a local struct for SSH keys persistence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKeys")]
@@ -98,11 +81,7 @@ pub struct KubevirtClusterControlPlaneServiceTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtClusterInfraClusterSecretRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -128,11 +107,7 @@ pub struct KubevirtClusterInfraClusterSecretRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -149,11 +124,7 @@ pub struct KubevirtClusterSshKeys {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configRef")]
     pub config_ref: Option<ObjectReference>,
     /// DataSecretName is the name of the secret that stores ssh keys.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSecretName")]
     pub data_secret_name: Option<String>,
 }
 
@@ -163,11 +134,7 @@ pub struct KubevirtClusterSshKeys {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtClusterSshKeysConfigRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -193,11 +160,7 @@ pub struct KubevirtClusterSshKeysConfigRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -213,11 +176,7 @@ pub struct KubevirtClusterStatus {
     pub conditions: Option<Vec<Condition>>,
     /// FailureDomains don't mean much in CAPD since it's all local, but we can see how the rest of cluster API
     /// will use this if we populate it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<BTreeMap<String, KubevirtClusterStatusFailureDomains>>,
     /// Ready denotes that the infrastructure is ready.
     pub ready: bool,
@@ -231,10 +190,7 @@ pub struct KubevirtClusterStatusFailureDomains {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// ControlPlane determines if this failure domain is suitable for use by control plane machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
 }
+

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "api.clever-cloud.com",
-    version = "v1",
-    kind = "Redis",
-    plural = "redis"
-)]
+#[kube(group = "api.clever-cloud.com", version = "v1", kind = "Redis", plural = "redis")]
 #[kube(namespaced)]
 #[kube(status = "RedisStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RedisSpec {
     pub instance: RedisInstance,
     pub options: RedisOptions,
@@ -52,3 +47,4 @@ pub struct RedisStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addon: Option<String>,
 }
+

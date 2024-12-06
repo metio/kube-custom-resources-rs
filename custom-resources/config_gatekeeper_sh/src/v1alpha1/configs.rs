@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ConfigSpec defines the desired state of Config.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "config.gatekeeper.sh",
-    version = "v1alpha1",
-    kind = "Config",
-    plural = "configs"
-)]
+#[kube(group = "config.gatekeeper.sh", version = "v1alpha1", kind = "Config", plural = "configs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ConfigSpec {
     /// Configuration for namespace exclusion
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
@@ -38,11 +33,7 @@ pub struct ConfigSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigMatch {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedNamespaces")]
     pub excluded_namespaces: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub processes: Option<Vec<String>>,
@@ -51,11 +42,7 @@ pub struct ConfigMatch {
 /// Configuration for readiness tracker
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigReadiness {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statsEnabled")]
     pub stats_enabled: Option<bool>,
 }
 
@@ -111,4 +98,6 @@ pub struct ConfigValidationTracesKind {
 
 /// ConfigStatus defines the observed state of Config.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ConfigStatus {}
+pub struct ConfigStatus {
+}
+

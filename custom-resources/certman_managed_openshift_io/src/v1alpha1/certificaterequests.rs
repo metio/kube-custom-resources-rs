@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// CertificateRequestSpec defines the desired state of CertificateRequest
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "certman.managed.openshift.io",
-    version = "v1alpha1",
-    kind = "CertificateRequest",
-    plural = "certificaterequests"
-)]
+#[kube(group = "certman.managed.openshift.io", version = "v1alpha1", kind = "CertificateRequest", plural = "certificaterequests")]
 #[kube(namespaced)]
 #[kube(status = "CertificateRequestStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CertificateRequestSpec {
     /// ACMEDNSDomain is the DNS zone that will house the TXT records needed for the
     /// certificate to be created.
@@ -45,18 +40,10 @@ pub struct CertificateRequestSpec {
     pub platform: CertificateRequestPlatform,
     /// Number of days before expiration to reissue certificate.
     /// NOTE: Keeping "renew" in JSON for backward-compatibility.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "renewBeforeDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "renewBeforeDays")]
     pub renew_before_days: Option<i64>,
     /// WebConsoleURL is the URL for the cluster's web console UI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webConsoleURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webConsoleURL")]
     pub web_console_url: Option<String>,
 }
 
@@ -64,11 +51,7 @@ pub struct CertificateRequestSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateRequestCertificateSecret {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -94,11 +77,7 @@ pub struct CertificateRequestCertificateSecret {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -188,36 +167,16 @@ pub struct CertificateRequestPlatformGcpCredentials {
 /// doesn't interact with any platform
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertificateRequestPlatformMock {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "answerDNSChallengeErrorString"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "answerDNSChallengeErrorString")]
     pub answer_dns_challenge_error_string: Option<String>,
     /// these options configure the return values for the mock client's functions
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "answerDNSChallengeFQDN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "answerDNSChallengeFQDN")]
     pub answer_dns_challenge_fqdn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deleteAcmeChallengeResourceRecordsErrorString"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteAcmeChallengeResourceRecordsErrorString")]
     pub delete_acme_challenge_resource_records_error_string: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validateDNSWriteAccessBool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validateDNSWriteAccessBool")]
     pub validate_dns_write_access_bool: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validateDNSWriteAccessErrorString"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validateDNSWriteAccessErrorString")]
     pub validate_dns_write_access_error_string: Option<String>,
 }
 
@@ -231,11 +190,7 @@ pub struct CertificateRequestStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issued: Option<bool>,
     /// The entity that verified the information and signed the certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "issuerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerName")]
     pub issuer_name: Option<String>,
     /// The expiration time of the certificate stored in the secret named by this resource in spec.secretName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
@@ -244,13 +199,10 @@ pub struct CertificateRequestStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
     pub not_before: Option<String>,
     /// The serial number of the certificate stored in the secret named by this resource in spec.secretName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serialNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serialNumber")]
     pub serial_number: Option<String>,
     /// Status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

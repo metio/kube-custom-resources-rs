@@ -4,53 +4,32 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BackupTargetSpec defines the desired state of the Longhorn backup target
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "BackupTarget",
-    plural = "backuptargets"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "BackupTarget", plural = "backuptargets")]
 #[kube(namespaced)]
 #[kube(status = "BackupTargetStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackupTargetSpec {
     /// The backup target URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupTargetURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupTargetURL")]
     pub backup_target_url: Option<String>,
     /// The backup target credential secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialSecret")]
     pub credential_secret: Option<String>,
     /// The interval that the cluster needs to run sync with the backup target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollInterval")]
     pub poll_interval: Option<String>,
     /// The time to request run sync the remote backup target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncRequestedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncRequestedAt")]
     pub sync_requested_at: Option<String>,
 }
 
@@ -64,13 +43,10 @@ pub struct BackupTargetStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The last time that the controller synced with the remote backup target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncedAt")]
     pub last_synced_at: Option<String>,
     /// The node ID on which the controller is responsible to reconcile this backup target CR.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
 }
+

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// APLogConfSpec defines the desired state of APLogConf
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appprotect.f5.com",
-    version = "v1beta1",
-    kind = "APLogConf",
-    plural = "aplogconfs"
-)]
+#[kube(group = "appprotect.f5.com", version = "v1beta1", kind = "APLogConf", plural = "aplogconfs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct APLogConfSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<APLogConfContent>,
@@ -85,3 +80,4 @@ pub enum APLogConfFilterRequestType {
     #[serde(rename = "blocked")]
     Blocked,
 }
+

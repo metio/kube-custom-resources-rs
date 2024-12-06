@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ExternalSecretSpec defines the desired state of ExternalSecret.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "external-secrets.io",
-    version = "v1alpha1",
-    kind = "ExternalSecret",
-    plural = "externalsecrets"
-)]
+#[kube(group = "external-secrets.io", version = "v1alpha1", kind = "ExternalSecret", plural = "externalsecrets")]
 #[kube(namespaced)]
 #[kube(status = "ExternalSecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ExternalSecretSpec {
     /// Data defines the connection between the Kubernetes Secret keys and the Provider data
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -35,11 +30,7 @@ pub struct ExternalSecretSpec {
     /// RefreshInterval is the amount of time before the values are read again from the SecretStore provider
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"
     /// May be set to zero to fetch and create it once. Defaults to 1h.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
     #[serde(rename = "secretStoreRef")]
@@ -63,11 +54,7 @@ pub struct ExternalSecretData {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretDataRemoteRef {
     /// Used to define a conversion Strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conversionStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversionStrategy")]
     pub conversion_strategy: Option<ExternalSecretDataRemoteRefConversionStrategy>,
     /// Key is the key used in the Provider, mandatory
     pub key: String,
@@ -90,11 +77,7 @@ pub enum ExternalSecretDataRemoteRefConversionStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretDataFrom {
     /// Used to define a conversion Strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conversionStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversionStrategy")]
     pub conversion_strategy: Option<ExternalSecretDataFromConversionStrategy>,
     /// Key is the key used in the Provider, mandatory
     pub key: String,
@@ -130,11 +113,7 @@ pub struct ExternalSecretSecretStoreRef {
 pub struct ExternalSecretTarget {
     /// CreationPolicy defines rules on how to create the resulting Secret
     /// Defaults to 'Owner'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationPolicy")]
     pub creation_policy: Option<ExternalSecretTargetCreationPolicy>,
     /// Immutable defines if the final secret will be immutable
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -166,20 +145,12 @@ pub struct ExternalSecretTargetTemplate {
     /// EngineVersion specifies the template engine version
     /// that should be used to compile/execute the
     /// template specified in .data and .templateFrom[].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "engineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<ExternalSecretTargetTemplateEngineVersion>,
     /// ExternalSecretTemplateMetadata defines metadata fields for the Secret blueprint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ExternalSecretTargetTemplateMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateFrom")]
     pub template_from: Option<Vec<ExternalSecretTargetTemplateTemplateFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -242,18 +213,10 @@ pub struct ExternalSecretStatus {
     pub conditions: Option<Vec<Condition>>,
     /// refreshTime is the time and date the external secret was fetched and
     /// the target secret updated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshTime")]
     pub refresh_time: Option<String>,
     /// SyncedResourceVersion keeps track of the last synced version
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncedResourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncedResourceVersion")]
     pub synced_resource_version: Option<String>,
 }
 
@@ -268,3 +231,4 @@ pub struct ExternalSecretStatusBinding {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

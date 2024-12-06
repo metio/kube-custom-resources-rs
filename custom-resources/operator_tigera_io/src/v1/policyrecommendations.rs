@@ -4,35 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// PolicyRecommendationSpec defines configuration for the Calico Enterprise Policy Recommendation
 /// service.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "PolicyRecommendation",
-    plural = "policyrecommendations"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "PolicyRecommendation", plural = "policyrecommendations")]
 #[kube(status = "PolicyRecommendationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PolicyRecommendationSpec {
     /// PolicyRecommendation configures the PolicyRecommendation Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "policyRecommendationDeployment"
-    )]
-    pub policy_recommendation_deployment:
-        Option<PolicyRecommendationPolicyRecommendationDeployment>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyRecommendationDeployment")]
+    pub policy_recommendation_deployment: Option<PolicyRecommendationPolicyRecommendationDeployment>,
 }
 
 /// PolicyRecommendation configures the PolicyRecommendation Deployment.
@@ -66,19 +56,12 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpec {
     /// If specified, this overrides the specified PolicyRecommendation Deployment containers.
     /// If omitted, the PolicyRecommendation Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers:
-        Option<Vec<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainers>>,
+    pub containers: Option<Vec<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainers>>,
     /// InitContainers is a list of PolicyRecommendation init containers.
     /// If specified, this overrides the specified PolicyRecommendation Deployment init containers.
     /// If omitted, the PolicyRecommendation Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers: Option<
-        Vec<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainers>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainers>>,
 }
 
 /// PolicyRecommendationDeploymentContainer is a PolicyRecommendation Deployment container.
@@ -91,9 +74,7 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecCon
     /// If specified, this overrides the named PolicyRecommendation Deployment container's resources.
     /// If omitted, the PolicyRecommendation Deployment will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainersResources,
-    >,
+    pub resources: Option<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainersResources>,
 }
 
 /// PolicyRecommendationDeploymentContainer is a PolicyRecommendation Deployment container.
@@ -129,8 +110,7 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecCon
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainersResourcesClaims
-{
+pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -146,9 +126,7 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecIni
     /// If specified, this overrides the named PolicyRecommendation Deployment init container's resources.
     /// If omitted, the PolicyRecommendation Deployment will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainersResources,
-    >,
+    pub resources: Option<PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainersResources>,
 }
 
 /// PolicyRecommendationDeploymentInitContainer is a PolicyRecommendation Deployment init container.
@@ -184,8 +162,7 @@ pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecIni
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainersResourcesClaims
-{
+pub struct PolicyRecommendationPolicyRecommendationDeploymentSpecTemplateSpecInitContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -199,3 +176,4 @@ pub struct PolicyRecommendationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

@@ -5,34 +5,25 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// GslbSpec defines the desired state of Gslb
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8gb.absa.oss",
-    version = "v1beta1",
-    kind = "Gslb",
-    plural = "gslbs"
-)]
+#[kube(group = "k8gb.absa.oss", version = "v1beta1", kind = "Gslb", plural = "gslbs")]
 #[kube(namespaced)]
 #[kube(status = "GslbStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GslbSpec {
     /// Gslb-enabled Ingress Spec
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<GslbIngress>,
     /// ResourceRef spec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRef")]
     pub resource_ref: Option<GslbResourceRef>,
     /// Gslb Strategy spec
     pub strategy: GslbStrategy,
@@ -57,11 +48,7 @@ pub struct GslbIngress {
     /// specified. An IngressClass resource may be marked as default, which can
     /// be used to set a default value for this field. For more information,
     /// refer to the IngressClass documentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// A list of host rules used to configure the Ingress. If unspecified, or
     /// no rule matches, all traffic is sent to the default backend.
@@ -155,7 +142,7 @@ pub struct GslbIngressRules {
     /// Incoming requests are matched against the host before the
     /// IngressRuleValue. If the host is unspecified, the Ingress routes all
     /// traffic based on the specified IngressRuleValue.
-    ///
+    /// 
     /// Host can be "precise" which is a domain name without the terminating dot of
     /// a network host (e.g. "foo.bar.com") or "wildcard", which is a domain name
     /// prefixed with a single wildcard label (e.g. "*.foo.com").
@@ -293,11 +280,7 @@ pub struct GslbIngressTls {
     /// hostname alone. If the SNI host in a listener conflicts with the "Host"
     /// header field used by an IngressRule, the SNI host is used for termination
     /// and value of the "Host" header is used for routing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -310,20 +293,12 @@ pub struct GslbResourceRef {
     /// Kind of the referenced resource
     pub kind: String,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<GslbResourceRefMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -348,25 +323,13 @@ pub struct GslbResourceRefMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbStrategy {
     /// Defines DNS record TTL in seconds
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsTtlSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsTtlSeconds")]
     pub dns_ttl_seconds: Option<i64>,
     /// Primary Geo Tag. Valid for failover strategy only
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryGeoTag"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryGeoTag")]
     pub primary_geo_tag: Option<String>,
     /// Split brain TXT record expiration in seconds
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "splitBrainThresholdSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitBrainThresholdSeconds")]
     pub split_brain_threshold_seconds: Option<i64>,
     /// Load balancing strategy type:(roundRobin|failover)
     #[serde(rename = "type")]
@@ -402,11 +365,7 @@ pub struct GslbStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GslbStatusLoadBalancer {
     /// ExposedIPs on the local Load Balancer
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposedIps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposedIps")]
     pub exposed_ips: Option<Vec<String>>,
 }
 
@@ -429,3 +388,4 @@ pub struct GslbStatusServersServices {
     /// Namespace where the resource can be found
     pub namespace: String,
 }
+

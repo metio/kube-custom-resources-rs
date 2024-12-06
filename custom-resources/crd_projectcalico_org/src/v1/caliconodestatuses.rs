@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// CalicoNodeStatusSpec contains the specification for a CalicoNodeStatus resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "crd.projectcalico.org",
-    version = "v1",
-    kind = "CalicoNodeStatus",
-    plural = "caliconodestatuses"
-)]
+#[kube(group = "crd.projectcalico.org", version = "v1", kind = "CalicoNodeStatus", plural = "caliconodestatuses")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CalicoNodeStatusSpec {
     /// Classes declares the types of information to monitor for this calico/node, and allows for selective status reporting about certain subsets of information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -28,11 +23,7 @@ pub struct CalicoNodeStatusSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<String>,
     /// UpdatePeriodSeconds is the period at which CalicoNodeStatus should be updated. Set to 0 to disable CalicoNodeStatus refresh. Maximum update period is one day.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePeriodSeconds")]
     pub update_period_seconds: Option<i32>,
 }
 
@@ -46,11 +37,7 @@ pub struct CalicoNodeStatusStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bgp: Option<CalicoNodeStatusStatusBgp>,
     /// LastUpdated is a timestamp representing the server time when CalicoNodeStatus object last updated. It is represented in RFC3339 form and is in UTC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
     /// Routes reports routes known to the Calico BGP daemon on the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -72,18 +59,10 @@ pub struct CalicoNodeStatusStatusAgent {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CalicoNodeStatusStatusAgentBirdV4 {
     /// LastBootTime holds the value of lastBootTime from bird.ctl output.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastBootTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastBootTime")]
     pub last_boot_time: Option<String>,
     /// LastReconfigurationTime holds the value of lastReconfigTime from bird.ctl output.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastReconfigurationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastReconfigurationTime")]
     pub last_reconfiguration_time: Option<String>,
     /// Router ID used by bird.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routerID")]
@@ -100,18 +79,10 @@ pub struct CalicoNodeStatusStatusAgentBirdV4 {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CalicoNodeStatusStatusAgentBirdV6 {
     /// LastBootTime holds the value of lastBootTime from bird.ctl output.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastBootTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastBootTime")]
     pub last_boot_time: Option<String>,
     /// LastReconfigurationTime holds the value of lastReconfigTime from bird.ctl output.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastReconfigurationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastReconfigurationTime")]
     pub last_reconfiguration_time: Option<String>,
     /// Router ID used by bird.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routerID")]
@@ -205,11 +176,7 @@ pub struct CalicoNodeStatusStatusRoutesRoutesV4 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interface: Option<String>,
     /// LearnedFrom contains information regarding where this route originated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "learnedFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "learnedFrom")]
     pub learned_from: Option<CalicoNodeStatusStatusRoutesRoutesV4LearnedFrom>,
     /// Type indicates if the route is being used for forwarding or not.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -223,11 +190,7 @@ pub struct CalicoNodeStatusStatusRoutesRoutesV4LearnedFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerIP")]
     pub peer_ip: Option<String>,
     /// Type of the source where a route is learned from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<String>,
 }
 
@@ -244,11 +207,7 @@ pub struct CalicoNodeStatusStatusRoutesRoutesV6 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interface: Option<String>,
     /// LearnedFrom contains information regarding where this route originated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "learnedFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "learnedFrom")]
     pub learned_from: Option<CalicoNodeStatusStatusRoutesRoutesV6LearnedFrom>,
     /// Type indicates if the route is being used for forwarding or not.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -262,10 +221,7 @@ pub struct CalicoNodeStatusStatusRoutesRoutesV6LearnedFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerIP")]
     pub peer_ip: Option<String>,
     /// Type of the source where a route is learned from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<String>,
 }
+

@@ -5,68 +5,47 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// KeycloakBackupSpec defines the desired state of KeycloakBackup.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "keycloak.org",
-    version = "v1alpha1",
-    kind = "KeycloakBackup",
-    plural = "keycloakbackups"
-)]
+#[kube(group = "keycloak.org", version = "v1alpha1", kind = "KeycloakBackup", plural = "keycloakbackups")]
 #[kube(namespaced)]
 #[kube(status = "KeycloakBackupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KeycloakBackupSpec {
     /// If provided, an automatic database backup will be created on AWS S3 instead of a local Persistent Volume. If this property is not provided - a local Persistent Volume backup will be chosen.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aws: Option<KeycloakBackupAws>,
     /// Selector for looking up Keycloak Custom Resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceSelector")]
     pub instance_selector: Option<KeycloakBackupInstanceSelector>,
-    /// Controls automatic restore behavior. Currently not implemented.
+    /// Controls automatic restore behavior. Currently not implemented. 
     ///  In the future this will be used to trigger automatic restore for a given KeycloakBackup. Each backup will correspond to a single snapshot of the database (stored either in a Persistent Volume or AWS). If a user wants to restore it, all he/she needs to do is to change this flag to true. Potentially, it will be possible to restore a single backup multiple times.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restore: Option<bool>,
     /// Name of the StorageClass for Postgresql Backup Persistent Volume Claim
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
 /// If provided, an automatic database backup will be created on AWS S3 instead of a local Persistent Volume. If this property is not provided - a local Persistent Volume backup will be chosen.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakBackupAws {
-    /// Provides a secret name used for connecting to AWS S3 Service. The secret needs to be in the following form:
-    ///      apiVersion: v1     kind: Secret     metadata:       name: <Secret name>     type: Opaque     stringData:       AWS_S3_BUCKET_NAME: <S3 Bucket Name>       AWS_ACCESS_KEY_ID: <AWS Access Key ID>       AWS_SECRET_ACCESS_KEY: <AWS Secret Key>
+    /// Provides a secret name used for connecting to AWS S3 Service. The secret needs to be in the following form: 
+    ///      apiVersion: v1     kind: Secret     metadata:       name: <Secret name>     type: Opaque     stringData:       AWS_S3_BUCKET_NAME: <S3 Bucket Name>       AWS_ACCESS_KEY_ID: <AWS Access Key ID>       AWS_SECRET_ACCESS_KEY: <AWS Secret Key> 
     ///  For more information, please refer to the Operator documentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretName")]
     pub credentials_secret_name: Option<String>,
-    /// If provided, the database backup will be encrypted. Provides a secret name used for encrypting database data. The secret needs to be in the following form:
-    ///      apiVersion: v1     kind: Secret     metadata:       name: <Secret name>     type: Opaque     stringData:       GPG_PUBLIC_KEY: <GPG Public Key>       GPG_TRUST_MODEL: <GPG Trust Model>       GPG_RECIPIENT: <GPG Recipient>
+    /// If provided, the database backup will be encrypted. Provides a secret name used for encrypting database data. The secret needs to be in the following form: 
+    ///      apiVersion: v1     kind: Secret     metadata:       name: <Secret name>     type: Opaque     stringData:       GPG_PUBLIC_KEY: <GPG Public Key>       GPG_TRUST_MODEL: <GPG Trust Model>       GPG_RECIPIENT: <GPG Recipient> 
     ///  For more information, please refer to the Operator documentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionKeySecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKeySecretName")]
     pub encryption_key_secret_name: Option<String>,
     /// If specified, it will be used as a schedule for creating a CronJob.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -77,18 +56,10 @@ pub struct KeycloakBackupAws {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakBackupInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KeycloakBackupInstanceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -114,10 +85,7 @@ pub struct KeycloakBackupStatus {
     /// True if all resources are in a ready state and all work is done.
     pub ready: bool,
     /// A map of all the secondary resources types and names created for this CR. e.g "Deployment": [ "DeploymentName1", "DeploymentName2" ]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryResources")]
     pub secondary_resources: Option<BTreeMap<String, String>>,
 }
+

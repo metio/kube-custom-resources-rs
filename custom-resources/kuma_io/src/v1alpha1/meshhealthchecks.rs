@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the Kuma MeshHealthCheck resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshHealthCheck",
-    plural = "meshhealthchecks"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshHealthCheck", plural = "meshhealthchecks")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshHealthCheckSpec {
     /// TargetRef is a reference to the resource the policy takes an effect on.
     /// The resource could be either a real store object or virtual resource
@@ -59,19 +54,11 @@ pub struct MeshHealthCheckTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -114,29 +101,17 @@ pub struct MeshHealthCheckToDefault {
     /// If set to true, health check failure events will always be logged. If set
     /// to false, only the initial health check failure event will be logged. The
     /// default value is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alwaysLogHealthCheckFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alwaysLogHealthCheckFailures")]
     pub always_log_health_check_failures: Option<bool>,
     /// Specifies the path to the file where Envoy can log health check events.
     /// If empty, no event log will be written.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventLogPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventLogPath")]
     pub event_log_path: Option<String>,
     /// If set to true, Envoy will not consider any hosts when the cluster is in
     /// 'panic mode'. Instead, the cluster will fail all requests as if all hosts
     /// are unhealthy. This can help avoid potentially overwhelming a failing
     /// service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failTrafficOnPanic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failTrafficOnPanic")]
     pub fail_traffic_on_panic: Option<bool>,
     /// GrpcHealthCheck defines gRPC configuration which will instruct the service
     /// the health check will be made for is a gRPC service.
@@ -145,18 +120,10 @@ pub struct MeshHealthCheckToDefault {
     /// Allows to configure panic threshold for Envoy cluster. If not specified,
     /// the default is 50%. To disable panic mode, set to 0%.
     /// Either int or decimal represented as string.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthyPanicThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyPanicThreshold")]
     pub healthy_panic_threshold: Option<IntOrString>,
     /// Number of consecutive healthy checks before considering a host healthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthyThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyThreshold")]
     pub healthy_threshold: Option<i32>,
     /// HttpHealthCheck defines HTTP configuration which will instruct the service
     /// the health check will be made for is an HTTP service.
@@ -165,32 +132,20 @@ pub struct MeshHealthCheckToDefault {
     /// If specified, Envoy will start health checking after a random time in
     /// ms between 0 and initialJitter. This only applies to the first health
     /// check.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialJitter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialJitter")]
     pub initial_jitter: Option<String>,
     /// Interval between consecutive health checks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// If specified, during every interval Envoy will add IntervalJitter to the
     /// wait time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalJitter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalJitter")]
     pub interval_jitter: Option<String>,
     /// If specified, during every interval Envoy will add IntervalJitter *
     /// IntervalJitterPercent / 100 to the wait time. If IntervalJitter and
     /// IntervalJitterPercent are both set, both of them will be used to
     /// increase the wait time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalJitterPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalJitterPercent")]
     pub interval_jitter_percent: Option<i32>,
     /// The "no traffic interval" is a special health check interval that is used
     /// when a cluster has never had traffic routed to it. This lower interval
@@ -200,18 +155,10 @@ pub struct MeshHealthCheckToDefault {
     /// to using the standard health check interval that is defined. Note that
     /// this interval takes precedence over any other. The default value for "no
     /// traffic interval" is 60 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noTrafficInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noTrafficInterval")]
     pub no_traffic_interval: Option<String>,
     /// Reuse health check connection between health checks. Default is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reuseConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reuseConnection")]
     pub reuse_connection: Option<bool>,
     /// TcpHealthCheck defines configuration for specifying bytes to send and
     /// expected response during the health check
@@ -222,11 +169,7 @@ pub struct MeshHealthCheckToDefault {
     pub timeout: Option<String>,
     /// Number of consecutive unhealthy checks before considering a host
     /// unhealthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyThreshold")]
     pub unhealthy_threshold: Option<i32>,
 }
 
@@ -242,11 +185,7 @@ pub struct MeshHealthCheckToDefaultGrpc {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
     /// Service name parameter which will be sent to gRPC service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -258,11 +197,7 @@ pub struct MeshHealthCheckToDefaultHttp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
     /// List of HTTP response statuses which are considered healthy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expectedStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectedStatuses")]
     pub expected_statuses: Option<Vec<i64>>,
     /// The HTTP path which will be requested during the health check
     /// (ie. /health)
@@ -270,11 +205,7 @@ pub struct MeshHealthCheckToDefaultHttp {
     pub path: Option<String>,
     /// The list of HTTP headers which should be added to each health check
     /// request
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeadersToAdd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeadersToAdd")]
     pub request_headers_to_add: Option<MeshHealthCheckToDefaultHttpRequestHeadersToAdd>,
 }
 
@@ -342,19 +273,11 @@ pub struct MeshHealthCheckToTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -376,3 +299,4 @@ pub enum MeshHealthCheckToTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
 }
+

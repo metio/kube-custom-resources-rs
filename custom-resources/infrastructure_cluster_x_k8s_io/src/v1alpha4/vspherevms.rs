@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// VSphereVMSpec defines the desired state of VSphereVM.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1alpha4",
-    kind = "VSphereVM",
-    plural = "vspherevms"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1alpha4", kind = "VSphereVM", plural = "vspherevms")]
 #[kube(namespaced)]
 #[kube(status = "VSphereVMStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VSphereVMSpec {
     /// BiosUUID is the VM's BIOS UUID that is assigned at runtime after
     /// the VM has been created.
@@ -36,11 +31,7 @@ pub struct VSphereVMSpec {
     /// that holds configuration details.
     /// This field is optional in case no bootstrap data is required to create
     /// a VM.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bootstrapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapRef")]
     pub bootstrap_ref: Option<ObjectReference>,
     /// CloneMode specifies the type of clone operation.
     /// The LinkedClone mode is only support for templates that have at least
@@ -54,11 +45,7 @@ pub struct VSphereVMSpec {
     pub clone_mode: Option<String>,
     /// CustomVMXKeys is a dictionary of advanced VMX options that can be set on VM
     /// Defaults to empty map
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customVMXKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customVMXKeys")]
     pub custom_vmx_keys: Option<BTreeMap<String, String>>,
     /// Datacenter is the name or inventory path of the datacenter in which the
     /// virtual machine is created/located.
@@ -93,19 +80,11 @@ pub struct VSphereVMSpec {
     /// virtual machine.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numCoresPerSocket"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numCoresPerSocket")]
     pub num_cores_per_socket: Option<i32>,
     /// ResourcePool is the name or inventory path of the resource pool in which
     /// the virtual machine is created/located.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourcePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePool")]
     pub resource_pool: Option<String>,
     /// Server is the IP address or FQDN of the vSphere server on which
     /// the virtual machine is created/located.
@@ -118,11 +97,7 @@ pub struct VSphereVMSpec {
     pub snapshot: Option<String>,
     /// StoragePolicyName of the storage policy to use with this
     /// Virtual Machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// Template is the name or inventory path of the template used to clone
     /// the virtual machine.
@@ -142,11 +117,7 @@ pub struct VSphereVMSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVMBootstrapRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -171,11 +142,7 @@ pub struct VSphereVMBootstrapRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -187,15 +154,11 @@ pub struct VSphereVMBootstrapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVMNetwork {
     /// Devices is the list of network devices used by the virtual machine.
-    ///
+    /// 
     pub devices: Vec<VSphereVMNetworkDevices>,
     /// PreferredAPIServeCIDR is the preferred CIDR for the Kubernetes API
     /// server endpoint on this machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredAPIServerCidr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAPIServerCidr")]
     pub preferred_api_server_cidr: Option<String>,
     /// Routes is a list of optional, static routes applied to the virtual
     /// machine.
@@ -209,11 +172,7 @@ pub struct VSphereVMNetwork {
 pub struct VSphereVMNetworkDevices {
     /// DeviceName may be used to explicitly assign a name to the network device
     /// as it exists in the guest operating system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceName")]
     pub device_name: Option<String>,
     /// DHCP4 is a flag that indicates whether or not to use DHCP for IPv4
     /// on this device.
@@ -263,11 +222,7 @@ pub struct VSphereVMNetworkDevices {
     pub routes: Option<Vec<VSphereVMNetworkDevicesRoutes>>,
     /// SearchDomains is a list of search domains used when resolving IP
     /// addresses with DNS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "searchDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "searchDomains")]
     pub search_domains: Option<Vec<String>>,
 }
 
@@ -313,38 +268,30 @@ pub struct VSphereVMStatus {
     /// FailureMessage will be set in the event that there is a terminal problem
     /// reconciling the vspherevm and will contain a more verbose string suitable
     /// for logging and human consumption.
-    ///
+    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
     /// fundamentally wrong with the vm.
-    ///
+    /// 
     /// Any transient errors that occur during the reconciliation of vspherevms
     /// can be added as events to the vspherevm object and/or logged in the
     /// controller's output.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// FailureReason will be set in the event that there is a terminal problem
     /// reconciling the vspherevm and will contain a succinct value suitable
     /// for vm interpretation.
-    ///
+    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
     /// fundamentally wrong with the vm.
-    ///
+    /// 
     /// Any transient errors that occur during the reconciliation of vspherevms
     /// can be added as events to the vspherevm object and/or logged in the
     /// controller's output.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// Network returns the network status for each of the machine's configured
     /// network interfaces.
@@ -356,11 +303,7 @@ pub struct VSphereVMStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
     /// RetryAfter tracks the time we can retry queueing a task
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryAfter")]
     pub retry_after: Option<String>,
     /// Snapshot is the name of the snapshot from which the VM was cloned if
     /// LinkedMode is enabled.
@@ -387,10 +330,7 @@ pub struct VSphereVMStatusNetwork {
     #[serde(rename = "macAddr")]
     pub mac_addr: String,
     /// NetworkName is the name of the network.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkName")]
     pub network_name: Option<String>,
 }
+

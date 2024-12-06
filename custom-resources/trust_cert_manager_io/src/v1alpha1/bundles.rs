@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Desired state of the Bundle resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "trust.cert-manager.io",
-    version = "v1alpha1",
-    kind = "Bundle",
-    plural = "bundles"
-)]
+#[kube(group = "trust.cert-manager.io", version = "v1alpha1", kind = "Bundle", plural = "bundles")]
 #[kube(status = "BundleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BundleSpec {
     /// Sources is a set of references to data whose data will sync to the target.
     pub sources: Vec<BundleSources>,
@@ -53,11 +48,7 @@ pub struct BundleSources {
     /// CAs will fail.
     /// The version of the default CA package which is used for a Bundle is stored in the
     /// defaultCAPackageVersion field of the Bundle's status field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useDefaultCAs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDefaultCAs")]
     pub use_default_c_as: Option<bool>,
 }
 
@@ -82,20 +73,12 @@ pub struct BundleSourcesConfigMap {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleSourcesConfigMapSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BundleSourcesConfigMapSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -137,20 +120,12 @@ pub struct BundleSourcesSecret {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleSourcesSecretSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<BundleSourcesSecretSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -175,11 +150,7 @@ pub struct BundleSourcesSecretSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTarget {
     /// AdditionalFormats specifies any additional formats to write to the target
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalFormats"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalFormats")]
     pub additional_formats: Option<BundleTargetAdditionalFormats>,
     /// ConfigMap is the target ConfigMap in Namespaces that all Bundle source
     /// data will be synced to.
@@ -187,11 +158,7 @@ pub struct BundleTarget {
     pub config_map: Option<BundleTargetConfigMap>,
     /// NamespaceSelector will, if set, only sync the target resource in
     /// Namespaces which match the selector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<BundleTargetNamespaceSelector>,
     /// Secret is the target Secret that all Bundle source data will be synced to.
     /// Using Secrets as targets is only supported if enabled at trust-manager startup.
@@ -251,11 +218,7 @@ pub struct BundleTargetConfigMap {
 pub struct BundleTargetNamespaceSelector {
     /// MatchLabels matches on the set of labels that must be present on a
     /// Namespace for the Bundle target to be synced there.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -279,10 +242,7 @@ pub struct BundleStatus {
     /// which was retrieved when the set of default CAs was requested in the bundle
     /// source. This should only be set if useDefaultCAs was set to "true" on a source,
     /// and will be the same for the same version of a bundle with identical certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultCAVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultCAVersion")]
     pub default_ca_version: Option<String>,
 }
+

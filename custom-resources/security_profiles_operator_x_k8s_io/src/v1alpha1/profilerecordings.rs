@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ProfileRecordingSpec defines the desired state of ProfileRecording.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "security-profiles-operator.x-k8s.io",
-    version = "v1alpha1",
-    kind = "ProfileRecording",
-    plural = "profilerecordings"
-)]
+#[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha1", kind = "ProfileRecording", plural = "profilerecordings")]
 #[kube(namespaced)]
 #[kube(status = "ProfileRecordingStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct ProfileRecordingSpec {
     /// Containers is a set of containers to record. This allows to select
     /// only specific containers to record instead of all containers present
@@ -32,21 +27,13 @@ pub struct ProfileRecordingSpec {
     /// after recording and thus skipped during reconcile. In case of SELinux profiles,
     /// reconcile can take a significant amount of time and for all profiles might not be needed.
     /// This Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableProfileAfterRecording"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableProfileAfterRecording")]
     pub disable_profile_after_recording: Option<bool>,
     /// Kind of object to be recorded.
     pub kind: ProfileRecordingKind,
     /// Whether or how to merge recorded profiles. Can be one of "none" or "containers".
     /// Default is "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mergeStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergeStrategy")]
     pub merge_strategy: Option<ProfileRecordingMergeStrategy>,
     /// PodSelector selects the pods to record. This field follows standard
     /// label selector semantics. An empty podSelector matches all pods in this
@@ -80,20 +67,12 @@ pub enum ProfileRecordingMergeStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProfileRecordingPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ProfileRecordingPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -126,10 +105,7 @@ pub enum ProfileRecordingRecorder {
 /// ProfileRecordingStatus contains status of the ProfileRecording.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProfileRecordingStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeWorkloads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeWorkloads")]
     pub active_workloads: Option<Vec<String>>,
 }
+

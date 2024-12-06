@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// FunctionSpec defines the desired state of Function.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cloudfront.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Function",
-    plural = "functions"
-)]
+#[kube(group = "cloudfront.services.k8s.aws", version = "v1alpha1", kind = "Function", plural = "functions")]
 #[kube(namespaced)]
 #[kube(status = "FunctionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FunctionSpec {
     /// The function code. For more information about writing a CloudFront function,
     /// see Writing function code for CloudFront Functions (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/writing-function-code.html)
@@ -53,11 +48,7 @@ pub struct FunctionStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<FunctionStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -69,11 +60,7 @@ pub struct FunctionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eTag")]
     pub e_tag: Option<String>,
     /// Contains configuration information and metadata about a CloudFront function.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionSummary"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionSummary")]
     pub function_summary: Option<FunctionStatusFunctionSummary>,
     /// The URL of the CloudFront function. Use the URL to manage the function with
     /// the CloudFront API.
@@ -107,18 +94,10 @@ pub struct FunctionStatusAckResourceMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FunctionStatusFunctionSummary {
     /// Contains configuration information about a CloudFront function.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionConfig")]
     pub function_config: Option<FunctionStatusFunctionSummaryFunctionConfig>,
     /// Contains metadata about a CloudFront function.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionMetadata")]
     pub function_metadata: Option<FunctionStatusFunctionSummaryFunctionMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -138,24 +117,13 @@ pub struct FunctionStatusFunctionSummaryFunctionConfig {
 /// Contains metadata about a CloudFront function.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FunctionStatusFunctionSummaryFunctionMetadata {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createdTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdTime")]
     pub created_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionARN")]
     pub function_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModifiedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stage: Option<String>,
 }
+

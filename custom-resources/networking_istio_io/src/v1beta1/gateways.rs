@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Configuration affecting edge load balancer. See more details at: https://istio.io/docs/reference/config/networking/gateway.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "networking.istio.io",
-    version = "v1beta1",
-    kind = "Gateway",
-    plural = "gateways"
-)]
+#[kube(group = "networking.istio.io", version = "v1beta1", kind = "Gateway", plural = "gateways")]
 #[kube(namespaced)]
 #[kube(status = "GatewayStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GatewaySpec {
     /// One or more labels that indicate a specific set of pods/VMs on which this gateway configuration should be applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -39,11 +34,7 @@ pub struct GatewayServers {
     /// The ip or the Unix domain socket to which the listener should be bound to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bind: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEndpoint")]
     pub default_endpoint: Option<String>,
     /// One or more hosts exposed by this gateway.
     pub hosts: Vec<String>,
@@ -66,11 +57,7 @@ pub struct GatewayServersPort {
     pub number: i64,
     /// The protocol exposed on the port.
     pub protocol: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<i64>,
 }
 
@@ -78,93 +65,49 @@ pub struct GatewayServersPort {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayServersTls {
     /// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
     /// OPTIONAL: The path to the file containing the certificate revocation list (CRL) to use in verifying a presented client side certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCrl")]
     pub ca_crl: Option<String>,
     /// Optional: If specified, only support the specified cipher list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipherSuites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
     pub cipher_suites: Option<Vec<String>>,
     /// For gateways running on Kubernetes, the name of the secret that holds the TLS certs including the CA certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
     /// If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpsRedirect"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsRedirect")]
     pub https_redirect: Option<bool>,
     /// Optional: Maximum TLS protocol version.
-    ///
+    /// 
     /// Valid Options: TLS_AUTO, TLSV1_0, TLSV1_1, TLSV1_2, TLSV1_3
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProtocolVersion")]
     pub max_protocol_version: Option<GatewayServersTlsMaxProtocolVersion>,
     /// Optional: Minimum TLS protocol version.
-    ///
+    /// 
     /// Valid Options: TLS_AUTO, TLSV1_0, TLSV1_1, TLSV1_2, TLSV1_3
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProtocolVersion")]
     pub min_protocol_version: Option<GatewayServersTlsMinProtocolVersion>,
     /// Optional: Indicates whether connections to this port should be secured using TLS.
-    ///
+    /// 
     /// Valid Options: PASSTHROUGH, SIMPLE, MUTUAL, AUTO_PASSTHROUGH, ISTIO_MUTUAL, OPTIONAL_MUTUAL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<GatewayServersTlsMode>,
     /// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCertificate")]
     pub server_certificate: Option<String>,
     /// A list of alternate names to verify the subject identity in the certificate presented by the client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
     /// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyCertificateHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyCertificateHash")]
     pub verify_certificate_hash: Option<Vec<String>>,
     /// An optional list of base64-encoded SHA-256 hashes of the SPKIs of authorized client certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyCertificateSpki"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyCertificateSpki")]
     pub verify_certificate_spki: Option<Vec<String>>,
 }
 
@@ -221,32 +164,20 @@ pub struct GatewayStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Resource Generation to which the Reconciled Condition refers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<IntOrString>,
     /// Includes any errors or warnings detected by Istio's analyzers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationMessages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationMessages")]
     pub validation_messages: Option<Vec<GatewayStatusValidationMessages>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayStatusValidationMessages {
     /// A url pointing to the Istio documentation for this specific error type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "documentationUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "documentationUrl")]
     pub documentation_url: Option<String>,
     /// Represents how severe a message is.
-    ///
+    /// 
     /// Valid Options: UNKNOWN, ERROR, WARNING, INFO
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<GatewayStatusValidationMessagesLevel>,
@@ -275,3 +206,4 @@ pub struct GatewayStatusValidationMessagesType {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

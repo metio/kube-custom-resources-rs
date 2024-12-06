@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ProfileBindingSpec defines the desired state of ProfileBinding.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "security-profiles-operator.x-k8s.io",
-    version = "v1alpha1",
-    kind = "ProfileBinding",
-    plural = "profilebindings"
-)]
+#[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha1", kind = "ProfileBinding", plural = "profilebindings")]
 #[kube(namespaced)]
 #[kube(status = "ProfileBindingStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct ProfileBindingSpec {
     /// Image name within pod containers to match to the profile.
     /// Use the "*" string to bind the profile to all pods.
@@ -49,10 +44,7 @@ pub enum ProfileBindingProfileRefKind {
 /// ProfileBindingStatus contains status of the Profilebinding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProfileBindingStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeWorkloads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeWorkloads")]
     pub active_workloads: Option<Vec<String>>,
 }
+

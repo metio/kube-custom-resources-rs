@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// the desired specification
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "camel.apache.org",
-    version = "v1",
-    kind = "Kamelet",
-    plural = "kamelets"
-)]
+#[kube(group = "camel.apache.org", version = "v1", kind = "Kamelet", plural = "kamelets")]
 #[kube(namespaced)]
 #[kube(status = "KameletStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KameletSpec {
     /// data specification types for the events consumed/produced by the Kamelet
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataTypes")]
@@ -134,11 +129,7 @@ pub struct KameletDataTypesTypesSchema {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
     /// ExternalDocumentation allows referencing an external resource for extended documentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalDocs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDocs")]
     pub external_docs: Option<KameletDataTypesTypesSchemaExternalDocs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -176,21 +167,13 @@ pub struct KameletDataTypesTypesSchemaProperties {
     /// These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMaximum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMinimum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
-    ///
-    ///
+    /// 
+    /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
     /// - email: an email address as parsed by Golang net/mail.ParseAddress
@@ -223,11 +206,7 @@ pub struct KameletDataTypesTypesSchemaProperties {
     pub max_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProperties")]
     pub max_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -236,21 +215,13 @@ pub struct KameletDataTypesTypesSchemaProperties {
     pub min_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLength")]
     pub min_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProperties")]
     pub min_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<String>,
     /// A Number represents a JSON number literal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleOf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleOf")]
     pub multiple_of: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nullable: Option<bool>,
@@ -260,18 +231,10 @@ pub struct KameletDataTypesTypesSchemaProperties {
     pub title: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uniqueItems"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
     pub unique_items: Option<bool>,
     /// XDescriptors is a list of extended properties that trigger a custom behavior in external systems
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "x-descriptors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-descriptors")]
     pub x_descriptors: Option<Vec<String>>,
 }
 
@@ -288,11 +251,7 @@ pub struct KameletDefinition {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
     /// ExternalDocumentation allows referencing an external resource for extended documentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalDocs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDocs")]
     pub external_docs: Option<KameletDefinitionExternalDocs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -330,21 +289,13 @@ pub struct KameletDefinitionProperties {
     /// These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMaximum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMinimum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
-    ///
-    ///
+    /// 
+    /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
     /// - email: an email address as parsed by Golang net/mail.ParseAddress
@@ -377,11 +328,7 @@ pub struct KameletDefinitionProperties {
     pub max_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProperties")]
     pub max_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -390,21 +337,13 @@ pub struct KameletDefinitionProperties {
     pub min_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLength")]
     pub min_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProperties")]
     pub min_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<String>,
     /// A Number represents a JSON number literal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleOf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleOf")]
     pub multiple_of: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nullable: Option<bool>,
@@ -414,18 +353,10 @@ pub struct KameletDefinitionProperties {
     pub title: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uniqueItems"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
     pub unique_items: Option<bool>,
     /// XDescriptors is a list of extended properties that trigger a custom behavior in external systems
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "x-descriptors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-descriptors")]
     pub x_descriptors: Option<Vec<String>>,
 }
 
@@ -439,32 +370,16 @@ pub struct KameletSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     /// the confimap key holding the source content
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentKey")]
     pub content_key: Option<String>,
     /// the confimap reference holding the source content
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentRef")]
     pub content_ref: Option<String>,
     /// the content type (tipically text or binary)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     /// True if the spec is generated from a Kamelet
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "from-kamelet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
     /// uses to pre/post process sources
@@ -485,18 +400,10 @@ pub struct KameletSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// List of property names defined in the source (e.g. if type is "template")
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "property-names"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "property-names")]
     pub property_names: Option<Vec<String>>,
     /// the source code (binary)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rawContent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rawContent")]
     pub raw_content: Option<String>,
     /// Type defines the kind of source described by this object
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -528,11 +435,7 @@ pub struct KameletTypesSchema {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
     /// ExternalDocumentation allows referencing an external resource for extended documentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalDocs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDocs")]
     pub external_docs: Option<KameletTypesSchemaExternalDocs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -570,21 +473,13 @@ pub struct KameletTypesSchemaProperties {
     /// These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMaximum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMinimum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
-    ///
-    ///
+    /// 
+    /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
     /// - email: an email address as parsed by Golang net/mail.ParseAddress
@@ -617,11 +512,7 @@ pub struct KameletTypesSchemaProperties {
     pub max_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProperties")]
     pub max_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -630,21 +521,13 @@ pub struct KameletTypesSchemaProperties {
     pub min_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLength")]
     pub min_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProperties")]
     pub min_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<String>,
     /// A Number represents a JSON number literal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleOf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleOf")]
     pub multiple_of: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nullable: Option<bool>,
@@ -654,18 +537,10 @@ pub struct KameletTypesSchemaProperties {
     pub title: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uniqueItems"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
     pub unique_items: Option<bool>,
     /// XDescriptors is a list of extended properties that trigger a custom behavior in external systems
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "x-descriptors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-descriptors")]
     pub x_descriptors: Option<Vec<String>>,
 }
 
@@ -778,11 +653,7 @@ pub struct KameletVersionsDataTypesTypesSchema {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
     /// ExternalDocumentation allows referencing an external resource for extended documentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalDocs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDocs")]
     pub external_docs: Option<KameletVersionsDataTypesTypesSchemaExternalDocs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -820,21 +691,13 @@ pub struct KameletVersionsDataTypesTypesSchemaProperties {
     /// These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMaximum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMinimum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
-    ///
-    ///
+    /// 
+    /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
     /// - email: an email address as parsed by Golang net/mail.ParseAddress
@@ -867,11 +730,7 @@ pub struct KameletVersionsDataTypesTypesSchemaProperties {
     pub max_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProperties")]
     pub max_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -880,21 +739,13 @@ pub struct KameletVersionsDataTypesTypesSchemaProperties {
     pub min_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLength")]
     pub min_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProperties")]
     pub min_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<String>,
     /// A Number represents a JSON number literal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleOf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleOf")]
     pub multiple_of: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nullable: Option<bool>,
@@ -904,18 +755,10 @@ pub struct KameletVersionsDataTypesTypesSchemaProperties {
     pub title: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uniqueItems"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
     pub unique_items: Option<bool>,
     /// XDescriptors is a list of extended properties that trigger a custom behavior in external systems
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "x-descriptors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-descriptors")]
     pub x_descriptors: Option<Vec<String>>,
 }
 
@@ -932,11 +775,7 @@ pub struct KameletVersionsDefinition {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
     /// ExternalDocumentation allows referencing an external resource for extended documentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalDocs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDocs")]
     pub external_docs: Option<KameletVersionsDefinitionExternalDocs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -974,21 +813,13 @@ pub struct KameletVersionsDefinitionProperties {
     /// These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMaximum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMinimum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
-    ///
-    ///
+    /// 
+    /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
     /// - email: an email address as parsed by Golang net/mail.ParseAddress
@@ -1021,11 +852,7 @@ pub struct KameletVersionsDefinitionProperties {
     pub max_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProperties")]
     pub max_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1034,21 +861,13 @@ pub struct KameletVersionsDefinitionProperties {
     pub min_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLength")]
     pub min_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProperties")]
     pub min_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<String>,
     /// A Number represents a JSON number literal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleOf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleOf")]
     pub multiple_of: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nullable: Option<bool>,
@@ -1058,18 +877,10 @@ pub struct KameletVersionsDefinitionProperties {
     pub title: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uniqueItems"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
     pub unique_items: Option<bool>,
     /// XDescriptors is a list of extended properties that trigger a custom behavior in external systems
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "x-descriptors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-descriptors")]
     pub x_descriptors: Option<Vec<String>>,
 }
 
@@ -1083,32 +894,16 @@ pub struct KameletVersionsSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
     /// the confimap key holding the source content
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentKey")]
     pub content_key: Option<String>,
     /// the confimap reference holding the source content
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentRef")]
     pub content_ref: Option<String>,
     /// the content type (tipically text or binary)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     /// True if the spec is generated from a Kamelet
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "from-kamelet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
     /// uses to pre/post process sources
@@ -1129,18 +924,10 @@ pub struct KameletVersionsSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// List of property names defined in the source (e.g. if type is "template")
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "property-names"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "property-names")]
     pub property_names: Option<Vec<String>>,
     /// the source code (binary)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rawContent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rawContent")]
     pub raw_content: Option<String>,
     /// Type defines the kind of source described by this object
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1172,11 +959,7 @@ pub struct KameletVersionsTypesSchema {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
     /// ExternalDocumentation allows referencing an external resource for extended documentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalDocs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDocs")]
     pub external_docs: Option<KameletVersionsTypesSchemaExternalDocs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -1214,21 +997,13 @@ pub struct KameletVersionsTypesSchemaProperties {
     /// These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub example: Option<serde_json::Value>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMaximum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMaximum")]
     pub exclusive_maximum: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusiveMinimum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
-    ///
-    ///
+    /// 
+    /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
     /// - email: an email address as parsed by Golang net/mail.ParseAddress
@@ -1261,11 +1036,7 @@ pub struct KameletVersionsTypesSchemaProperties {
     pub max_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProperties")]
     pub max_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1274,21 +1045,13 @@ pub struct KameletVersionsTypesSchemaProperties {
     pub min_items: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLength")]
     pub min_length: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProperties")]
     pub min_properties: Option<i64>,
     /// A Number represents a JSON number literal.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<String>,
     /// A Number represents a JSON number literal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleOf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleOf")]
     pub multiple_of: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nullable: Option<bool>,
@@ -1298,18 +1061,10 @@ pub struct KameletVersionsTypesSchemaProperties {
     pub title: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uniqueItems"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uniqueItems")]
     pub unique_items: Option<bool>,
     /// XDescriptors is a list of extended properties that trigger a custom behavior in external systems
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "x-descriptors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "x-descriptors")]
     pub x_descriptors: Option<Vec<String>>,
 }
 
@@ -1321,11 +1076,7 @@ pub struct KameletStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration is the most recent generation observed for this Kamelet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Phase --
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1345,3 +1096,4 @@ pub struct KameletStatusProperties {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// PodHttpChaosSpec defines the desired state of PodHttpChaos.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "PodHttpChaos",
-    plural = "podhttpchaos"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "PodHttpChaos", plural = "podhttpchaos")]
 #[kube(namespaced)]
 #[kube(status = "PodHttpChaosStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PodHttpChaosSpec {
     /// Rules are a list of injection rule for http request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -158,17 +153,9 @@ pub struct PodHttpChaosTls {
 /// PodHttpChaosStatus defines the actual state of PodHttpChaos.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodHttpChaosStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedMessage")]
     pub failed_message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Pid represents a running tproxy process id.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -177,3 +164,4 @@ pub struct PodHttpChaosStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<i64>,
 }
+

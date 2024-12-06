@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// KustomizationSpec defines the desired state of a kustomization.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "kustomize.toolkit.fluxcd.io",
-    version = "v1beta1",
-    kind = "Kustomization",
-    plural = "kustomizations"
-)]
+#[kube(group = "kustomize.toolkit.fluxcd.io", version = "v1beta1", kind = "Kustomization", plural = "kustomizations")]
 #[kube(namespaced)]
 #[kube(status = "KustomizationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct KustomizationSpec {
     /// Decrypt Kubernetes secrets before applying them on the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -37,11 +32,7 @@ pub struct KustomizationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
     /// A list of resources to be included in the health assessment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthChecks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthChecks")]
     pub health_checks: Option<Vec<KustomizationHealthChecks>>,
     /// Images is a list of (image name, new name, new tag or digest)
     /// for changing image names, tags or digests. This can also be achieved with a
@@ -52,29 +43,17 @@ pub struct KustomizationSpec {
     pub interval: String,
     /// The KubeConfig for reconciling the Kustomization on a remote cluster.
     /// When specified, KubeConfig takes precedence over ServiceAccountName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeConfig")]
     pub kube_config: Option<KustomizationKubeConfig>,
     /// Strategic merge and JSON patches, defined as inline YAML objects,
     /// capable of targeting objects based on kind, label and annotation selectors.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patches: Option<Vec<KustomizationPatches>>,
     /// JSON 6902 patches, defined as inline YAML objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "patchesJson6902"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<Vec<KustomizationPatchesJson6902>>,
     /// Strategic merge patches, defined as inline YAML objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "patchesStrategicMerge"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesStrategicMerge")]
     pub patches_strategic_merge: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// Path to the directory containing the kustomization.yaml file, or the
     /// set of plain YAMLs a kustomization.yaml should be generated for.
@@ -90,19 +69,11 @@ pub struct KustomizationSpec {
     /// The interval at which to retry a previously failed reconciliation.
     /// When not specified, the controller uses the KustomizationSpec.Interval
     /// value to retry failures.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
     /// The name of the Kubernetes service account to impersonate
     /// when reconciling this Kustomization.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Reference of the source where the kustomization file is.
     #[serde(rename = "sourceRef")]
@@ -113,11 +84,7 @@ pub struct KustomizationSpec {
     pub suspend: Option<bool>,
     /// TargetNamespace sets or overrides the namespace in the
     /// kustomization.yaml file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNamespace")]
     pub target_namespace: Option<String>,
     /// Timeout for validation, apply and health checking operations.
     /// Defaults to 'Interval' duration.
@@ -172,11 +139,7 @@ pub struct KustomizationDependsOn {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KustomizationHealthChecks {
     /// API version of the referent, if not specified the Kubernetes preferred version will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the referent.
     pub kind: String,
@@ -252,11 +215,7 @@ pub struct KustomizationPatchesTarget {
     /// AnnotationSelector is a string that follows the label selection expression
     /// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
     /// It matches with the resource annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
     pub annotation_selector: Option<String>,
     /// Group is the API group to select resources from.
     /// Together with Version and Kind it is capable of unambiguously identifying and/or selecting resources.
@@ -272,11 +231,7 @@ pub struct KustomizationPatchesTarget {
     /// LabelSelector is a string that follows the label selection expression
     /// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
     /// It matches with the resource labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<String>,
     /// Name to match resources with.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -345,11 +300,7 @@ pub struct KustomizationPatchesJson6902Target {
     /// AnnotationSelector is a string that follows the label selection expression
     /// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
     /// It matches with the resource annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
     pub annotation_selector: Option<String>,
     /// Group is the API group to select resources from.
     /// Together with Version and Kind it is capable of unambiguously identifying and/or selecting resources.
@@ -365,11 +316,7 @@ pub struct KustomizationPatchesJson6902Target {
     /// LabelSelector is a string that follows the label selection expression
     /// https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api
     /// It matches with the resource labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<String>,
     /// Name to match resources with.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -400,11 +347,7 @@ pub struct KustomizationPostBuild {
     /// the variables and their values to be substituted in the YAML manifests.
     /// The ConfigMap and the Secret data keys represent the var names and they
     /// must match the vars declared in the manifests for the substitution to happen.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "substituteFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "substituteFrom")]
     pub substitute_from: Option<Vec<KustomizationPostBuildSubstituteFrom>>,
 }
 
@@ -431,11 +374,7 @@ pub enum KustomizationPostBuildSubstituteFromKind {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KustomizationSourceRef {
     /// API version of the referent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the referent
     pub kind: KustomizationSourceRefKind,
@@ -471,34 +410,18 @@ pub struct KustomizationStatus {
     pub conditions: Option<Vec<Condition>>,
     /// The last successfully applied revision.
     /// The revision format for Git sources is <branch|tag>/<commit-sha>.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAppliedRevision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedRevision")]
     pub last_applied_revision: Option<String>,
     /// LastAttemptedRevision is the revision of the last reconciliation attempt.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAttemptedRevision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedRevision")]
     pub last_attempted_revision: Option<String>,
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last reconciled generation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// The last successfully applied revision metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -524,3 +447,4 @@ pub struct KustomizationStatusSnapshotEntries {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
+

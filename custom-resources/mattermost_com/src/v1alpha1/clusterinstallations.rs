@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Specification of the desired behavior of the Mattermost cluster. More info:
 /// https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "mattermost.com",
-    version = "v1alpha1",
-    kind = "ClusterInstallation",
-    plural = "clusterinstallations"
-)]
+#[kube(group = "mattermost.com", version = "v1alpha1", kind = "ClusterInstallation", plural = "clusterinstallations")]
 #[kube(namespaced)]
 #[kube(status = "ClusterInstallationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterInstallationSpec {
     /// If specified, affinity will define the pod's scheduling constraints
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -39,51 +34,27 @@ pub struct ClusterInstallationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<ClusterInstallationDatabase>,
     /// ElasticSearch defines the ElasticSearch configuration for a ClusterInstallation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "elasticSearch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticSearch")]
     pub elastic_search: Option<ClusterInstallationElasticSearch>,
     /// Image defines the ClusterInstallation Docker image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Specify deployment pull policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressAnnotations")]
     pub ingress_annotations: Option<BTreeMap<String, String>>,
     /// IngressName defines the name to be used when creating the ingress rules
     #[serde(rename = "ingressName")]
     pub ingress_name: String,
     /// Defines the probe to check if the application is up and running.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ClusterInstallationLivenessProbe>,
     /// Optional environment variables to set in the Mattermost application pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mattermostEnv"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mattermostEnv")]
     pub mattermost_env: Option<Vec<ClusterInstallationMattermostEnv>>,
     /// Secret that contains the mattermost license
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mattermostLicenseSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mattermostLicenseSecret")]
     pub mattermost_license_secret: Option<String>,
     /// Migrate specifies that the ClusterInstallation CR should be migrated to the Mattermost CR.
     /// CAUTION: Some features like BlueGreen or Canary are not supported with a new Custom Resource
@@ -96,37 +67,21 @@ pub struct ClusterInstallationSpec {
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Defines the probe to check if the application is ready to accept traffic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ClusterInstallationReadinessProbe>,
     /// Replicas defines the number of replicas to use for the Mattermost app servers.
     /// Setting this will override the number of replicas set by 'Size'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLabels")]
     pub resource_labels: Option<BTreeMap<String, String>>,
     /// Defines the resource requests and limits for the Mattermost app server pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterInstallationResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
     pub service_annotations: Option<BTreeMap<String, String>>,
     /// Size defines the size of the ClusterInstallation. This is typically specified in number of users.
     /// This will override replica and resource requests/limits appropriately for the provided number of users.
@@ -138,17 +93,9 @@ pub struct ClusterInstallationSpec {
     /// Setting new Size will override previous values regardless if set by Size or manually.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useIngressTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useIngressTLS")]
     pub use_ingress_tls: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useServiceLoadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useServiceLoadBalancer")]
     pub use_service_load_balancer: Option<bool>,
     /// Version defines the ClusterInstallation Docker image version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -159,25 +106,13 @@ pub struct ClusterInstallationSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInstallationAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<ClusterInstallationAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<ClusterInstallationAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ClusterInstallationAffinityPodAntiAffinity>,
 }
 
@@ -193,27 +128,15 @@ pub struct ClusterInstallationAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<ClusterInstallationAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterInstallationAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        ClusterInstallationAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<ClusterInstallationAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -240,8 +163,7 @@ pub struct ClusterInstallationAffinityNodeAffinityPreferredDuringSchedulingIgnor
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ClusterInstallationAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -259,8 +181,7 @@ pub struct ClusterInstallationAffinityNodeAffinityPreferredDuringSchedulingIgnor
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ClusterInstallationAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -303,8 +224,7 @@ pub struct ClusterInstallationAffinityNodeAffinityRequiredDuringSchedulingIgnore
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ClusterInstallationAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -322,8 +242,7 @@ pub struct ClusterInstallationAffinityNodeAffinityRequiredDuringSchedulingIgnore
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ClusterInstallationAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -350,14 +269,8 @@ pub struct ClusterInstallationAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<ClusterInstallationAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterInstallationAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -365,14 +278,8 @@ pub struct ClusterInstallationAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<ClusterInstallationAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterInstallationAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -454,8 +361,7 @@ pub struct ClusterInstallationAffinityPodAffinityPreferredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ClusterInstallationAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -489,8 +395,7 @@ pub struct ClusterInstallationAffinityPodAffinityPreferredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ClusterInstallationAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -577,8 +482,7 @@ pub struct ClusterInstallationAffinityPodAffinityRequiredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ClusterInstallationAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -612,8 +516,7 @@ pub struct ClusterInstallationAffinityPodAffinityRequiredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ClusterInstallationAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -731,8 +634,7 @@ pub struct ClusterInstallationAffinityPodAntiAffinityPreferredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ClusterInstallationAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -766,8 +668,7 @@ pub struct ClusterInstallationAffinityPodAntiAffinityPreferredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ClusterInstallationAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -854,8 +755,7 @@ pub struct ClusterInstallationAffinityPodAntiAffinityRequiredDuringSchedulingIgn
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ClusterInstallationAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -889,8 +789,7 @@ pub struct ClusterInstallationAffinityPodAntiAffinityRequiredDuringSchedulingIgn
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInstallationAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ClusterInstallationAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -917,11 +816,7 @@ pub struct ClusterInstallationBlueGreen {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub green: Option<ClusterInstallationBlueGreenGreen>,
     /// ProductionDeployment defines if the current production is blue or green.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "productionDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "productionDeployment")]
     pub production_deployment: Option<String>,
 }
 
@@ -934,20 +829,12 @@ pub struct ClusterInstallationBlueGreenBlue {
     pub image: Option<String>,
     /// IngressName defines the ingress name that will be used by the deployment.
     /// This option is not used for Canary builds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressName")]
     pub ingress_name: Option<String>,
     /// Name defines the name of the deployment
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLabels")]
     pub resource_labels: Option<BTreeMap<String, String>>,
     /// Version defines the Docker image version that will be used for the deployment.
     /// Required when BlueGreen or Canary is enabled.
@@ -964,20 +851,12 @@ pub struct ClusterInstallationBlueGreenGreen {
     pub image: Option<String>,
     /// IngressName defines the ingress name that will be used by the deployment.
     /// This option is not used for Canary builds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressName")]
     pub ingress_name: Option<String>,
     /// Name defines the name of the deployment
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLabels")]
     pub resource_labels: Option<BTreeMap<String, String>>,
     /// Version defines the Docker image version that will be used for the deployment.
     /// Required when BlueGreen or Canary is enabled.
@@ -1005,20 +884,12 @@ pub struct ClusterInstallationCanaryDeployment {
     pub image: Option<String>,
     /// IngressName defines the ingress name that will be used by the deployment.
     /// This option is not used for Canary builds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressName")]
     pub ingress_name: Option<String>,
     /// Name defines the name of the deployment
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLabels")]
     pub resource_labels: Option<BTreeMap<String, String>>,
     /// Version defines the Docker image version that will be used for the deployment.
     /// Required when BlueGreen or Canary is enabled.
@@ -1030,43 +901,23 @@ pub struct ClusterInstallationCanaryDeployment {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInstallationDatabase {
     /// Defines the backup retention policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupRemoteDeletePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRemoteDeletePolicy")]
     pub backup_remote_delete_policy: Option<String>,
     /// Defines the secret to be used when performing a database restore.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupRestoreSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRestoreSecretName")]
     pub backup_restore_secret_name: Option<String>,
     /// Defines the interval for backups in cron expression format.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupSchedule"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSchedule")]
     pub backup_schedule: Option<String>,
     /// Defines the secret to be used for uploading/restoring backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSecretName")]
     pub backup_secret_name: Option<String>,
     /// Defines the object storage url for uploading backups.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupURL")]
     pub backup_url: Option<String>,
     /// Defines the AWS S3 bucket where the Database Backup is stored.
     /// The operator will download the file to restore the data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initBucketURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initBucketURL")]
     pub init_bucket_url: Option<String>,
     /// Defines the number of database replicas.
     /// For redundancy use at least 2 replicas.
@@ -1078,7 +929,7 @@ pub struct ClusterInstallationDatabase {
     pub resources: Option<ClusterInstallationDatabaseResources>,
     /// Optionally enter the name of an already-existing Secret for connecting to
     /// the database. This secret should be configured as follows:
-    ///
+    /// 
     /// User-Managed Database
     ///   - Key: DB_CONNECTION_STRING | Value: <FULL_DATABASE_CONNECTION_STRING>
     /// Operator-Managed Database
@@ -1086,7 +937,7 @@ pub struct ClusterInstallationDatabase {
     ///   - Key: USER | Value: <USER_NAME>
     ///   - Key: PASSWORD | Value: <USER_PASSWORD>
     ///   - Key: DATABASE Value: <DATABASE_NAME>
-    ///
+    /// 
     /// Notes:
     ///   If you define all secret values for both User-Managed and
     ///   Operator-Managed database types, the User-Managed connection string will
@@ -1096,11 +947,7 @@ pub struct ClusterInstallationDatabase {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// Defines the storage size for the database. ie 50Gi
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageSize")]
     pub storage_size: Option<String>,
     /// Defines the type of database to use for an Operator-Managed database. This
     /// value is ignored when using a User-Managed database.
@@ -1116,10 +963,10 @@ pub struct ClusterInstallationDatabase {
 pub struct ClusterInstallationDatabaseResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ClusterInstallationDatabaseResourcesClaims>>,
@@ -1168,11 +1015,7 @@ pub struct ClusterInstallationLivenessProbe {
     pub exec: Option<ClusterInstallationLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1182,27 +1025,15 @@ pub struct ClusterInstallationLivenessProbe {
     pub http_get: Option<ClusterInstallationLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -1217,20 +1048,12 @@ pub struct ClusterInstallationLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1253,7 +1076,7 @@ pub struct ClusterInstallationLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1267,11 +1090,7 @@ pub struct ClusterInstallationLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<ClusterInstallationLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1333,11 +1152,7 @@ pub struct ClusterInstallationMattermostEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInstallationMattermostEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ClusterInstallationMattermostEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1345,18 +1160,10 @@ pub struct ClusterInstallationMattermostEnvValueFrom {
     pub field_ref: Option<ClusterInstallationMattermostEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ClusterInstallationMattermostEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterInstallationMattermostEnvValueFromSecretKeyRef>,
 }
 
@@ -1382,11 +1189,7 @@ pub struct ClusterInstallationMattermostEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInstallationMattermostEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1398,11 +1201,7 @@ pub struct ClusterInstallationMattermostEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInstallationMattermostEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1432,18 +1231,10 @@ pub struct ClusterInstallationMattermostEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInstallationMinio {
     /// Set to the bucket name of your external MinIO or S3.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalBucket"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalBucket")]
     pub external_bucket: Option<String>,
     /// Set to use an external MinIO deployment or S3. Must also set 'Secret' and 'ExternalBucket'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalURL")]
     pub external_url: Option<String>,
     /// Defines the number of Minio replicas.
     /// Supply 1 to run Minio in standalone mode with no redundancy.
@@ -1462,11 +1253,7 @@ pub struct ClusterInstallationMinio {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// Defines the storage size for Minio. ie 50Gi
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageSize")]
     pub storage_size: Option<String>,
 }
 
@@ -1475,10 +1262,10 @@ pub struct ClusterInstallationMinio {
 pub struct ClusterInstallationMinioResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ClusterInstallationMinioResourcesClaims>>,
@@ -1516,11 +1303,7 @@ pub struct ClusterInstallationReadinessProbe {
     pub exec: Option<ClusterInstallationReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1530,27 +1313,15 @@ pub struct ClusterInstallationReadinessProbe {
     pub http_get: Option<ClusterInstallationReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -1565,20 +1336,12 @@ pub struct ClusterInstallationReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1601,7 +1364,7 @@ pub struct ClusterInstallationReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1615,11 +1378,7 @@ pub struct ClusterInstallationReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<ClusterInstallationReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1661,10 +1420,10 @@ pub struct ClusterInstallationReadinessProbeTcpSocket {
 pub struct ClusterInstallationResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ClusterInstallationResourcesClaims>>,
@@ -1723,11 +1482,7 @@ pub struct ClusterInstallationStatus {
     pub state: Option<String>,
     /// Total number of non-terminated pods targeted by this Mattermost deployment
     /// that are running with the desired image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
     /// The version currently running in the Mattermost instance
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1742,3 +1497,4 @@ pub struct ClusterInstallationStatusMigration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

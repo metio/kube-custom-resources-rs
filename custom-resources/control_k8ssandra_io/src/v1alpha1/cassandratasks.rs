@@ -4,37 +4,28 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// CassandraTaskSpec defines the desired state of CassandraTask
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "control.k8ssandra.io",
-    version = "v1alpha1",
-    kind = "CassandraTask",
-    plural = "cassandratasks"
-)]
+#[kube(group = "control.k8ssandra.io", version = "v1alpha1", kind = "CassandraTask", plural = "cassandratasks")]
 #[kube(namespaced)]
 #[kube(status = "CassandraTaskStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CassandraTaskSpec {
     /// Specifics if this task can be run concurrently with other active tasks. Valid values are:
     /// - "Allow": allows multiple Tasks to run concurrently on Cassandra cluster
     /// - "Forbid" (default): only a single task is executed at once
     /// The "Allow" property is only valid if all the other active Tasks have "Allow" as well.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "concurrencyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrencyPolicy")]
     pub concurrency_policy: Option<String>,
     /// Which datacenter this task is targetting. Note, this must be a datacenter which the current cass-operator
     /// can access
@@ -44,28 +35,16 @@ pub struct CassandraTaskSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jobs: Option<Vec<CassandraTaskJobs>>,
     /// RestartPolicy indicates the behavior n case of failure. Default is Never.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// ScheduledTime indicates the earliest possible time this task is executed. This does not necessarily
     /// equal to the time it is actually executed (if other tasks are blocking for example). If not set,
     /// the task will be executed immediately.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scheduledTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduledTime")]
     pub scheduled_time: Option<String>,
     /// TTLSecondsAfterFinished defines how long the completed job will kept before being cleaned up. If set to 0
     /// the task will not be cleaned up by the cass-operator. If unset, the default time (86400s) is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ttlSecondsAfterFinished"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
     pub ttl_seconds_after_finished: Option<i32>,
 }
 
@@ -74,11 +53,7 @@ pub struct CassandraTaskSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraTaskDatacenter {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -104,11 +79,7 @@ pub struct CassandraTaskDatacenter {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -172,11 +143,7 @@ pub struct CassandraTaskStatus {
     /// be set in happens-before order across separate operations.
     /// It is represented in RFC3339 form and is in UTC.
     /// The completion time is only set when the job finishes successfully.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTime")]
     pub completion_time: Option<String>,
     /// The latest available observations of an object's current state. When a Job
     /// fails, one of the conditions will have type "Failed" and status true. When
@@ -200,3 +167,4 @@ pub struct CassandraTaskStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub succeeded: Option<i64>,
 }
+

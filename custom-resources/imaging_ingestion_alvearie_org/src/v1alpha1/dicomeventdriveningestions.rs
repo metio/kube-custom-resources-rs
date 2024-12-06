@@ -5,66 +5,37 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DicomEventDrivenIngestionSpec defines the desired state of DicomEventDrivenIngestion
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "imaging-ingestion.alvearie.org",
-    version = "v1alpha1",
-    kind = "DicomEventDrivenIngestion",
-    plural = "dicomeventdriveningestions"
-)]
+#[kube(group = "imaging-ingestion.alvearie.org", version = "v1alpha1", kind = "DicomEventDrivenIngestion", plural = "dicomeventdriveningestions")]
 #[kube(namespaced)]
 #[kube(status = "DicomEventDrivenIngestionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DicomEventDrivenIngestionSpec {
     /// Database Config Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseConfigName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseConfigName")]
     pub database_config_name: Option<String>,
     /// Database Secret Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseSecretName")]
     pub database_secret_name: Option<String>,
     /// Event Processor Spec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventProcessor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventProcessor")]
     pub event_processor: Option<DicomEventDrivenIngestionEventProcessor>,
     /// Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Image Pull Secrets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<DicomEventDrivenIngestionImagePullSecrets>>,
     /// Revisioning Delay in Seconds
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revisioningDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisioningDelay")]
     pub revisioning_delay: Option<i64>,
 }
 
@@ -78,18 +49,10 @@ pub struct DicomEventDrivenIngestionEventProcessor {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Max Replicas
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicas")]
     pub max_replicas: Option<i32>,
     /// Min Replicas
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
 }
 
@@ -105,11 +68,7 @@ pub struct DicomEventDrivenIngestionImagePullSecrets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DicomEventDrivenIngestionStatus {
     /// Broker Endpoint
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerEndpoint")]
     pub broker_endpoint: Option<String>,
     /// Human-readable message indicating details about current operator phase or error
     pub message: String,
@@ -118,10 +77,7 @@ pub struct DicomEventDrivenIngestionStatus {
     /// True if all resources are in a ready state and all work is done
     pub ready: bool,
     /// A map of all the secondary resources types and names created for this CR. e.g "Deployment": [ "DeploymentName1", "DeploymentName2" ]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryResources")]
     pub secondary_resources: Option<BTreeMap<String, String>>,
 }
+

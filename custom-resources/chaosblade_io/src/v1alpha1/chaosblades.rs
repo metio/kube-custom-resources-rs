@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ChaosBladeSpec defines the desired state of ChaosBlade
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "chaosblade.io",
-    version = "v1alpha1",
-    kind = "ChaosBlade",
-    plural = "chaosblades"
-)]
+#[kube(group = "chaosblade.io", version = "v1alpha1", kind = "ChaosBlade", plural = "chaosblades")]
 #[kube(namespaced)]
 #[kube(status = "ChaosBladeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ChaosBladeSpec {
     /// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
     pub experiments: Vec<ChaosBladeExperiments>,
@@ -68,11 +63,7 @@ pub struct ChaosBladeStatusExpStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
     /// ResStatuses is the details of the experiment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resStatuses")]
     pub res_statuses: Option<Vec<ChaosBladeStatusExpStatusesResStatuses>>,
     /// experiment scope for cache
     pub scope: String,
@@ -101,3 +92,4 @@ pub struct ChaosBladeStatusExpStatusesResStatuses {
     /// success
     pub success: bool,
 }
+

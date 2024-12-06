@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// ElasticQuotaSpec defines the Min and Max for Quota.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "scheduling.sigs.k8s.io",
-    version = "v1alpha1",
-    kind = "ElasticQuota",
-    plural = "elasticquotas"
-)]
+#[kube(group = "scheduling.sigs.k8s.io", version = "v1alpha1", kind = "ElasticQuota", plural = "elasticquotas")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ElasticQuotaSpec {
     /// Max is the set of desired max limits for each named resource. The usage of max is based on the resource configurations of
     /// successfully scheduled pods.
@@ -40,3 +35,4 @@ pub struct ElasticQuotaStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub used: Option<BTreeMap<String, IntOrString>>,
 }
+

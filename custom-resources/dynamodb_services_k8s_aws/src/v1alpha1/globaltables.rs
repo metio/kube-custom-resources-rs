@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// GlobalTableSpec defines the desired state of GlobalTable.
-///
+/// 
 /// Represents the properties of a global table.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "dynamodb.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "GlobalTable",
-    plural = "globaltables"
-)]
+#[kube(group = "dynamodb.services.k8s.aws", version = "v1alpha1", kind = "GlobalTable", plural = "globaltables")]
 #[kube(namespaced)]
 #[kube(status = "GlobalTableStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GlobalTableSpec {
     /// The global table name.
     #[serde(rename = "globalTableName")]
@@ -37,11 +32,7 @@ pub struct GlobalTableSpec {
 /// Represents the properties of a replica.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GlobalTableReplicationGroup {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "regionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "regionName")]
     pub region_name: Option<String>,
 }
 
@@ -51,11 +42,7 @@ pub struct GlobalTableStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<GlobalTableStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -64,26 +51,18 @@ pub struct GlobalTableStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The creation time of the global table.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationDateTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationDateTime")]
     pub creation_date_time: Option<String>,
     /// The current state of the global table:
-    ///
+    /// 
     ///    * CREATING - The global table is being created.
-    ///
+    /// 
     ///    * UPDATING - The global table is being updated.
-    ///
+    /// 
     ///    * DELETING - The global table is being deleted.
-    ///
+    /// 
     ///    * ACTIVE - The global table is ready for use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalTableStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalTableStatus")]
     pub global_table_status: Option<String>,
 }
 
@@ -108,3 +87,4 @@ pub struct GlobalTableStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

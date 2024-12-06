@@ -4,54 +4,37 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Configuration affecting network reachability of a sidecar. See more details at: https://istio.io/docs/reference/config/networking/sidecar.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "networking.istio.io",
-    version = "v1beta1",
-    kind = "Sidecar",
-    plural = "sidecars"
-)]
+#[kube(group = "networking.istio.io", version = "v1beta1", kind = "Sidecar", plural = "sidecars")]
 #[kube(namespaced)]
 #[kube(status = "SidecarStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SidecarSpec {
     /// Egress specifies the configuration of the sidecar for processing outbound traffic from the attached workload instance to other services in the mesh.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub egress: Option<Vec<SidecarEgress>>,
     /// Settings controlling the volume of connections Envoy will accept from the network.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inboundConnectionPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inboundConnectionPool")]
     pub inbound_connection_pool: Option<SidecarInboundConnectionPool>,
     /// Ingress specifies the configuration of the sidecar for processing inbound traffic to the attached workload instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<Vec<SidecarIngress>>,
     /// Set the default behavior of the sidecar for handling outbound traffic from the application.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outboundTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outboundTrafficPolicy")]
     pub outbound_traffic_policy: Option<SidecarOutboundTrafficPolicy>,
     /// Criteria used to select the specific set of pods/VMs on which this `Sidecar` configuration should be applied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workloadSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadSelector")]
     pub workload_selector: Option<SidecarWorkloadSelector>,
 }
 
@@ -61,13 +44,9 @@ pub struct SidecarEgress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bind: Option<String>,
     /// When the bind address is an IP, the captureMode option dictates how traffic to the listener is expected to be captured (or not).
-    ///
+    /// 
     /// Valid Options: DEFAULT, IPTABLES, NONE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "captureMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureMode")]
     pub capture_mode: Option<SidecarEgressCaptureMode>,
     /// One or more service hosts exposed by the listener in `namespace/dnsName` format.
     pub hosts: Vec<String>,
@@ -98,11 +77,7 @@ pub struct SidecarEgressPort {
     /// The protocol exposed on the port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<i64>,
 }
 
@@ -121,62 +96,30 @@ pub struct SidecarInboundConnectionPool {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SidecarInboundConnectionPoolHttp {
     /// Specify if http1.1 connection should be upgraded to http2 for the associated destination.
-    ///
+    /// 
     /// Valid Options: DEFAULT, DO_NOT_UPGRADE, UPGRADE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "h2UpgradePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "h2UpgradePolicy")]
     pub h2_upgrade_policy: Option<SidecarInboundConnectionPoolHttpH2UpgradePolicy>,
     /// Maximum number of requests that will be queued while waiting for a ready connection pool connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http1MaxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http1MaxPendingRequests")]
     pub http1_max_pending_requests: Option<i32>,
     /// Maximum number of active requests to a destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http2MaxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http2MaxRequests")]
     pub http2_max_requests: Option<i32>,
     /// The idle timeout for upstream connection pool connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum number of concurrent streams allowed for a peer on one HTTP/2 connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrentStreams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentStreams")]
     pub max_concurrent_streams: Option<i32>,
     /// Maximum number of requests per connection to a backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
     /// Maximum number of retries that can be outstanding to all hosts in a cluster at a given time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
     /// If set to true, client protocol will be preserved while initiating connection to backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useClientProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useClientProtocol")]
     pub use_client_protocol: Option<bool>,
 }
 
@@ -195,39 +138,19 @@ pub enum SidecarInboundConnectionPoolHttpH2UpgradePolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SidecarInboundConnectionPoolTcp {
     /// TCP connection timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
     /// The idle timeout for TCP connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum duration of a connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionDuration")]
     pub max_connection_duration: Option<String>,
     /// Maximum number of HTTP1 /TCP connections to a destination host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<SidecarInboundConnectionPoolTcpTcpKeepalive>,
 }
 
@@ -251,27 +174,15 @@ pub struct SidecarIngress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bind: Option<String>,
     /// The captureMode option dictates how traffic to the listener is expected to be captured (or not).
-    ///
+    /// 
     /// Valid Options: DEFAULT, IPTABLES, NONE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "captureMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureMode")]
     pub capture_mode: Option<SidecarIngressCaptureMode>,
     /// Settings controlling the volume of connections Envoy will accept from the network.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionPool")]
     pub connection_pool: Option<SidecarIngressConnectionPool>,
     /// The IP endpoint or Unix domain socket to which traffic should be forwarded to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEndpoint")]
     pub default_endpoint: Option<String>,
     /// The port associated with the listener.
     pub port: SidecarIngressPort,
@@ -305,62 +216,30 @@ pub struct SidecarIngressConnectionPool {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SidecarIngressConnectionPoolHttp {
     /// Specify if http1.1 connection should be upgraded to http2 for the associated destination.
-    ///
+    /// 
     /// Valid Options: DEFAULT, DO_NOT_UPGRADE, UPGRADE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "h2UpgradePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "h2UpgradePolicy")]
     pub h2_upgrade_policy: Option<SidecarIngressConnectionPoolHttpH2UpgradePolicy>,
     /// Maximum number of requests that will be queued while waiting for a ready connection pool connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http1MaxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http1MaxPendingRequests")]
     pub http1_max_pending_requests: Option<i32>,
     /// Maximum number of active requests to a destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http2MaxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http2MaxRequests")]
     pub http2_max_requests: Option<i32>,
     /// The idle timeout for upstream connection pool connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum number of concurrent streams allowed for a peer on one HTTP/2 connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrentStreams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentStreams")]
     pub max_concurrent_streams: Option<i32>,
     /// Maximum number of requests per connection to a backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
     /// Maximum number of retries that can be outstanding to all hosts in a cluster at a given time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
     /// If set to true, client protocol will be preserved while initiating connection to backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useClientProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useClientProtocol")]
     pub use_client_protocol: Option<bool>,
 }
 
@@ -379,39 +258,19 @@ pub enum SidecarIngressConnectionPoolHttpH2UpgradePolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SidecarIngressConnectionPoolTcp {
     /// TCP connection timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
     /// The idle timeout for TCP connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum duration of a connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionDuration")]
     pub max_connection_duration: Option<String>,
     /// Maximum number of HTTP1 /TCP connections to a destination host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<SidecarIngressConnectionPoolTcpTcpKeepalive>,
 }
 
@@ -441,11 +300,7 @@ pub struct SidecarIngressPort {
     /// The protocol exposed on the port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<i64>,
 }
 
@@ -453,93 +308,49 @@ pub struct SidecarIngressPort {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SidecarIngressTls {
     /// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
     /// OPTIONAL: The path to the file containing the certificate revocation list (CRL) to use in verifying a presented client side certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCrl")]
     pub ca_crl: Option<String>,
     /// Optional: If specified, only support the specified cipher list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipherSuites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
     pub cipher_suites: Option<Vec<String>>,
     /// For gateways running on Kubernetes, the name of the secret that holds the TLS certs including the CA certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
     /// If set to true, the load balancer will send a 301 redirect for all http connections, asking the clients to use HTTPS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpsRedirect"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsRedirect")]
     pub https_redirect: Option<bool>,
     /// Optional: Maximum TLS protocol version.
-    ///
+    /// 
     /// Valid Options: TLS_AUTO, TLSV1_0, TLSV1_1, TLSV1_2, TLSV1_3
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxProtocolVersion")]
     pub max_protocol_version: Option<SidecarIngressTlsMaxProtocolVersion>,
     /// Optional: Minimum TLS protocol version.
-    ///
+    /// 
     /// Valid Options: TLS_AUTO, TLSV1_0, TLSV1_1, TLSV1_2, TLSV1_3
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minProtocolVersion")]
     pub min_protocol_version: Option<SidecarIngressTlsMinProtocolVersion>,
     /// Optional: Indicates whether connections to this port should be secured using TLS.
-    ///
+    /// 
     /// Valid Options: PASSTHROUGH, SIMPLE, MUTUAL, AUTO_PASSTHROUGH, ISTIO_MUTUAL, OPTIONAL_MUTUAL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<SidecarIngressTlsMode>,
     /// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// REQUIRED if mode is `SIMPLE` or `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCertificate")]
     pub server_certificate: Option<String>,
     /// A list of alternate names to verify the subject identity in the certificate presented by the client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
     /// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyCertificateHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyCertificateHash")]
     pub verify_certificate_hash: Option<Vec<String>>,
     /// An optional list of base64-encoded SHA-256 hashes of the SPKIs of authorized client certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyCertificateSpki"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyCertificateSpki")]
     pub verify_certificate_spki: Option<Vec<String>>,
 }
 
@@ -593,14 +404,10 @@ pub enum SidecarIngressTlsMode {
 /// Set the default behavior of the sidecar for handling outbound traffic from the application.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SidecarOutboundTrafficPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressProxy")]
     pub egress_proxy: Option<SidecarOutboundTrafficPolicyEgressProxy>,
-    ///
-    ///
+    /// 
+    /// 
     /// Valid Options: REGISTRY_ONLY, ALLOW_ANY
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<SidecarOutboundTrafficPolicyMode>,
@@ -648,32 +455,20 @@ pub struct SidecarStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Resource Generation to which the Reconciled Condition refers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<IntOrString>,
     /// Includes any errors or warnings detected by Istio's analyzers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationMessages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationMessages")]
     pub validation_messages: Option<Vec<SidecarStatusValidationMessages>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SidecarStatusValidationMessages {
     /// A url pointing to the Istio documentation for this specific error type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "documentationUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "documentationUrl")]
     pub documentation_url: Option<String>,
     /// Represents how severe a message is.
-    ///
+    /// 
     /// Valid Options: UNKNOWN, ERROR, WARNING, INFO
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SidecarStatusValidationMessagesLevel>,
@@ -702,3 +497,4 @@ pub struct SidecarStatusValidationMessagesType {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

@@ -5,51 +5,30 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "logging.banzaicloud.io",
-    version = "v1beta1",
-    kind = "SyslogNGFlow",
-    plural = "syslogngflows"
-)]
+#[kube(group = "logging.banzaicloud.io", version = "v1beta1", kind = "SyslogNGFlow", plural = "syslogngflows")]
 #[kube(namespaced)]
 #[kube(status = "SyslogNGFlowStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SyslogNGFlowSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<SyslogNGFlowFilters>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalOutputRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalOutputRefs")]
     pub global_output_refs: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localOutputRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localOutputRefs")]
     pub local_output_refs: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loggingRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingRef")]
     pub logging_ref: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<SyslogNGFlowMatch>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputMetrics"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputMetrics")]
     pub output_metrics: Option<Vec<SyslogNGFlowOutputMetrics>>,
 }
 
@@ -92,19 +71,11 @@ pub struct SyslogNGFlowFiltersMatchRegexp {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGFlowFiltersParser {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metrics-probe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metrics-probe")]
     pub metrics_probe: Option<SyslogNGFlowFiltersParserMetricsProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regexp: Option<SyslogNGFlowFiltersParserRegexp>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syslog-parser"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syslog-parser")]
     pub syslog_parser: Option<SyslogNGFlowFiltersParserSyslogParser>,
 }
 
@@ -360,10 +331,7 @@ pub struct SyslogNGFlowStatus {
     pub active: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub problems: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "problemsCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "problemsCount")]
     pub problems_count: Option<i64>,
 }
+

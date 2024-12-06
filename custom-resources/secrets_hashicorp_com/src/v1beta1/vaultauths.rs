@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VaultAuthSpec defines the desired state of VaultAuth
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "secrets.hashicorp.com",
-    version = "v1beta1",
-    kind = "VaultAuth",
-    plural = "vaultauths"
-)]
+#[kube(group = "secrets.hashicorp.com", version = "v1beta1", kind = "VaultAuth", plural = "vaultauths")]
 #[kube(namespaced)]
 #[kube(status = "VaultAuthStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VaultAuthSpec {
     /// AllowedNamespaces Kubernetes Namespaces which are allow-listed for use with this AuthMethod.
     /// This field allows administrators to customize which Kubernetes namespaces are authorized to
@@ -34,11 +29,7 @@ pub struct VaultAuthSpec {
     /// []{"a", "b"} - list of namespaces.
     /// unset - disallow all namespaces except the Operator's the VaultAuthMethod's namespace, this
     /// is the default behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedNamespaces")]
     pub allowed_namespaces: Option<Vec<String>>,
     /// AppRole specific auth configuration, requires that the Method be set to `appRole`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appRole")]
@@ -76,28 +67,16 @@ pub struct VaultAuthSpec {
     /// --client-cache-persistence-model=direct-encrypted. Typically, there should only ever
     /// be one VaultAuth configured with StorageEncryption in the Cluster, and it should have
     /// the label: cacheStorageEncryption=true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageEncryption")]
     pub storage_encryption: Option<VaultAuthStorageEncryption>,
     /// VaultAuthGlobalRef.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vaultAuthGlobalRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultAuthGlobalRef")]
     pub vault_auth_global_ref: Option<VaultAuthVaultAuthGlobalRef>,
     /// VaultConnectionRef to the VaultConnection resource, can be prefixed with a namespace,
     /// eg: `namespaceA/vaultConnectionRefB`. If no namespace prefix is provided it will default to
     /// the namespace of the VaultConnection CR. If no value is specified for VaultConnectionRef the
     /// Operator will default to the `default` VaultConnection, configured in the operator's namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vaultConnectionRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultConnectionRef")]
     pub vault_connection_ref: Option<String>,
 }
 
@@ -118,28 +97,16 @@ pub struct VaultAuthAppRole {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VaultAuthAws {
     /// The Vault header value to include in the STS signing request
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerValue")]
     pub header_value: Option<String>,
     /// The IAM endpoint to use; if not set will use the default
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iamEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iamEndpoint")]
     pub iam_endpoint: Option<String>,
     /// IRSAServiceAccount name to use with IAM Roles for Service Accounts
     /// (IRSA), and should be annotated with "eks.amazonaws.com/role-arn". This
     /// ServiceAccount will be checked for other EKS annotations:
     /// eks.amazonaws.com/audience and eks.amazonaws.com/token-expiration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "irsaServiceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "irsaServiceAccount")]
     pub irsa_service_account: Option<String>,
     /// AWS Region to use for signing the authentication request
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -153,18 +120,10 @@ pub struct VaultAuthAws {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<String>,
     /// The role session name to use when creating a webidentity provider
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionName")]
     pub session_name: Option<String>,
     /// The STS endpoint to use; if not set will use the default
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stsEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stsEndpoint")]
     pub sts_endpoint: Option<String>,
 }
 
@@ -173,11 +132,7 @@ pub struct VaultAuthAws {
 pub struct VaultAuthGcp {
     /// GKE cluster name. Defaults to the cluster-name returned from the operator
     /// pod's local metadata server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// GCP project ID. Defaults to the project-id returned from the operator
     /// pod's local metadata server.
@@ -194,11 +149,7 @@ pub struct VaultAuthGcp {
     /// account (in the same Kubernetes namespace as the Vault*Secret referencing
     /// this resource) which has been configured for workload identity in GKE.
     /// Should be annotated with "iam.gke.io/gcp-service-account".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workloadIdentityServiceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadIdentityServiceAccount")]
     pub workload_identity_service_account: Option<String>,
 }
 
@@ -218,18 +169,10 @@ pub struct VaultAuthJwt {
     pub secret_ref: Option<String>,
     /// ServiceAccount to use when creating a ServiceAccount token to authenticate to Vault's
     /// JWT authentication backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// TokenExpirationSeconds to set the ServiceAccount token.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenExpirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenExpirationSeconds")]
     pub token_expiration_seconds: Option<i64>,
 }
 
@@ -244,18 +187,10 @@ pub struct VaultAuthKubernetes {
     pub role: Option<String>,
     /// ServiceAccount to use when authenticating to Vault's
     /// authentication backend. This must reside in the consuming secret's (VDS/VSS/PKI) namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// TokenExpirationSeconds to set the ServiceAccount token.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenExpirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenExpirationSeconds")]
     pub token_expiration_seconds: Option<i64>,
 }
 
@@ -295,7 +230,7 @@ pub struct VaultAuthVaultAuthGlobalRef {
     /// AllowDefault when set to true will use the default VaultAuthGlobal resource
     /// as the default if Name is not set. The 'allow-default-globals' option must be
     /// set on the operator's '-global-vault-auth-options' flag
-    ///
+    /// 
     /// The default VaultAuthGlobal search is conditional.
     /// When a ref Namespace is set, the search for the default
     /// VaultAuthGlobal resource is constrained to that namespace.
@@ -303,19 +238,11 @@ pub struct VaultAuthVaultAuthGlobalRef {
     /// 1. The default VaultAuthGlobal resource in the referring VaultAuth resource's
     /// namespace.
     /// 2. The default VaultAuthGlobal resource in the Operator's namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowDefault"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowDefault")]
     pub allow_default: Option<bool>,
     /// MergeStrategy configures the merge strategy for HTTP headers and parameters
     /// that are included in all Vault authentication requests.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mergeStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergeStrategy")]
     pub merge_strategy: Option<VaultAuthVaultAuthGlobalRefMergeStrategy>,
     /// Name of the VaultAuthGlobal resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -332,13 +259,13 @@ pub struct VaultAuthVaultAuthGlobalRef {
 pub struct VaultAuthVaultAuthGlobalRefMergeStrategy {
     /// Headers configures the merge strategy for HTTP headers that are included in
     /// all Vault requests. Choices are `union`, `replace`, or `none`.
-    ///
+    /// 
     /// If `union` is set, the headers from the VaultAuthGlobal and VaultAuth
     /// resources are merged. The headers from the VaultAuth always take precedence.
-    ///
+    /// 
     /// If `replace` is set, the first set of non-empty headers taken in order from:
     /// VaultAuth, VaultAuthGlobal auth method, VaultGlobal default headers.
-    ///
+    /// 
     /// If `none` is set, the headers from the
     /// VaultAuthGlobal resource are ignored and only the headers from the VaultAuth
     /// resource are used. The default is `none`.
@@ -346,14 +273,14 @@ pub struct VaultAuthVaultAuthGlobalRefMergeStrategy {
     pub headers: Option<VaultAuthVaultAuthGlobalRefMergeStrategyHeaders>,
     /// Params configures the merge strategy for HTTP parameters that are included in
     /// all Vault requests. Choices are `union`, `replace`, or `none`.
-    ///
+    /// 
     /// If `union` is set, the parameters from the VaultAuthGlobal and VaultAuth
     /// resources are merged. The parameters from the VaultAuth always take
     /// precedence.
-    ///
+    /// 
     /// If `replace` is set, the first set of non-empty parameters taken in order from:
     /// VaultAuth, VaultAuthGlobal auth method, VaultGlobal default parameters.
-    ///
+    /// 
     /// If `none` is set, the parameters from the VaultAuthGlobal resource are ignored
     /// and only the parameters from the VaultAuth resource are used. The default is
     /// `none`.
@@ -398,3 +325,4 @@ pub struct VaultAuthStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub valid: Option<bool>,
 }
+

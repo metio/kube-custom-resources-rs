@@ -4,29 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ParameterGroupSpec defines the desired state of ParameterGroup.
-///
+/// 
 /// Represents the output of a CreateParameterGroup operation. A parameter group
 /// represents a combination of specific values for the parameters that are passed
 /// to the engine software during startup.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "memorydb.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "ParameterGroup",
-    plural = "parametergroups"
-)]
+#[kube(group = "memorydb.services.k8s.aws", version = "v1alpha1", kind = "ParameterGroup", plural = "parametergroups")]
 #[kube(namespaced)]
 #[kube(status = "ParameterGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ParameterGroupSpec {
     /// An optional description of the parameter group.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -39,11 +34,7 @@ pub struct ParameterGroupSpec {
     /// An array of parameter names and values for the parameter update. You must
     /// supply at least one parameter name and value; subsequent arguments are optional.
     /// A maximum of 20 parameters may be updated per request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterNameValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterNameValues")]
     pub parameter_name_values: Option<Vec<ParameterGroupParameterNameValues>>,
     /// A list of tags to be added to this resource. A tag is a key-value pair. A
     /// tag key must be accompanied by a tag value, although null is accepted.
@@ -54,17 +45,9 @@ pub struct ParameterGroupSpec {
 /// Describes a name-value pair that is used to update the value of a parameter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ParameterGroupParameterNameValues {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterName")]
     pub parameter_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterValue")]
     pub parameter_value: Option<String>,
 }
 
@@ -87,11 +70,7 @@ pub struct ParameterGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ParameterGroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -130,24 +109,17 @@ pub struct ParameterGroupStatusAckResourceMetadata {
 /// Describes an individual setting that controls some aspect of MemoryDB behavior.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ParameterGroupStatusParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedValues")]
     pub allowed_values: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataType")]
     pub data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumEngineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumEngineVersion")]
     pub minimum_engine_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
+

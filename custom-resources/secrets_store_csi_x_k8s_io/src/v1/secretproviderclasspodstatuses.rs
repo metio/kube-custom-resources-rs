@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -18,17 +18,9 @@ pub struct SecretProviderClassPodStatusStatus {
     pub objects: Option<Vec<SecretProviderClassPodStatusStatusObjects>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podName")]
     pub pod_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretProviderClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretProviderClassName")]
     pub secret_provider_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPath")]
     pub target_path: Option<String>,
 }
 
@@ -40,3 +32,4 @@ pub struct SecretProviderClassPodStatusStatusObjects {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
+

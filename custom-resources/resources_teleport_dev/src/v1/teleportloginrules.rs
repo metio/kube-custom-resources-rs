@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// LoginRule resource definition v1 from Teleport
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "resources.teleport.dev",
-    version = "v1",
-    kind = "TeleportLoginRule",
-    plural = "teleportloginrules"
-)]
+#[kube(group = "resources.teleport.dev", version = "v1", kind = "TeleportLoginRule", plural = "teleportloginrules")]
 #[kube(namespaced)]
 #[kube(status = "TeleportLoginRuleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TeleportLoginRuleSpec {
     /// Priority is the priority of the login rule relative to other login rules in the same cluster. Login rules with a lower numbered priority will be evaluated first.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,10 +37,7 @@ pub struct TeleportLoginRuleStatus {
     /// Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "teleportResourceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "teleportResourceID")]
     pub teleport_resource_id: Option<i64>,
 }
+

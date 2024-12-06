@@ -5,56 +5,39 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec represents the desired behavior of OverridePolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "policy.karmada.io",
-    version = "v1alpha1",
-    kind = "OverridePolicy",
-    plural = "overridepolicies"
-)]
+#[kube(group = "policy.karmada.io", version = "v1alpha1", kind = "OverridePolicy", plural = "overridepolicies")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct OverridePolicySpec {
     /// OverrideRules defines a collection of override rules on target clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overrideRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overrideRules")]
     pub override_rules: Option<Vec<OverridePolicyOverrideRules>>,
     /// Overriders represents the override rules that would apply on resources
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overriders: Option<OverridePolicyOverriders>,
     /// ResourceSelectors restricts resource types that this override policy applies to.
     /// nil means matching all resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceSelectors")]
     pub resource_selectors: Option<Vec<OverridePolicyResourceSelectors>>,
     /// TargetCluster defines restrictions on this override policy
     /// that only applies to resources propagated to the matching clusters.
     /// nil means matching all clusters.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCluster")]
     pub target_cluster: Option<OverridePolicyTargetCluster>,
 }
 
@@ -66,11 +49,7 @@ pub struct OverridePolicyOverrideRules {
     /// TargetCluster defines restrictions on this override policy
     /// that only applies to resources propagated to the matching clusters.
     /// nil means matching all clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCluster")]
     pub target_cluster: Option<OverridePolicyOverrideRulesTargetCluster>,
 }
 
@@ -78,50 +57,25 @@ pub struct OverridePolicyOverrideRules {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyOverrideRulesOverriders {
     /// AnnotationsOverrider represents the rules dedicated to handling workload annotations
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationsOverrider"
-    )]
-    pub annotations_overrider:
-        Option<Vec<OverridePolicyOverrideRulesOverridersAnnotationsOverrider>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationsOverrider")]
+    pub annotations_overrider: Option<Vec<OverridePolicyOverrideRulesOverridersAnnotationsOverrider>>,
     /// ArgsOverrider represents the rules dedicated to handling container args
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "argsOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "argsOverrider")]
     pub args_overrider: Option<Vec<OverridePolicyOverrideRulesOverridersArgsOverrider>>,
     /// CommandOverrider represents the rules dedicated to handling container command
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commandOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commandOverrider")]
     pub command_overrider: Option<Vec<OverridePolicyOverrideRulesOverridersCommandOverrider>>,
     /// FieldOverrider represents the rules dedicated to modifying a specific field in any Kubernetes resource.
     /// This allows changing a single field within the resource with multiple operations.
     /// It is designed to handle structured field values such as those found in ConfigMaps or Secrets.
     /// The current implementation supports JSON and YAML formats, but can easily be extended to support XML in the future.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldOverrider")]
     pub field_overrider: Option<Vec<OverridePolicyOverrideRulesOverridersFieldOverrider>>,
     /// ImageOverrider represents the rules dedicated to handling image overrides.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageOverrider")]
     pub image_overrider: Option<Vec<OverridePolicyOverrideRulesOverridersImageOverrider>>,
     /// LabelsOverrider represents the rules dedicated to handling workload labels
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelsOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsOverrider")]
     pub labels_overrider: Option<Vec<OverridePolicyOverrideRulesOverridersLabelsOverrider>>,
     /// Plaintext represents override rules defined with plaintext overriders.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -295,8 +249,8 @@ pub struct OverridePolicyOverrideRulesOverridersImageOverrider {
     /// Operator represents the operator which will apply on the image.
     pub operator: OverridePolicyOverrideRulesOverridersImageOverriderOperator,
     /// Predicate filters images before applying the rule.
-    ///
-    ///
+    /// 
+    /// 
     /// Defaults to nil, in that case, the system will automatically detect image fields if the resource type is
     /// Pod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:
     ///   - Pod: /spec/containers/<N>/image
@@ -306,8 +260,8 @@ pub struct OverridePolicyOverrideRulesOverridersImageOverrider {
     ///   - StatefulSet: /spec/template/spec/containers/<N>/image
     ///   - Job: /spec/template/spec/containers/<N>/image
     /// In addition, all images will be processed if the resource object has more than one container.
-    ///
-    ///
+    /// 
+    /// 
     /// If not nil, only images matches the filters will be processed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub predicate: Option<OverridePolicyOverrideRulesOverridersImageOverriderPredicate>,
@@ -338,8 +292,8 @@ pub enum OverridePolicyOverrideRulesOverridersImageOverriderOperator {
 }
 
 /// Predicate filters images before applying the rule.
-///
-///
+/// 
+/// 
 /// Defaults to nil, in that case, the system will automatically detect image fields if the resource type is
 /// Pod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:
 ///   - Pod: /spec/containers/<N>/image
@@ -349,8 +303,8 @@ pub enum OverridePolicyOverrideRulesOverridersImageOverriderOperator {
 ///   - StatefulSet: /spec/template/spec/containers/<N>/image
 ///   - Job: /spec/template/spec/containers/<N>/image
 /// In addition, all images will be processed if the resource object has more than one container.
-///
-///
+/// 
+/// 
 /// If not nil, only images matches the filters will be processed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyOverrideRulesOverridersImageOverriderPredicate {
@@ -415,11 +369,7 @@ pub enum OverridePolicyOverrideRulesOverridersPlaintextOperator {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyOverrideRulesTargetCluster {
     /// ClusterNames is the list of clusters to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
     pub cluster_names: Option<Vec<String>>,
     /// ExcludedClusters is the list of clusters to be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -428,19 +378,11 @@ pub struct OverridePolicyOverrideRulesTargetCluster {
     /// The key(field) of the match expression should be 'provider', 'region', or 'zone',
     /// and the operator of the match expression should be 'In' or 'NotIn'.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelector")]
     pub field_selector: Option<OverridePolicyOverrideRulesTargetClusterFieldSelector>,
     /// LabelSelector is a filter to select member clusters by labels.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<OverridePolicyOverrideRulesTargetClusterLabelSelector>,
 }
 
@@ -451,13 +393,8 @@ pub struct OverridePolicyOverrideRulesTargetCluster {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyOverrideRulesTargetClusterFieldSelector {
     /// A list of field selector requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<OverridePolicyOverrideRulesTargetClusterFieldSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OverridePolicyOverrideRulesTargetClusterFieldSelectorMatchExpressions>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
@@ -483,21 +420,12 @@ pub struct OverridePolicyOverrideRulesTargetClusterFieldSelectorMatchExpressions
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyOverrideRulesTargetClusterLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<OverridePolicyOverrideRulesTargetClusterLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OverridePolicyOverrideRulesTargetClusterLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -519,55 +447,31 @@ pub struct OverridePolicyOverrideRulesTargetClusterLabelSelectorMatchExpressions
 }
 
 /// Overriders represents the override rules that would apply on resources
-///
-///
+/// 
+/// 
 /// Deprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyOverriders {
     /// AnnotationsOverrider represents the rules dedicated to handling workload annotations
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationsOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationsOverrider")]
     pub annotations_overrider: Option<Vec<OverridePolicyOverridersAnnotationsOverrider>>,
     /// ArgsOverrider represents the rules dedicated to handling container args
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "argsOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "argsOverrider")]
     pub args_overrider: Option<Vec<OverridePolicyOverridersArgsOverrider>>,
     /// CommandOverrider represents the rules dedicated to handling container command
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commandOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commandOverrider")]
     pub command_overrider: Option<Vec<OverridePolicyOverridersCommandOverrider>>,
     /// FieldOverrider represents the rules dedicated to modifying a specific field in any Kubernetes resource.
     /// This allows changing a single field within the resource with multiple operations.
     /// It is designed to handle structured field values such as those found in ConfigMaps or Secrets.
     /// The current implementation supports JSON and YAML formats, but can easily be extended to support XML in the future.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldOverrider")]
     pub field_overrider: Option<Vec<OverridePolicyOverridersFieldOverrider>>,
     /// ImageOverrider represents the rules dedicated to handling image overrides.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageOverrider")]
     pub image_overrider: Option<Vec<OverridePolicyOverridersImageOverrider>>,
     /// LabelsOverrider represents the rules dedicated to handling workload labels
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelsOverrider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsOverrider")]
     pub labels_overrider: Option<Vec<OverridePolicyOverridersLabelsOverrider>>,
     /// Plaintext represents override rules defined with plaintext overriders.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -741,8 +645,8 @@ pub struct OverridePolicyOverridersImageOverrider {
     /// Operator represents the operator which will apply on the image.
     pub operator: OverridePolicyOverridersImageOverriderOperator,
     /// Predicate filters images before applying the rule.
-    ///
-    ///
+    /// 
+    /// 
     /// Defaults to nil, in that case, the system will automatically detect image fields if the resource type is
     /// Pod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:
     ///   - Pod: /spec/containers/<N>/image
@@ -752,8 +656,8 @@ pub struct OverridePolicyOverridersImageOverrider {
     ///   - StatefulSet: /spec/template/spec/containers/<N>/image
     ///   - Job: /spec/template/spec/containers/<N>/image
     /// In addition, all images will be processed if the resource object has more than one container.
-    ///
-    ///
+    /// 
+    /// 
     /// If not nil, only images matches the filters will be processed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub predicate: Option<OverridePolicyOverridersImageOverriderPredicate>,
@@ -784,8 +688,8 @@ pub enum OverridePolicyOverridersImageOverriderOperator {
 }
 
 /// Predicate filters images before applying the rule.
-///
-///
+/// 
+/// 
 /// Defaults to nil, in that case, the system will automatically detect image fields if the resource type is
 /// Pod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:
 ///   - Pod: /spec/containers/<N>/image
@@ -795,8 +699,8 @@ pub enum OverridePolicyOverridersImageOverriderOperator {
 ///   - StatefulSet: /spec/template/spec/containers/<N>/image
 ///   - Job: /spec/template/spec/containers/<N>/image
 /// In addition, all images will be processed if the resource object has more than one container.
-///
-///
+/// 
+/// 
 /// If not nil, only images matches the filters will be processed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyOverridersImageOverriderPredicate {
@@ -865,11 +769,7 @@ pub struct OverridePolicyResourceSelectors {
     pub kind: String,
     /// A label query over a set of resources.
     /// If name is not empty, labelSelector will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<OverridePolicyResourceSelectorsLabelSelector>,
     /// Name of the target resource.
     /// Default is empty, which means selecting all resources.
@@ -886,21 +786,12 @@ pub struct OverridePolicyResourceSelectors {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyResourceSelectorsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<OverridePolicyResourceSelectorsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OverridePolicyResourceSelectorsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -924,17 +815,13 @@ pub struct OverridePolicyResourceSelectorsLabelSelectorMatchExpressions {
 /// TargetCluster defines restrictions on this override policy
 /// that only applies to resources propagated to the matching clusters.
 /// nil means matching all clusters.
-///
-///
+/// 
+/// 
 /// Deprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyTargetCluster {
     /// ClusterNames is the list of clusters to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
     pub cluster_names: Option<Vec<String>>,
     /// ExcludedClusters is the list of clusters to be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -943,19 +830,11 @@ pub struct OverridePolicyTargetCluster {
     /// The key(field) of the match expression should be 'provider', 'region', or 'zone',
     /// and the operator of the match expression should be 'In' or 'NotIn'.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelector")]
     pub field_selector: Option<OverridePolicyTargetClusterFieldSelector>,
     /// LabelSelector is a filter to select member clusters by labels.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<OverridePolicyTargetClusterLabelSelector>,
 }
 
@@ -966,11 +845,7 @@ pub struct OverridePolicyTargetCluster {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyTargetClusterFieldSelector {
     /// A list of field selector requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OverridePolicyTargetClusterFieldSelectorMatchExpressions>>,
 }
 
@@ -997,20 +872,12 @@ pub struct OverridePolicyTargetClusterFieldSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyTargetClusterLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<OverridePolicyTargetClusterLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1030,3 +897,4 @@ pub struct OverridePolicyTargetClusterLabelSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
+

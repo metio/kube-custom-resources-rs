@@ -4,48 +4,43 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.kubeblocks.io",
-    version = "v1alpha1",
-    kind = "ComponentDefinition",
-    plural = "componentdefinitions"
-)]
+#[kube(group = "apps.kubeblocks.io", version = "v1alpha1", kind = "ComponentDefinition", plural = "componentdefinitions")]
 #[kube(status = "ComponentDefinitionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ComponentDefinitionSpec {
     /// Specifies static annotations that will be patched to all Kubernetes resources created for the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: If an annotation key in the `annotations` field conflicts with any system annotations
     /// or user-specified annotations, it will be silently ignored to avoid overriding higher-priority annotations.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Specifies the configuration file templates and volume mount parameters used by the Component.
     /// It also includes descriptions of the parameters in the ConfigMaps, such as value range limitations.
-    ///
-    ///
+    /// 
+    /// 
     /// This field specifies a list of templates that will be rendered into Component containers' configuration files.
     /// Each template is represented as a ConfigMap and may contain multiple configuration files,
     /// with each file being a key in the ConfigMap.
-    ///
-    ///
+    /// 
+    /// 
     /// The rendered configuration files will be mounted into the Component's containers
     ///  according to the specified volume mount parameters.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<ComponentDefinitionConfigs>>,
@@ -57,44 +52,40 @@ pub struct ComponentDefinitionSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exporter: Option<ComponentDefinitionExporter>,
     /// Specifies the host network configuration for the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// When `hostNetwork` option is enabled, the Pods share the host's network namespace and can directly access
     /// the host's network interfaces.
     /// This means that if multiple Pods need to use the same port, they cannot run on the same host simultaneously
     /// due to port conflicts.
-    ///
-    ///
+    /// 
+    /// 
     /// The DNSPolicy field in the Pod spec determines how containers within the Pod perform DNS resolution.
     /// When using hostNetwork, the operator will set the DNSPolicy to 'ClusterFirstWithHostNet'.
     /// With this policy, DNS queries will first go through the K8s cluster's DNS service.
     /// If the query fails, it will fall back to the host's DNS settings.
-    ///
-    ///
+    /// 
+    /// 
     /// If set, the DNS policy will be automatically set to "ClusterFirstWithHostNet".
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<ComponentDefinitionHostNetwork>,
     /// Specifies static labels that will be patched to all Kubernetes resources created for the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: If a label key in the `labels` field conflicts with any system labels or user-specified labels,
     /// it will be silently ignored to avoid overriding higher-priority labels.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Defines a set of hooks and procedures that customize the behavior of a Component throughout its lifecycle.
     /// Actions are triggered at specific lifecycle stages:
-    ///
-    ///
+    /// 
+    /// 
     ///   - `postProvision`: Defines the hook to be executed after the creation of a Component,
     ///     with `preCondition` specifying when the action should be fired relative to the Component's lifecycle stages:
     ///     `Immediately`, `RuntimeReady`, `ComponentReady`, and `ClusterReady`.
@@ -111,27 +102,23 @@ pub struct ComponentDefinitionSpec {
     ///   - `dataLoad`: Defines the procedure to import data into a replica.
     ///   - `reconfigure`: Defines the procedure that update a replica with new configuration file.
     ///   - `accountProvision`: Defines the procedure to generate a new database account.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleActions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleActions")]
     pub lifecycle_actions: Option<ComponentDefinitionLifecycleActions>,
     /// Defines the types of logs generated by instances of the Component and their corresponding file paths.
     /// These logs can be collected for further analysis and monitoring.
-    ///
-    ///
+    /// 
+    /// 
     /// The `logConfigs` field is an optional list of LogConfig objects, where each object represents
     /// a specific log type and its configuration.
     /// It allows you to specify multiple log types and their respective file paths for the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// Examples:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     ///  logConfigs:
     ///  - filePathPattern: /data/mysql/log/mysqld-error.log
@@ -141,130 +128,106 @@ pub struct ComponentDefinitionSpec {
     ///  - filePathPattern: /data/mysql/log/mysqld-slowquery.log
     ///    name: slow
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logConfigs")]
     pub log_configs: Option<Vec<ComponentDefinitionLogConfigs>>,
     /// `minReadySeconds` is the minimum duration in seconds that a new Pod should remain in the ready
     /// state without any of its containers crashing to be considered available.
     /// This ensures the Pod's stability and readiness to serve requests.
-    ///
-    ///
+    /// 
+    /// 
     /// A default value of 0 seconds means the Pod is considered available as soon as it enters the ready state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Deprecated since v0.9
     /// monitor is monitoring config which provided by provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<ComponentDefinitionMonitor>,
     /// InstanceSet controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.
-    ///
-    ///
+    /// 
+    /// 
     /// - `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod
     /// is ready before continuing. Pods are removed in reverse order when scaling down.
     /// - `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once
     /// when scaling down.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podManagementPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
     pub pod_management_policy: Option<String>,
     /// Defines the namespaced policy rules required by the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// The `policyRules` field is an array of `rbacv1.PolicyRule` objects that define the policy rules
     /// needed by the Component to operate within a namespace.
     /// These policy rules determine the permissions and verbs the Component is allowed to perform on
     /// Kubernetes resources within the namespace.
-    ///
-    ///
+    /// 
+    /// 
     /// The purpose of this field is to automatically generate the necessary RBAC roles
     /// for the Component based on the specified policy rules.
     /// This ensures that the Pods in the Component has appropriate permissions to function.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is currently non-functional and is reserved for future implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "policyRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyRules")]
     pub policy_rules: Option<Vec<ComponentDefinitionPolicyRules>>,
     /// Specifies the name of the Component provider, typically the vendor or developer name.
     /// It identifies the entity responsible for creating and maintaining the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// When specifying the provider name, consider the following guidelines:
-    ///
-    ///
+    /// 
+    /// 
     /// - Keep the name concise and relevant to the Component.
     /// - Use a consistent naming convention across Components from the same provider.
     /// - Avoid using trademarked or copyrighted names without proper permission.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider: Option<String>,
     /// Defines the upper limit of the number of replicas supported by the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// It defines the maximum number of replicas that can be created for the Component.
     /// This field allows you to set a limit on the scalability of the Component, preventing it from exceeding a certain number of replicas.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasLimit")]
     pub replicas_limit: Option<ComponentDefinitionReplicasLimit>,
     /// This field has been deprecated since v0.9.
     /// This field is maintained for backward compatibility and its use is discouraged.
     /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleArbitrator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleArbitrator")]
     pub role_arbitrator: Option<ComponentDefinitionRoleArbitrator>,
     /// Enumerate all possible roles assigned to each replica of the Component, influencing its behavior.
-    ///
-    ///
+    /// 
+    /// 
     /// A replica can have zero to multiple roles.
     /// KubeBlocks operator determines the roles of each replica by invoking the `lifecycleActions.roleProbe` method.
     /// This action returns a list of roles for each replica, and the returned roles must be predefined in the `roles` field.
-    ///
-    ///
+    /// 
+    /// 
     /// The roles assigned to a replica can influence various aspects of the Component's behavior, such as:
-    ///
-    ///
+    /// 
+    /// 
     /// - Service selection: The Component's exposed Services may target replicas based on their roles using `roleSelector`.
     /// - Update order: The roles can determine the order in which replicas are updated during a Component update.
     ///   For instance, replicas with a "follower" role can be updated first, while the replica with the "leader"
     ///   role is updated last. This helps minimize the number of leader changes during the update process.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<ComponentDefinitionRoles>>,
     /// Specifies the PodSpec template used in the Component.
     /// It includes the following elements:
-    ///
-    ///
+    /// 
+    /// 
     /// - Init containers
     /// - Containers
     ///     - Image
@@ -277,182 +240,166 @@ pub struct ComponentDefinitionSpec {
     ///     - Probes
     ///     - Lifecycle
     /// - Volumes
-    ///
-    ///
+    /// 
+    /// 
     /// This field is intended to define static settings that remain consistent across all instantiated Components.
     /// Dynamic settings such as CPU and memory resource limits, as well as scheduling settings (affinity,
     /// toleration, priority), may vary among different instantiated Components.
     /// They should be specified in the `cluster.spec.componentSpecs` (ClusterComponentSpec).
-    ///
-    ///
+    /// 
+    /// 
     /// Specific instances of a Component may override settings defined here, such as using a different container image
     /// or modifying environment variable values.
     /// These instance-specific overrides can be specified in `cluster.spec.componentSpecs[*].instances`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable and cannot be updated once set.
     pub runtime: ComponentDefinitionRuntime,
     /// Specifies groups of scripts, each provided via a ConfigMap, to be mounted as volumes in the container.
     /// These scripts can be executed during container startup or via specific actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Each script group is encapsulated in a ComponentTemplateSpec that includes:
-    ///
-    ///
+    /// 
+    /// 
     /// - The ConfigMap containing the scripts.
     /// - The mount point where the scripts will be mounted inside the container.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scripts: Option<Vec<ComponentDefinitionScripts>>,
     /// Defines the type of well-known service protocol that the Component provides.
     /// It specifies the standard or widely recognized protocol used by the Component to offer its Services.
-    ///
-    ///
+    /// 
+    /// 
     /// The `serviceKind` field allows users to quickly identify the type of Service provided by the Component
     /// based on common protocols or service types. This information helps in understanding the compatibility,
     /// interoperability, and usage of the Component within a system.
-    ///
-    ///
+    /// 
+    /// 
     /// Some examples of well-known service protocols include:
-    ///
-    ///
+    /// 
+    /// 
     /// - "MySQL": Indicates that the Component provides a MySQL database service.
     /// - "PostgreSQL": Indicates that the Component offers a PostgreSQL database service.
     /// - "Redis": Signifies that the Component functions as a Redis key-value store.
     /// - "ETCD": Denotes that the Component serves as an ETCD distributed key-value store.
-    ///
-    ///
+    /// 
+    /// 
     /// The `serviceKind` value is case-insensitive, allowing for flexibility in specifying the protocol name.
-    ///
-    ///
+    /// 
+    /// 
     /// When specifying the `serviceKind`, consider the following guidelines:
-    ///
-    ///
+    /// 
+    /// 
     /// - Use well-established and widely recognized protocol names or service types.
     /// - Ensure that the `serviceKind` accurately represents the primary service type offered by the Component.
     /// - If the Component provides multiple services, choose the most prominent or commonly used protocol.
     /// - Limit the `serviceKind` to a maximum of 32 characters for conciseness and readability.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: The `serviceKind` field is optional and can be left empty if the Component does not fit into a well-known
     /// service category or if the protocol is not widely recognized. It is primarily used to convey information about
     /// the Component's service type to users and facilitate discovery and integration.
-    ///
-    ///
+    /// 
+    /// 
     /// The `serviceKind` field is immutable and cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceKind"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceKind")]
     pub service_kind: Option<String>,
     /// Lists external service dependencies of the Component, including services from other Clusters or outside the K8s environment.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceRefDeclarations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRefDeclarations")]
     pub service_ref_declarations: Option<Vec<ComponentDefinitionServiceRefDeclarations>>,
     /// Specifies the version of the Service provided by the Component.
     /// It follows the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/).
-    ///
-    ///
+    /// 
+    /// 
     /// The Semantic Versioning specification defines a version number format of X.Y.Z (MAJOR.MINOR.PATCH), where:
-    ///
-    ///
+    /// 
+    /// 
     /// - X represents the major version and indicates incompatible API changes.
     /// - Y represents the minor version and indicates added functionality in a backward-compatible manner.
     /// - Z represents the patch version and indicates backward-compatible bug fixes.
-    ///
-    ///
+    /// 
+    /// 
     /// Additional labels for pre-release and build metadata are available as extensions to the X.Y.Z format:
-    ///
-    ///
+    /// 
+    /// 
     /// - Use pre-release labels (e.g., -alpha, -beta) for versions that are not yet stable or ready for production use.
     /// - Use build metadata (e.g., +build.1) for additional version information if needed.
-    ///
-    ///
+    /// 
+    /// 
     /// Examples of valid ServiceVersion values:
-    ///
-    ///
+    /// 
+    /// 
     /// - "1.0.0"
     /// - "2.3.1"
     /// - "3.0.0-alpha.1"
     /// - "4.5.2+build.1"
-    ///
-    ///
+    /// 
+    /// 
     /// The `serviceVersion` field is immutable and cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
     /// Defines additional Services to expose the Component's endpoints.
-    ///
-    ///
+    /// 
+    /// 
     /// A default headless Service, named `{cluster.name}-{component.name}-headless`, is automatically created
     /// for internal Cluster communication.
-    ///
-    ///
+    /// 
+    /// 
     /// This field enables customization of additional Services to expose the Component's endpoints to
     /// other Components within the same or different Clusters, and to external applications.
     /// Each Service entry in this list can include properties such as ports, type, and selectors.
-    ///
-    ///
+    /// 
+    /// 
     /// - For intra-Cluster access, Components can reference Services using variables declared in
     ///   `componentDefinition.spec.vars[*].valueFrom.serviceVarRef`.
     /// - For inter-Cluster access, reference Services use variables declared in
     ///   `componentDefinition.spec.vars[*].valueFrom.serviceRefVarRef`,
     ///   and bind Services at Cluster creation time with `clusterComponentSpec.ServiceRef[*].clusterServiceSelector`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ComponentDefinitionServices>>,
     /// An array of `SystemAccount` objects that define the system accounts needed
     /// for the management operations of the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// Each `SystemAccount` includes:
-    ///
-    ///
+    /// 
+    /// 
     /// - Account name.
     /// - The SQL statement template: Used to create the system account.
     /// - Password Source: Either generated based on certain rules or retrieved from a Secret.
-    ///
-    ///
+    /// 
+    /// 
     ///  Use cases for system accounts typically involve tasks like system initialization, backups, monitoring,
     ///  health checks, replication, and other system-level operations.
-    ///
-    ///
+    /// 
+    /// 
     /// System accounts are distinct from user accounts, although both are database accounts.
-    ///
-    ///
+    /// 
+    /// 
     /// - **System Accounts**: Created during Cluster setup by the KubeBlocks operator,
     ///   these accounts have higher privileges for system management and are fully managed
     ///   through a declarative API by the operator.
     /// - **User Accounts**: Managed by users or administrator.
     ///   User account permissions should follow the principle of least privilege,
     ///   granting only the necessary access rights to complete their required tasks.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemAccounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemAccounts")]
     pub system_accounts: Option<Vec<ComponentDefinitionSystemAccounts>>,
     /// Specifies the concurrency strategy for updating multiple instances of the Component.
     /// Available strategies:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Serial`: Updates replicas one at a time, ensuring minimal downtime by waiting for each replica to become ready
     ///   before updating the next.
     /// - `Parallel`: Updates all replicas simultaneously, optimizing for speed but potentially reducing availability
@@ -461,28 +408,24 @@ pub struct ComponentDefinitionSpec {
     ///   number of operational replicas for maintaining quorum.
     /// 	 For example, in a 5-replica component, updating a maximum of 2 replicas simultaneously keeps
     /// 	 at least 3 operational for quorum.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable and defaults to 'Serial'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ComponentDefinitionUpdateStrategy>,
     /// Defines variables which are determined after Cluster instantiation and reflect
     /// dynamic or runtime attributes of instantiated Clusters.
     /// These variables serve as placeholders for setting environment variables in Pods and Actions,
     /// or for rendering configuration and script templates before actual values are finalized.
-    ///
-    ///
+    /// 
+    /// 
     /// These variables are placed in front of the environment variables declared in the Pod if used as
     /// environment variables.
-    ///
-    ///
+    /// 
+    /// 
     /// Variable values can be sourced from:
-    ///
-    ///
+    /// 
+    /// 
     /// - ConfigMap: Select and extract a value from a specific key within a ConfigMap.
     /// - Secret: Select and extract a value from a specific key within a Secret.
     /// - HostNetwork: Retrieves values (including ports) from host-network resources.
@@ -493,8 +436,8 @@ pub struct ComponentDefinitionSpec {
     ///   Designed to obtain the address bound to a ServiceRef, such as a ClusterService or
     ///   ComponentService of another cluster or an external service.
     /// - Component: Retrieves values from a selected Component, including replicas and instance name list.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vars: Option<Vec<ComponentDefinitionVars>>,
@@ -502,20 +445,20 @@ pub struct ComponentDefinitionSpec {
     /// After defining the volumes here, user can reference them in the
     /// `cluster.spec.componentSpecs[*].volumeClaimTemplates` field to configure dynamic properties such as
     /// volume capacity and storage class.
-    ///
-    ///
+    /// 
+    /// 
     /// This field allows you to specify the following:
-    ///
-    ///
+    /// 
+    /// 
     /// - Snapshot behavior: Determines whether a snapshot of the volume should be taken when performing
     ///   a snapshot backup of the Component.
     /// - Disk high watermark: Sets the high watermark for the volume's disk usage.
     ///   When the disk usage reaches the specified threshold, it triggers an alert or action.
-    ///
-    ///
+    /// 
+    /// 
     /// By configuring these volume behaviors, you can control how the volumes are managed and monitored within the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ComponentDefinitionVolumes>>,
@@ -524,17 +467,17 @@ pub struct ComponentDefinitionSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionConfigs {
     /// Specifies the containers to inject the ConfigMap parameters as environment variables.
-    ///
-    ///
+    /// 
+    /// 
     /// This is useful when application images accept parameters through environment variables and
     /// generate the final configuration file in the startup script based on these variables.
-    ///
-    ///
+    /// 
+    /// 
     /// This field allows users to specify a list of container names, and KubeBlocks will inject the environment
     /// variables converted from the ConfigMap into these designated containers. This provides a flexible way to
     /// pass the configuration items from the ConfigMap to the container without modifying the image.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated: `asEnvFrom` has been deprecated since 0.9.0 and will be removed in 0.10.0.
     /// Use `injectEnvTo` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asEnvFrom")]
@@ -543,82 +486,66 @@ pub struct ComponentDefinitionConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asSecret")]
     pub as_secret: Option<bool>,
     /// Specifies the name of the referenced configuration constraints object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "constraintRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintRef")]
     pub constraint_ref: Option<String>,
     /// The operator attempts to set default file permissions for scripts (0555) and configurations (0444).
     /// However, certain database engines may require different file permissions.
     /// You can specify the desired file permissions here.
-    ///
-    ///
+    /// 
+    /// 
     /// Must be specified as an octal value between 0000 and 0777 (inclusive),
     /// or as a decimal value between 0 and 511 (inclusive).
     /// YAML supports both octal and decimal values for file permissions.
-    ///
-    ///
+    /// 
+    /// 
     /// Please note that this setting only affects the permissions of the files themselves.
     /// Directories within the specified path are not impacted by this setting.
     /// It's important to be aware that this setting might conflict with other options
     /// that influence the file mode, such as fsGroup.
     /// In such cases, the resulting file mode may have additional bits set.
     /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Specifies the containers to inject the ConfigMap parameters as environment variables.
-    ///
-    ///
+    /// 
+    /// 
     /// This is useful when application images accept parameters through environment variables and
     /// generate the final configuration file in the startup script based on these variables.
-    ///
-    ///
+    /// 
+    /// 
     /// This field allows users to specify a list of container names, and KubeBlocks will inject the environment
     /// variables converted from the ConfigMap into these designated containers. This provides a flexible way to
     /// pass the configuration items from the ConfigMap to the container without modifying the image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "injectEnvTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "injectEnvTo")]
     pub inject_env_to: Option<Vec<String>>,
     /// Specifies the configuration files within the ConfigMap that support dynamic updates.
-    ///
-    ///
+    /// 
+    /// 
     /// A configuration template (provided in the form of a ConfigMap) may contain templates for multiple
     /// configuration files.
     /// Each configuration file corresponds to a key in the ConfigMap.
     /// Some of these configuration files may support dynamic modification and reloading without requiring
     /// a pod restart.
-    ///
-    ///
+    /// 
+    /// 
     /// If empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates,
     /// and ConfigConstraint applies to all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<Vec<String>>,
     /// Specifies the secondary rendered config spec for pod-specific customization.
-    ///
-    ///
+    /// 
+    /// 
     /// The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main
     /// template's render result to generate the final configuration file.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is intended to handle scenarios where different pods within the same Component have
     /// varying configurations. It allows for pod-specific customization of the configuration.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field will be deprecated in future versions, and the functionality will be moved to
     /// `cluster.spec.componentSpecs[*].instances[*]`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "legacyRenderedConfigSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "legacyRenderedConfigSpec")]
     pub legacy_rendered_config_spec: Option<ComponentDefinitionConfigsLegacyRenderedConfigSpec>,
     /// Specifies the name of the configuration template.
     pub name: String,
@@ -627,50 +554,38 @@ pub struct ComponentDefinitionConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes.
-    ///
-    ///
+    /// 
+    /// 
     /// In some scenarios, the configuration may need to be updated to reflect the changes in resource allocation
     /// or cluster topology. Examples:
-    ///
-    ///
+    /// 
+    /// 
     /// - Redis: adjust maxmemory after v-scale operation.
     /// - MySQL: increase max connections after v-scale operation.
     /// - Zookeeper: update zoo.cfg with new node addresses after h-scale operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reRenderResourceTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reRenderResourceTypes")]
     pub re_render_resource_types: Option<Vec<String>>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
     pub template_ref: Option<String>,
     /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration
     /// template will be mounted to the corresponding volume. Must be a DNS_LABEL name.
     /// The volume name must be defined in podSpec.containers[*].volumeMounts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
 /// Specifies the secondary rendered config spec for pod-specific customization.
-///
-///
+/// 
+/// 
 /// The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main
 /// template's render result to generate the final configuration file.
-///
-///
+/// 
+/// 
 /// This field is intended to handle scenarios where different pods within the same Component have
 /// varying configurations. It allows for pod-specific customization of the configuration.
-///
-///
+/// 
+/// 
 /// Note: This field will be deprecated in future versions, and the functionality will be moved to
 /// `cluster.spec.componentSpecs[*].instances[*]`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -688,16 +603,16 @@ pub struct ComponentDefinitionConfigsLegacyRenderedConfigSpec {
 }
 
 /// Specifies the secondary rendered config spec for pod-specific customization.
-///
-///
+/// 
+/// 
 /// The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main
 /// template's render result to generate the final configuration file.
-///
-///
+/// 
+/// 
 /// This field is intended to handle scenarios where different pods within the same Component have
 /// varying configurations. It allows for pod-specific customization of the configuration.
-///
-///
+/// 
+/// 
 /// Note: This field will be deprecated in future versions, and the functionality will be moved to
 /// `cluster.spec.componentSpecs[*].instances[*]`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -714,35 +629,19 @@ pub enum ComponentDefinitionConfigsLegacyRenderedConfigSpecPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionExporter {
     /// Specifies the name of the built-in metrics exporter container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the http/https url path to scrape for metrics.
     /// If empty, Prometheus uses the default value (e.g. `/metrics`).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapePath")]
     pub scrape_path: Option<String>,
     /// Specifies the port name to scrape for metrics.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapePort")]
     pub scrape_port: Option<String>,
     /// Specifies the schema to use for scraping.
     /// `http` and `https` are the expected values unless you rewrite the `__scheme__` label via relabeling.
     /// If empty, Prometheus uses the default value `http`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeScheme"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeScheme")]
     pub scrape_scheme: Option<ComponentDefinitionExporterScrapeScheme>,
 }
 
@@ -756,32 +655,28 @@ pub enum ComponentDefinitionExporterScrapeScheme {
 }
 
 /// Specifies the host network configuration for the Component.
-///
-///
+/// 
+/// 
 /// When `hostNetwork` option is enabled, the Pods share the host's network namespace and can directly access
 /// the host's network interfaces.
 /// This means that if multiple Pods need to use the same port, they cannot run on the same host simultaneously
 /// due to port conflicts.
-///
-///
+/// 
+/// 
 /// The DNSPolicy field in the Pod spec determines how containers within the Pod perform DNS resolution.
 /// When using hostNetwork, the operator will set the DNSPolicy to 'ClusterFirstWithHostNet'.
 /// With this policy, DNS queries will first go through the K8s cluster's DNS service.
 /// If the query fails, it will fall back to the host's DNS settings.
-///
-///
+/// 
+/// 
 /// If set, the DNS policy will be automatically set to "ClusterFirstWithHostNet".
-///
-///
+/// 
+/// 
 /// This field is immutable.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionHostNetwork {
     /// The list of container ports that are required by the component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerPorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerPorts")]
     pub container_ports: Option<Vec<ComponentDefinitionHostNetworkContainerPorts>>,
 }
 
@@ -796,8 +691,8 @@ pub struct ComponentDefinitionHostNetworkContainerPorts {
 
 /// Defines a set of hooks and procedures that customize the behavior of a Component throughout its lifecycle.
 /// Actions are triggered at specific lifecycle stages:
-///
-///
+/// 
+/// 
 ///   - `postProvision`: Defines the hook to be executed after the creation of a Component,
 ///     with `preCondition` specifying when the action should be fired relative to the Component's lifecycle stages:
 ///     `Immediately`, `RuntimeReady`, `ComponentReady`, and `ClusterReady`.
@@ -814,81 +709,77 @@ pub struct ComponentDefinitionHostNetworkContainerPorts {
 ///   - `dataLoad`: Defines the procedure to import data into a replica.
 ///   - `reconfigure`: Defines the procedure that update a replica with new configuration file.
 ///   - `accountProvision`: Defines the procedure to generate a new database account.
-///
-///
+/// 
+/// 
 /// This field is immutable.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActions {
     /// Defines the procedure to generate a new database account.
-    ///
-    ///
+    /// 
+    /// 
     /// Use Case:
     /// This action is designed to create system accounts that are utilized for replication, monitoring, backup,
     /// and other administrative tasks.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accountProvision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountProvision")]
     pub account_provision: Option<ComponentDefinitionLifecycleActionsAccountProvision>,
     /// Defines the procedure for exporting the data from a replica.
-    ///
-    ///
+    /// 
+    /// 
     /// Use Case:
     /// This action is intended for initializing a newly created replica with data. It involves exporting data
     /// from an existing replica and importing it into the new, empty replica. This is essential for synchronizing
     /// the state of replicas across the system.
-    ///
-    ///
+    /// 
+    /// 
     /// Applicability:
     /// Some database engines or associated sidecar applications (e.g., Patroni) may already provide this functionality.
     /// In such cases, this action may not be required.
-    ///
-    ///
+    /// 
+    /// 
     /// The output should be a valid data dump streamed to stdout. It must exclude any irrelevant information to ensure
     /// that only the necessary data is exported for import into the new replica.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataDump")]
     pub data_dump: Option<ComponentDefinitionLifecycleActionsDataDump>,
     /// Defines the procedure for importing data into a replica.
-    ///
-    ///
+    /// 
+    /// 
     /// Use Case:
     /// This action is intended for initializing a newly created replica with data. It involves exporting data
     /// from an existing replica and importing it into the new, empty replica. This is essential for synchronizing
     /// the state of replicas across the system.
-    ///
-    ///
+    /// 
+    /// 
     /// Some database engines or associated sidecar applications (e.g., Patroni) may already provide this functionality.
     /// In such cases, this action may not be required.
-    ///
-    ///
+    /// 
+    /// 
     /// Data should be received through stdin. If any error occurs during the process,
     /// the action must be able to guarantee idempotence to allow for retries from the beginning.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataLoad")]
     pub data_load: Option<ComponentDefinitionLifecycleActionsDataLoad>,
     /// Defines the procedure to add a new replica to the replication group.
-    ///
-    ///
+    /// 
+    /// 
     /// This action is initiated after a replica pod becomes ready.
-    ///
-    ///
+    /// 
+    /// 
     /// The role of the replica (e.g., primary, secondary) will be determined and assigned as part of the action command
     /// implementation, or automatically by the database kernel or a sidecar utility like Patroni that implements
     /// a consensus algorithm.
-    ///
-    ///
+    /// 
+    /// 
     /// The container executing this action has access to following environment variables:
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_SERVICE_PORT: The port used by the database service.
     /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
     /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
@@ -896,16 +787,16 @@ pub struct ComponentDefinitionLifecycleActions {
     /// - KB_MEMBER_ADDRESSES: A comma-separated list of Pod addresses for all replicas in the group.
     /// - KB_NEW_MEMBER_POD_NAME: The pod name of the replica being added to the group.
     /// - KB_NEW_MEMBER_POD_IP: The IP address of the replica being added to the group.
-    ///
-    ///
+    /// 
+    /// 
     /// Expected action output:
     /// - On Failure: An error message detailing the reason for any failure encountered
     ///   during the addition of the new member.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, to add a new OBServer to an OceanBase Cluster in 'zone1', the following command may be used:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     /// command:
     /// - bash
@@ -917,30 +808,26 @@ pub struct ComponentDefinitionLifecycleActions {
     ///    CLIENT="mysql -u $KB_SERVICE_USER -p$KB_SERVICE_PASSWORD -P $PORT -h $HOST -e"
     ///        $CLIENT "ALTER SYSTEM ADD SERVER '$KB_NEW_MEMBER_POD_IP:$KB_SERVICE_PORT' ZONE 'zone1'"
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memberJoin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberJoin")]
     pub member_join: Option<ComponentDefinitionLifecycleActionsMemberJoin>,
     /// Defines the procedure to remove a replica from the replication group.
-    ///
-    ///
+    /// 
+    /// 
     /// This action is initiated before remove a replica from the group.
     /// The operator will wait for MemberLeave to complete successfully before releasing the replica and cleaning up
     /// related Kubernetes resources.
-    ///
-    ///
+    /// 
+    /// 
     /// The process typically includes updating configurations and informing other group members about the removal.
     /// Data migration is generally not part of this action and should be handled separately if needed.
-    ///
-    ///
+    /// 
+    /// 
     /// The container executing this action has access to following environment variables:
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_SERVICE_PORT: The port used by the database service.
     /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
     /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
@@ -948,15 +835,15 @@ pub struct ComponentDefinitionLifecycleActions {
     /// - KB_MEMBER_ADDRESSES: A comma-separated list of Pod addresses for all replicas in the group.
     /// - KB_LEAVE_MEMBER_POD_NAME: The pod name of the replica being removed from the group.
     /// - KB_LEAVE_MEMBER_POD_IP: The IP address of the replica being removed from the group.
-    ///
-    ///
+    /// 
+    /// 
     /// Expected action output:
     /// - On Failure: An error message, if applicable, indicating why the action failed.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, to remove an OBServer from an OceanBase Cluster in 'zone1', the following command can be executed:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     /// command:
     /// - bash
@@ -968,37 +855,33 @@ pub struct ComponentDefinitionLifecycleActions {
     ///    CLIENT="mysql -u $KB_SERVICE_USER  -p$KB_SERVICE_PASSWORD -P $PORT -h $HOST -e"
     ///        $CLIENT "ALTER SYSTEM DELETE SERVER '$KB_LEAVE_MEMBER_POD_IP:$KB_SERVICE_PORT' ZONE 'zone1'"
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memberLeave"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberLeave")]
     pub member_leave: Option<ComponentDefinitionLifecycleActionsMemberLeave>,
     /// Specifies the hook to be executed after a component's creation.
-    ///
-    ///
+    /// 
+    /// 
     /// By setting `postProvision.customHandler.preCondition`, you can determine the specific lifecycle stage
     /// at which the action should trigger: `Immediately`, `RuntimeReady`, `ComponentReady`, and `ClusterReady`.
     /// with `ComponentReady` being the default.
-    ///
-    ///
+    /// 
+    /// 
     /// The PostProvision Action is intended to run only once.
-    ///
-    ///
+    /// 
+    /// 
     /// The container executing this action has access to following environment variables:
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_CLUSTER_POD_IP_LIST: Comma-separated list of the cluster's pod IP addresses (e.g., "podIp1,podIp2").
     /// - KB_CLUSTER_POD_NAME_LIST: Comma-separated list of the cluster's pod names (e.g., "pod1,pod2").
     /// - KB_CLUSTER_POD_HOST_NAME_LIST: Comma-separated list of host names, each corresponding to a pod in
     ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostName1,hostName2").
     /// - KB_CLUSTER_POD_HOST_IP_LIST: Comma-separated list of host IP addresses, each corresponding to a pod in
     ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_CLUSTER_COMPONENT_POD_NAME_LIST: Comma-separated list of all pod names within the component
     ///   (e.g., "pod1,pod2").
     /// - KB_CLUSTER_COMPONENT_POD_IP_LIST: Comma-separated list of pod IP addresses,
@@ -1007,44 +890,40 @@ pub struct ComponentDefinitionLifecycleActions {
     ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostName1,hostName2").
     /// - KB_CLUSTER_COMPONENT_POD_HOST_IP_LIST: Comma-separated list of host IP addresses for each pod,
     ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_CLUSTER_COMPONENT_LIST: Comma-separated list of all cluster components (e.g., "comp1,comp2").
     /// - KB_CLUSTER_COMPONENT_DELETING_LIST: Comma-separated list of components that are currently being deleted
     ///   (e.g., "comp1,comp2").
     /// - KB_CLUSTER_COMPONENT_UNDELETED_LIST: Comma-separated list of components that are not being deleted
     ///   (e.g., "comp1,comp2").
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postProvision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postProvision")]
     pub post_provision: Option<ComponentDefinitionLifecycleActionsPostProvision>,
     /// Specifies the hook to be executed prior to terminating a component.
-    ///
-    ///
+    /// 
+    /// 
     /// The PreTerminate Action is intended to run only once.
-    ///
-    ///
+    /// 
+    /// 
     /// This action is executed immediately when a scale-down operation for the Component is initiated.
     /// The actual termination and cleanup of the Component and its associated resources will not proceed
     /// until the PreTerminate action has completed successfully.
-    ///
-    ///
+    /// 
+    /// 
     /// The container executing this action has access to following environment variables:
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_CLUSTER_POD_IP_LIST: Comma-separated list of the cluster's pod IP addresses (e.g., "podIp1,podIp2").
     /// - KB_CLUSTER_POD_NAME_LIST: Comma-separated list of the cluster's pod names (e.g., "pod1,pod2").
     /// - KB_CLUSTER_POD_HOST_NAME_LIST: Comma-separated list of host names, each corresponding to a pod in
     ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostName1,hostName2").
     /// - KB_CLUSTER_POD_HOST_IP_LIST: Comma-separated list of host IP addresses, each corresponding to a pod in
     ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_CLUSTER_COMPONENT_POD_NAME_LIST: Comma-separated list of all pod names within the component
     ///   (e.g., "pod1,pod2").
     /// - KB_CLUSTER_COMPONENT_POD_IP_LIST: Comma-separated list of pod IP addresses,
@@ -1053,117 +932,113 @@ pub struct ComponentDefinitionLifecycleActions {
     ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostName1,hostName2").
     /// - KB_CLUSTER_COMPONENT_POD_HOST_IP_LIST: Comma-separated list of host IP addresses for each pod,
     ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_CLUSTER_COMPONENT_LIST: Comma-separated list of all cluster components (e.g., "comp1,comp2").
     /// - KB_CLUSTER_COMPONENT_DELETING_LIST: Comma-separated list of components that are currently being deleted
     ///   (e.g., "comp1,comp2").
     /// - KB_CLUSTER_COMPONENT_UNDELETED_LIST: Comma-separated list of components that are not being deleted
     ///   (e.g., "comp1,comp2").
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_CLUSTER_COMPONENT_IS_SCALING_IN: Indicates whether the component is currently scaling in.
     ///   If this variable is present and set to "true", it denotes that the component is undergoing a scale-in operation.
     ///   During scale-in, data rebalancing is necessary to maintain cluster integrity.
     ///   Contrast this with a cluster deletion scenario where data rebalancing is not required as the entire cluster
     ///   is being cleaned up.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preTerminate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preTerminate")]
     pub pre_terminate: Option<ComponentDefinitionLifecycleActionsPreTerminate>,
     /// Defines the procedure to switch a replica into the read-only state.
-    ///
-    ///
+    /// 
+    /// 
     /// Use Case:
     /// This action is invoked when the database's volume capacity nears its upper limit and space is about to be exhausted.
-    ///
-    ///
+    /// 
+    /// 
     /// The container executing this action has access to following environment variables:
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
     /// - KB_SERVICE_PORT: The port used by the database service.
     /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
     /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
-    ///
-    ///
+    /// 
+    /// 
     /// Expected action output:
     /// - On Failure: An error message, if applicable, indicating why the action failed.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub readonly: Option<ComponentDefinitionLifecycleActionsReadonly>,
     /// Defines the procedure to transition a replica from the read-only state back to the read-write state.
-    ///
-    ///
+    /// 
+    /// 
     /// Use Case:
     /// This action is used to bring back a replica that was previously in a read-only state,
     /// which restricted write operations, to its normal operational state where it can handle
     /// both read and write operations.
-    ///
-    ///
+    /// 
+    /// 
     /// The container executing this action has access to following environment variables:
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
     /// - KB_SERVICE_PORT: The port used by the database service.
     /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
     /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
-    ///
-    ///
+    /// 
+    /// 
     /// Expected action output:
     /// - On Failure: An error message, if applicable, indicating why the action failed.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub readwrite: Option<ComponentDefinitionLifecycleActionsReadwrite>,
     /// Defines the procedure that update a replica with new configuration.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
-    ///
-    ///
+    /// 
+    /// 
     /// This Action is reserved for future versions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reconfigure: Option<ComponentDefinitionLifecycleActionsReconfigure>,
     /// Defines the procedure which is invoked regularly to assess the role of replicas.
-    ///
-    ///
+    /// 
+    /// 
     /// This action is periodically triggered by Lorry at the specified interval to determine the role of each replica.
     /// Upon successful execution, the action's output designates the role of the replica,
     /// which should match one of the predefined role names within `componentDefinition.spec.roles`.
     /// The output is then compared with the previous successful execution result.
     /// If a role change is detected, an event is generated to inform the controller,
     /// which initiates an update of the replica's role.
-    ///
-    ///
+    /// 
+    /// 
     /// Defining a RoleProbe Action for a Component is required if roles are defined for the Component.
     /// It ensures replicas are correctly labeled with their respective roles.
     /// Without this, services that rely on roleSelectors might improperly direct traffic to wrong replicas.
-    ///
-    ///
+    /// 
+    /// 
     /// The container executing this action has access to following environment variables:
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_POD_FQDN: The FQDN of the Pod whose role is being assessed.
     /// - KB_SERVICE_PORT: The port used by the database service.
     /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
     /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
-    ///
-    ///
+    /// 
+    /// 
     /// Expected output of this action:
     /// - On Success: The determined role of the replica, which must align with one of the roles specified
     ///   in the component definition.
     /// - On Failure: An error message, if applicable, indicating why the action failed.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleProbe")]
     pub role_probe: Option<ComponentDefinitionLifecycleActionsRoleProbe>,
@@ -1171,70 +1046,70 @@ pub struct ComponentDefinitionLifecycleActions {
     /// This approach aims to minimize downtime and maintain availability in systems with a leader-follower topology,
     /// during events such as planned maintenance or when performing stop, shutdown, restart, or upgrade operations
     /// involving the current leader node.
-    ///
-    ///
+    /// 
+    /// 
     /// The container executing this action has access to following environment variables:
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).
     /// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).
     /// - KB_LEADER_POD_IP: The IP address of the current leader's pod prior to the switchover.
     /// - KB_LEADER_POD_NAME: The name of the current leader's pod prior to the switchover.
     /// - KB_LEADER_POD_FQDN: The FQDN of the current leader's pod prior to the switchover.
-    ///
-    ///
+    /// 
+    /// 
     /// The environment variables with the following prefixes are deprecated and will be removed in future releases:
-    ///
-    ///
+    /// 
+    /// 
     /// - KB_REPLICATION_PRIMARY_POD_
     /// - KB_CONSENSUS_LEADER_POD_
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub switchover: Option<ComponentDefinitionLifecycleActionsSwitchover>,
 }
 
 /// Defines the procedure to generate a new database account.
-///
-///
+/// 
+/// 
 /// Use Case:
 /// This action is designed to create system accounts that are utilized for replication, monitoring, backup,
 /// and other administrative tasks.
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsAccountProvision {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -1244,44 +1119,36 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvision {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandler>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -1289,77 +1156,73 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvision {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -1368,58 +1231,40 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
-    pub retry_policy:
-        Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerRetryPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1441,8 +1286,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
@@ -1466,8 +1310,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvVa
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvValueFromConfigMapKeyRef
-{
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -1485,11 +1328,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvVa
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1499,14 +1338,9 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvVa
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvValueFromResourceFieldRef
-{
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1517,8 +1351,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvVa
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvValueFromSecretKeyRef
-{
+pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -1532,8 +1365,8 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerEnvVa
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExec {
@@ -1544,19 +1377,19 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerExec 
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerHttp {
@@ -1566,14 +1399,8 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerHttp 
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerHttpHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1602,43 +1429,35 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerHttpH
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -1652,55 +1471,55 @@ pub enum ComponentDefinitionLifecycleActionsAccountProvisionCustomHandlerTargetP
 }
 
 /// Defines the procedure for exporting the data from a replica.
-///
-///
+/// 
+/// 
 /// Use Case:
 /// This action is intended for initializing a newly created replica with data. It involves exporting data
 /// from an existing replica and importing it into the new, empty replica. This is essential for synchronizing
 /// the state of replicas across the system.
-///
-///
+/// 
+/// 
 /// Applicability:
 /// Some database engines or associated sidecar applications (e.g., Patroni) may already provide this functionality.
 /// In such cases, this action may not be required.
-///
-///
+/// 
+/// 
 /// The output should be a valid data dump streamed to stdout. It must exclude any irrelevant information to ensure
 /// that only the necessary data is exported for import into the new replica.
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataDump {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -1710,44 +1529,36 @@ pub struct ComponentDefinitionLifecycleActionsDataDump {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandler>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -1755,77 +1566,73 @@ pub struct ComponentDefinitionLifecycleActionsDataDump {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -1834,57 +1641,40 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1913,36 +1703,19 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -1965,11 +1738,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromC
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1981,11 +1750,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2010,8 +1775,8 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerEnvValueFromS
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExec {
@@ -2022,19 +1787,19 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerHttp {
@@ -2044,13 +1809,8 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsDataDumpCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2079,43 +1839,35 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerHttpHttpHeade
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataDumpCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -2129,54 +1881,54 @@ pub enum ComponentDefinitionLifecycleActionsDataDumpCustomHandlerTargetPodSelect
 }
 
 /// Defines the procedure for importing data into a replica.
-///
-///
+/// 
+/// 
 /// Use Case:
 /// This action is intended for initializing a newly created replica with data. It involves exporting data
 /// from an existing replica and importing it into the new, empty replica. This is essential for synchronizing
 /// the state of replicas across the system.
-///
-///
+/// 
+/// 
 /// Some database engines or associated sidecar applications (e.g., Patroni) may already provide this functionality.
 /// In such cases, this action may not be required.
-///
-///
+/// 
+/// 
 /// Data should be received through stdin. If any error occurs during the process,
 /// the action must be able to guarantee idempotence to allow for retries from the beginning.
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataLoad {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -2186,44 +1938,36 @@ pub struct ComponentDefinitionLifecycleActionsDataLoad {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandler>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -2231,77 +1975,73 @@ pub struct ComponentDefinitionLifecycleActionsDataLoad {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -2310,57 +2050,40 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2389,36 +2112,19 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -2441,11 +2147,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromC
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2457,11 +2159,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2486,8 +2184,8 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerEnvValueFromS
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExec {
@@ -2498,19 +2196,19 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerHttp {
@@ -2520,13 +2218,8 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsDataLoadCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2555,43 +2248,35 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerHttpHttpHeade
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsDataLoadCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -2605,19 +2290,19 @@ pub enum ComponentDefinitionLifecycleActionsDataLoadCustomHandlerTargetPodSelect
 }
 
 /// Defines the procedure to add a new replica to the replication group.
-///
-///
+/// 
+/// 
 /// This action is initiated after a replica pod becomes ready.
-///
-///
+/// 
+/// 
 /// The role of the replica (e.g., primary, secondary) will be determined and assigned as part of the action command
 /// implementation, or automatically by the database kernel or a sidecar utility like Patroni that implements
 /// a consensus algorithm.
-///
-///
+/// 
+/// 
 /// The container executing this action has access to following environment variables:
-///
-///
+/// 
+/// 
 /// - KB_SERVICE_PORT: The port used by the database service.
 /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
 /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
@@ -2625,16 +2310,16 @@ pub enum ComponentDefinitionLifecycleActionsDataLoadCustomHandlerTargetPodSelect
 /// - KB_MEMBER_ADDRESSES: A comma-separated list of Pod addresses for all replicas in the group.
 /// - KB_NEW_MEMBER_POD_NAME: The pod name of the replica being added to the group.
 /// - KB_NEW_MEMBER_POD_IP: The IP address of the replica being added to the group.
-///
-///
+/// 
+/// 
 /// Expected action output:
 /// - On Failure: An error message detailing the reason for any failure encountered
 ///   during the addition of the new member.
-///
-///
+/// 
+/// 
 /// For example, to add a new OBServer to an OceanBase Cluster in 'zone1', the following command may be used:
-///
-///
+/// 
+/// 
 /// ```text
 /// command:
 /// - bash
@@ -2646,40 +2331,40 @@ pub enum ComponentDefinitionLifecycleActionsDataLoadCustomHandlerTargetPodSelect
 ///    CLIENT="mysql -u $KB_SERVICE_USER -p$KB_SERVICE_PASSWORD -P $PORT -h $HOST -e"
 ///        $CLIENT "ALTER SYSTEM ADD SERVER '$KB_NEW_MEMBER_POD_IP:$KB_SERVICE_PORT' ZONE 'zone1'"
 /// ```
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberJoin {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -2689,44 +2374,36 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoin {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandler>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -2734,77 +2411,73 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoin {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -2813,57 +2486,40 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2892,37 +2548,19 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -2945,11 +2583,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFro
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2961,11 +2595,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFro
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2990,8 +2620,8 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerEnvValueFro
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExec {
@@ -3002,19 +2632,19 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerHttp {
@@ -3024,13 +2654,8 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3059,43 +2684,35 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerHttpHttpHea
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -3109,20 +2726,20 @@ pub enum ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerTargetPodSele
 }
 
 /// Defines the procedure to remove a replica from the replication group.
-///
-///
+/// 
+/// 
 /// This action is initiated before remove a replica from the group.
 /// The operator will wait for MemberLeave to complete successfully before releasing the replica and cleaning up
 /// related Kubernetes resources.
-///
-///
+/// 
+/// 
 /// The process typically includes updating configurations and informing other group members about the removal.
 /// Data migration is generally not part of this action and should be handled separately if needed.
-///
-///
+/// 
+/// 
 /// The container executing this action has access to following environment variables:
-///
-///
+/// 
+/// 
 /// - KB_SERVICE_PORT: The port used by the database service.
 /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
 /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
@@ -3130,15 +2747,15 @@ pub enum ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerTargetPodSele
 /// - KB_MEMBER_ADDRESSES: A comma-separated list of Pod addresses for all replicas in the group.
 /// - KB_LEAVE_MEMBER_POD_NAME: The pod name of the replica being removed from the group.
 /// - KB_LEAVE_MEMBER_POD_IP: The IP address of the replica being removed from the group.
-///
-///
+/// 
+/// 
 /// Expected action output:
 /// - On Failure: An error message, if applicable, indicating why the action failed.
-///
-///
+/// 
+/// 
 /// For example, to remove an OBServer from an OceanBase Cluster in 'zone1', the following command can be executed:
-///
-///
+/// 
+/// 
 /// ```text
 /// command:
 /// - bash
@@ -3150,40 +2767,40 @@ pub enum ComponentDefinitionLifecycleActionsMemberJoinCustomHandlerTargetPodSele
 ///    CLIENT="mysql -u $KB_SERVICE_USER  -p$KB_SERVICE_PASSWORD -P $PORT -h $HOST -e"
 ///        $CLIENT "ALTER SYSTEM DELETE SERVER '$KB_LEAVE_MEMBER_POD_IP:$KB_SERVICE_PORT' ZONE 'zone1'"
 /// ```
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberLeave {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -3193,44 +2810,36 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeave {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandler>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -3238,77 +2847,73 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeave {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -3317,58 +2922,40 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
-    pub retry_policy:
-        Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerRetryPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3397,37 +2984,19 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -3450,11 +3019,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFr
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3466,11 +3031,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFr
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3495,8 +3056,8 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerEnvValueFr
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExec {
@@ -3507,19 +3068,19 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerHttp {
@@ -3529,13 +3090,8 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3564,43 +3120,35 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerHttpHttpHe
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -3614,27 +3162,27 @@ pub enum ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerTargetPodSel
 }
 
 /// Specifies the hook to be executed after a component's creation.
-///
-///
+/// 
+/// 
 /// By setting `postProvision.customHandler.preCondition`, you can determine the specific lifecycle stage
 /// at which the action should trigger: `Immediately`, `RuntimeReady`, `ComponentReady`, and `ClusterReady`.
 /// with `ComponentReady` being the default.
-///
-///
+/// 
+/// 
 /// The PostProvision Action is intended to run only once.
-///
-///
+/// 
+/// 
 /// The container executing this action has access to following environment variables:
-///
-///
+/// 
+/// 
 /// - KB_CLUSTER_POD_IP_LIST: Comma-separated list of the cluster's pod IP addresses (e.g., "podIp1,podIp2").
 /// - KB_CLUSTER_POD_NAME_LIST: Comma-separated list of the cluster's pod names (e.g., "pod1,pod2").
 /// - KB_CLUSTER_POD_HOST_NAME_LIST: Comma-separated list of host names, each corresponding to a pod in
 ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostName1,hostName2").
 /// - KB_CLUSTER_POD_HOST_IP_LIST: Comma-separated list of host IP addresses, each corresponding to a pod in
 ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-///
-///
+/// 
+/// 
 /// - KB_CLUSTER_COMPONENT_POD_NAME_LIST: Comma-separated list of all pod names within the component
 ///   (e.g., "pod1,pod2").
 /// - KB_CLUSTER_COMPONENT_POD_IP_LIST: Comma-separated list of pod IP addresses,
@@ -3643,47 +3191,47 @@ pub enum ComponentDefinitionLifecycleActionsMemberLeaveCustomHandlerTargetPodSel
 ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostName1,hostName2").
 /// - KB_CLUSTER_COMPONENT_POD_HOST_IP_LIST: Comma-separated list of host IP addresses for each pod,
 ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-///
-///
+/// 
+/// 
 /// - KB_CLUSTER_COMPONENT_LIST: Comma-separated list of all cluster components (e.g., "comp1,comp2").
 /// - KB_CLUSTER_COMPONENT_DELETING_LIST: Comma-separated list of components that are currently being deleted
 ///   (e.g., "comp1,comp2").
 /// - KB_CLUSTER_COMPONENT_UNDELETED_LIST: Comma-separated list of components that are not being deleted
 ///   (e.g., "comp1,comp2").
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPostProvision {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -3693,44 +3241,36 @@ pub struct ComponentDefinitionLifecycleActionsPostProvision {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandler>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -3738,77 +3278,73 @@ pub struct ComponentDefinitionLifecycleActionsPostProvision {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -3817,58 +3353,40 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
-    pub retry_policy:
-        Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerRetryPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3890,52 +3408,31 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromConfigMapKeyRef
-{
+pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -3953,11 +3450,7 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValue
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3967,14 +3460,9 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValue
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromResourceFieldRef
-{
+pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3999,8 +3487,8 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerEnvValue
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExec {
@@ -4011,19 +3499,19 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerHttp {
@@ -4033,13 +3521,8 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4068,43 +3551,35 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerHttpHttp
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -4118,27 +3593,27 @@ pub enum ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerTargetPodS
 }
 
 /// Specifies the hook to be executed prior to terminating a component.
-///
-///
+/// 
+/// 
 /// The PreTerminate Action is intended to run only once.
-///
-///
+/// 
+/// 
 /// This action is executed immediately when a scale-down operation for the Component is initiated.
 /// The actual termination and cleanup of the Component and its associated resources will not proceed
 /// until the PreTerminate action has completed successfully.
-///
-///
+/// 
+/// 
 /// The container executing this action has access to following environment variables:
-///
-///
+/// 
+/// 
 /// - KB_CLUSTER_POD_IP_LIST: Comma-separated list of the cluster's pod IP addresses (e.g., "podIp1,podIp2").
 /// - KB_CLUSTER_POD_NAME_LIST: Comma-separated list of the cluster's pod names (e.g., "pod1,pod2").
 /// - KB_CLUSTER_POD_HOST_NAME_LIST: Comma-separated list of host names, each corresponding to a pod in
 ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostName1,hostName2").
 /// - KB_CLUSTER_POD_HOST_IP_LIST: Comma-separated list of host IP addresses, each corresponding to a pod in
 ///   KB_CLUSTER_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-///
-///
+/// 
+/// 
 /// - KB_CLUSTER_COMPONENT_POD_NAME_LIST: Comma-separated list of all pod names within the component
 ///   (e.g., "pod1,pod2").
 /// - KB_CLUSTER_COMPONENT_POD_IP_LIST: Comma-separated list of pod IP addresses,
@@ -4147,54 +3622,54 @@ pub enum ComponentDefinitionLifecycleActionsPostProvisionCustomHandlerTargetPodS
 ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostName1,hostName2").
 /// - KB_CLUSTER_COMPONENT_POD_HOST_IP_LIST: Comma-separated list of host IP addresses for each pod,
 ///   matching the order of pods in KB_CLUSTER_COMPONENT_POD_NAME_LIST (e.g., "hostIp1,hostIp2").
-///
-///
+/// 
+/// 
 /// - KB_CLUSTER_COMPONENT_LIST: Comma-separated list of all cluster components (e.g., "comp1,comp2").
 /// - KB_CLUSTER_COMPONENT_DELETING_LIST: Comma-separated list of components that are currently being deleted
 ///   (e.g., "comp1,comp2").
 /// - KB_CLUSTER_COMPONENT_UNDELETED_LIST: Comma-separated list of components that are not being deleted
 ///   (e.g., "comp1,comp2").
-///
-///
+/// 
+/// 
 /// - KB_CLUSTER_COMPONENT_IS_SCALING_IN: Indicates whether the component is currently scaling in.
 ///   If this variable is present and set to "true", it denotes that the component is undergoing a scale-in operation.
 ///   During scale-in, data rebalancing is necessary to maintain cluster integrity.
 ///   Contrast this with a cluster deletion scenario where data rebalancing is not required as the entire cluster
 ///   is being cleaned up.
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPreTerminate {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -4204,44 +3679,36 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminate {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandler>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -4249,77 +3716,73 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -4328,58 +3791,40 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
-    pub retry_policy:
-        Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerRetryPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4401,46 +3846,26 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -4463,11 +3888,7 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4477,14 +3898,9 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueF
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromResourceFieldRef
-{
+pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4509,8 +3925,8 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerEnvValueF
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExec {
@@ -4521,19 +3937,19 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerHttp {
@@ -4543,13 +3959,8 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4578,43 +3989,35 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerHttpHttpH
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -4628,57 +4031,57 @@ pub enum ComponentDefinitionLifecycleActionsPreTerminateCustomHandlerTargetPodSe
 }
 
 /// Defines the procedure to switch a replica into the read-only state.
-///
-///
+/// 
+/// 
 /// Use Case:
 /// This action is invoked when the database's volume capacity nears its upper limit and space is about to be exhausted.
-///
-///
+/// 
+/// 
 /// The container executing this action has access to following environment variables:
-///
-///
+/// 
+/// 
 /// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
 /// - KB_SERVICE_PORT: The port used by the database service.
 /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
 /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
-///
-///
+/// 
+/// 
 /// Expected action output:
 /// - On Failure: An error message, if applicable, indicating why the action failed.
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadonly {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -4688,44 +4091,36 @@ pub struct ComponentDefinitionLifecycleActionsReadonly {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandler>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -4733,77 +4128,73 @@ pub struct ComponentDefinitionLifecycleActionsReadonly {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -4812,57 +4203,40 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4891,36 +4265,19 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -4943,11 +4300,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromC
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4959,11 +4312,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4988,8 +4337,8 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerEnvValueFromS
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExec {
@@ -5000,19 +4349,19 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerHttp {
@@ -5022,13 +4371,8 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsReadonlyCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5057,43 +4401,35 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerHttpHttpHeade
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadonlyCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -5107,59 +4443,59 @@ pub enum ComponentDefinitionLifecycleActionsReadonlyCustomHandlerTargetPodSelect
 }
 
 /// Defines the procedure to transition a replica from the read-only state back to the read-write state.
-///
-///
+/// 
+/// 
 /// Use Case:
 /// This action is used to bring back a replica that was previously in a read-only state,
 /// which restricted write operations, to its normal operational state where it can handle
 /// both read and write operations.
-///
-///
+/// 
+/// 
 /// The container executing this action has access to following environment variables:
-///
-///
+/// 
+/// 
 /// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
 /// - KB_SERVICE_PORT: The port used by the database service.
 /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
 /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
-///
-///
+/// 
+/// 
 /// Expected action output:
 /// - On Failure: An error message, if applicable, indicating why the action failed.
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadwrite {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -5169,44 +4505,36 @@ pub struct ComponentDefinitionLifecycleActionsReadwrite {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandler>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -5214,77 +4542,73 @@ pub struct ComponentDefinitionLifecycleActionsReadwrite {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -5293,57 +4617,40 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5372,37 +4679,19 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -5425,11 +4714,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -5441,11 +4726,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5470,8 +4751,8 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerEnvValueFrom
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExec {
@@ -5482,19 +4763,19 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerHttp {
@@ -5504,13 +4785,8 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsReadwriteCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5539,43 +4815,35 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerHttpHttpHead
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReadwriteCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -5589,43 +4857,43 @@ pub enum ComponentDefinitionLifecycleActionsReadwriteCustomHandlerTargetPodSelec
 }
 
 /// Defines the procedure that update a replica with new configuration.
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
-///
-///
+/// 
+/// 
 /// This Action is reserved for future versions.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReconfigure {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -5635,44 +4903,36 @@ pub struct ComponentDefinitionLifecycleActionsReconfigure {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandler>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -5680,77 +4940,73 @@ pub struct ComponentDefinitionLifecycleActionsReconfigure {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -5759,58 +5015,40 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
-    pub retry_policy:
-        Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerRetryPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5839,37 +5077,19 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -5892,11 +5112,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFr
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -5908,11 +5124,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFr
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5937,8 +5149,8 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerEnvValueFr
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExec {
@@ -5949,19 +5161,19 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerHttp {
@@ -5971,13 +5183,8 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsReconfigureCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6006,43 +5213,35 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerHttpHttpHe
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsReconfigureCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -6056,68 +5255,68 @@ pub enum ComponentDefinitionLifecycleActionsReconfigureCustomHandlerTargetPodSel
 }
 
 /// Defines the procedure which is invoked regularly to assess the role of replicas.
-///
-///
+/// 
+/// 
 /// This action is periodically triggered by Lorry at the specified interval to determine the role of each replica.
 /// Upon successful execution, the action's output designates the role of the replica,
 /// which should match one of the predefined role names within `componentDefinition.spec.roles`.
 /// The output is then compared with the previous successful execution result.
 /// If a role change is detected, an event is generated to inform the controller,
 /// which initiates an update of the replica's role.
-///
-///
+/// 
+/// 
 /// Defining a RoleProbe Action for a Component is required if roles are defined for the Component.
 /// It ensures replicas are correctly labeled with their respective roles.
 /// Without this, services that rely on roleSelectors might improperly direct traffic to wrong replicas.
-///
-///
+/// 
+/// 
 /// The container executing this action has access to following environment variables:
-///
-///
+/// 
+/// 
 /// - KB_POD_FQDN: The FQDN of the Pod whose role is being assessed.
 /// - KB_SERVICE_PORT: The port used by the database service.
 /// - KB_SERVICE_USER: The username with the necessary permissions to interact with the database service.
 /// - KB_SERVICE_PASSWORD: The corresponding password for KB_SERVICE_USER to authenticate with the database service.
-///
-///
+/// 
+/// 
 /// Expected output of this action:
 /// - On Success: The determined role of the replica, which must align with one of the roles specified
 ///   in the component definition.
 /// - On Failure: An error message, if applicable, indicating why the action failed.
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsRoleProbe {
     /// Specifies the name of the predefined action handler to be invoked for lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
     /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
     /// to execute the specified lifecycle actions.
-    ///
-    ///
+    /// 
+    /// 
     /// The `builtinHandler` field is of type `BuiltinActionHandlerType`,
     /// which represents the name of the built-in handler.
     /// The `builtinHandler` specified within the same `ComponentLifecycleActions` should be consistent across all
     /// actions.
     /// This means that if you specify a built-in handler for one action, you should use the same handler
     /// for all other actions throughout the entire `ComponentLifecycleActions` collection.
-    ///
-    ///
+    /// 
+    /// 
     /// If you need to define lifecycle actions for database engines not covered by the existing built-in support,
     /// or when the pre-existing built-in handlers do not meet your specific needs,
     /// you can use the `customHandler` field to define your own action implementation.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecation Notice:
-    ///
-    ///
+    /// 
+    /// 
     /// - In the future, the `builtinHandler` field will be deprecated in favor of using the `customHandler` field
     ///   for configuring all lifecycle actions.
     /// - Instead of using a name to indicate the built-in action implementations in Lorry,
@@ -6127,68 +5326,48 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbe {
     ///   or develop their own sidecar agent to implement custom actions and expose them via gRPC interfaces.
     /// - This change will allow for greater customization and extensibility of lifecycle actions,
     ///   as developers can create their own "builtin" implementations tailored to their specific requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "builtinHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtinHandler")]
     pub builtin_handler: Option<String>,
     /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
     /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
     /// tailored actions.
-    ///
-    ///
+    /// 
+    /// 
     /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
     /// to support GRPCAction,
     /// thereby accommodating unique logic for different database systems within the Action's framework.
-    ///
-    ///
+    /// 
+    /// 
     /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
     /// This change means that Lorry or other sidecar agents will expose the implementation of actions
     /// through a GRPC interface for external invocation.
     /// Then the controller will interact with these actions via GRPCAction calls.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHandler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
     pub custom_handler: Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandler>,
     /// Specifies the number of seconds to wait after the container has started before the RoleProbe
     /// begins to detect the container's role.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// Specifies the frequency at which the probe is conducted. This value is expressed in seconds.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Specifies the number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -6196,77 +5375,73 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbe {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandler {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -6275,57 +5450,40 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandler {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -6354,37 +5512,19 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -6407,11 +5547,7 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -6423,11 +5559,7 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6452,8 +5584,8 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerEnvValueFrom
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerExec {
@@ -6464,19 +5596,19 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerHttp {
@@ -6486,13 +5618,8 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6521,43 +5648,35 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerHttpHttpHead
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
 /// Specifies a user-defined hook or procedure that is called to perform the specific lifecycle action.
 /// It offers a flexible and expandable approach for customizing the behavior of a Component by leveraging
 /// tailored actions.
-///
-///
+/// 
+/// 
 /// An Action can be implemented as either an ExecAction or an HTTPAction, with future versions planning
 /// to support GRPCAction,
 /// thereby accommodating unique logic for different database systems within the Action's framework.
-///
-///
+/// 
+/// 
 /// In future iterations, all built-in handlers are expected to transition to GRPCAction.
 /// This change means that Lorry or other sidecar agents will expose the implementation of actions
 /// through a GRPC interface for external invocation.
@@ -6574,57 +5693,44 @@ pub enum ComponentDefinitionLifecycleActionsRoleProbeCustomHandlerTargetPodSelec
 /// This approach aims to minimize downtime and maintain availability in systems with a leader-follower topology,
 /// during events such as planned maintenance or when performing stop, shutdown, restart, or upgrade operations
 /// involving the current leader node.
-///
-///
+/// 
+/// 
 /// The container executing this action has access to following environment variables:
-///
-///
+/// 
+/// 
 /// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).
 /// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).
 /// - KB_LEADER_POD_IP: The IP address of the current leader's pod prior to the switchover.
 /// - KB_LEADER_POD_NAME: The name of the current leader's pod prior to the switchover.
 /// - KB_LEADER_POD_FQDN: The FQDN of the current leader's pod prior to the switchover.
-///
-///
+/// 
+/// 
 /// The environment variables with the following prefixes are deprecated and will be removed in future releases:
-///
-///
+/// 
+/// 
 /// - KB_REPLICATION_PRIMARY_POD_
 /// - KB_CONSENSUS_LEADER_POD_
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchover {
     /// Used to define the selectors for the scriptSpecs that need to be referenced.
     /// If this field is set, the scripts defined under the 'scripts' field can be invoked or referenced within an Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is deprecated from v0.9.
     /// This field is maintained for backward compatibility and its use is discouraged.
     /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scriptSpecSelectors"
-    )]
-    pub script_spec_selectors:
-        Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverScriptSpecSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scriptSpecSelectors")]
+    pub script_spec_selectors: Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverScriptSpecSelectors>>,
     /// Represents the switchover process for a specified candidate primary or leader instance.
     /// Note that only Action.Exec is currently supported, while Action.HTTP is not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withCandidate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withCandidate")]
     pub with_candidate: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidate>,
     /// Represents a switchover process that does not involve a specific candidate primary or leader instance.
     /// As with the previous field, only Action.Exec is currently supported, not Action.HTTP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withoutCandidate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withoutCandidate")]
     pub without_candidate: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidate>,
 }
 
@@ -6639,77 +5745,73 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverScriptSpecSelectors {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidate {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -6718,57 +5820,40 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidate {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -6797,37 +5882,19 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -6850,11 +5917,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFro
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -6866,11 +5929,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFro
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6895,8 +5954,8 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateEnvValueFro
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExec {
@@ -6907,19 +5966,19 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateHttp {
@@ -6929,13 +5988,8 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverWithCandidateHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6964,30 +6018,22 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateHttpHttpHea
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithCandidateRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
@@ -7006,77 +6052,73 @@ pub enum ComponentDefinitionLifecycleActionsSwitchoverWithCandidateTargetPodSele
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidate {
     /// Defines the name of the container within the target Pod where the action will be executed.
-    ///
-    ///
+    /// 
+    /// 
     /// This name must correspond to one of the containers defined in `componentDefinition.spec.runtime`.
     /// If this field is not specified, the default behavior is to use the first container listed in
     /// `componentDefinition.spec.runtime`.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     /// Represents a list of environment variables that will be injected into the container.
     /// These variables enable the container to adapt its behavior based on the environment it's running in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnv>>,
     /// Defines the command to run.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExec>,
     /// Specifies the HTTP request to perform.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: HTTPAction is to be implemented in future version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateHttp>,
     /// Specifies the container image to be used for running the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// When specified, a dedicated container will be created using this image to execute the Action.
     /// This field is mutually exclusive with the `container` field; only one of them should be provided.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
     /// The impact of this field depends on the `targetPodSelector` value:
-    ///
-    ///
+    /// 
+    /// 
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchingKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
     pub matching_key: Option<String>,
     /// Specifies the state that the cluster must reach before the Action is executed.
     /// Currently, this is only applicable to the `postProvision` action.
-    ///
-    ///
+    /// 
+    /// 
     /// The conditions are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Immediately`: Executed right after the Component object is created.
     ///   The readiness of the Component and its resources is not guaranteed at this stage.
     /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
@@ -7085,58 +6127,40 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidate {
     ///   This process does not affect the readiness state of the Component or the Cluster.
     /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
     ///   This execution does not alter the Component or the Cluster's state of readiness.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
     pub pre_condition: Option<String>,
     /// Defines the strategy to be taken when retrying the Action after a failure.
-    ///
-    ///
+    /// 
+    /// 
     /// It specifies the conditions under which the Action should be retried and the limits to apply,
     /// such as the maximum number of retries and backoff strategy.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
-    pub retry_policy:
-        Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateRetryPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateRetryPolicy>,
     /// Defines the criteria used to select the target Pod(s) for executing the Action.
     /// This is useful when there is no default target replica identified.
     /// It allows for precise control over which Pod(s) the Action should run in.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is reserved for future use and is not currently active.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodSelector"
-    )]
-    pub target_pod_selector:
-        Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateTargetPodSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateTargetPodSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
-    ///
-    ///
+    /// 
+    /// 
     /// If the Action does not complete within this time frame, it will be terminated.
-    ///
-    ///
+    /// 
+    /// 
     /// This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -7158,52 +6182,31 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFrom>,
+    pub value_from: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromFieldRef>,
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromConfigMapKeyRef
-{
+pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -7221,11 +6224,7 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValue
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -7235,14 +6234,9 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValue
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromResourceFieldRef
-{
+pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7267,8 +6261,8 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateEnvValue
 }
 
 /// Defines the command to run.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExec {
@@ -7279,19 +6273,19 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateExec {
     /// The working directory for this command is the container's root directory('/').
     /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
     /// If the shell is required, it must be explicitly invoked in the command.
-    ///
-    ///
+    /// 
+    /// 
     /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 /// Specifies the HTTP request to perform.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
-///
-///
+/// 
+/// 
 /// Note: HTTPAction is to be implemented in future version.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateHttp {
@@ -7301,13 +6295,8 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateHttp {
     pub host: Option<String>,
     /// Allows for the inclusion of custom headers in the request.
     /// HTTP permits the use of repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateHttpHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateHttpHttpHeaders>>,
     /// Represents the type of HTTP request to be made, such as "GET," "POST," "PUT," etc.
     /// If not specified, "GET" is the default method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7336,30 +6325,22 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateHttpHttp
 }
 
 /// Defines the strategy to be taken when retrying the Action after a failure.
-///
-///
+/// 
+/// 
 /// It specifies the conditions under which the Action should be retried and the limits to apply,
 /// such as the maximum number of retries and backoff strategy.
-///
-///
+/// 
+/// 
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i64>,
     /// Indicates the duration of time to wait between each retry attempt.
     /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
 }
 
@@ -7377,11 +6358,11 @@ pub enum ComponentDefinitionLifecycleActionsSwitchoverWithoutCandidateTargetPodS
 pub struct ComponentDefinitionLogConfigs {
     /// Specifies the paths or patterns identifying where the log files are stored.
     /// This field allows the system to locate and manage log files effectively.
-    ///
-    ///
+    /// 
+    /// 
     /// Examples:
-    ///
-    ///
+    /// 
+    /// 
     /// - /home/postgres/pgdata/pgroot/data/log/postgresql-*
     /// - /data/mysql/log/mysqld-error.log
     #[serde(rename = "filePathPattern")]
@@ -7402,11 +6383,7 @@ pub struct ComponentDefinitionMonitor {
     pub built_in: Option<bool>,
     /// exporterConfig provided by provider, which specify necessary information to Time Series Database.
     /// exporterConfig is valid when builtIn is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exporterConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exporterConfig")]
     pub exporter_config: Option<ComponentDefinitionMonitorExporterConfig>,
 }
 
@@ -7415,11 +6392,7 @@ pub struct ComponentDefinitionMonitor {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionMonitorExporterConfig {
     /// scrapePath is exporter url path for Time Series Database to scrape metrics.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapePath")]
     pub scrape_path: Option<String>,
     /// scrapePort is exporter port for Time Series Database to scrape metrics.
     #[serde(rename = "scrapePort")]
@@ -7437,18 +6410,10 @@ pub struct ComponentDefinitionPolicyRules {
     /// NonResourceURLs is a set of partial urls that a user should have access to.  *s are allowed, but only as the full, final step in the path
     /// Since non-resource URLs are not namespaced, this field is only applicable for ClusterRoles referenced from a ClusterRoleBinding.
     /// Rules can either apply to API resources (such as "pods" or "secrets") or non-resource URL paths (such as "/api"),  but not both.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonResourceURLs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonResourceURLs")]
     pub non_resource_ur_ls: Option<Vec<String>>,
     /// ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceNames")]
     pub resource_names: Option<Vec<String>>,
     /// Resources is a list of resources this rule applies to. '*' represents all resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7458,12 +6423,12 @@ pub struct ComponentDefinitionPolicyRules {
 }
 
 /// Defines the upper limit of the number of replicas supported by the Component.
-///
-///
+/// 
+/// 
 /// It defines the maximum number of replicas that can be created for the Component.
 /// This field allows you to set a limit on the scalability of the Component, preventing it from exceeding a certain number of replicas.
-///
-///
+/// 
+/// 
 /// This field is immutable.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionReplicasLimit {
@@ -7486,28 +6451,28 @@ pub enum ComponentDefinitionRoleArbitrator {
 pub struct ComponentDefinitionRoles {
     /// Defines the role's identifier. It is used to set the "apps.kubeblocks.io/role" label value
     /// on the corresponding object.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable once set.
     pub name: String,
     /// Indicates whether a replica assigned this role is capable of providing services.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub serviceable: Option<bool>,
     /// Specifies whether a replica with this role has voting rights.
     /// In distributed systems, this typically means the replica can participate in consensus decisions,
     /// configuration changes, or other processes that require a quorum.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub votable: Option<bool>,
     /// Determines if a replica in this role has the authority to perform write operations.
     /// A writable replica can modify data, handle update operations.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub writable: Option<bool>,
@@ -7515,8 +6480,8 @@ pub struct ComponentDefinitionRoles {
 
 /// Specifies the PodSpec template used in the Component.
 /// It includes the following elements:
-///
-///
+/// 
+/// 
 /// - Init containers
 /// - Containers
 ///     - Image
@@ -7529,40 +6494,32 @@ pub struct ComponentDefinitionRoles {
 ///     - Probes
 ///     - Lifecycle
 /// - Volumes
-///
-///
+/// 
+/// 
 /// This field is intended to define static settings that remain consistent across all instantiated Components.
 /// Dynamic settings such as CPU and memory resource limits, as well as scheduling settings (affinity,
 /// toleration, priority), may vary among different instantiated Components.
 /// They should be specified in the `cluster.spec.componentSpecs` (ClusterComponentSpec).
-///
-///
+/// 
+/// 
 /// Specific instances of a Component may override settings defined here, such as using a different container image
 /// or modifying environment variable values.
 /// These instance-specific overrides can be specified in `cluster.spec.componentSpecs[*].instances`.
-///
-///
+/// 
+/// 
 /// This field is immutable and cannot be updated once set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntime {
     /// Optional duration in seconds the pod may be active on the node relative to
     /// StartTime before the system will actively try to mark it failed and kill associated containers.
     /// Value must be a positive integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// If specified, the pod's scheduling constraints
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ComponentDefinitionRuntimeAffinity>,
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     /// List of containers belonging to the pod.
     /// Containers cannot currently be added or removed.
@@ -7585,29 +6542,17 @@ pub struct ComponentDefinitionRuntime {
     /// EnableServiceLinks indicates whether information about services should be injected into pod's
     /// environment variables, matching the syntax of Docker links.
     /// Optional: Defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableServiceLinks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
     /// List of ephemeral containers run in this pod. Ephemeral containers may be run in an existing
     /// pod to perform user-initiated actions such as debugging. This list cannot be specified when
     /// creating a pod, and it cannot be modified by updating the pod spec. In order to add an
     /// ephemeral container to an existing pod, use the pod's ephemeralcontainers subresource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeralContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralContainers")]
     pub ephemeral_containers: Option<Vec<ComponentDefinitionRuntimeEphemeralContainers>>,
     /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts
     /// file if specified. This is only valid for non-hostNetwork pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<ComponentDefinitionRuntimeHostAliases>>,
     /// Use the host's ipc namespace.
     /// Optional: Default to false.
@@ -7616,11 +6561,7 @@ pub struct ComponentDefinitionRuntime {
     /// Host networking requested for this pod. Use the host's network namespace.
     /// If this option is set, the ports that will be used must be specified.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// Use the host's pid namespace.
     /// Optional: Default to false.
@@ -7644,11 +6585,7 @@ pub struct ComponentDefinitionRuntime {
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
     /// If specified, these secrets will be passed to individual puller implementations for them to use.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<ComponentDefinitionRuntimeImagePullSecrets>>,
     /// List of initialization containers belonging to the pod.
     /// Init containers are executed in order prior to containers being started. If any
@@ -7663,11 +6600,7 @@ pub struct ComponentDefinitionRuntime {
     /// Init containers cannot currently be added or removed.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ComponentDefinitionRuntimeInitContainers>>,
     /// NodeName is a request to schedule this pod onto a specific node. If it is non-empty,
     /// the scheduler simply schedules this pod onto that node, assuming that it fits resource
@@ -7677,20 +6610,16 @@ pub struct ComponentDefinitionRuntime {
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Specifies the OS of the containers in the pod.
     /// Some pod and container fields are restricted if this is set.
-    ///
-    ///
+    /// 
+    /// 
     /// If the OS field is set to linux, the following fields must be unset:
     /// -securityContext.windowsOptions
-    ///
-    ///
+    /// 
+    /// 
     /// If the OS field is set to windows, following fields must be unset:
     /// - spec.hostPID
     /// - spec.hostIPC
@@ -7727,11 +6656,7 @@ pub struct ComponentDefinitionRuntime {
     /// PreemptionPolicy is the Policy for preempting pods with lower priority.
     /// One of Never, PreemptLowerPriority.
     /// Defaults to PreemptLowerPriority if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
     pub preemption_policy: Option<String>,
     /// The priority value. Various system components use this field to find the
     /// priority of the pod. When Priority Admission Controller is enabled, it
@@ -7746,128 +6671,80 @@ pub struct ComponentDefinitionRuntime {
     /// name must be defined by creating a PriorityClass object with that name.
     /// If not specified, the pod priority will be default or zero if there is no
     /// default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// If specified, all readiness gates will be evaluated for pod readiness.
     /// A pod is ready when all its containers are ready AND
     /// all conditions specified in the readiness gates have status equal to "True"
     /// More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gates
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<ComponentDefinitionRuntimeReadinessGates>>,
     /// ResourceClaims defines which ResourceClaims must be allocated
     /// and reserved before the Pod is allowed to start. The resources
     /// will be made available to those containers which consume them
     /// by name.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaims"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<ComponentDefinitionRuntimeResourceClaims>>,
     /// Restart policy for all containers within the pod.
     /// One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted.
     /// Default to Always.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used
     /// to run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.
     /// If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an
     /// empty definition that uses the default runtime handler.
     /// More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     /// If specified, the pod will be dispatched by specified scheduler.
     /// If not specified, the pod will be dispatched by default scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// SchedulingGates is an opaque list of values that if specified will block scheduling the pod.
     /// If schedulingGates is not empty, the pod will stay in the SchedulingGated state and the
     /// scheduler will not attempt to schedule the pod.
-    ///
-    ///
+    /// 
+    /// 
     /// SchedulingGates can only be set at pod creation time, and be removed only afterwards.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta feature enabled by the PodSchedulingReadiness feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
     pub scheduling_gates: Option<Vec<ComponentDefinitionRuntimeSchedulingGates>>,
     /// SecurityContext holds pod-level security attributes and common container settings.
     /// Optional: Defaults to empty.  See type description for default values of each field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ComponentDefinitionRuntimeSecurityContext>,
     /// DeprecatedServiceAccount is a depreciated alias for ServiceAccountName.
     /// Deprecated: Use serviceAccountName instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// If true the pod's hostname will be configured as the pod's FQDN, rather than the leaf name (the default).
     /// In Linux containers, this means setting the FQDN in the hostname field of the kernel (the nodename field of struct utsname).
     /// In Windows containers, this means setting the registry value of hostname for the registry key HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters to FQDN.
     /// If a pod does not have FQDN, this has no effect.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setHostnameAsFQDN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
     /// Share a single process namespace between all of the containers in a pod.
     /// When this is set containers will be able to view and signal processes from other containers
     /// in the same pod, and the first process in each container will not be assigned PID 1.
     /// HostPID and ShareProcessNamespace cannot both be set.
     /// Optional: Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     /// If specified, the fully qualified Pod hostname will be "<hostname>.<subdomain>.<pod namespace>.svc.<cluster domain>".
     /// If not specified, the pod will not have a domainname at all.
@@ -7881,11 +6758,7 @@ pub struct ComponentDefinitionRuntime {
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
     /// Set this value longer than the expected cleanup time for your process.
     /// Defaults to 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7893,13 +6766,8 @@ pub struct ComponentDefinitionRuntime {
     /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<ComponentDefinitionRuntimeTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<ComponentDefinitionRuntimeTopologySpreadConstraints>>,
     /// List of volumes that can be mounted by containers belonging to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7910,25 +6778,13 @@ pub struct ComponentDefinitionRuntime {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<ComponentDefinitionRuntimeAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<ComponentDefinitionRuntimeAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ComponentDefinitionRuntimeAffinityPodAntiAffinity>,
 }
 
@@ -7979,8 +6835,7 @@ pub struct ComponentDefinitionRuntimeAffinityNodeAffinityPreferredDuringScheduli
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -7998,8 +6853,7 @@ pub struct ComponentDefinitionRuntimeAffinityNodeAffinityPreferredDuringScheduli
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ComponentDefinitionRuntimeAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8042,8 +6896,7 @@ pub struct ComponentDefinitionRuntimeAffinityNodeAffinityRequiredDuringSchedulin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8061,8 +6914,7 @@ pub struct ComponentDefinitionRuntimeAffinityNodeAffinityRequiredDuringSchedulin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ComponentDefinitionRuntimeAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8181,8 +7033,7 @@ pub struct ComponentDefinitionRuntimeAffinityPodAffinityPreferredDuringSchedulin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8216,8 +7067,7 @@ pub struct ComponentDefinitionRuntimeAffinityPodAffinityPreferredDuringSchedulin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8304,8 +7154,7 @@ pub struct ComponentDefinitionRuntimeAffinityPodAffinityRequiredDuringScheduling
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8339,8 +7188,7 @@ pub struct ComponentDefinitionRuntimeAffinityPodAffinityRequiredDuringScheduling
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8458,8 +7306,7 @@ pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8493,8 +7340,7 @@ pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8581,8 +7427,7 @@ pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8616,8 +7461,7 @@ pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8677,11 +7521,7 @@ pub struct ComponentDefinitionRuntimeContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -8691,11 +7531,7 @@ pub struct ComponentDefinitionRuntimeContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ComponentDefinitionRuntimeContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -8714,18 +7550,10 @@ pub struct ComponentDefinitionRuntimeContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ComponentDefinitionRuntimeContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ComponentDefinitionRuntimeContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -8747,20 +7575,12 @@ pub struct ComponentDefinitionRuntimeContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ComponentDefinitionRuntimeContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -8769,11 +7589,7 @@ pub struct ComponentDefinitionRuntimeContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ComponentDefinitionRuntimeContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -8796,11 +7612,7 @@ pub struct ComponentDefinitionRuntimeContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -8809,40 +7621,24 @@ pub struct ComponentDefinitionRuntimeContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<ComponentDefinitionRuntimeContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ComponentDefinitionRuntimeContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -8871,11 +7667,7 @@ pub struct ComponentDefinitionRuntimeContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ComponentDefinitionRuntimeContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -8883,19 +7675,10 @@ pub struct ComponentDefinitionRuntimeContainersEnvValueFrom {
     pub field_ref: Option<ComponentDefinitionRuntimeContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ComponentDefinitionRuntimeContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionRuntimeContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ComponentDefinitionRuntimeContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -8919,11 +7702,7 @@ pub struct ComponentDefinitionRuntimeContainersEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -8935,11 +7714,7 @@ pub struct ComponentDefinitionRuntimeContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8967,11 +7742,7 @@ pub struct ComponentDefinitionRuntimeContainersEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ComponentDefinitionRuntimeContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9072,13 +7843,8 @@ pub struct ComponentDefinitionRuntimeContainersLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeContainersLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -9170,13 +7936,8 @@ pub struct ComponentDefinitionRuntimeContainersLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -9232,11 +7993,7 @@ pub struct ComponentDefinitionRuntimeContainersLivenessProbe {
     pub exec: Option<ComponentDefinitionRuntimeContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9246,27 +8003,15 @@ pub struct ComponentDefinitionRuntimeContainersLivenessProbe {
     pub http_get: Option<ComponentDefinitionRuntimeContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -9281,20 +8026,12 @@ pub struct ComponentDefinitionRuntimeContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -9317,8 +8054,8 @@ pub struct ComponentDefinitionRuntimeContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9332,13 +8069,8 @@ pub struct ComponentDefinitionRuntimeContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeContainersLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -9412,11 +8144,7 @@ pub struct ComponentDefinitionRuntimeContainersReadinessProbe {
     pub exec: Option<ComponentDefinitionRuntimeContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9426,27 +8154,15 @@ pub struct ComponentDefinitionRuntimeContainersReadinessProbe {
     pub http_get: Option<ComponentDefinitionRuntimeContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -9461,20 +8177,12 @@ pub struct ComponentDefinitionRuntimeContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -9497,8 +8205,8 @@ pub struct ComponentDefinitionRuntimeContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9512,13 +8220,8 @@ pub struct ComponentDefinitionRuntimeContainersReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeContainersReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -9574,12 +8277,12 @@ pub struct ComponentDefinitionRuntimeContainersResizePolicy {
 pub struct ComponentDefinitionRuntimeContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComponentDefinitionRuntimeContainersResourcesClaims>>,
@@ -9616,11 +8319,7 @@ pub struct ComponentDefinitionRuntimeContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -9643,22 +8342,14 @@ pub struct ComponentDefinitionRuntimeContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -9666,11 +8357,7 @@ pub struct ComponentDefinitionRuntimeContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -9684,31 +8371,19 @@ pub struct ComponentDefinitionRuntimeContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ComponentDefinitionRuntimeContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ComponentDefinitionRuntimeContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ComponentDefinitionRuntimeContainersSecurityContextWindowsOptions>,
 }
 
@@ -9756,16 +8431,12 @@ pub struct ComponentDefinitionRuntimeContainersSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -9782,38 +8453,22 @@ pub struct ComponentDefinitionRuntimeContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -9831,11 +8486,7 @@ pub struct ComponentDefinitionRuntimeContainersStartupProbe {
     pub exec: Option<ComponentDefinitionRuntimeContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9845,27 +8496,15 @@ pub struct ComponentDefinitionRuntimeContainersStartupProbe {
     pub http_get: Option<ComponentDefinitionRuntimeContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -9880,20 +8519,12 @@ pub struct ComponentDefinitionRuntimeContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -9916,8 +8547,8 @@ pub struct ComponentDefinitionRuntimeContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9931,13 +8562,8 @@ pub struct ComponentDefinitionRuntimeContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeContainersStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -9994,11 +8620,7 @@ pub struct ComponentDefinitionRuntimeContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -10014,11 +8636,7 @@ pub struct ComponentDefinitionRuntimeContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -10060,8 +8678,8 @@ pub struct ComponentDefinitionRuntimeDnsConfigOptions {
 /// scheduling guarantees, and they will not be restarted when they exit or when a Pod is
 /// removed or restarted. The kubelet may evict a Pod if an ephemeral container causes the
 /// Pod to exceed its resource allocation.
-///
-///
+/// 
+/// 
 /// To add an ephemeral container, use the ephemeralcontainers subresource of an existing
 /// Pod. Ephemeral containers may not be removed or restarted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10107,21 +8725,13 @@ pub struct ComponentDefinitionRuntimeEphemeralContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Lifecycle is not allowed for ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<ComponentDefinitionRuntimeEphemeralContainersLifecycle>,
     /// Probes are not allowed for ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ComponentDefinitionRuntimeEphemeralContainersLivenessProbe>,
     /// Name of the ephemeral container specified as a DNS_LABEL.
     /// This name must be unique among all containers, init containers and ephemeral containers.
@@ -10130,18 +8740,10 @@ pub struct ComponentDefinitionRuntimeEphemeralContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ComponentDefinitionRuntimeEphemeralContainersPorts>>,
     /// Probes are not allowed for ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ComponentDefinitionRuntimeEphemeralContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ComponentDefinitionRuntimeEphemeralContainersResizePolicy>>,
     /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
     /// already allocated to the pod.
@@ -10151,26 +8753,14 @@ pub struct ComponentDefinitionRuntimeEphemeralContainers {
     /// container within a pod.
     /// This may only be set for init containers. You cannot set this field on
     /// ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// Optional: SecurityContext defines the security options the ephemeral container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ComponentDefinitionRuntimeEphemeralContainersSecurityContext>,
     /// Probes are not allowed for ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ComponentDefinitionRuntimeEphemeralContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -10189,15 +8779,11 @@ pub struct ComponentDefinitionRuntimeEphemeralContainers {
     /// If set, the name of the container from PodSpec that this ephemeral container targets.
     /// The ephemeral container will be run in the namespaces (IPC, PID, etc) of this container.
     /// If not set then the ephemeral container uses the namespaces configured in the Pod spec.
-    ///
-    ///
+    /// 
+    /// 
     /// The container runtime must implement support for this feature. If the runtime does not
     /// support namespace targeting then the result of setting this field is undefined.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetContainerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetContainerName")]
     pub target_container_name: Option<String>,
     /// Optional: Path at which the file to which the container's termination message
     /// will be written is mounted into the container's filesystem.
@@ -10206,11 +8792,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -10219,40 +8801,24 @@ pub struct ComponentDefinitionRuntimeEphemeralContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<ComponentDefinitionRuntimeEphemeralContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem. Subpath mounts are not allowed for ephemeral containers.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ComponentDefinitionRuntimeEphemeralContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -10281,34 +8847,19 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeEphemeralContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ComponentDefinitionRuntimeEphemeralContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionRuntimeEphemeralContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ComponentDefinitionRuntimeEphemeralContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ComponentDefinitionRuntimeEphemeralContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionRuntimeEphemeralContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ComponentDefinitionRuntimeEphemeralContainersEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionRuntimeEphemeralContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -10331,11 +8882,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersEnvValueFromConfigMapKey
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeEphemeralContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -10347,11 +8894,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeEphemeralContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10379,11 +8922,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersEnvValueFromSecretKeyRef
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeEphemeralContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ComponentDefinitionRuntimeEphemeralContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10460,8 +8999,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersLifecyclePostStart {
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ComponentDefinitionRuntimeEphemeralContainersLifecyclePostStartTcpSocket>,
+    pub tcp_socket: Option<ComponentDefinitionRuntimeEphemeralContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -10484,14 +9022,8 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersLifecyclePostStartHttpGe
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ComponentDefinitionRuntimeEphemeralContainersLifecyclePostStartHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeEphemeralContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -10583,14 +9115,8 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersLifecyclePreStopHttpGet 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<ComponentDefinitionRuntimeEphemeralContainersLifecyclePreStopHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeEphemeralContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -10643,11 +9169,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersLivenessProbe {
     pub exec: Option<ComponentDefinitionRuntimeEphemeralContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10657,27 +9179,15 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersLivenessProbe {
     pub http_get: Option<ComponentDefinitionRuntimeEphemeralContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -10692,20 +9202,12 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -10728,8 +9230,8 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -10743,13 +9245,8 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeEphemeralContainersLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeEphemeralContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -10820,11 +9317,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersReadinessProbe {
     pub exec: Option<ComponentDefinitionRuntimeEphemeralContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10834,27 +9327,15 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersReadinessProbe {
     pub http_get: Option<ComponentDefinitionRuntimeEphemeralContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -10869,20 +9350,12 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -10905,8 +9378,8 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -10920,13 +9393,8 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeEphemeralContainersReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeEphemeralContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -10981,12 +9449,12 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersResizePolicy {
 pub struct ComponentDefinitionRuntimeEphemeralContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComponentDefinitionRuntimeEphemeralContainersResourcesClaims>>,
@@ -11022,18 +9490,13 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<ComponentDefinitionRuntimeEphemeralContainersSecurityContextCapabilities>,
+    pub capabilities: Option<ComponentDefinitionRuntimeEphemeralContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -11050,22 +9513,14 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -11073,11 +9528,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -11091,35 +9542,20 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<ComponentDefinitionRuntimeEphemeralContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ComponentDefinitionRuntimeEphemeralContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<ComponentDefinitionRuntimeEphemeralContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ComponentDefinitionRuntimeEphemeralContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<ComponentDefinitionRuntimeEphemeralContainersSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ComponentDefinitionRuntimeEphemeralContainersSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -11166,16 +9602,12 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersSecurityContextSeccompPr
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -11192,38 +9624,22 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersSecurityContextWindowsOp
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -11235,11 +9651,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersStartupProbe {
     pub exec: Option<ComponentDefinitionRuntimeEphemeralContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11249,27 +9661,15 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersStartupProbe {
     pub http_get: Option<ComponentDefinitionRuntimeEphemeralContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -11284,20 +9684,12 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -11320,8 +9712,8 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -11335,13 +9727,8 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeEphemeralContainersStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeEphemeralContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -11398,11 +9785,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -11418,11 +9801,7 @@ pub struct ComponentDefinitionRuntimeEphemeralContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -11495,11 +9874,7 @@ pub struct ComponentDefinitionRuntimeInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -11509,11 +9884,7 @@ pub struct ComponentDefinitionRuntimeInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<ComponentDefinitionRuntimeInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -11532,18 +9903,10 @@ pub struct ComponentDefinitionRuntimeInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ComponentDefinitionRuntimeInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ComponentDefinitionRuntimeInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -11565,20 +9928,12 @@ pub struct ComponentDefinitionRuntimeInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<ComponentDefinitionRuntimeInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -11587,11 +9942,7 @@ pub struct ComponentDefinitionRuntimeInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<ComponentDefinitionRuntimeInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -11614,11 +9965,7 @@ pub struct ComponentDefinitionRuntimeInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -11627,40 +9974,24 @@ pub struct ComponentDefinitionRuntimeInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<ComponentDefinitionRuntimeInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ComponentDefinitionRuntimeInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -11689,32 +10020,18 @@ pub struct ComponentDefinitionRuntimeInitContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ComponentDefinitionRuntimeInitContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionRuntimeInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ComponentDefinitionRuntimeInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ComponentDefinitionRuntimeInitContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionRuntimeInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ComponentDefinitionRuntimeInitContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -11738,11 +10055,7 @@ pub struct ComponentDefinitionRuntimeInitContainersEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -11754,11 +10067,7 @@ pub struct ComponentDefinitionRuntimeInitContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11786,11 +10095,7 @@ pub struct ComponentDefinitionRuntimeInitContainersEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ComponentDefinitionRuntimeInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11891,13 +10196,8 @@ pub struct ComponentDefinitionRuntimeInitContainersLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -11989,13 +10289,8 @@ pub struct ComponentDefinitionRuntimeInitContainersLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -12051,11 +10346,7 @@ pub struct ComponentDefinitionRuntimeInitContainersLivenessProbe {
     pub exec: Option<ComponentDefinitionRuntimeInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12065,27 +10356,15 @@ pub struct ComponentDefinitionRuntimeInitContainersLivenessProbe {
     pub http_get: Option<ComponentDefinitionRuntimeInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -12100,20 +10379,12 @@ pub struct ComponentDefinitionRuntimeInitContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -12136,8 +10407,8 @@ pub struct ComponentDefinitionRuntimeInitContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -12151,13 +10422,8 @@ pub struct ComponentDefinitionRuntimeInitContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeInitContainersLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeInitContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -12231,11 +10497,7 @@ pub struct ComponentDefinitionRuntimeInitContainersReadinessProbe {
     pub exec: Option<ComponentDefinitionRuntimeInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12245,27 +10507,15 @@ pub struct ComponentDefinitionRuntimeInitContainersReadinessProbe {
     pub http_get: Option<ComponentDefinitionRuntimeInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -12280,20 +10530,12 @@ pub struct ComponentDefinitionRuntimeInitContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -12316,8 +10558,8 @@ pub struct ComponentDefinitionRuntimeInitContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -12331,13 +10573,8 @@ pub struct ComponentDefinitionRuntimeInitContainersReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeInitContainersReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeInitContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -12393,12 +10630,12 @@ pub struct ComponentDefinitionRuntimeInitContainersResizePolicy {
 pub struct ComponentDefinitionRuntimeInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ComponentDefinitionRuntimeInitContainersResourcesClaims>>,
@@ -12435,11 +10672,7 @@ pub struct ComponentDefinitionRuntimeInitContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -12462,22 +10695,14 @@ pub struct ComponentDefinitionRuntimeInitContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -12485,11 +10710,7 @@ pub struct ComponentDefinitionRuntimeInitContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -12503,35 +10724,20 @@ pub struct ComponentDefinitionRuntimeInitContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<ComponentDefinitionRuntimeInitContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ComponentDefinitionRuntimeInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<ComponentDefinitionRuntimeInitContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ComponentDefinitionRuntimeInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<ComponentDefinitionRuntimeInitContainersSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ComponentDefinitionRuntimeInitContainersSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -12578,16 +10784,12 @@ pub struct ComponentDefinitionRuntimeInitContainersSecurityContextSeccompProfile
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -12604,38 +10806,22 @@ pub struct ComponentDefinitionRuntimeInitContainersSecurityContextWindowsOptions
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -12653,11 +10839,7 @@ pub struct ComponentDefinitionRuntimeInitContainersStartupProbe {
     pub exec: Option<ComponentDefinitionRuntimeInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12667,27 +10849,15 @@ pub struct ComponentDefinitionRuntimeInitContainersStartupProbe {
     pub http_get: Option<ComponentDefinitionRuntimeInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -12702,20 +10872,12 @@ pub struct ComponentDefinitionRuntimeInitContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -12738,8 +10900,8 @@ pub struct ComponentDefinitionRuntimeInitContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -12753,13 +10915,8 @@ pub struct ComponentDefinitionRuntimeInitContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<ComponentDefinitionRuntimeInitContainersStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<ComponentDefinitionRuntimeInitContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -12816,11 +10973,7 @@ pub struct ComponentDefinitionRuntimeInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -12836,22 +10989,18 @@ pub struct ComponentDefinitionRuntimeInitContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
 /// Specifies the OS of the containers in the pod.
 /// Some pod and container fields are restricted if this is set.
-///
-///
+/// 
+/// 
 /// If the OS field is set to linux, the following fields must be unset:
 /// -securityContext.windowsOptions
-///
-///
+/// 
+/// 
 /// If the OS field is set to windows, following fields must be unset:
 /// - spec.hostPID
 /// - spec.hostIPC
@@ -12909,31 +11058,23 @@ pub struct ComponentDefinitionRuntimeResourceClaims {
 pub struct ComponentDefinitionRuntimeResourceClaimsSource {
     /// ResourceClaimName is the name of a ResourceClaim object in the same
     /// namespace as this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     /// ResourceClaimTemplateName is the name of a ResourceClaimTemplate
     /// object in the same namespace as this pod.
-    ///
-    ///
+    /// 
+    /// 
     /// The template will be used to create a new ResourceClaim, which will
     /// be bound to this pod. When this pod is deleted, the ResourceClaim
     /// will also be deleted. The pod name and resource name, along with a
     /// generated component, will be used to form a unique name for the
     /// ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable and no changes will be made to the
     /// corresponding ResourceClaim by the control plane after creating the
     /// ResourceClaim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimTemplateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
 }
 
@@ -12952,13 +11093,13 @@ pub struct ComponentDefinitionRuntimeSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -12970,11 +11111,7 @@ pub struct ComponentDefinitionRuntimeSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -12982,11 +11119,7 @@ pub struct ComponentDefinitionRuntimeSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -12994,11 +11127,7 @@ pub struct ComponentDefinitionRuntimeSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -13014,19 +11143,11 @@ pub struct ComponentDefinitionRuntimeSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<ComponentDefinitionRuntimeSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<ComponentDefinitionRuntimeSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -13035,11 +11156,7 @@ pub struct ComponentDefinitionRuntimeSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -13050,11 +11167,7 @@ pub struct ComponentDefinitionRuntimeSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<ComponentDefinitionRuntimeSecurityContextWindowsOptions>,
 }
 
@@ -13088,16 +11201,12 @@ pub struct ComponentDefinitionRuntimeSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -13123,38 +11232,22 @@ pub struct ComponentDefinitionRuntimeSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -13180,11 +11273,7 @@ pub struct ComponentDefinitionRuntimeTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -13198,11 +11287,7 @@ pub struct ComponentDefinitionRuntimeTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ComponentDefinitionRuntimeTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
@@ -13212,14 +11297,10 @@ pub struct ComponentDefinitionRuntimeTopologySpreadConstraints {
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -13250,8 +11331,8 @@ pub struct ComponentDefinitionRuntimeTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -13260,43 +11341,31 @@ pub struct ComponentDefinitionRuntimeTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -13338,22 +11407,12 @@ pub struct ComponentDefinitionRuntimeTopologySpreadConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<ComponentDefinitionRuntimeTopologySpreadConstraintsLabelSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ComponentDefinitionRuntimeTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -13380,11 +11439,7 @@ pub struct ComponentDefinitionRuntimeVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<ComponentDefinitionRuntimeVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
@@ -13406,11 +11461,7 @@ pub struct ComponentDefinitionRuntimeVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<ComponentDefinitionRuntimeVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ComponentDefinitionRuntimeVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -13419,8 +11470,8 @@ pub struct ComponentDefinitionRuntimeVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -13430,18 +11481,18 @@ pub struct ComponentDefinitionRuntimeVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13451,11 +11502,7 @@ pub struct ComponentDefinitionRuntimeVolumes {
     pub fc: Option<ComponentDefinitionRuntimeVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ComponentDefinitionRuntimeVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13463,11 +11510,7 @@ pub struct ComponentDefinitionRuntimeVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<ComponentDefinitionRuntimeVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -13505,25 +11548,13 @@ pub struct ComponentDefinitionRuntimeVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<ComponentDefinitionRuntimeVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<ComponentDefinitionRuntimeVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<ComponentDefinitionRuntimeVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13546,11 +11577,7 @@ pub struct ComponentDefinitionRuntimeVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<ComponentDefinitionRuntimeVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<ComponentDefinitionRuntimeVolumesVsphereVolume>,
 }
 
@@ -13586,11 +11613,7 @@ pub struct ComponentDefinitionRuntimeVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -13643,11 +11666,7 @@ pub struct ComponentDefinitionRuntimeVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -13716,11 +11735,7 @@ pub struct ComponentDefinitionRuntimeVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -13777,11 +11792,7 @@ pub struct ComponentDefinitionRuntimeVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<ComponentDefinitionRuntimeVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
@@ -13789,11 +11800,7 @@ pub struct ComponentDefinitionRuntimeVolumesCsi {
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -13822,11 +11829,7 @@ pub struct ComponentDefinitionRuntimeVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13851,24 +11854,15 @@ pub struct ComponentDefinitionRuntimeVolumesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ComponentDefinitionRuntimeVolumesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionRuntimeVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -13880,11 +11874,7 @@ pub struct ComponentDefinitionRuntimeVolumesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13916,8 +11906,8 @@ pub struct ComponentDefinitionRuntimeVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -13927,18 +11917,18 @@ pub struct ComponentDefinitionRuntimeVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -13950,8 +11940,8 @@ pub struct ComponentDefinitionRuntimeVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -13960,20 +11950,15 @@ pub struct ComponentDefinitionRuntimeVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -13983,8 +11968,8 @@ pub struct ComponentDefinitionRuntimeVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -13993,12 +11978,12 @@ pub struct ComponentDefinitionRuntimeVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplate {
@@ -14039,11 +12024,7 @@ pub struct ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateMetadata
 pub struct ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -14053,13 +12034,8 @@ pub struct ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
-    pub data_source:
-        Option<ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -14083,31 +12059,21 @@ pub struct ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    pub resources: Option<ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -14121,26 +12087,14 @@ pub struct ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -14241,8 +12195,7 @@ pub struct ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpecSele
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14273,11 +12226,7 @@ pub struct ComponentDefinitionRuntimeVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -14331,18 +12280,10 @@ pub struct ComponentDefinitionRuntimeVolumesFlexVolumeSecretRef {
 pub struct ComponentDefinitionRuntimeVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -14439,18 +12380,10 @@ pub struct ComponentDefinitionRuntimeVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -14462,21 +12395,13 @@ pub struct ComponentDefinitionRuntimeVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -14578,11 +12503,7 @@ pub struct ComponentDefinitionRuntimeVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -14594,61 +12515,47 @@ pub struct ComponentDefinitionRuntimeVolumesProjected {
 pub struct ComponentDefinitionRuntimeVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
-    ///
+    /// 
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
-    ///
+    /// 
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle:
-        Option<ComponentDefinitionRuntimeVolumesProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<ComponentDefinitionRuntimeVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ComponentDefinitionRuntimeVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ComponentDefinitionRuntimeVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<ComponentDefinitionRuntimeVolumesProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<ComponentDefinitionRuntimeVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -14660,13 +12567,8 @@ pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesClusterTrustBundle {
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<ComponentDefinitionRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ComponentDefinitionRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -14683,11 +12585,7 @@ pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesClusterTrustBundle {
     /// Select all ClusterTrustBundles that match this signer name.
     /// Mutually-exclusive with name.  The contents of all selected
     /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -14710,8 +12608,7 @@ pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesClusterTrustBundleLa
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14780,8 +12677,7 @@ pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApi {
 pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -14794,24 +12690,15 @@ pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -14823,11 +12710,7 @@ pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApiItemsFiel
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -14893,11 +12776,7 @@ pub struct ComponentDefinitionRuntimeVolumesProjectedSourcesServiceAccountToken 
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -15001,11 +12880,7 @@ pub struct ComponentDefinitionRuntimeVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -15016,36 +12891,20 @@ pub struct ComponentDefinitionRuntimeVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: ComponentDefinitionRuntimeVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -15071,11 +12930,7 @@ pub struct ComponentDefinitionRuntimeVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -15091,11 +12946,7 @@ pub struct ComponentDefinitionRuntimeVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -15137,11 +12988,7 @@ pub struct ComponentDefinitionRuntimeVolumesStorageos {
     pub secret_ref: Option<ComponentDefinitionRuntimeVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -15149,11 +12996,7 @@ pub struct ComponentDefinitionRuntimeVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -15177,18 +13020,10 @@ pub struct ComponentDefinitionRuntimeVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -15200,24 +13035,20 @@ pub struct ComponentDefinitionScripts {
     /// The operator attempts to set default file permissions for scripts (0555) and configurations (0444).
     /// However, certain database engines may require different file permissions.
     /// You can specify the desired file permissions here.
-    ///
-    ///
+    /// 
+    /// 
     /// Must be specified as an octal value between 0000 and 0777 (inclusive),
     /// or as a decimal value between 0 and 511 (inclusive).
     /// YAML supports both octal and decimal values for file permissions.
-    ///
-    ///
+    /// 
+    /// 
     /// Please note that this setting only affects the permissions of the files themselves.
     /// Directories within the specified path are not impacted by this setting.
     /// It's important to be aware that this setting might conflict with other options
     /// that influence the file mode, such as fsGroup.
     /// In such cases, the resulting file mode may have additional bits set.
     /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Specifies the name of the configuration template.
     pub name: String,
@@ -15226,35 +13057,27 @@ pub struct ComponentDefinitionScripts {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
     pub template_ref: Option<String>,
     /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration
     /// template will be mounted to the corresponding volume. Must be a DNS_LABEL name.
     /// The volume name must be defined in podSpec.containers[*].volumeMounts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
 /// ServiceRefDeclaration represents a reference to a service that can be either provided by a KubeBlocks Cluster
 /// or an external service.
 /// It acts as a placeholder for the actual service reference, which is determined later when a Cluster is created.
-///
-///
+/// 
+/// 
 /// The purpose of ServiceRefDeclaration is to declare a service dependency without specifying the concrete details
 /// of the service.
 /// It allows for flexibility and abstraction in defining service references within a Component.
 /// By using ServiceRefDeclaration, you can define service dependencies in a declarative manner, enabling loose coupling
 /// and easier management of service references across different components and clusters.
-///
-///
+/// 
+/// 
 /// Upon Cluster creation, the ServiceRefDeclaration is bound to an actual service through the ServiceRef field,
 /// effectively resolving and connecting to the specified service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -15262,8 +13085,8 @@ pub struct ComponentDefinitionServiceRefDeclarations {
     /// Specifies the name of the ServiceRefDeclaration.
     pub name: String,
     /// Specifies whether the service reference can be optional.
-    ///
-    ///
+    /// 
+    /// 
     /// For an optional service-ref, the component can still be created even if the service-ref is not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
@@ -15271,14 +13094,13 @@ pub struct ComponentDefinitionServiceRefDeclarations {
     /// upon Cluster creation.
     /// Each ServiceRefDeclarationSpec defines a ServiceKind and ServiceVersion,
     /// outlining the acceptable service types and versions that are compatible.
-    ///
-    ///
+    /// 
+    /// 
     /// This flexibility allows a ServiceRefDeclaration to be fulfilled by any one of the provided specs.
     /// For example, if it requires an OLTP database, specs for both MySQL and PostgreSQL are listed,
     /// either MySQL or PostgreSQL services can be used when binding.
     #[serde(rename = "serviceRefDeclarationSpecs")]
-    pub service_ref_declaration_specs:
-        Vec<ComponentDefinitionServiceRefDeclarationsServiceRefDeclarationSpecs>,
+    pub service_ref_declaration_specs: Vec<ComponentDefinitionServiceRefDeclarationsServiceRefDeclarationSpecs>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -15298,8 +13120,8 @@ pub struct ComponentDefinitionServiceRefDeclarationsServiceRefDeclarationSpecs {
 
 /// ComponentService defines a service that would be exposed as an inter-component service within a Cluster.
 /// A Service defined in the ComponentService is expected to be accessed by other Components within the same Cluster.
-///
-///
+/// 
+/// 
 /// When a Component needs to use a ComponentService provided by another Component within the same Cluster,
 /// it can declare a variable in the `componentDefinition.spec.vars` section and bind it to the specific exposed address
 /// of the ComponentService using the `serviceVarRef` field.
@@ -15310,15 +13132,11 @@ pub struct ComponentDefinitionServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Indicates whether the automatic provisioning of the service should be disabled.
-    ///
-    ///
+    /// 
+    /// 
     /// If set to true, the service will not be automatically created at the component provisioning.
     /// Instead, you can enable the creation of this service by specifying it explicitly in the cluster API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableAutoProvision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAutoProvision")]
     pub disable_auto_provision: Option<bool>,
     /// Name defines the name of the service.
     /// otherwise, it indicates the name of the service.
@@ -15328,15 +13146,15 @@ pub struct ComponentDefinitionServices {
     /// Indicates whether to create a corresponding Service for each Pod of the selected Component.
     /// When set to true, a set of Services will be automatically generated for each Pod,
     /// and the `roleSelector` field will be ignored.
-    ///
-    ///
+    /// 
+    /// 
     /// The names of the generated Services will follow the same suffix naming pattern: `$(serviceName)-$(podOrdinal)`.
     /// The total number of generated Services will be equal to the number of replicas specified for the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// Example usage:
-    ///
-    ///
+    /// 
+    /// 
     /// ```text
     /// name: my-service
     /// serviceName: my-service
@@ -15349,63 +13167,51 @@ pub struct ComponentDefinitionServices {
     ///     port: 80
     ///     targetPort: 8080
     /// ```
-    ///
-    ///
+    /// 
+    /// 
     /// In this example, if the Component has 3 replicas, three Services will be generated:
     /// - my-service-0: Points to the first Pod (podOrdinal: 0)
     /// - my-service-1: Points to the second Pod (podOrdinal: 1)
     /// - my-service-2: Points to the third Pod (podOrdinal: 2)
-    ///
-    ///
+    /// 
+    /// 
     /// Each generated Service will have the specified spec configuration and will target its respective Pod.
-    ///
-    ///
+    /// 
+    /// 
     /// This feature is useful when you need to expose each Pod of a Component individually, allowing external access
     /// to specific instances of the Component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podService")]
     pub pod_service: Option<bool>,
     /// Extends the above `serviceSpec.selector` by allowing you to specify defined role as selector for the service.
     /// When `roleSelector` is set, it adds a label selector "kubeblocks.io/role: {roleSelector}"
     /// to the `serviceSpec.selector`.
     /// Example usage:
-    ///
-    ///
+    /// 
+    /// 
     /// 	  roleSelector: "leader"
-    ///
-    ///
+    /// 
+    /// 
     /// In this example, setting `roleSelector` to "leader" will add a label selector
     /// "kubeblocks.io/role: leader" to the `serviceSpec.selector`.
     /// This means that the service will select and route traffic to Pods with the label
     /// "kubeblocks.io/role" set to "leader".
-    ///
-    ///
+    /// 
+    /// 
     /// Note that if `podService` sets to true, RoleSelector will be ignored.
     /// The `podService` flag takes precedence over `roleSelector` and generates a service for each Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
     /// ServiceName defines the name of the underlying service object.
     /// If not specified, the default service name with different patterns will be used:
-    ///
-    ///
+    /// 
+    /// 
     /// - CLUSTER_NAME: for cluster-level services
     /// - CLUSTER_NAME-COMPONENT_NAME: for component-level services
-    ///
-    ///
+    /// 
+    /// 
     /// Only one default service name is allowed.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
     /// Spec defines the behavior of a service.
     /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
@@ -15424,11 +13230,7 @@ pub struct ComponentDefinitionServicesSpec {
     /// value), those requests will be respected, regardless of this field.
     /// This field may only be set for services with type LoadBalancer and will
     /// be cleared if the type is changed to any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// clusterIP is the IP address of the service and is usually assigned
     /// randomly. If an address is specified manually, is in-range (as per
@@ -15465,38 +13267,26 @@ pub struct ComponentDefinitionServicesSpec {
     /// be initialized from the clusterIP field.  If this field is specified,
     /// clients must ensure that clusterIPs[0] and clusterIP have the same
     /// value.
-    ///
-    ///
+    /// 
+    /// 
     /// This field may hold a maximum of two entries (dual-stack IPs, in either order).
     /// These IPs must correspond to the values of the ipFamilies field. Both
     /// clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIPs")]
     pub cluster_i_ps: Option<Vec<String>>,
     /// externalIPs is a list of IP addresses for which nodes in the cluster
     /// will also accept traffic for this service.  These IPs are not managed by
     /// Kubernetes.  The user is responsible for ensuring that traffic arrives
     /// at a node with this IP.  A common example is external load-balancers
     /// that are not part of the Kubernetes system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
     /// externalName is the external reference that discovery mechanisms will
     /// return as an alias for this service (e.g. a DNS CNAME record). No
     /// proxying will be involved.  Must be a lowercase RFC-1123 hostname
     /// (https://tools.ietf.org/html/rfc1123) and requires `type` to be "ExternalName".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalName")]
     pub external_name: Option<String>,
     /// externalTrafficPolicy describes how nodes distribute service traffic they
     /// receive on one of the Service's "externally-facing" addresses (NodePorts,
@@ -15511,11 +13301,7 @@ pub struct ComponentDefinitionServicesSpec {
     /// within the cluster will always get "Cluster" semantics, but clients sending to
     /// a NodePort from within the cluster may need to take traffic policy into account
     /// when picking a node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// healthCheckNodePort specifies the healthcheck nodePort for the service.
     /// This only applies when type is set to LoadBalancer and
@@ -15527,11 +13313,7 @@ pub struct ComponentDefinitionServicesSpec {
     /// which does not need it, creation will fail. This field will be wiped
     /// when updating a Service to no longer need it (e.g. changing type).
     /// This field cannot be updated once set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckNodePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckNodePort")]
     pub health_check_node_port: Option<i32>,
     /// InternalTrafficPolicy describes how nodes distribute service traffic they
     /// receive on the ClusterIP. If set to "Local", the proxy will assume that pods
@@ -15539,11 +13321,7 @@ pub struct ComponentDefinitionServicesSpec {
     /// dropping the traffic if there are no local endpoints. The default value,
     /// "Cluster", uses the standard behavior of routing to all endpoints evenly
     /// (possibly modified by topology and other features).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
     pub internal_traffic_policy: Option<String>,
     /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this
     /// service. This field is usually assigned automatically based on cluster
@@ -15556,17 +13334,13 @@ pub struct ComponentDefinitionServicesSpec {
     /// and "IPv6".  This field only applies to Services of types ClusterIP,
     /// NodePort, and LoadBalancer, and does apply to "headless" services.
     /// This field will be wiped when updating a Service to type ExternalName.
-    ///
-    ///
+    /// 
+    /// 
     /// This field may hold a maximum of two entries (dual-stack families, in
     /// either order).  These families must correspond to the values of the
     /// clusterIPs field, if specified. Both clusterIPs and ipFamilies are
     /// governed by the ipFamilyPolicy field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
     /// IPFamilyPolicy represents the dual-stack-ness requested or required by
     /// this Service. If there is no value provided, then this field will be set
@@ -15576,11 +13350,7 @@ pub struct ComponentDefinitionServicesSpec {
     /// (two IP families on dual-stack configured clusters, otherwise fail). The
     /// ipFamilies and clusterIPs fields depend on the value of this field. This
     /// field will be wiped when updating a service to type ExternalName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<String>,
     /// loadBalancerClass is the class of the load balancer implementation this Service belongs to.
     /// If specified, the value of this field must be a label-style identifier, with an optional prefix,
@@ -15592,11 +13362,7 @@ pub struct ComponentDefinitionServicesSpec {
     /// implementation (e.g. cloud providers) should ignore Services that set this field.
     /// This field can only be set when creating or updating a Service to type 'LoadBalancer'.
     /// Once set, it can not be changed. This field will be wiped when a service is updated to a non 'LoadBalancer' type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
     /// Only applies to Service Type: LoadBalancer.
     /// This feature depends on whether the underlying cloud-provider supports specifying
@@ -15605,21 +13371,13 @@ pub struct ComponentDefinitionServicesSpec {
     /// Deprecated: This field was under-specified and its meaning varies across implementations.
     /// Using it is non-portable and it may not support dual-stack.
     /// Users are encouraged to use implementation-specific annotations when available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// If specified and supported by the platform, this will restrict traffic through the cloud-provider
     /// load-balancer will be restricted to the specified client IPs. This field will be ignored if the
     /// cloud-provider does not support the feature."
     /// More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// The list of ports that are exposed by this service.
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
@@ -15633,11 +13391,7 @@ pub struct ComponentDefinitionServicesSpec {
     /// Services interpret this to mean that all endpoints are considered "ready" even if the
     /// Pods themselves are not. Agents which consume only Kubernetes generated endpoints
     /// through the Endpoints or EndpointSlice resources can safely assume this behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publishNotReadyAddresses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
     pub publish_not_ready_addresses: Option<bool>,
     /// Route service traffic to pods with label keys and values matching this
     /// selector. If empty or not present, the service is assumed to have an
@@ -15652,18 +13406,10 @@ pub struct ComponentDefinitionServicesSpec {
     /// Must be ClientIP or None.
     /// Defaults to None.
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// sessionAffinityConfig contains the configurations of session affinity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinityConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<ComponentDefinitionServicesSpecSessionAffinityConfig>,
     /// type determines how the Service is exposed. Defaults to ClusterIP. Valid
     /// options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
@@ -15692,25 +13438,21 @@ pub struct ComponentDefinitionServicesSpecPorts {
     /// This is used as a hint for implementations to offer richer behavior for protocols that they understand.
     /// This field follows standard Kubernetes label syntax.
     /// Valid values are either:
-    ///
-    ///
+    /// 
+    /// 
     /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
     /// RFC-6335 and https://www.iana.org/assignments/service-names).
-    ///
-    ///
+    /// 
+    /// 
     /// * Kubernetes-defined prefixed names:
     ///   * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
     ///   * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
     ///   * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-    ///
-    ///
+    /// 
+    /// 
     /// * Other protocols should use implementation-defined prefixed names such as
     /// mycompany.com/my-custom-protocol.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
     /// The name of this port within the service. This must be a DNS_LABEL.
     /// All ports within a ServiceSpec must have unique names. When considering
@@ -15744,11 +13486,7 @@ pub struct ComponentDefinitionServicesSpecPorts {
     /// This field is ignored for services with clusterIP=None, and should be
     /// omitted or set equal to the 'port' field.
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
 }
 
@@ -15766,59 +13504,46 @@ pub struct ComponentDefinitionServicesSpecSessionAffinityConfigClientIp {
     /// timeoutSeconds specifies the seconds of ClientIP type session sticky time.
     /// The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP".
     /// Default value is 10800(for 3 hours).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionSystemAccounts {
     /// Indicates if this account is a system initialization account (e.g., MySQL root).
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable once set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initAccount")]
     pub init_account: Option<bool>,
     /// Specifies the unique identifier for the account. This name is used by other entities to reference the account.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable once set.
     pub name: String,
     /// Specifies the policy for generating the account's password.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable once set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordGenerationPolicy"
-    )]
-    pub password_generation_policy:
-        Option<ComponentDefinitionSystemAccountsPasswordGenerationPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordGenerationPolicy")]
+    pub password_generation_policy: Option<ComponentDefinitionSystemAccountsPasswordGenerationPolicy>,
     /// Refers to the secret from which data will be copied to create the new account.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ComponentDefinitionSystemAccountsSecretRef>,
     /// Defines the statement used to create the account with the necessary privileges.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub statement: Option<String>,
 }
 
 /// Specifies the policy for generating the account's password.
-///
-///
+/// 
+/// 
 /// This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionSystemAccountsPasswordGenerationPolicy {
@@ -15826,21 +13551,13 @@ pub struct ComponentDefinitionSystemAccountsPasswordGenerationPolicy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub length: Option<i32>,
     /// The case of the letters in the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "letterCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "letterCase")]
     pub letter_case: Option<ComponentDefinitionSystemAccountsPasswordGenerationPolicyLetterCase>,
     /// The number of digits in the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numDigits")]
     pub num_digits: Option<i32>,
     /// The number of symbols in the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numSymbols"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numSymbols")]
     pub num_symbols: Option<i32>,
     /// Seed to generate the account's password.
     /// Cannot be updated.
@@ -15849,8 +13566,8 @@ pub struct ComponentDefinitionSystemAccountsPasswordGenerationPolicy {
 }
 
 /// Specifies the policy for generating the account's password.
-///
-///
+/// 
+/// 
 /// This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ComponentDefinitionSystemAccountsPasswordGenerationPolicyLetterCase {
@@ -15860,8 +13577,8 @@ pub enum ComponentDefinitionSystemAccountsPasswordGenerationPolicyLetterCase {
 }
 
 /// Refers to the secret from which data will be copied to create the new account.
-///
-///
+/// 
+/// 
 /// This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionSystemAccountsSecretRef {
@@ -15882,21 +13599,21 @@ pub enum ComponentDefinitionUpdateStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionVars {
     /// A Go template expression that will be applied to the resolved value of the var.
-    ///
-    ///
+    /// 
+    /// 
     /// The expression will only be evaluated if the var is successfully resolved to a non-credential value.
-    ///
-    ///
+    /// 
+    /// 
     /// The resolved value can be accessed by its name within the expression, system vars and other user-defined
     /// non-credential vars can be used within the expression in the same way.
     /// Notice that, when accessing vars by its name, you should replace all the "-" in the name with "_", because of
     /// that "-" is not a valid identifier in Go.
-    ///
-    ///
+    /// 
+    /// 
     /// All expressions are evaluated in the order the vars are defined. If a var depends on any vars that also
     /// have expressions defined, be careful about the evaluation order as it may use intermediate values.
-    ///
-    ///
+    /// 
+    /// 
     /// The result of evaluation will be used as the final value of the var. If the expression fails to evaluate,
     /// the resolving of var will also be considered failed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -15904,15 +13621,15 @@ pub struct ComponentDefinitionVars {
     /// Name of the variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references `$(VAR_NAME)` are expanded using the previously defined variables in the current context.
-    ///
-    ///
+    /// 
+    /// 
     /// If a variable cannot be resolved, the reference in the input string will be unchanged.
     /// Double `$$` are reduced to a single `$`, which allows for escaping the `$(VAR_NAME)` syntax: i.e.
-    ///
-    ///
+    /// 
+    /// 
     /// - `$$(VAR_NAME)` will produce the string literal `$(VAR_NAME)`.
-    ///
-    ///
+    /// 
+    /// 
     /// Escaped references will never be expanded, regardless of whether the variable exists or not.
     /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -15926,53 +13643,25 @@ pub struct ComponentDefinitionVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionVarsValueFrom {
     /// Selects a defined var of a Component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentVarRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentVarRef")]
     pub component_var_ref: Option<ComponentDefinitionVarsValueFromComponentVarRef>,
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ComponentDefinitionVarsValueFromConfigMapKeyRef>,
     /// Selects a defined var of a Credential (SystemAccount).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialVarRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialVarRef")]
     pub credential_var_ref: Option<ComponentDefinitionVarsValueFromCredentialVarRef>,
     /// Selects a defined var of host-network resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetworkVarRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetworkVarRef")]
     pub host_network_var_ref: Option<ComponentDefinitionVarsValueFromHostNetworkVarRef>,
     /// Selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ComponentDefinitionVarsValueFromSecretKeyRef>,
     /// Selects a defined var of a ServiceRef.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceRefVarRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRefVarRef")]
     pub service_ref_var_ref: Option<ComponentDefinitionVarsValueFromServiceRefVarRef>,
     /// Selects a defined var of a Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceVarRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVarRef")]
     pub service_var_ref: Option<ComponentDefinitionVarsValueFromServiceVarRef>,
 }
 
@@ -15981,35 +13670,22 @@ pub struct ComponentDefinitionVarsValueFrom {
 pub struct ComponentDefinitionVarsValueFromComponentVarRef {
     /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
     /// custom resource (CR) used by the component that the referent object resident in.
-    ///
-    ///
+    /// 
+    /// 
     /// If not specified, the component itself will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
     pub comp_def: Option<String>,
     /// Reference to the name of the Component object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentName")]
     pub component_name: Option<ComponentDefinitionVarsValueFromComponentVarRefComponentName>,
     /// Reference to the pod name list of the component.
     /// and the value will be presented in the following format: name1,name2,...
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceNames")]
     pub instance_names: Option<ComponentDefinitionVarsValueFromComponentVarRefInstanceNames>,
     /// This option defines the behavior when multiple component objects match the specified @CompDef.
     /// If not provided, an error will be raised when handling multiple matches.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleClusterObjectOption"
-    )]
-    pub multiple_cluster_object_option:
-        Option<ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOption>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
+    pub multiple_cluster_object_option: Option<ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOption>,
     /// Name of the referent object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -16045,17 +13721,10 @@ pub enum ComponentDefinitionVarsValueFromComponentVarRefInstanceNames {
 pub struct ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOption {
     /// Define the options for handling combined variables.
     /// Valid only when the strategy is set to "combined".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "combinedOption"
-    )]
-    pub combined_option: Option<
-        ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionCombinedOption,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
+    pub combined_option: Option<ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionCombinedOption>,
     /// Define the strategy for handling multiple cluster objects.
-    pub strategy:
-        ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionStrategy,
+    pub strategy: ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionStrategy,
 }
 
 /// Define the options for handling combined variables.
@@ -16078,8 +13747,7 @@ pub struct ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectO
 
 /// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat
-{
+pub struct ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat {
     /// Pair delimiter.
     pub delimiter: String,
     /// Key-value delimiter.
@@ -16131,20 +13799,15 @@ pub struct ComponentDefinitionVarsValueFromConfigMapKeyRef {
 pub struct ComponentDefinitionVarsValueFromCredentialVarRef {
     /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
     /// custom resource (CR) used by the component that the referent object resident in.
-    ///
-    ///
+    /// 
+    /// 
     /// If not specified, the component itself will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
     pub comp_def: Option<String>,
     /// This option defines the behavior when multiple component objects match the specified @CompDef.
     /// If not provided, an error will be raised when handling multiple matches.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleClusterObjectOption"
-    )]
-    pub multiple_cluster_object_option:
-        Option<ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOption>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
+    pub multiple_cluster_object_option: Option<ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOption>,
     /// Name of the referent object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -16165,17 +13828,10 @@ pub struct ComponentDefinitionVarsValueFromCredentialVarRef {
 pub struct ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOption {
     /// Define the options for handling combined variables.
     /// Valid only when the strategy is set to "combined".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "combinedOption"
-    )]
-    pub combined_option: Option<
-        ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOptionCombinedOption,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
+    pub combined_option: Option<ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOptionCombinedOption>,
     /// Define the strategy for handling multiple cluster objects.
-    pub strategy:
-        ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOptionStrategy,
+    pub strategy: ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOptionStrategy,
 }
 
 /// Define the options for handling combined variables.
@@ -16198,8 +13854,7 @@ pub struct ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObject
 
 /// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat
-{
+pub struct ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat {
     /// Pair delimiter.
     pub delimiter: String,
     /// Key-value delimiter.
@@ -16236,8 +13891,8 @@ pub enum ComponentDefinitionVarsValueFromCredentialVarRefUsername {
 pub struct ComponentDefinitionVarsValueFromHostNetworkVarRef {
     /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
     /// custom resource (CR) used by the component that the referent object resident in.
-    ///
-    ///
+    /// 
+    /// 
     /// If not specified, the component itself will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
     pub comp_def: Option<String>,
@@ -16246,13 +13901,8 @@ pub struct ComponentDefinitionVarsValueFromHostNetworkVarRef {
     pub container: Option<ComponentDefinitionVarsValueFromHostNetworkVarRefContainer>,
     /// This option defines the behavior when multiple component objects match the specified @CompDef.
     /// If not provided, an error will be raised when handling multiple matches.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleClusterObjectOption"
-    )]
-    pub multiple_cluster_object_option:
-        Option<ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOption>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
+    pub multiple_cluster_object_option: Option<ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOption>,
     /// Name of the referent object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -16294,17 +13944,10 @@ pub enum ComponentDefinitionVarsValueFromHostNetworkVarRefContainerPortOption {
 pub struct ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOption {
     /// Define the options for handling combined variables.
     /// Valid only when the strategy is set to "combined".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "combinedOption"
-    )]
-    pub combined_option: Option<
-        ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOptionCombinedOption,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
+    pub combined_option: Option<ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOptionCombinedOption>,
     /// Define the strategy for handling multiple cluster objects.
-    pub strategy:
-        ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOptionStrategy,
+    pub strategy: ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOptionStrategy,
 }
 
 /// Define the options for handling combined variables.
@@ -16327,8 +13970,7 @@ pub struct ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjec
 
 /// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat
-{
+pub struct ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat {
     /// Pair delimiter.
     pub delimiter: String,
     /// Key-value delimiter.
@@ -16366,8 +14008,8 @@ pub struct ComponentDefinitionVarsValueFromSecretKeyRef {
 pub struct ComponentDefinitionVarsValueFromServiceRefVarRef {
     /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
     /// custom resource (CR) used by the component that the referent object resident in.
-    ///
-    ///
+    /// 
+    /// 
     /// If not specified, the component itself will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
     pub comp_def: Option<String>,
@@ -16379,13 +14021,8 @@ pub struct ComponentDefinitionVarsValueFromServiceRefVarRef {
     pub host: Option<ComponentDefinitionVarsValueFromServiceRefVarRefHost>,
     /// This option defines the behavior when multiple component objects match the specified @CompDef.
     /// If not provided, an error will be raised when handling multiple matches.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleClusterObjectOption"
-    )]
-    pub multiple_cluster_object_option:
-        Option<ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOption>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
+    pub multiple_cluster_object_option: Option<ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOption>,
     /// Name of the referent object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -16423,17 +14060,10 @@ pub enum ComponentDefinitionVarsValueFromServiceRefVarRefHost {
 pub struct ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOption {
     /// Define the options for handling combined variables.
     /// Valid only when the strategy is set to "combined".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "combinedOption"
-    )]
-    pub combined_option: Option<
-        ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOptionCombinedOption,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
+    pub combined_option: Option<ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOptionCombinedOption>,
     /// Define the strategy for handling multiple cluster objects.
-    pub strategy:
-        ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOptionStrategy,
+    pub strategy: ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOptionStrategy,
 }
 
 /// Define the options for handling combined variables.
@@ -16456,8 +14086,7 @@ pub struct ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObject
 
 /// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat
-{
+pub struct ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat {
     /// Pair delimiter.
     pub delimiter: String,
     /// Key-value delimiter.
@@ -16501,8 +14130,8 @@ pub enum ComponentDefinitionVarsValueFromServiceRefVarRefUsername {
 pub struct ComponentDefinitionVarsValueFromServiceVarRef {
     /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
     /// custom resource (CR) used by the component that the referent object resident in.
-    ///
-    ///
+    /// 
+    /// 
     /// If not specified, the component itself will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
     pub comp_def: Option<String>,
@@ -16510,24 +14139,15 @@ pub struct ComponentDefinitionVarsValueFromServiceVarRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<ComponentDefinitionVarsValueFromServiceVarRefHost>,
     /// LoadBalancer represents the LoadBalancer ingress point of the service.
-    ///
-    ///
+    /// 
+    /// 
     /// If multiple ingress points are available, the first one will be used automatically, choosing between IP and Hostname.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<ComponentDefinitionVarsValueFromServiceVarRefLoadBalancer>,
     /// This option defines the behavior when multiple component objects match the specified @CompDef.
     /// If not provided, an error will be raised when handling multiple matches.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multipleClusterObjectOption"
-    )]
-    pub multiple_cluster_object_option:
-        Option<ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOption>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
+    pub multiple_cluster_object_option: Option<ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOption>,
     /// Name of the referent object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -16535,8 +14155,8 @@ pub struct ComponentDefinitionVarsValueFromServiceVarRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
     /// Port references a port or node-port defined in the service.
-    ///
-    ///
+    /// 
+    /// 
     /// If the referenced service is a pod-service, there will be multiple service objects matched,
     /// and the value will be presented in the following format: service1.name:port1,service2.name:port2...
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -16563,14 +14183,8 @@ pub enum ComponentDefinitionVarsValueFromServiceVarRefLoadBalancer {
 pub struct ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOption {
     /// Define the options for handling combined variables.
     /// Valid only when the strategy is set to "combined".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "combinedOption"
-    )]
-    pub combined_option: Option<
-        ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOptionCombinedOption,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
+    pub combined_option: Option<ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOptionCombinedOption>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOptionStrategy,
 }
@@ -16595,8 +14209,7 @@ pub struct ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOpt
 
 /// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat
-{
+pub struct ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat {
     /// Pair delimiter.
     pub delimiter: String,
     /// Key-value delimiter.
@@ -16615,8 +14228,8 @@ pub enum ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOptio
 }
 
 /// Port references a port or node-port defined in the service.
-///
-///
+/// 
+/// 
 /// If the referenced service is a pod-service, there will be multiple service objects matched,
 /// and the value will be presented in the following format: service1.name:port1,service2.name:port2...
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -16629,8 +14242,8 @@ pub struct ComponentDefinitionVarsValueFromServiceVarRefPort {
 }
 
 /// Port references a port or node-port defined in the service.
-///
-///
+/// 
+/// 
 /// If the referenced service is a pod-service, there will be multiple service objects matched,
 /// and the value will be presented in the following format: service1.name:port1,service2.name:port2...
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -16642,21 +14255,17 @@ pub enum ComponentDefinitionVarsValueFromServiceVarRefPortOption {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionVolumes {
     /// Sets the critical threshold for volume space utilization as a percentage (0-100).
-    ///
-    ///
+    /// 
+    /// 
     /// Exceeding this percentage triggers the system to switch the volume to read-only mode as specified in
     /// `componentDefinition.spec.lifecycleActions.readOnly`.
     /// This precaution helps prevent space depletion while maintaining read-only access.
     /// If the space utilization later falls below this threshold, the system reverts the volume to read-write mode
     /// as defined in `componentDefinition.spec.lifecycleActions.readWrite`, restoring full functionality.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "highWatermark"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highWatermark")]
     pub high_watermark: Option<i64>,
     /// Specifies the name of the volume.
     /// It must be a DNS_LABEL and unique within the pod.
@@ -16664,14 +14273,10 @@ pub struct ComponentDefinitionVolumes {
     /// Note: This field cannot be updated.
     pub name: String,
     /// Specifies whether the creation of a snapshot of this volume is necessary when performing a backup of the Component.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "needSnapshot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "needSnapshot")]
     pub need_snapshot: Option<bool>,
 }
 
@@ -16682,11 +14287,7 @@ pub struct ComponentDefinitionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// Refers to the most recent generation that has been observed for the ComponentDefinition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Represents the current status of the ComponentDefinition. Valid values include ``, `Available`, and `Unavailable`.
     /// When the status is `Available`, the ComponentDefinition is ready and can be utilized by related objects.
@@ -16700,3 +14301,4 @@ pub enum ComponentDefinitionStatusPhase {
     Available,
     Unavailable,
 }
+

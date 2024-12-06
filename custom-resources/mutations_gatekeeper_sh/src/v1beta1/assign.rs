@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// AssignSpec defines the desired state of Assign.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "mutations.gatekeeper.sh",
-    version = "v1beta1",
-    kind = "Assign",
-    plural = "assign"
-)]
+#[kube(group = "mutations.gatekeeper.sh", version = "v1beta1", kind = "Assign", plural = "assign")]
 #[kube(status = "AssignStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AssignSpec {
     /// ApplyTo lists the specific groups, versions and kinds a mutation will be applied to.
     /// This is necessary because every mutation implies part of an object schema and object
@@ -64,11 +59,7 @@ pub struct AssignMatch {
     /// `excludedNamespaces: [kube-*]` matches both `kube-system` and
     /// `kube-public`, and `excludedNamespaces: [*-system]` matches both `kube-system` and
     /// `gatekeeper-system`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedNamespaces")]
     pub excluded_namespaces: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<AssignMatchKinds>>,
@@ -78,11 +69,7 @@ pub struct AssignMatch {
     /// included in object metadata.  All selection expressions from both
     /// sections are ANDed to determine if an object meets the cumulative
     /// requirements of the selector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<AssignMatchLabelSelector>,
     /// Name is the name of an object.  If defined, it will match against objects with the specified
     /// name.  Name also supports a prefix or suffix glob.  For example, `name: pod-*` would match
@@ -91,11 +78,7 @@ pub struct AssignMatch {
     pub name: Option<String>,
     /// NamespaceSelector is a label selector against an object's containing
     /// namespace or the object itself, if the object is a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<AssignMatchNamespaceSelector>,
     /// Namespaces is a list of namespace names. If defined, a constraint only
     /// applies to resources in a listed namespace.  Namespaces also supports a
@@ -140,20 +123,12 @@ pub struct AssignMatchKinds {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AssignMatchLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AssignMatchLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -179,20 +154,12 @@ pub struct AssignMatchLabelSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AssignMatchNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AssignMatchNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -237,18 +204,10 @@ pub struct AssignParameters {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AssignParametersAssign {
     /// ExternalData describes the external data provider to be used for mutation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalData")]
     pub external_data: Option<AssignParametersAssignExternalData>,
     /// FromMetadata assigns a value from the specified metadata field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromMetadata")]
     pub from_metadata: Option<AssignParametersAssignFromMetadata>,
     /// Value is a constant value that will be assigned to `location`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -260,11 +219,7 @@ pub struct AssignParametersAssign {
 pub struct AssignParametersAssignExternalData {
     /// DataSource specifies where to extract the data that will be sent
     /// to the external data provider as parameters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<AssignParametersAssignExternalDataDataSource>,
     /// Default specifies the default value to use when the external data
     /// provider returns an error and the failure policy is set to "UseDefault".
@@ -272,11 +227,7 @@ pub struct AssignParametersAssignExternalData {
     pub default: Option<String>,
     /// FailurePolicy specifies the policy to apply when the external data
     /// provider returns an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failurePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<AssignParametersAssignExternalDataFailurePolicy>,
     /// Provider is the name of the external data provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -312,8 +263,8 @@ pub struct AssignParametersAssignFromMetadata {
 /// not applied. All `subPath` entries must be a prefix of `location`. Any
 /// glob characters will take on the same value as was used to
 /// expand the matching glob in `location`.
-///
-///
+/// 
+/// 
 /// Available Tests:
 /// * MustExist    - the path must exist or do not mutate
 /// * MustNotExist - the path must not exist or do not mutate.
@@ -332,8 +283,8 @@ pub struct AssignParametersPathTests {
 /// not applied. All `subPath` entries must be a prefix of `location`. Any
 /// glob characters will take on the same value as was used to
 /// expand the matching glob in `location`.
-///
-///
+/// 
+/// 
 /// Available Tests:
 /// * MustExist    - the path must exist or do not mutate
 /// * MustNotExist - the path must not exist or do not mutate.
@@ -362,17 +313,9 @@ pub struct AssignStatusByPod {
     /// Storing the mutator UID allows us to detect drift, such as
     /// when a mutator has been recreated after its CRD was deleted
     /// out from under it, interrupting the watch
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mutatorUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutatorUID")]
     pub mutator_uid: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
@@ -387,3 +330,4 @@ pub struct AssignStatusByPodErrors {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

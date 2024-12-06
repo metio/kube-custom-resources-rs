@@ -5,40 +5,27 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// RedisEnterpriseActiveActiveDatabaseSpec defines the desired state of RedisEnterpriseActiveActiveDatabase
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "app.redislabs.com",
-    version = "v1alpha1",
-    kind = "RedisEnterpriseActiveActiveDatabase",
-    plural = "redisenterpriseactiveactivedatabases"
-)]
+#[kube(group = "app.redislabs.com", version = "v1alpha1", kind = "RedisEnterpriseActiveActiveDatabase", plural = "redisenterpriseactiveactivedatabases")]
 #[kube(namespaced)]
 #[kube(status = "RedisEnterpriseActiveActiveDatabaseStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RedisEnterpriseActiveActiveDatabaseSpec {
     /// The Active-Active database global configurations, contains the global properties for each of the participating clusters/ instances databases within the Active-Active database.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalConfigurations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalConfigurations")]
     pub global_configurations: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurations>,
     /// The list of instances/ clusters specifications and configurations.
     #[serde(rename = "participatingClusters")]
     pub participating_clusters: Vec<RedisEnterpriseActiveActiveDatabaseParticipatingClusters>,
     /// Connection to Redis Enterprise Cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redisEnterpriseCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseCluster")]
     pub redis_enterprise_cluster: Option<RedisEnterpriseActiveActiveDatabaseRedisEnterpriseCluster>,
 }
 
@@ -46,133 +33,65 @@ pub struct RedisEnterpriseActiveActiveDatabaseSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurations {
     /// Connection/ association to the Active-Active database.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeActive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeActive")]
     pub active_active: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsActiveActive>,
     /// Settings for database alerts
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alertSettings"
-    )]
-    pub alert_settings:
-        Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertSettings")]
+    pub alert_settings: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettings>,
     /// Target for automatic database backups.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsBackup>,
     /// The Secrets containing TLS Client Certificate to use for Authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientAuthenticationCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAuthenticationCertificates")]
     pub client_authentication_certificates: Option<Vec<String>>,
     /// Internode encryption (INE) setting. An optional boolean setting, overriding a similar cluster-wide policy. If set to False, INE is guaranteed to be turned off for this DB (regardless of cluster-wide policy). If set to True, INE will be turned on, unless the capability is not supported by the DB ( in such a case we will get an error and database creation will fail). If left unspecified, will be disabled if internode encryption is not supported by the DB (regardless of cluster default). Deleting this property after explicitly setting its value shall have no effect.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataInternodeEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataInternodeEncryption")]
     pub data_internode_encryption: Option<bool>,
     /// Database port number. TCP port on which the database is available. Will be generated automatically if omitted. can not be changed after creation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databasePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databasePort")]
     pub database_port: Option<i64>,
     /// The name of the secret that holds the password to the database (redis databases only). If secret does not exist, it will be created. To define the password, create an opaque secret and set the name in the spec. The password will be taken from the value of the 'password' key. Use an empty string as value within the secret to disable authentication for the database. Notes - For Active-Active databases this secret will not be automatically created, and also, memcached databases must not be set with a value, and a secret/password will not be automatically created for them. Use the memcachedSaslSecretName field to set authentication parameters for memcached databases.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseSecretName")]
     pub database_secret_name: Option<String>,
     /// Is connecting with a default user allowed?  If disabled, the DatabaseSecret will not be created or updated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultUser"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultUser")]
     pub default_user: Option<bool>,
     /// Database eviction policy. see more https://docs.redislabs.com/latest/rs/administering/database-operations/eviction-policy/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionPolicy")]
     pub eviction_policy: Option<String>,
     /// Whether it is an RoF database or not. Applicable only for databases of type "REDIS". Assumed to be false if left blank.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isRof")]
     pub is_rof: Option<bool>,
     /// Credentials used for binary authentication in memcached databases. The credentials should be saved as an opaque secret and the name of that secret should be configured using this field. For username, use 'username' as the key and the actual username as the value. For password, use 'password' as the key and the actual password as the value. Note that connections are not encrypted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memcachedSaslSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memcachedSaslSecretName")]
     pub memcached_sasl_secret_name: Option<String>,
     /// memory size of database. use formats like 100MB, 0.1GB. minimum value in 100MB. When redis on flash (RoF) is enabled, this value refers to RAM+Flash memory, and it must not be below 1GB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memorySize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySize")]
     pub memory_size: Option<String>,
     /// List of modules associated with database. Note - For Active-Active databases this feature is currently in preview. For this feature to take effect for Active-Active databases, set a boolean environment variable with the name "ENABLE_ALPHA_FEATURES" to True. This variable can be set via the redis-enterprise-operator pod spec, or through the operator-environment-config Config Map.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modulesList"
-    )]
-    pub modules_list:
-        Option<Vec<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsModulesList>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modulesList")]
+    pub modules_list: Option<Vec<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsModulesList>>,
     /// OSS Cluster mode option. Note that not all client libraries support OSS cluster mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ossCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ossCluster")]
     pub oss_cluster: Option<bool>,
     /// Database on-disk persistence policy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persistence: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsPersistence>,
     /// The policy used for proxy binding to the endpoint. Supported proxy policies are: single/all-master-shards/all-nodes When left blank, the default value will be chosen according to the value of ossCluster - single if disabled, all-master-shards when enabled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyPolicy")]
     pub proxy_policy: Option<String>,
     /// Whether database should be rack aware. This improves availability - more information: https://docs.redislabs.com/latest/rs/concepts/high-availability/rack-zone-awareness/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rackAware")]
     pub rack_aware: Option<bool>,
     /// Connection to Redis Enterprise Cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redisEnterpriseCluster"
-    )]
-    pub redis_enterprise_cluster:
-        Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsRedisEnterpriseCluster>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseCluster")]
+    pub redis_enterprise_cluster: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsRedisEnterpriseCluster>,
     /// Redis OSS version. Version can be specified via <major.minor> prefix, or via channels - for existing databases - Upgrade Redis OSS version. For new databases - the version which the database will be created with. If set to 'major' - will always upgrade to the most recent major Redis version. If set to 'latest' - will always upgrade to the most recent Redis version. Depends on 'redisUpgradePolicy' - if you want to set the value to 'latest' for some databases, you must set redisUpgradePolicy on the cluster before. Possible values are 'major' or 'latest' When using upgrade - make sure to backup the database before. This value is used only for database type 'redis'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redisVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisVersion")]
     pub redis_version: Option<String>,
     /// What databases to replicate from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaSources"
-    )]
-    pub replica_sources:
-        Option<Vec<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsReplicaSources>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaSources")]
+    pub replica_sources: Option<Vec<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsReplicaSources>>,
     /// In-memory database replication. When enabled, database will have replica shard for every master - leading to higher availability. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replication: Option<bool>,
@@ -180,40 +99,19 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resp3: Option<bool>,
     /// The size of the RAM portion of an RoF database. Similarly to "memorySize" use formats like 100MB, 0.1GB It must be at least 10% of combined memory size (RAM+Flash), as specified by "memorySize".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rofRamSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rofRamSize")]
     pub rof_ram_size: Option<String>,
     /// List of Redis Enteprise ACL and Role bindings to apply
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rolesPermissions"
-    )]
-    pub roles_permissions:
-        Option<Vec<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsRolesPermissions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolesPermissions")]
+    pub roles_permissions: Option<Vec<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsRolesPermissions>>,
     /// Number of database server-side shards
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shardCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardCount")]
     pub shard_count: Option<i64>,
     /// Toggles database sharding for REAADBs (Active Active databases) and enabled by default. This field is blocked for REDB (non-Active Active databases) and sharding is toggled via the shardCount field - when shardCount is 1 this is disabled otherwise enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shardingEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingEnabled")]
     pub sharding_enabled: Option<bool>,
     /// Control the density of shards - should they reside on as few or as many nodes as possible. Available options are "dense" or "sparse". If left unset, defaults to "dense".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shardsPlacement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardsPlacement")]
     pub shards_placement: Option<String>,
     /// Require SSL authenticated and encrypted connections to the database. enabled - all incoming connections to the Database must use SSL. disabled - no incoming connection to the Database should use SSL. replica_ssl - databases that replicate from this one need to use SSL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsMode")]
@@ -222,11 +120,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurations {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsType>,
     /// Specifications for DB upgrade.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upgradeSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeSpec")]
     pub upgrade_spec: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsUpgradeSpec>,
 }
 
@@ -298,8 +192,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsB
 
 /// Active-active source - sync lag is higher than specified threshold value [seconds]
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbCrdtSrcHighSyncerLag
-{
+pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbCrdtSrcHighSyncerLag {
     /// Alert enabled or disabled
     pub enabled: bool,
     /// Threshold for alert going on/off
@@ -308,8 +201,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsB
 
 /// Active-active source - sync has connection error while trying to connect replica source
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbCrdtSrcSyncerConnectionError
-{
+pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbCrdtSrcSyncerConnectionError {
     /// Alert enabled or disabled
     pub enabled: bool,
     /// Threshold for alert going on/off
@@ -318,8 +210,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsB
 
 /// Active-active source - sync encountered in general error
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbCrdtSrcSyncerGeneralError
-{
+pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbCrdtSrcSyncerGeneralError {
     /// Alert enabled or disabled
     pub enabled: bool,
     /// Threshold for alert going on/off
@@ -346,8 +237,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsB
 
 /// An alert for state-machines that are running for too long
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbLongRunningAction
-{
+pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbLongRunningAction {
     /// Alert enabled or disabled
     pub enabled: bool,
     /// Threshold for alert going on/off
@@ -365,8 +255,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsB
 
 /// Dataset RAM overhead of a shard has reached the threshold value [% of its RAM limit]
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbRamDatasetOverhead
-{
+pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbRamDatasetOverhead {
     /// Alert enabled or disabled
     pub enabled: bool,
     /// Threshold for alert going on/off
@@ -384,8 +273,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsB
 
 /// Replica-of source - sync lag is higher than specified threshold value [seconds]
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbReplicaSrcHighSyncerLag
-{
+pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbReplicaSrcHighSyncerLag {
     /// Alert enabled or disabled
     pub enabled: bool,
     /// Threshold for alert going on/off
@@ -394,8 +282,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsB
 
 /// Replica-of source - sync has connection error while trying to connect replica source
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbReplicaSrcSyncerConnectionError
-{
+pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbReplicaSrcSyncerConnectionError {
     /// Alert enabled or disabled
     pub enabled: bool,
     /// Threshold for alert going on/off
@@ -404,8 +291,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsB
 
 /// Number of values kept in a shard's RAM is lower than [values]
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbShardNumRamValues
-{
+pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbShardNumRamValues {
     /// Alert enabled or disabled
     pub enabled: bool,
     /// Threshold for alert going on/off
@@ -563,11 +449,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsRedisEnterpris
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsReplicaSources {
     /// Secret that defines the client certificate and key used by the syncer in the target database cluster. The secret must have 2 keys in its map: "cert" which is the PEM encoded certificate, and "key" which is the PEM encoded private key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientKeySecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKeySecret")]
     pub client_key_secret: Option<String>,
     /// GZIP compression level (0-6) to use for replication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -579,18 +461,10 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsReplicaSources
     #[serde(rename = "replicaSourceType")]
     pub replica_source_type: String,
     /// Secret that defines the server certificate used by the proxy in the source database cluster. The secret must have 1 key in its map: "cert" which is the PEM encoded certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverCertSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCertSecret")]
     pub server_cert_secret: Option<String>,
     /// TLS SNI name to use for the replication link.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsSniName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSniName")]
     pub tls_sni_name: Option<String>,
 }
 
@@ -654,54 +528,25 @@ pub struct RedisEnterpriseActiveActiveDatabaseStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guid: Option<String>,
     /// The last active-active database task UID.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTaskUid"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTaskUid")]
     pub last_task_uid: Option<String>,
     /// The linked REDBs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linkedRedbs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linkedRedbs")]
     pub linked_redbs: Option<Vec<String>>,
     /// The list of instances/ clusters statuses.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "participatingClusters"
-    )]
-    pub participating_clusters:
-        Option<Vec<RedisEnterpriseActiveActiveDatabaseStatusParticipatingClusters>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "participatingClusters")]
+    pub participating_clusters: Option<Vec<RedisEnterpriseActiveActiveDatabaseStatusParticipatingClusters>>,
     /// The Redis Enterprise Cluster Object this Resource is associated with
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redisEnterpriseCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseCluster")]
     pub redis_enterprise_cluster: Option<String>,
     /// The overall replication status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationStatus")]
     pub replication_status: Option<RedisEnterpriseActiveActiveDatabaseStatusReplicationStatus>,
     /// The status of the secrets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretsStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretsStatus")]
     pub secrets_status: Option<Vec<RedisEnterpriseActiveActiveDatabaseStatusSecretsStatus>>,
     /// Whether the desired specification is valid
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "specStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "specStatus")]
     pub spec_status: Option<String>,
     /// The status of the active active database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -717,13 +562,8 @@ pub struct RedisEnterpriseActiveActiveDatabaseStatusParticipatingClusters {
     /// The name of the remote cluster CR that is linked.
     pub name: String,
     /// The replication status of the participating cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationStatus"
-    )]
-    pub replication_status:
-        Option<RedisEnterpriseActiveActiveDatabaseStatusParticipatingClustersReplicationStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationStatus")]
+    pub replication_status: Option<RedisEnterpriseActiveActiveDatabaseStatusParticipatingClustersReplicationStatus>,
 }
 
 /// Status of participating cluster.
@@ -760,3 +600,4 @@ pub enum RedisEnterpriseActiveActiveDatabaseStatusSecretsStatusStatus {
     Valid,
     Invalid,
 }
+

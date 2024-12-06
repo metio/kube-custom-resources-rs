@@ -4,39 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// IBMVPCClusterSpec defines the desired state of IBMVPCCluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "IBMVPCCluster",
-    plural = "ibmvpcclusters"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta1", kind = "IBMVPCCluster", plural = "ibmvpcclusters")]
 #[kube(namespaced)]
 #[kube(status = "IBMVPCClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMVPCClusterSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<IBMVPCClusterControlPlaneEndpoint>,
     /// ControlPlaneLoadBalancer is optional configuration for customizing control plane behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneLoadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneLoadBalancer")]
     pub control_plane_load_balancer: Option<IBMVPCClusterControlPlaneLoadBalancer>,
     /// The IBM Cloud Region the cluster lives in.
     pub region: String,
@@ -75,11 +62,7 @@ pub struct IBMVPCClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ControlPlaneLoadBalancerState is the status of the load balancer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneLoadBalancerState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneLoadBalancerState")]
     pub control_plane_load_balancer_state: Option<String>,
     /// Ready is true when the provider resource is ready.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -92,11 +75,7 @@ pub struct IBMVPCClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMVPCClusterStatusVpc>,
     /// VPCEndpoint describes a VPCEndpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcEndpoint")]
     pub vpc_endpoint: Option<IBMVPCClusterStatusVpcEndpoint>,
 }
 
@@ -122,16 +101,9 @@ pub struct IBMVPCClusterStatusVpc {
 pub struct IBMVPCClusterStatusVpcEndpoint {
     pub address: String,
     /// Deprecated: This field has no function and is going to be removed in the next release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "floatingIPID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "floatingIPID")]
     pub floating_ipid: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIPID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIPID")]
     pub load_balancer_ipid: Option<String>,
 }
+

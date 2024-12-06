@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "acme.cert-manager.io",
-    version = "v1",
-    kind = "Order",
-    plural = "orders"
-)]
+#[kube(group = "acme.cert-manager.io", version = "v1", kind = "Order", plural = "orders")]
 #[kube(namespaced)]
 #[kube(status = "OrderStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct OrderSpec {
     /// CommonName is the common name as specified on the DER encoded CSR.
     /// If specified, this value must also be present in `dnsNames` or `ipAddresses`.
     /// This field must match the corresponding field on the DER encoded CSR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonName")]
     pub common_name: Option<String>,
     /// DNSNames is a list of DNS names that should be included as part of the Order
     /// validation process.
@@ -43,11 +34,7 @@ pub struct OrderSpec {
     /// IPAddresses is a list of IP addresses that should be included as part of the Order
     /// validation process.
     /// This field must match the corresponding field on the DER encoded CSR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipAddresses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddresses")]
     pub ip_addresses: Option<Vec<String>>,
     /// IssuerRef references a properly configured ACME-type Issuer which should
     /// be used to create this Order.
@@ -94,19 +81,11 @@ pub struct OrderStatus {
     pub certificate: Option<String>,
     /// FailureTime stores the time that this order failed.
     /// This is used to influence garbage collection and back-off.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureTime")]
     pub failure_time: Option<String>,
     /// FinalizeURL of the Order.
     /// This is used to obtain certificates for this order once it has been completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "finalizeURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "finalizeURL")]
     pub finalize_url: Option<String>,
     /// Reason optionally provides more information about a why the order is in
     /// the current state.
@@ -146,11 +125,7 @@ pub struct OrderStatusAuthorizations {
     /// Encrypt's production endpoint).
     /// If not set and 'identifier' is set, the state is assumed to be pending
     /// and a Challenge will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialState")]
     pub initial_state: Option<OrderStatusAuthorizationsInitialState>,
     /// URL is the URL of the Authorization that must be completed
     pub url: String,
@@ -221,3 +196,4 @@ pub enum OrderStatusState {
     #[serde(rename = "errored")]
     Errored,
 }
+

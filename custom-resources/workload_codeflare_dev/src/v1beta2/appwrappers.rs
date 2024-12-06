@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// AppWrapperSpec defines the desired state of the AppWrapper
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "workload.codeflare.dev",
-    version = "v1beta2",
-    kind = "AppWrapper",
-    plural = "appwrappers"
-)]
+#[kube(group = "workload.codeflare.dev", version = "v1beta2", kind = "AppWrapper", plural = "appwrappers")]
 #[kube(namespaced)]
 #[kube(status = "AppWrapperStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AppWrapperSpec {
     /// Components lists the components contained in the AppWrapper
     pub components: Vec<AppWrapperComponents>,
@@ -43,11 +38,7 @@ pub struct AppWrapperComponents {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// PodSetInfos assigned to the Component's PodSets by Kueue
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSetInfos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetInfos")]
     pub pod_set_infos: Option<Vec<AppWrapperComponentsPodSetInfos>>,
     /// DeclaredPodSets for the Component (optional for known PodCreating GVKs)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSets")]
@@ -66,11 +57,7 @@ pub struct AppWrapperComponentsPodSetInfos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// NodeSelectors to be added to the PodSpecTemplate
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations to be added to the PodSpecTemplate
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -99,11 +86,7 @@ pub struct AppWrapperComponentsPodSetInfosTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -125,18 +108,14 @@ pub struct AppWrapperComponentsPodSets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AppWrapperStatus {
     /// ComponentStatus parallels the Components array in the Spec and tracks the actually deployed resources
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentStatus")]
     pub component_status: Option<Vec<AppWrapperStatusComponentStatus>>,
     /// Conditions hold the latest available observations of the AppWrapper current state.
-    ///
-    ///
+    /// 
+    /// 
     /// The type of the condition could be:
-    ///
-    ///
+    /// 
+    /// 
     /// - QuotaReserved: The AppWrapper was admitted by Kueue and has quota allocated to it
     /// - ResourcesDeployed: The contained resources are deployed (or being deployed) on the cluster
     /// - PodsReady: All pods of the contained resources are in the Ready or Succeeded state
@@ -148,11 +127,7 @@ pub struct AppWrapperStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     /// Retries counts the number of times the AppWrapper has entered the Resetting Phase
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resettingCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resettingCount")]
     pub resetting_count: Option<i32>,
 }
 
@@ -163,11 +138,11 @@ pub struct AppWrapperStatusComponentStatus {
     #[serde(rename = "apiVersion")]
     pub api_version: String,
     /// Conditions hold the latest available observations of the Component's current state.
-    ///
-    ///
+    /// 
+    /// 
     /// The type of the condition could be:
-    ///
-    ///
+    /// 
+    /// 
     /// - ResourcesDeployed: The component is deployed on the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
@@ -189,3 +164,4 @@ pub struct AppWrapperStatusComponentStatusPodSets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
 }
+

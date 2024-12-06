@@ -4,60 +4,43 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ImageRepositorySpec defines the parameters for scanning an image
 /// repository, e.g., `fluxcd/flux`.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "image.toolkit.fluxcd.io",
-    version = "v1beta1",
-    kind = "ImageRepository",
-    plural = "imagerepositories"
-)]
+#[kube(group = "image.toolkit.fluxcd.io", version = "v1beta1", kind = "ImageRepository", plural = "imagerepositories")]
 #[kube(namespaced)]
 #[kube(status = "ImageRepositoryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ImageRepositorySpec {
     /// AccessFrom defines an ACL for allowing cross-namespace references
     /// to the ImageRepository object based on the caller's namespace labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessFrom")]
     pub access_from: Option<ImageRepositoryAccessFrom>,
     /// CertSecretRef can be given the name of a secret containing
     /// either or both of
-    ///
+    /// 
     ///  - a PEM-encoded client certificate (`certFile`) and private
     ///  key (`keyFile`);
     ///  - a PEM-encoded CA certificate (`caFile`)
-    ///
+    /// 
     ///  and whichever are supplied, will be used for connecting to the
     ///  registry. The client cert and key are useful if you are
     ///  authenticating with a certificate; the CA cert is useful if
     ///  you are using a self-signed server certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<ImageRepositoryCertSecretRef>,
     /// ExclusionList is a list of regex strings used to exclude certain tags
     /// from being stored in the database.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclusionList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusionList")]
     pub exclusion_list: Option<Vec<String>>,
     /// Image is the name of the image repository
     pub image: String,
@@ -72,11 +55,7 @@ pub struct ImageRepositorySpec {
     pub secret_ref: Option<ImageRepositorySecretRef>,
     /// ServiceAccountName is the name of the Kubernetes ServiceAccount used to authenticate
     /// the image pull if the service account has attached pull secrets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// This flag tells the controller to suspend subsequent image scans.
     /// It does not apply to already started scans. Defaults to false.
@@ -105,21 +84,17 @@ pub struct ImageRepositoryAccessFromNamespaceSelectors {
     /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
 /// CertSecretRef can be given the name of a secret containing
 /// either or both of
-///
+/// 
 ///  - a PEM-encoded client certificate (`certFile`) and private
 ///  key (`keyFile`);
 ///  - a PEM-encoded CA certificate (`caFile`)
-///
+/// 
 ///  and whichever are supplied, will be used for connecting to the
 ///  registry. The client cert and key are useful if you are
 ///  authenticating with a certificate; the CA cert is useful if
@@ -146,36 +121,20 @@ pub struct ImageRepositoryStatus {
     /// CanonicalName is the name of the image repository with all the
     /// implied bits made explicit; e.g., `docker.io/library/alpine`
     /// rather than `alpine`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "canonicalImageName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "canonicalImageName")]
     pub canonical_image_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// LastScanResult contains the number of fetched tags.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastScanResult"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastScanResult")]
     pub last_scan_result: Option<ImageRepositoryStatusLastScanResult>,
     /// ObservedGeneration is the last reconciled generation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
 
@@ -187,3 +146,4 @@ pub struct ImageRepositoryStatusLastScanResult {
     #[serde(rename = "tagCount")]
     pub tag_count: i64,
 }
+

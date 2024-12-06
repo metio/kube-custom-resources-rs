@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// TableSpec defines the desired state of Table
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "schemas.schemahero.io",
-    version = "v1alpha4",
-    kind = "Table",
-    plural = "tables"
-)]
+#[kube(group = "schemas.schemahero.io", version = "v1alpha4", kind = "Table", plural = "tables")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TableSpec {
     pub database: String,
     pub name: String,
@@ -53,21 +48,13 @@ pub struct TableSchema {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaCassandra {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusteringOrder"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusteringOrder")]
     pub clustering_order: Option<TableSchemaCassandraClusteringOrder>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub columns: Option<Vec<TableSchemaCassandraColumns>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDeleted")]
     pub is_deleted: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<TableSchemaCassandraProperties>,
@@ -76,11 +63,7 @@ pub struct TableSchemaCassandra {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaCassandraClusteringOrder {
     pub column: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isDescending"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDescending")]
     pub is_descending: Option<bool>,
 }
 
@@ -95,11 +78,7 @@ pub struct TableSchemaCassandraColumns {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaCassandraProperties {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bloomFilterFPChance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bloomFilterFPChance")]
     pub bloom_filter_fp_chance: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub caching: Option<BTreeMap<String, String>>,
@@ -109,59 +88,23 @@ pub struct TableSchemaCassandraProperties {
     pub compaction: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compression: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "crcCheckChance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "crcCheckChance")]
     pub crc_check_chance: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dcLocalReadRepairChance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dcLocalReadRepairChance")]
     pub dc_local_read_repair_chance: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTTL")]
     pub default_ttl: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcGraceSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcGraceSeconds")]
     pub gc_grace_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxIndexInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxIndexInterval")]
     pub max_index_interval: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memtableFlushPeriodMs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memtableFlushPeriodMs")]
     pub memtable_flush_period_ms: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minIndexInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minIndexInterval")]
     pub min_index_interval: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readRepairChance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readRepairChance")]
     pub read_repair_chance: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "speculativeRetry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "speculativeRetry")]
     pub speculative_retry: Option<String>,
 }
 
@@ -169,27 +112,15 @@ pub struct TableSchemaCassandraProperties {
 pub struct TableSchemaCockroachdb {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub columns: Option<Vec<TableSchemaCockroachdbColumns>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "foreignKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "foreignKeys")]
     pub foreign_keys: Option<Vec<TableSchemaCockroachdbForeignKeys>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub indexes: Option<Vec<TableSchemaCockroachdbIndexes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDeleted")]
     pub is_deleted: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "json:triggers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "json:triggers")]
     pub json_triggers: Option<Vec<TableSchemaCockroachdbJsonTriggers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
 }
 
@@ -208,11 +139,7 @@ pub struct TableSchemaCockroachdbColumns {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaCockroachdbColumnsAttributes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoIncrement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoIncrement")]
     pub auto_increment: Option<bool>,
 }
 
@@ -255,26 +182,14 @@ pub struct TableSchemaCockroachdbJsonTriggers {
     pub arguments: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "constraintTrigger"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintTrigger")]
     pub constraint_trigger: Option<bool>,
     pub events: Vec<String>,
     #[serde(rename = "executeProcedure")]
     pub execute_procedure: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forEachRun"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachRun")]
     pub for_each_run: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forEachStatement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachStatement")]
     pub for_each_statement: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -286,27 +201,15 @@ pub struct TableSchemaMysql {
     pub collation: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub columns: Option<Vec<TableSchemaMysqlColumns>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultCharset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultCharset")]
     pub default_charset: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "foreignKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "foreignKeys")]
     pub foreign_keys: Option<Vec<TableSchemaMysqlForeignKeys>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub indexes: Option<Vec<TableSchemaMysqlIndexes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDeleted")]
     pub is_deleted: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
 }
 
@@ -329,11 +232,7 @@ pub struct TableSchemaMysqlColumns {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaMysqlColumnsAttributes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoIncrement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoIncrement")]
     pub auto_increment: Option<bool>,
 }
 
@@ -374,27 +273,15 @@ pub struct TableSchemaMysqlIndexes {
 pub struct TableSchemaPostgres {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub columns: Option<Vec<TableSchemaPostgresColumns>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "foreignKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "foreignKeys")]
     pub foreign_keys: Option<Vec<TableSchemaPostgresForeignKeys>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub indexes: Option<Vec<TableSchemaPostgresIndexes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDeleted")]
     pub is_deleted: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "json:triggers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "json:triggers")]
     pub json_triggers: Option<Vec<TableSchemaPostgresJsonTriggers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
 }
 
@@ -413,11 +300,7 @@ pub struct TableSchemaPostgresColumns {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaPostgresColumnsAttributes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoIncrement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoIncrement")]
     pub auto_increment: Option<bool>,
 }
 
@@ -460,26 +343,14 @@ pub struct TableSchemaPostgresJsonTriggers {
     pub arguments: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "constraintTrigger"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintTrigger")]
     pub constraint_trigger: Option<bool>,
     pub events: Vec<String>,
     #[serde(rename = "executeProcedure")]
     pub execute_procedure: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forEachRun"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachRun")]
     pub for_each_run: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forEachStatement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachStatement")]
     pub for_each_statement: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -489,21 +360,13 @@ pub struct TableSchemaPostgresJsonTriggers {
 pub struct TableSchemaRqlite {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub columns: Option<Vec<TableSchemaRqliteColumns>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "foreignKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "foreignKeys")]
     pub foreign_keys: Option<Vec<TableSchemaRqliteForeignKeys>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub indexes: Option<Vec<TableSchemaRqliteIndexes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDeleted")]
     pub is_deleted: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strict: Option<bool>,
@@ -524,11 +387,7 @@ pub struct TableSchemaRqliteColumns {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaRqliteColumnsAttributes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoIncrement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoIncrement")]
     pub auto_increment: Option<bool>,
 }
 
@@ -569,21 +428,13 @@ pub struct TableSchemaRqliteIndexes {
 pub struct TableSchemaSqlite {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub columns: Option<Vec<TableSchemaSqliteColumns>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "foreignKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "foreignKeys")]
     pub foreign_keys: Option<Vec<TableSchemaSqliteForeignKeys>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub indexes: Option<Vec<TableSchemaSqliteIndexes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDeleted")]
     pub is_deleted: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strict: Option<bool>,
@@ -604,11 +455,7 @@ pub struct TableSchemaSqliteColumns {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaSqliteColumnsAttributes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoIncrement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoIncrement")]
     pub auto_increment: Option<bool>,
 }
 
@@ -649,11 +496,7 @@ pub struct TableSchemaSqliteIndexes {
 pub struct TableSchemaTimescaledb {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub columns: Option<Vec<TableSchemaTimescaledbColumns>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "foreignKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "foreignKeys")]
     pub foreign_keys: Option<Vec<TableSchemaTimescaledbForeignKeys>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hypertable: Option<TableSchemaTimescaledbHypertable>,
@@ -661,11 +504,7 @@ pub struct TableSchemaTimescaledb {
     pub indexes: Option<Vec<TableSchemaTimescaledbIndexes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDeleted")]
     pub is_deleted: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub triggers: Option<Vec<TableSchemaTimescaledbTriggers>>,
@@ -686,11 +525,7 @@ pub struct TableSchemaTimescaledbColumns {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaTimescaledbColumnsAttributes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoIncrement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoIncrement")]
     pub auto_increment: Option<bool>,
 }
 
@@ -718,83 +553,35 @@ pub struct TableSchemaTimescaledbForeignKeysReferences {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaTimescaledbHypertable {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "associatedSchemaName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "associatedSchemaName")]
     pub associated_schema_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "associatedTablePrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "associatedTablePrefix")]
     pub associated_table_prefix: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chunkTimeInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkTimeInterval")]
     pub chunk_time_interval: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compression: Option<TableSchemaTimescaledbHypertableCompression>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createDefaultIndexes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createDefaultIndexes")]
     pub create_default_indexes: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataNodes")]
     pub data_nodes: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ifNotExists"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ifNotExists")]
     pub if_not_exists: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "migrateData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "migrateData")]
     pub migrate_data: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberPartitions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberPartitions")]
     pub number_partitions: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "partitioningColumn"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "partitioningColumn")]
     pub partitioning_column: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "partitioningFunc"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "partitioningFunc")]
     pub partitioning_func: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationFactor")]
     pub replication_factor: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<TableSchemaTimescaledbHypertableRetention>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeColumnName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeColumnName")]
     pub time_column_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timePartitioningFunc"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timePartitioningFunc")]
     pub time_partitioning_func: Option<String>,
 }
 
@@ -827,26 +614,14 @@ pub struct TableSchemaTimescaledbTriggers {
     pub arguments: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "constraintTrigger"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintTrigger")]
     pub constraint_trigger: Option<bool>,
     pub events: Vec<String>,
     #[serde(rename = "executeProcedure")]
     pub execute_procedure: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forEachRun"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachRun")]
     pub for_each_run: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forEachStatement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachStatement")]
     pub for_each_statement: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -883,10 +658,7 @@ pub struct TableStatus {
     /// make startup less noisy by skipping re-planning objects that have been planned
     /// we cannot use the resourceVersion or generation fields because updating them
     /// would cause the object to be modified again
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPlannedTableSpecSHA"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPlannedTableSpecSHA")]
     pub last_planned_table_spec_sha: Option<String>,
 }
+

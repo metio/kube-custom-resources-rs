@@ -5,55 +5,34 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apisix.apache.org",
-    version = "v2",
-    kind = "ApisixUpstream",
-    plural = "apisixupstreams"
-)]
+#[kube(group = "apisix.apache.org", version = "v2", kind = "ApisixUpstream", plural = "apisixupstreams")]
 #[kube(namespaced)]
 #[kube(status = "ApisixUpstreamStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ApisixUpstreamSpec {
     /// Discovery is used to configure service discovery for upstream
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discovery: Option<ApisixUpstreamDiscovery>,
     /// ExternalNodes contains external nodes the Upstream should use If this field is set, the upstream will use these nodes directly without any further resolves
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalNodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalNodes")]
     pub external_nodes: Option<Vec<ApisixUpstreamExternalNodes>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<ApisixUpstreamHealthCheck>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loadbalancer: Option<ApisixUpstreamLoadbalancer>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passHost")]
     pub pass_host: Option<ApisixUpstreamPassHost>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portLevelSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portLevelSettings")]
     pub port_level_settings: Option<Vec<ApisixUpstreamPortLevelSettings>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
@@ -66,11 +45,7 @@ pub struct ApisixUpstreamSpec {
     /// ApisixSecret describes the Kubernetes Secret name and namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecret")]
     pub tls_secret: Option<ApisixUpstreamTlsSecret>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upstreamHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upstreamHost")]
     pub upstream_host: Option<String>,
 }
 
@@ -79,11 +54,7 @@ pub struct ApisixUpstreamSpec {
 pub struct ApisixUpstreamDiscovery {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<BTreeMap<String, serde_json::Value>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -122,11 +93,7 @@ pub struct ApisixUpstreamHealthCheckActive {
     pub http_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "strictTLS")]
     pub strict_tls: Option<bool>,
@@ -162,19 +129,11 @@ pub enum ApisixUpstreamHealthCheckActiveType {
 pub struct ApisixUpstreamHealthCheckActiveUnhealthy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpCodes")]
     pub http_codes: Option<Vec<i64>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpFailures")]
     pub http_failures: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpFailures")]
     pub tcp_failures: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeouts: Option<i64>,
@@ -212,17 +171,9 @@ pub enum ApisixUpstreamHealthCheckPassiveType {
 pub struct ApisixUpstreamHealthCheckPassiveUnhealthy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpCodes")]
     pub http_codes: Option<Vec<i64>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpFailures")]
     pub http_failures: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpFailures")]
     pub tcp_failures: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeouts: Option<i64>,
@@ -276,11 +227,7 @@ pub enum ApisixUpstreamPassHost {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApisixUpstreamPortLevelSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<ApisixUpstreamPortLevelSettingsHealthCheck>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loadbalancer: Option<ApisixUpstreamPortLevelSettingsLoadbalancer>,
@@ -314,11 +261,7 @@ pub struct ApisixUpstreamPortLevelSettingsHealthCheckActive {
     pub http_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "strictTLS")]
     pub strict_tls: Option<bool>,
@@ -354,19 +297,11 @@ pub enum ApisixUpstreamPortLevelSettingsHealthCheckActiveType {
 pub struct ApisixUpstreamPortLevelSettingsHealthCheckActiveUnhealthy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpCodes")]
     pub http_codes: Option<Vec<i64>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpFailures")]
     pub http_failures: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpFailures")]
     pub tcp_failures: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
@@ -404,17 +339,9 @@ pub enum ApisixUpstreamPortLevelSettingsHealthCheckPassiveType {
 pub struct ApisixUpstreamPortLevelSettingsHealthCheckPassiveUnhealthy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpCodes")]
     pub http_codes: Option<Vec<i64>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpFailures")]
     pub http_failures: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpFailures")]
     pub tcp_failures: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
@@ -519,11 +446,7 @@ pub struct ApisixUpstreamStatus {
 pub struct ApisixUpstreamStatusConditions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
@@ -532,3 +455,4 @@ pub struct ApisixUpstreamStatusConditions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

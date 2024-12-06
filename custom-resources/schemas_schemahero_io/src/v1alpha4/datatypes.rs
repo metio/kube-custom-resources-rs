@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// DataTypeSpec defines the desired state of Type
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "schemas.schemahero.io",
-    version = "v1alpha4",
-    kind = "DataType",
-    plural = "datatypes"
-)]
+#[kube(group = "schemas.schemahero.io", version = "v1alpha4", kind = "DataType", plural = "datatypes")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DataTypeSpec {
     pub database: String,
     pub name: String,
@@ -51,4 +46,6 @@ pub struct DataTypeSchemaCassandraFields {
 
 /// DataTypeStatus defines the observed state of Type
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DataTypeStatus {}
+pub struct DataTypeStatus {
+}
+

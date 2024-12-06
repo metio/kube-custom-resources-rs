@@ -4,74 +4,49 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Extend the functionality provided by the Istio proxy through WebAssembly filters. See more details at: https://istio.io/docs/reference/config/proxy_extensions/wasm-plugin.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "extensions.istio.io",
-    version = "v1alpha1",
-    kind = "WasmPlugin",
-    plural = "wasmplugins"
-)]
+#[kube(group = "extensions.istio.io", version = "v1alpha1", kind = "WasmPlugin", plural = "wasmplugins")]
 #[kube(namespaced)]
 #[kube(status = "WasmPluginStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct WasmPluginSpec {
     /// Specifies the failure behavior for the plugin due to fatal errors.
-    ///
+    /// 
     /// Valid Options: FAIL_CLOSE, FAIL_OPEN
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failStrategy")]
     pub fail_strategy: Option<WasmPluginFailStrategy>,
     /// The pull behaviour to be applied when fetching Wasm module by either OCI image or `http/https`.
-    ///
+    /// 
     /// Valid Options: IfNotPresent, Always
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<WasmPluginImagePullPolicy>,
     /// Credentials to use for OCI image pulling.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecret")]
     pub image_pull_secret: Option<String>,
     /// Specifies the criteria to determine which traffic is passed to WasmPlugin.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<Vec<WasmPluginMatch>>,
     /// Determines where in the filter chain this `WasmPlugin` is to be injected.
-    ///
+    /// 
     /// Valid Options: AUTHN, AUTHZ, STATS
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<WasmPluginPhase>,
     /// The configuration that will be passed on to the plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pluginConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginConfig")]
     pub plugin_config: Option<BTreeMap<String, serde_json::Value>>,
     /// The plugin name to be used in the Envoy configuration (used to be called `rootID`).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pluginName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginName")]
     pub plugin_name: Option<String>,
     /// Determines ordering of `WasmPlugins` in the same `phase`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -85,24 +60,16 @@ pub struct WasmPluginSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
     pub target_ref: Option<WasmPluginTargetRef>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefs")]
     pub target_refs: Option<Vec<WasmPluginTargetRefs>>,
     /// Specifies the type of Wasm Extension to be used.
-    ///
+    /// 
     /// Valid Options: HTTP, NETWORK
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<WasmPluginType>,
     /// URL of a Wasm module or OCI container.
     pub url: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verificationKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verificationKey")]
     pub verification_key: Option<String>,
     /// Configuration for a Wasm VM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vmConfig")]
@@ -130,7 +97,7 @@ pub enum WasmPluginImagePullPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WasmPluginMatch {
     /// Criteria for selecting traffic by their direction.
-    ///
+    /// 
     /// Valid Options: CLIENT, SERVER, CLIENT_AND_SERVER
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<WasmPluginMatchMode>,
@@ -173,11 +140,7 @@ pub enum WasmPluginPhase {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WasmPluginSelector {
     /// One or more labels that indicate a specific set of pods/VMs on which a policy should be applied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -236,7 +199,7 @@ pub struct WasmPluginVmConfigEnv {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Source for the environment variable's value.
-    ///
+    /// 
     /// Valid Options: INLINE, HOST
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<WasmPluginVmConfigEnvValueFrom>,
@@ -256,32 +219,20 @@ pub struct WasmPluginStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Resource Generation to which the Reconciled Condition refers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<IntOrString>,
     /// Includes any errors or warnings detected by Istio's analyzers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationMessages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationMessages")]
     pub validation_messages: Option<Vec<WasmPluginStatusValidationMessages>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WasmPluginStatusValidationMessages {
     /// A url pointing to the Istio documentation for this specific error type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "documentationUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "documentationUrl")]
     pub documentation_url: Option<String>,
     /// Represents how severe a message is.
-    ///
+    /// 
     /// Valid Options: UNKNOWN, ERROR, WARNING, INFO
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<WasmPluginStatusValidationMessagesLevel>,
@@ -310,3 +261,4 @@ pub struct WasmPluginStatusValidationMessagesType {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

@@ -4,104 +4,47 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// TenantSpec defines the desired state of Tenant.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "capsule.clastix.io",
-    version = "v1alpha1",
-    kind = "Tenant",
-    plural = "tenants"
-)]
+#[kube(group = "capsule.clastix.io", version = "v1alpha1", kind = "Tenant", plural = "tenants")]
 #[kube(status = "TenantStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct TenantSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalRoleBindings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalRoleBindings")]
     pub additional_role_bindings: Option<Vec<TenantAdditionalRoleBindings>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerRegistries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerRegistries")]
     pub container_registries: Option<TenantContainerRegistries>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalServiceIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalServiceIPs")]
     pub external_service_i_ps: Option<TenantExternalServiceIPs>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClasses")]
     pub ingress_classes: Option<TenantIngressClasses>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressHostnames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressHostnames")]
     pub ingress_hostnames: Option<TenantIngressHostnames>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitRanges")]
     pub limit_ranges: Option<Vec<TenantLimitRanges>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceQuota")]
     pub namespace_quota: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespacesMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespacesMetadata")]
     pub namespaces_metadata: Option<TenantNamespacesMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkPolicies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicies")]
     pub network_policies: Option<Vec<TenantNetworkPolicies>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// OwnerSpec defines tenant owner name and kind.
     pub owner: TenantOwner,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceQuotas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceQuotas")]
     pub resource_quotas: Option<Vec<TenantResourceQuotas>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicesMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicesMetadata")]
     pub services_metadata: Option<TenantServicesMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClasses")]
     pub storage_classes: Option<TenantStorageClasses>,
 }
 
@@ -132,11 +75,7 @@ pub struct TenantAdditionalRoleBindingsSubjects {
 pub struct TenantContainerRegistries {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
 
@@ -149,11 +88,7 @@ pub struct TenantExternalServiceIPs {
 pub struct TenantIngressClasses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
 
@@ -161,11 +96,7 @@ pub struct TenantIngressClasses {
 pub struct TenantIngressHostnames {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
 
@@ -183,21 +114,13 @@ pub struct TenantLimitRangesLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<BTreeMap<String, IntOrString>>,
     /// DefaultRequest is the default resource requirement request value by resource name if resource request is omitted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRequest")]
     pub default_request: Option<BTreeMap<String, IntOrString>>,
     /// Max usage constraints on this kind by resource name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<BTreeMap<String, IntOrString>>,
     /// MaxLimitRequestRatio if specified, the named resource must have a request and limit that are both non-zero where limit divided by request is less than or equal to the enumerated value; this represents the max burst for the named resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLimitRequestRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLimitRequestRatio")]
     pub max_limit_request_ratio: Option<BTreeMap<String, IntOrString>>,
     /// Min usage constraints on this kind by resource name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -209,17 +132,9 @@ pub struct TenantLimitRangesLimits {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantNamespacesMetadata {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAnnotations")]
     pub additional_annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalLabels")]
     pub additional_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -236,11 +151,7 @@ pub struct TenantNetworkPolicies {
     #[serde(rename = "podSelector")]
     pub pod_selector: TenantNetworkPoliciesPodSelector,
     /// policyTypes is a list of rule types that the NetworkPolicy relates to. Valid options are ["Ingress"], ["Egress"], or ["Ingress", "Egress"]. If this field is not specified, it will default based on the existence of ingress or egress rules; policies that contain an egress section are assumed to affect egress, and all policies (whether or not they contain an ingress section) are assumed to affect ingress. If you want to write an egress-only policy, you must explicitly specify policyTypes [ "Egress" ]. Likewise, if you want to write a policy that specifies that no egress is allowed, you must specify a policyTypes value that include "Egress" (since such a policy would not include an egress section and would otherwise default to just [ "Ingress" ]). This field is beta-level in 1.8
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "policyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyTypes")]
     pub policy_types: Option<Vec<String>>,
 }
 
@@ -275,21 +186,13 @@ pub struct TenantNetworkPoliciesEgressTo {
     /// ipBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
     pub ip_block: Option<TenantNetworkPoliciesEgressToIpBlock>,
-    /// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces.
+    /// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces. 
     ///  If podSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the namespaces selected by namespaceSelector. Otherwise it selects all pods in the namespaces selected by namespaceSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantNetworkPoliciesEgressToNamespaceSelector>,
-    /// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods.
+    /// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods. 
     ///  If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the pods matching podSelector in the policy's own namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<TenantNetworkPoliciesEgressToPodSelector>,
 }
 
@@ -303,24 +206,15 @@ pub struct TenantNetworkPoliciesEgressToIpBlock {
     pub except: Option<Vec<String>>,
 }
 
-/// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces.
+/// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces. 
 ///  If podSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the namespaces selected by namespaceSelector. Otherwise it selects all pods in the namespaces selected by namespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantNetworkPoliciesEgressToNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<TenantNetworkPoliciesEgressToNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TenantNetworkPoliciesEgressToNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -336,23 +230,15 @@ pub struct TenantNetworkPoliciesEgressToNamespaceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods.
+/// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods. 
 ///  If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the pods matching podSelector in the policy's own namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantNetworkPoliciesEgressToPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantNetworkPoliciesEgressToPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -385,21 +271,13 @@ pub struct TenantNetworkPoliciesIngressFrom {
     /// ipBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
     pub ip_block: Option<TenantNetworkPoliciesIngressFromIpBlock>,
-    /// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces.
+    /// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces. 
     ///  If podSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the namespaces selected by namespaceSelector. Otherwise it selects all pods in the namespaces selected by namespaceSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<TenantNetworkPoliciesIngressFromNamespaceSelector>,
-    /// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods.
+    /// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods. 
     ///  If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the pods matching podSelector in the policy's own namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<TenantNetworkPoliciesIngressFromPodSelector>,
 }
 
@@ -413,24 +291,15 @@ pub struct TenantNetworkPoliciesIngressFromIpBlock {
     pub except: Option<Vec<String>>,
 }
 
-/// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces.
+/// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces. 
 ///  If podSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the namespaces selected by namespaceSelector. Otherwise it selects all pods in the namespaces selected by namespaceSelector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantNetworkPoliciesIngressFromNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<TenantNetworkPoliciesIngressFromNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TenantNetworkPoliciesIngressFromNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -446,23 +315,15 @@ pub struct TenantNetworkPoliciesIngressFromNamespaceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods.
+/// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods. 
 ///  If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the pods matching podSelector in the policy's own namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantNetworkPoliciesIngressFromPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantNetworkPoliciesIngressFromPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -496,18 +357,10 @@ pub struct TenantNetworkPoliciesIngressPorts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantNetworkPoliciesPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantNetworkPoliciesPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -544,11 +397,7 @@ pub struct TenantResourceQuotas {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hard: Option<BTreeMap<String, IntOrString>>,
     /// scopeSelector is also a collection of filters like scopes that must match each object tracked by a quota but expressed using ScopeSelectorOperator in combination with possible values. For a resource to match, both scopes AND scopeSelector (if specified in spec), must be matched.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scopeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeSelector")]
     pub scope_selector: Option<TenantResourceQuotasScopeSelector>,
     /// A collection of filters that must match each object tracked by a quota. If not specified, the quota matches all objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -559,11 +408,7 @@ pub struct TenantResourceQuotas {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantResourceQuotasScopeSelector {
     /// A list of scope selector requirements by scope of the resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TenantResourceQuotasScopeSelectorMatchExpressions>>,
 }
 
@@ -582,17 +427,9 @@ pub struct TenantResourceQuotasScopeSelectorMatchExpressions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantServicesMetadata {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAnnotations")]
     pub additional_annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalLabels")]
     pub additional_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -600,11 +437,7 @@ pub struct TenantServicesMetadata {
 pub struct TenantStorageClasses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
 
@@ -615,3 +448,4 @@ pub struct TenantStatus {
     pub namespaces: Option<Vec<String>>,
     pub size: i64,
 }
+

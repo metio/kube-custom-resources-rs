@@ -5,104 +5,51 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ServiceDiscoverySpec defines the desired state of ServiceDiscovery.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "submariner.io",
-    version = "v1alpha1",
-    kind = "ServiceDiscovery",
-    plural = "servicediscoveries"
-)]
+#[kube(group = "submariner.io", version = "v1alpha1", kind = "ServiceDiscovery", plural = "servicediscoveries")]
 #[kube(namespaced)]
 #[kube(status = "ServiceDiscoveryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ServiceDiscoverySpec {
     #[serde(rename = "brokerK8sApiServer")]
     pub broker_k8s_api_server: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerK8sApiServerToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerK8sApiServerToken")]
     pub broker_k8s_api_server_token: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerK8sCA"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerK8sCA")]
     pub broker_k8s_ca: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerK8sInsecure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerK8sInsecure")]
     pub broker_k8s_insecure: Option<bool>,
     #[serde(rename = "brokerK8sRemoteNamespace")]
     pub broker_k8s_remote_namespace: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerK8sSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerK8sSecret")]
     pub broker_k8s_secret: Option<String>,
     #[serde(rename = "clusterID")]
     pub cluster_id: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clustersetIPCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clustersetIPCIDR")]
     pub clusterset_ipcidr: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clustersetIPEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clustersetIPEnabled")]
     pub clusterset_ip_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreDNSCustomConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreDNSCustomConfig")]
     pub core_dns_custom_config: Option<ServiceDiscoveryCoreDnsCustomConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customDomains")]
     pub custom_domains: Option<Vec<String>>,
     pub debug: bool,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalnetEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalnetEnabled")]
     pub globalnet_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "haltOnCertificateError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "haltOnCertificateError")]
     pub halt_on_certificate_error: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageOverrides")]
     pub image_overrides: Option<BTreeMap<String, String>>,
     pub namespace: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
@@ -115,11 +62,7 @@ pub struct ServiceDiscoverySpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDiscoveryCoreDnsCustomConfig {
     /// Name of the custom CoreDNS configmap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
     /// Namespace of the custom CoreDNS configmap.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -139,11 +82,7 @@ pub struct ServiceDiscoveryTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -153,38 +92,19 @@ pub struct ServiceDiscoveryTolerations {
 /// ServiceDiscoveryStatus defines the observed state of ServiceDiscovery.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDiscoveryStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentInfo")]
     pub deployment_info: Option<ServiceDiscoveryStatusDeploymentInfo>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceDiscoveryStatusDeploymentInfo {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudProvider")]
     pub cloud_provider: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesType")]
     pub kubernetes_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesTypeVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesTypeVersion")]
     pub kubernetes_type_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesVersion")]
     pub kubernetes_version: Option<String>,
 }
+

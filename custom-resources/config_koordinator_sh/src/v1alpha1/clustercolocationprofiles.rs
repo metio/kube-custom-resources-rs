@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// ClusterColocationProfileSpec is a description of a ClusterColocationProfile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "config.koordinator.sh",
-    version = "v1alpha1",
-    kind = "ClusterColocationProfile",
-    plural = "clustercolocationprofiles"
-)]
+#[kube(group = "config.koordinator.sh", version = "v1alpha1", kind = "ClusterColocationProfile", plural = "clustercolocationprofiles")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterColocationProfileSpec {
     /// AnnotationKeysMapping describes the annotations that needs to inject into Pod.Annotations with the same values.
     /// It sets the Pod.Annotations[AnnotationsToAnnotations[k]] = Pod.Annotations[k] for each key k.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationKeysMapping"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationKeysMapping")]
     pub annotation_keys_mapping: Option<BTreeMap<String, String>>,
     /// Annotations describes the k/v pair that needs to inject into Pod.Annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -39,19 +30,11 @@ pub struct ClusterColocationProfileSpec {
     /// Various Koordinator components determine the priority of the Pod
     /// in the Koordinator through KoordinatorPriority and the priority value in PriorityClassName.
     /// The higher the value, the higher the priority.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "koordinatorPriority"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "koordinatorPriority")]
     pub koordinator_priority: Option<i32>,
     /// LabelKeysMapping describes the labels that needs to inject into Pod.Labels with the same values.
     /// It sets the Pod.Labels[LabelsToLabels[k]] = Pod.Labels[k] for each key k.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelKeysMapping"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelKeysMapping")]
     pub label_keys_mapping: Option<BTreeMap<String, String>>,
     /// Labels describes the k/v pair that needs to inject into Pod.Labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -59,11 +42,7 @@ pub struct ClusterColocationProfileSpec {
     /// NamespaceSelector decides whether to mutate/validate Pods if the
     /// namespace matches the selector.
     /// Default to the empty LabelSelector, which matches everything.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ClusterColocationProfileNamespaceSelector>,
     /// Patch indicates patching podTemplate that will be injected to the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -73,11 +52,7 @@ pub struct ClusterColocationProfileSpec {
     /// The PriorityClassName, priority value in PriorityClassName and
     /// KoordinatorPriority will affect the scheduling, preemption and
     /// other behaviors of Koordinator system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Probability indicates profile will make effect with a probability.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -88,11 +63,7 @@ pub struct ClusterColocationProfileSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "qosClass")]
     pub qos_class: Option<ClusterColocationProfileQosClass>,
     /// If specified, the pod will be dispatched by specified scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// Selector decides whether to mutate/validate Pods if the
     /// Pod matches the selector.
@@ -107,20 +78,12 @@ pub struct ClusterColocationProfileSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterColocationProfileNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterColocationProfileNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -162,20 +125,12 @@ pub enum ClusterColocationProfileQosClass {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterColocationProfileSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterColocationProfileSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -198,4 +153,6 @@ pub struct ClusterColocationProfileSelectorMatchExpressions {
 
 /// ClusterColocationProfileStatus represents information about the status of a ClusterColocationProfile.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterColocationProfileStatus {}
+pub struct ClusterColocationProfileStatus {
+}
+

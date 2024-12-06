@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// BackendGroupSpec defines the desired state of BackendGroup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appmesh.k8s.aws",
-    version = "v1beta2",
-    kind = "BackendGroup",
-    plural = "backendgroups"
-)]
+#[kube(group = "appmesh.k8s.aws", version = "v1beta2", kind = "BackendGroup", plural = "backendgroups")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackendGroupSpec {
-    /// A reference to k8s Mesh CR that this BackendGroup belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+    /// A reference to k8s Mesh CR that this BackendGroup belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
     ///  Populated by the system. Read-only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshRef")]
     pub mesh_ref: Option<BackendGroupMeshRef>,
@@ -31,7 +26,7 @@ pub struct BackendGroupSpec {
     pub virtualservices: Option<Vec<BackendGroupVirtualservices>>,
 }
 
-/// A reference to k8s Mesh CR that this BackendGroup belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+/// A reference to k8s Mesh CR that this BackendGroup belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
 ///  Populated by the system. Read-only.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackendGroupMeshRef {
@@ -53,4 +48,6 @@ pub struct BackendGroupVirtualservices {
 
 /// BackendGroupStatus defines the observed state of BackendGroup
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BackendGroupStatus {}
+pub struct BackendGroupStatus {
+}
+

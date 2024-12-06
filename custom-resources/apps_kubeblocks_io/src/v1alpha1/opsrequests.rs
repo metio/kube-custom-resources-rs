@@ -4,72 +4,51 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// OpsRequestSpec defines the desired state of OpsRequest
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "apps.kubeblocks.io",
-    version = "v1alpha1",
-    kind = "OpsRequest",
-    plural = "opsrequests"
-)]
+#[kube(group = "apps.kubeblocks.io", version = "v1alpha1", kind = "OpsRequest", plural = "opsrequests")]
 #[kube(namespaced)]
 #[kube(status = "OpsRequestStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct OpsRequestSpec {
     /// Specifies the parameters to backup a Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<OpsRequestBackup>,
     /// Deprecated: since v0.9, use backup instead.
     /// Specifies the parameters to backup a Cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSpec")]
     pub backup_spec: Option<OpsRequestBackupSpec>,
     /// Indicates whether the current operation should be canceled and terminated gracefully if it's in the
     /// "Pending", "Creating", or "Running" state.
-    ///
-    ///
+    /// 
+    /// 
     /// This field applies only to "VerticalScaling" and "HorizontalScaling" opsRequests.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: Setting `cancel` to true is irreversible; further modifications to this field are ineffective.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cancel: Option<bool>,
     /// Specifies the name of the Cluster resource that this operation is targeting.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// Deprecated: since v0.9, use clusterName instead.
     /// Specifies the name of the Cluster resource that this operation is targeting.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
     pub cluster_ref: Option<String>,
     /// Specifies a custom operation defined by OpsDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<OpsRequestCustom>,
     /// Indicates whether opsRequest should continue to queue when 'force' is set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enqueueOnForce"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enqueueOnForce")]
     pub enqueue_on_force: Option<bool>,
     /// Lists Expose objects, each specifying a Component and its services to be exposed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -77,47 +56,35 @@ pub struct OpsRequestSpec {
     /// Instructs the system to bypass pre-checks (including cluster state checks and customized pre-conditions hooks)
     /// and immediately execute the opsRequest, except for the opsRequest of 'Start' type, which will still undergo
     /// pre-checks even if `force` is true.
-    ///
-    ///
+    /// 
+    /// 
     /// This is useful for concurrent execution of 'VerticalScaling' and 'HorizontalScaling' opsRequests.
     /// By setting `force` to true, you can bypass the default checks and demand these opsRequests to run
     /// simultaneously.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: Once set, the `force` field is immutable and cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
     /// Lists HorizontalScaling objects, each specifying scaling requirements for a Component,
     /// including desired replica changes, configurations for new instances, modifications for existing instances,
     /// and take offline/online the specified instances.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "horizontalScaling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "horizontalScaling")]
     pub horizontal_scaling: Option<Vec<OpsRequestHorizontalScaling>>,
     /// Specifies the maximum time in seconds that the OpsRequest will wait for its pre-conditions to be met
     /// before it aborts the operation.
     /// If set to 0 (default), pre-conditions must be satisfied immediately for the OpsRequest to proceed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preConditionDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preConditionDeadlineSeconds")]
     pub pre_condition_deadline_seconds: Option<i32>,
     /// Specifies the parameters to rebuild some instances.
     /// Rebuilding an instance involves restoring its data from a backup or another database replica.
     /// The instances being rebuilt usually serve as standby in the cluster.
     /// Hence rebuilding instances is often also referred to as "standby reconstruction".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rebuildFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebuildFrom")]
     pub rebuild_from: Option<Vec<OpsRequestRebuildFrom>>,
     /// Specifies a component and its configuration updates.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is deprecated and replaced by `reconfigures`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reconfigure: Option<OpsRequestReconfigure>,
@@ -134,11 +101,7 @@ pub struct OpsRequestSpec {
     /// Deprecated: since v0.9, use restore instead.
     /// Specifies the parameters to restore a Cluster.
     /// Note that this restore operation will roll back cluster services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreSpec")]
     pub restore_spec: Option<OpsRequestRestoreSpec>,
     /// Lists Switchover objects, each specifying a Component to perform the switchover operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -146,56 +109,36 @@ pub struct OpsRequestSpec {
     /// Specifies the maximum duration (in seconds) that an opsRequest is allowed to run.
     /// If the opsRequest runs longer than this duration, its phase will be marked as Aborted.
     /// If this value is not set or set to 0, the timeout will be ignored and the opsRequest will run indefinitely.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
     /// Specifies the duration in seconds that an OpsRequest will remain in the system after successfully completing
     /// (when `opsRequest.status.phase` is "Succeed") before automatic deletion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ttlSecondsAfterSucceed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterSucceed")]
     pub ttl_seconds_after_succeed: Option<i32>,
     /// Specifies the duration in seconds that an OpsRequest will remain in the system after completion
     /// for any phase other than "Succeed" (e.g., "Failed", "Cancelled", "Aborted") before automatic deletion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ttlSecondsAfterUnsuccessfulCompletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterUnsuccessfulCompletion")]
     pub ttl_seconds_after_unsuccessful_completion: Option<i32>,
     /// Specifies the type of this operation. Supported types include "Start", "Stop", "Restart", "Switchover",
     /// "VerticalScaling", "HorizontalScaling", "VolumeExpansion", "Reconfiguring", "Upgrade", "Backup", "Restore",
     /// "Expose", "RebuildInstance", "Custom".
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once set.
     #[serde(rename = "type")]
     pub r#type: OpsRequestType,
     /// Specifies the desired new version of the Cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upgrade: Option<OpsRequestUpgrade>,
     /// Lists VerticalScaling objects, each specifying a component and its desired compute resources for vertical scaling.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verticalScaling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verticalScaling")]
     pub vertical_scaling: Option<Vec<OpsRequestVerticalScaling>>,
     /// Lists VolumeExpansion objects, each specifying a component and its corresponding volumeClaimTemplates
     /// that requires storage expansion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeExpansion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeExpansion")]
     pub volume_expansion: Option<Vec<OpsRequestVolumeExpansion>>,
 }
 
@@ -204,71 +147,47 @@ pub struct OpsRequestSpec {
 pub struct OpsRequestBackup {
     /// Specifies the name of BackupMethod.
     /// The specified BackupMethod must be defined in the BackupPolicy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupMethod")]
     pub backup_method: Option<String>,
     /// Specifies the name of the Backup custom resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupName")]
     pub backup_name: Option<String>,
     /// Indicates the name of the BackupPolicy applied to perform this Backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupPolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPolicyName")]
     pub backup_policy_name: Option<String>,
     /// Determines whether the backup contents stored in backup repository
     /// should be deleted when the Backup custom resource is deleted.
     /// Supported values are `Retain` and `Delete`.
     /// - `Retain` means that the backup content and its physical snapshot on backup repository are kept.
     /// - `Delete` means that the backup content and its physical snapshot on backup repository are deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
     pub deletion_policy: Option<OpsRequestBackupDeletionPolicy>,
     /// If the specified BackupMethod is incremental, `parentBackupName` is required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parentBackupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentBackupName")]
     pub parent_backup_name: Option<String>,
     /// Determines the duration for which the Backup custom resources should be retained.
-    ///
-    ///
+    /// 
+    /// 
     /// The controller will automatically remove all Backup objects that are older than the specified RetentionPeriod.
     /// For example, RetentionPeriod of `30d` will keep only the Backup objects of last 30 days.
     /// Sample duration format:
-    ///
-    ///
+    /// 
+    /// 
     /// - years: 2y
     /// - months: 6mo
     /// - days: 30d
     /// - hours: 12h
     /// - minutes: 30m
-    ///
-    ///
+    /// 
+    /// 
     /// You can also combine the above durations. For example: 30d12h30m.
     /// If not set, the Backup objects will be kept forever.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `deletionPolicy` is set to 'Delete', then the associated backup data will also be deleted
     /// along with the Backup object.
     /// Otherwise, only the Backup custom resource will be deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retentionPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<String>,
 }
 
@@ -285,71 +204,47 @@ pub enum OpsRequestBackupDeletionPolicy {
 pub struct OpsRequestBackupSpec {
     /// Specifies the name of BackupMethod.
     /// The specified BackupMethod must be defined in the BackupPolicy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupMethod")]
     pub backup_method: Option<String>,
     /// Specifies the name of the Backup custom resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupName")]
     pub backup_name: Option<String>,
     /// Indicates the name of the BackupPolicy applied to perform this Backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupPolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPolicyName")]
     pub backup_policy_name: Option<String>,
     /// Determines whether the backup contents stored in backup repository
     /// should be deleted when the Backup custom resource is deleted.
     /// Supported values are `Retain` and `Delete`.
     /// - `Retain` means that the backup content and its physical snapshot on backup repository are kept.
     /// - `Delete` means that the backup content and its physical snapshot on backup repository are deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
     pub deletion_policy: Option<OpsRequestBackupSpecDeletionPolicy>,
     /// If the specified BackupMethod is incremental, `parentBackupName` is required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parentBackupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentBackupName")]
     pub parent_backup_name: Option<String>,
     /// Determines the duration for which the Backup custom resources should be retained.
-    ///
-    ///
+    /// 
+    /// 
     /// The controller will automatically remove all Backup objects that are older than the specified RetentionPeriod.
     /// For example, RetentionPeriod of `30d` will keep only the Backup objects of last 30 days.
     /// Sample duration format:
-    ///
-    ///
+    /// 
+    /// 
     /// - years: 2y
     /// - months: 6mo
     /// - days: 30d
     /// - hours: 12h
     /// - minutes: 30m
-    ///
-    ///
+    /// 
+    /// 
     /// You can also combine the above durations. For example: 30d12h30m.
     /// If not set, the Backup objects will be kept forever.
-    ///
-    ///
+    /// 
+    /// 
     /// If the `deletionPolicy` is set to 'Delete', then the associated backup data will also be deleted
     /// along with the Backup object.
     /// Otherwise, only the Backup custom resource will be deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retentionPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<String>,
 }
 
@@ -369,32 +264,24 @@ pub struct OpsRequestCustom {
     pub components: Vec<OpsRequestCustomComponents>,
     /// Specifies the maximum number of components to be operated on concurrently to mitigate performance impact
     /// on clusters with multiple components.
-    ///
-    ///
+    /// 
+    /// 
     /// It accepts an absolute number (e.g., 5) or a percentage of components to execute in parallel (e.g., "10%").
     /// Percentages are rounded up to the nearest whole number of components.
     /// For example, if "10%" results in less than one, it rounds up to 1.
-    ///
-    ///
+    /// 
+    /// 
     /// When unspecified, all components are processed simultaneously by default.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This feature is not implemented yet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrentComponents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentComponents")]
     pub max_concurrent_components: Option<IntOrString>,
     /// Specifies the name of the OpsDefinition.
     #[serde(rename = "opsDefinitionName")]
     pub ops_definition_name: String,
     /// Specifies the name of the ServiceAccount to be used for executing the custom operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
 }
 
@@ -420,18 +307,14 @@ pub struct OpsRequestCustomComponentsParameters {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct OpsRequestExpose {
     /// Specifies the name of the Component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentName")]
     pub component_name: Option<String>,
     /// Specifies a list of OpsService.
     /// When an OpsService is exposed, a corresponding ClusterService will be added to `cluster.spec.services`.
     /// On the other hand, when an OpsService is unexposed, the corresponding ClusterService will be removed
     /// from `cluster.spec.services`.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: If `componentName` is not specified, the `ports` and `selector` fields must be provided
     /// in each OpsService definition.
     pub services: Vec<OpsRequestExposeServices>,
@@ -444,32 +327,32 @@ pub struct OpsRequestExpose {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestExposeServices {
     /// Contains cloud provider related parameters if ServiceType is LoadBalancer.
-    ///
-    ///
+    /// 
+    /// 
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// A list of IP families (e.g., IPv4, IPv6) assigned to this Service.
-    ///
-    ///
+    /// 
+    /// 
     /// Usually assigned automatically based on the cluster configuration and the `ipFamilyPolicy` field.
     /// If specified manually, the requested IP family must be available in the cluster and allowed by the `ipFamilyPolicy`.
     /// If the requested IP family is not available or not allowed, the Service creation will fail.
-    ///
-    ///
+    /// 
+    /// 
     /// Valid values:
-    ///
-    ///
+    /// 
+    /// 
     /// - "IPv4"
     /// - "IPv6"
-    ///
-    ///
+    /// 
+    /// 
     /// This field may hold a maximum of two entries (dual-stack families, in either order).
-    ///
-    ///
+    /// 
+    /// 
     /// Common combinations of `ipFamilies` and `ipFamilyPolicy` are:
-    ///
-    ///
+    /// 
+    /// 
     /// - ipFamilies=[] + ipFamilyPolicy="PreferDualStack" :
     ///   The Service prefers dual-stack but can fall back to single-stack if the cluster does not support dual-stack.
     ///   The IP family is automatically assigned based on the cluster configuration.
@@ -483,92 +366,72 @@ pub struct OpsRequestExposeServices {
     ///   The Service uses a single-stack with IPv4 only.
     /// - ipFamilies=["IPV6"] + ipFamilyPolicy="SingleStack" :
     ///   The Service uses a single-stack with IPv6 only.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
     /// Specifies whether the Service should use a single IP family (SingleStack) or two IP families (DualStack).
-    ///
-    ///
+    /// 
+    /// 
     /// Possible values:
-    ///
-    ///
+    /// 
+    /// 
     /// - 'SingleStack' (default) : The Service uses a single IP family.
     ///   If no value is provided, IPFamilyPolicy defaults to SingleStack.
     /// - 'PreferDualStack' : The Service prefers to use two IP families on dual-stack configured clusters
     ///   or a single IP family on single-stack clusters.
     /// - 'RequiredDualStack' : The Service requires two IP families on dual-stack configured clusters.
     ///   If the cluster is not configured for dual-stack, the Service creation fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<String>,
     /// Specifies the name of the Service. This name is used to set `clusterService.name`.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This field cannot be updated.
     pub name: String,
     /// Routes service traffic to pods with matching label keys and values.
     /// If specified, the service will only be exposed to pods matching the selector.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: If the component has roles, at least one of 'roleSelector' or 'podSelector' must be specified.
     /// If both are specified, a pod must match both conditions to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<BTreeMap<String, String>>,
     /// Specifies Port definitions that are to be exposed by a ClusterService.
-    ///
-    ///
+    /// 
+    /// 
     /// If not specified, the Port definitions from non-NodePort and non-LoadBalancer type ComponentService
     /// defined in the ComponentDefinition (`componentDefinition.spec.services`) will be used.
     /// If no matching ComponentService is found, the expose operation will fail.
-    ///
-    ///
+    /// 
+    /// 
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<OpsRequestExposeServicesPorts>>,
     /// Specifies a role to target with the service.
     /// If specified, the service will only be exposed to pods with the matching role.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: If the component has roles, at least one of 'roleSelector' or 'podSelector' must be specified.
     /// If both are specified, a pod must match both conditions to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSelector")]
     pub role_selector: Option<String>,
     /// Determines how the Service is exposed. Defaults to 'ClusterIP'.
     /// Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`.
-    ///
-    ///
+    /// 
+    /// 
     /// - `ClusterIP`: allocates a cluster-internal IP address for load-balancing to endpoints.
     ///    Endpoints are determined by the selector or if that is not specified,
     ///    they are determined by manual construction of an Endpoints object or EndpointSlice objects.
     /// - `NodePort`: builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP.
     /// - `LoadBalancer`: builds on NodePort and creates an external load-balancer (if supported in the current cloud)
     ///    which routes to the same endpoints as the clusterIP.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: although K8s Service type allows the 'ExternalName' type, it is not a valid option for the expose operation.
-    ///
-    ///
+    /// 
+    /// 
     /// For more info, see:
     /// https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
 }
 
@@ -579,25 +442,21 @@ pub struct OpsRequestExposeServicesPorts {
     /// This is used as a hint for implementations to offer richer behavior for protocols that they understand.
     /// This field follows standard Kubernetes label syntax.
     /// Valid values are either:
-    ///
-    ///
+    /// 
+    /// 
     /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
     /// RFC-6335 and https://www.iana.org/assignments/service-names).
-    ///
-    ///
+    /// 
+    /// 
     /// * Kubernetes-defined prefixed names:
     ///   * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
     ///   * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
     ///   * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-    ///
-    ///
+    /// 
+    /// 
     /// * Other protocols should use implementation-defined prefixed names such as
     /// mycompany.com/my-custom-protocol.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
     /// The name of this port within the service. This must be a DNS_LABEL.
     /// All ports within a ServiceSpec must have unique names. When considering
@@ -631,11 +490,7 @@ pub struct OpsRequestExposeServicesPorts {
     /// This field is ignored for services with clusterIP=None, and should be
     /// omitted or set equal to the 'port' field.
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
 }
 
@@ -677,18 +532,10 @@ pub struct OpsRequestHorizontalScalingScaleIn {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<OpsRequestHorizontalScalingScaleInInstances>>,
     /// Specifies the instance names that need to be taken offline.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onlineInstancesToOffline"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlineInstancesToOffline")]
     pub online_instances_to_offline: Option<Vec<String>>,
     /// Specifies the replica changes for the component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaChanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaChanges")]
     pub replica_changes: Option<i32>,
 }
 
@@ -713,25 +560,13 @@ pub struct OpsRequestHorizontalScalingScaleOut {
     pub instances: Option<Vec<OpsRequestHorizontalScalingScaleOutInstances>>,
     /// Defines the configuration for new instances added during scaling, including resource requirements, labels, annotations, etc.
     /// New instances are created based on the provided instance templates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "newInstances"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "newInstances")]
     pub new_instances: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstances>>,
     /// Specifies the instances in the offline list to bring back online.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "offlineInstancesToOnline"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstancesToOnline")]
     pub offline_instances_to_online: Option<Vec<String>>,
     /// Specifies the replica changes for the component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaChanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaChanges")]
     pub replica_changes: Option<i32>,
 }
 
@@ -779,28 +614,15 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstances {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpsRequestHorizontalScalingScaleOutNewInstancesResources>,
     /// Specifies the scheduling policy for the Component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicy>,
     /// Defines VolumeClaimTemplates to override.
     /// Add new or override existing volume claim templates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplates"
-    )]
-    pub volume_claim_templates:
-        Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
+    pub volume_claim_templates: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplates>>,
     /// Defines VolumeMounts to override.
     /// Add new or override existing volume mounts of the first container in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumeMounts>>,
     /// Defines Volumes to override.
     /// Add new or override existing volumes.
@@ -833,34 +655,19 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -883,11 +690,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromConfigMapK
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -899,11 +702,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -933,12 +732,12 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromSecretKeyR
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesResourcesClaims>>,
@@ -1006,30 +805,14 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity: Option<
-        OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinity,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -1079,8 +862,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1098,8 +880,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1142,8 +923,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1161,8 +941,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1281,8 +1060,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1316,8 +1094,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1404,8 +1181,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1439,8 +1215,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1558,8 +1333,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1593,8 +1367,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1681,8 +1454,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1716,8 +1488,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffini
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1753,11 +1524,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTolera
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1903,8 +1670,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTopolo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1921,18 +1687,18 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesSchedulingPolicyTopolo
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplates {
     /// Refers to the name of a volumeMount defined in either:
-    ///
-    ///
+    /// 
+    /// 
     /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
     /// - `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)
-    ///
-    ///
+    /// 
+    /// 
     /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
     pub name: String,
     /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
     /// with the mount name specified in the `name` field.
-    ///
-    ///
+    /// 
+    /// 
     /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
     /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1941,41 +1707,28 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplates {
 
 /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
 /// with the mount name specified in the `name` field.
-///
-///
+/// 
+/// 
 /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
 /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplatesSpec {
     /// Contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// Represents the minimum resources the volume should have.
     /// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
     /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplatesSpecResources>,
+    pub resources: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumeClaimTemplatesSpecResources>,
     /// The name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
 }
 
@@ -2008,11 +1761,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -2028,11 +1777,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -2042,13 +1787,8 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAzureDisk>,
@@ -2069,11 +1809,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -2082,8 +1818,8 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -2093,18 +1829,18 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2114,11 +1850,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumes {
     pub fc: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2126,13 +1858,8 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
@@ -2169,29 +1896,14 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjected>,
@@ -2213,11 +1925,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesVsphereVolume>,
 }
 
@@ -2253,11 +1961,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAwsElasticBlock
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -2310,11 +2014,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -2383,11 +2083,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -2444,24 +2140,15 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -2490,11 +2177,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2506,8 +2189,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApi {
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -2520,25 +2202,15 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItem
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2550,11 +2222,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItem
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2586,8 +2254,8 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -2597,18 +2265,18 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2620,8 +2288,8 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -2630,20 +2298,15 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -2653,8 +2316,8 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -2663,12 +2326,12 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplate {
@@ -2676,23 +2339,19 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolume
     /// when creating it. No other fields are allowed and will be rejected during
     /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<
-        OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateMetadata,
-    >,
+    pub metadata: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is
     /// copied unchanged into the PVC that gets created from this
     /// template. The same fields as in a PersistentVolumeClaim
     /// are also valid here.
-    pub spec:
-        OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpec,
+    pub spec: OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpec,
 }
 
 /// May contain labels and annotations that will be copied into the PVC
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateMetadata
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2796,8 +2455,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolume
 /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
 /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -2833,8 +2491,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolume
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -2857,8 +2514,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolume
 /// status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecResources
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2887,8 +2543,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolume
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2919,11 +2574,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -2955,8 +2606,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlexVolume {
     /// contains more than one secret, all secrets are passed to the plugin
     /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlexVolumeSecretRef>,
 }
 
 /// secretRef is Optional: secretRef is reference to the secret object containing
@@ -2978,18 +2628,10 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlexVolumeSecre
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -3086,18 +2728,10 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -3109,21 +2743,13 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -3225,16 +2851,11 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources:
-        Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSources>>,
+    pub sources: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSources>>,
 }
 
 /// Projection that may be projected along with other supported volume types
@@ -3242,66 +2863,47 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjected {
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
-    ///
+    /// 
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
-    ///
+    /// 
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle: Option<
-        OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesClusterTrustBundle,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesConfigMap>,
+    pub config_map: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesSecret>,
+    pub secret: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token: Option<
-        OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesServiceAccountToken,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -3354,8 +2956,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSource
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3380,9 +2981,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSource
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesConfigMapItems>,
-    >,
+    pub items: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -3418,9 +3017,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSource
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItems>,
-    >,
+    pub items: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -3447,14 +3044,9 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSource
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3464,14 +3056,9 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSource
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3491,9 +3078,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSource
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -3526,8 +3111,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSource
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesServiceAccountToken
-{
+pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSourcesServiceAccountToken {
     /// audience is the intended audience of the token. A recipient of a token
     /// must identify itself with an identifier specified in the audience of the
     /// token, and otherwise should reject the token. The audience defaults to the
@@ -3540,11 +3124,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesProjectedSource
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -3648,11 +3228,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -3663,36 +3239,20 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: OpsRequestHorizontalScalingScaleOutNewInstancesVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -3718,11 +3278,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -3738,11 +3294,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -3781,15 +3333,10 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesStorageos {
     /// secretRef specifies the secret to use for obtaining the StorageOS API
     /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesStorageosSecretRef>,
+    pub secret_ref: Option<OpsRequestHorizontalScalingScaleOutNewInstancesVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -3797,11 +3344,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -3825,18 +3368,10 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -3847,16 +3382,12 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesVolumesVsphereVolume {
 pub struct OpsRequestRebuildFrom {
     /// Indicates the name of the Backup custom resource from which to recover the instance.
     /// Defaults to an empty PersistentVolume if unspecified.
-    ///
-    ///
+    /// 
+    /// 
     /// Note:
     /// - Only full physical backups are supported for multi-replica Components (e.g., 'xtrabackup' for MySQL).
     /// - Logical backups (e.g., 'mysqldump' for MySQL) are unsupported in the current version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupName")]
     pub backup_name: Option<String>,
     /// Specifies the name of the Component.
     #[serde(rename = "componentName")]
@@ -3870,22 +3401,18 @@ pub struct OpsRequestRebuildFrom {
     pub instances: Vec<OpsRequestRebuildFromInstances>,
     /// Defines container environment variables for the restore process.
     /// merged with the ones specified in the Backup and ActionSet resources.
-    ///
-    ///
+    /// 
+    /// 
     /// Merge priority: Restore env > Backup env > ActionSet env.
-    ///
-    ///
+    /// 
+    /// 
     /// Purpose: Some databases require different configurations when being restored as a standby
     /// compared to being restored as a primary.
     /// For example, when restoring MySQL as a replica, you need to set `skip_slave_start="ON"` for 5.7
     /// or `skip_replica_start="ON"` for 8.0.
     /// Allowing environment variables to be passed in makes it more convenient to control these behavioral differences
     /// during the restore process.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreEnv"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreEnv")]
     pub restore_env: Option<Vec<OpsRequestRebuildFromRestoreEnv>>,
 }
 
@@ -3895,11 +3422,7 @@ pub struct OpsRequestRebuildFromInstances {
     pub name: String,
     /// The instance will rebuild on the specified node.
     /// If not set, it will rebuild on a random node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetNodeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNodeName")]
     pub target_node_name: Option<String>,
 }
 
@@ -3928,11 +3451,7 @@ pub struct OpsRequestRebuildFromRestoreEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestRebuildFromRestoreEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<OpsRequestRebuildFromRestoreEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -3940,18 +3459,10 @@ pub struct OpsRequestRebuildFromRestoreEnvValueFrom {
     pub field_ref: Option<OpsRequestRebuildFromRestoreEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<OpsRequestRebuildFromRestoreEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<OpsRequestRebuildFromRestoreEnvValueFromSecretKeyRef>,
 }
 
@@ -3975,11 +3486,7 @@ pub struct OpsRequestRebuildFromRestoreEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestRebuildFromRestoreEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3991,11 +3498,7 @@ pub struct OpsRequestRebuildFromRestoreEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestRebuildFromRestoreEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4020,8 +3523,8 @@ pub struct OpsRequestRebuildFromRestoreEnvValueFromSecretKeyRef {
 }
 
 /// Specifies a component and its configuration updates.
-///
-///
+/// 
+/// 
 /// This field is deprecated and replaced by `reconfigures`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestReconfigure {
@@ -4049,14 +3552,10 @@ pub struct OpsRequestReconfigureConfigurations {
 pub struct OpsRequestReconfigureConfigurationsKeys {
     /// Specifies the content of the entire configuration file.
     /// This field is used to update the complete configuration file.
-    ///
-    ///
+    /// 
+    /// 
     /// Either the `parameters` field or the `fileContent` field must be set, but not both.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileContent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileContent")]
     pub file_content: Option<String>,
     /// Represents a key in the configuration template(as ConfigMap).
     /// Each key in the ConfigMap corresponds to a specific configuration file.
@@ -4064,8 +3563,8 @@ pub struct OpsRequestReconfigureConfigurationsKeys {
     /// Specifies a list of key-value pairs representing parameters and their corresponding values
     /// within a single configuration file.
     /// This field is used to override or set the values of parameters without modifying the entire configuration file.
-    ///
-    ///
+    /// 
+    /// 
     /// Either the `parameters` field or the `fileContent` field must be set, but not both.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<OpsRequestReconfigureConfigurationsKeysParameters>>,
@@ -4124,14 +3623,10 @@ pub struct OpsRequestReconfiguresConfigurations {
 pub struct OpsRequestReconfiguresConfigurationsKeys {
     /// Specifies the content of the entire configuration file.
     /// This field is used to update the complete configuration file.
-    ///
-    ///
+    /// 
+    /// 
     /// Either the `parameters` field or the `fileContent` field must be set, but not both.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileContent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileContent")]
     pub file_content: Option<String>,
     /// Represents a key in the configuration template(as ConfigMap).
     /// Each key in the ConfigMap corresponds to a specific configuration file.
@@ -4139,8 +3634,8 @@ pub struct OpsRequestReconfiguresConfigurationsKeys {
     /// Specifies a list of key-value pairs representing parameters and their corresponding values
     /// within a single configuration file.
     /// This field is used to override or set the values of parameters without modifying the entire configuration file.
-    ///
-    ///
+    /// 
+    /// 
     /// Either the `parameters` field or the `fileContent` field must be set, but not both.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<OpsRequestReconfiguresConfigurationsKeysParameters>>,
@@ -4188,47 +3683,35 @@ pub struct OpsRequestRestore {
     #[serde(rename = "backupName")]
     pub backup_name: String,
     /// Controls the timing of PostReady actions during the recovery process.
-    ///
-    ///
+    /// 
+    /// 
     /// If false (default), PostReady actions execute when the Component reaches the "Running" state.
     /// If true, PostReady actions are delayed until the entire Cluster is "Running,"
     /// ensuring the cluster's overall stability before proceeding.
-    ///
-    ///
+    /// 
+    /// 
     /// This setting is useful for coordinating PostReady operations across the Cluster for optimal cluster conditions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deferPostReadyUntilClusterRunning"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deferPostReadyUntilClusterRunning")]
     pub defer_post_ready_until_cluster_running: Option<bool>,
     /// Specifies a list of environment variables to be set in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<OpsRequestRestoreEnv>>,
     /// Specifies the point in time to which the restore should be performed.
     /// Supported time formats:
-    ///
-    ///
+    /// 
+    /// 
     /// - RFC3339 format, e.g. "2023-11-25T18:52:53Z"
     /// - A human-readable date-time format, e.g. "Jul 25,2023 18:52:53 UTC+0800"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restorePointInTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restorePointInTime")]
     pub restore_point_in_time: Option<String>,
     /// Specifies the policy for restoring volume claims of a Component's Pods.
     /// It determines whether the volume claims should be restored sequentially (one by one) or in parallel (all at once).
     /// Support values:
-    ///
-    ///
+    /// 
+    /// 
     /// - "Serial"
     /// - "Parallel"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeRestorePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeRestorePolicy")]
     pub volume_restore_policy: Option<OpsRequestRestoreVolumeRestorePolicy>,
 }
 
@@ -4257,11 +3740,7 @@ pub struct OpsRequestRestoreEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestRestoreEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<OpsRequestRestoreEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -4269,18 +3748,10 @@ pub struct OpsRequestRestoreEnvValueFrom {
     pub field_ref: Option<OpsRequestRestoreEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<OpsRequestRestoreEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<OpsRequestRestoreEnvValueFromSecretKeyRef>,
 }
 
@@ -4304,11 +3775,7 @@ pub struct OpsRequestRestoreEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestRestoreEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4320,11 +3787,7 @@ pub struct OpsRequestRestoreEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestRestoreEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4365,47 +3828,35 @@ pub struct OpsRequestRestoreSpec {
     #[serde(rename = "backupName")]
     pub backup_name: String,
     /// Controls the timing of PostReady actions during the recovery process.
-    ///
-    ///
+    /// 
+    /// 
     /// If false (default), PostReady actions execute when the Component reaches the "Running" state.
     /// If true, PostReady actions are delayed until the entire Cluster is "Running,"
     /// ensuring the cluster's overall stability before proceeding.
-    ///
-    ///
+    /// 
+    /// 
     /// This setting is useful for coordinating PostReady operations across the Cluster for optimal cluster conditions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deferPostReadyUntilClusterRunning"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deferPostReadyUntilClusterRunning")]
     pub defer_post_ready_until_cluster_running: Option<bool>,
     /// Specifies a list of environment variables to be set in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<OpsRequestRestoreSpecEnv>>,
     /// Specifies the point in time to which the restore should be performed.
     /// Supported time formats:
-    ///
-    ///
+    /// 
+    /// 
     /// - RFC3339 format, e.g. "2023-11-25T18:52:53Z"
     /// - A human-readable date-time format, e.g. "Jul 25,2023 18:52:53 UTC+0800"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restorePointInTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restorePointInTime")]
     pub restore_point_in_time: Option<String>,
     /// Specifies the policy for restoring volume claims of a Component's Pods.
     /// It determines whether the volume claims should be restored sequentially (one by one) or in parallel (all at once).
     /// Support values:
-    ///
-    ///
+    /// 
+    /// 
     /// - "Serial"
     /// - "Parallel"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeRestorePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeRestorePolicy")]
     pub volume_restore_policy: Option<OpsRequestRestoreSpecVolumeRestorePolicy>,
 }
 
@@ -4434,11 +3885,7 @@ pub struct OpsRequestRestoreSpecEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestRestoreSpecEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<OpsRequestRestoreSpecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -4446,18 +3893,10 @@ pub struct OpsRequestRestoreSpecEnvValueFrom {
     pub field_ref: Option<OpsRequestRestoreSpecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<OpsRequestRestoreSpecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<OpsRequestRestoreSpecEnvValueFromSecretKeyRef>,
 }
 
@@ -4481,11 +3920,7 @@ pub struct OpsRequestRestoreSpecEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestRestoreSpecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4497,11 +3932,7 @@ pub struct OpsRequestRestoreSpecEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestRestoreSpecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4540,17 +3971,17 @@ pub struct OpsRequestSwitchover {
     #[serde(rename = "componentName")]
     pub component_name: String,
     /// Specifies the instance to become the primary or leader during a switchover operation.
-    ///
-    ///
+    /// 
+    /// 
     /// The value of `instanceName` can be either:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. "*" (wildcard value):
     /// - Indicates no specific instance is designated as the primary or leader.
     /// - Executes the switchover action from `clusterDefinition.componentDefs[*].switchoverSpec.withoutCandidate`.
     /// - `clusterDefinition.componentDefs[x].switchoverSpec.withoutCandidate` must be defined when using "*".
-    ///
-    ///
+    /// 
+    /// 
     /// 2. A valid instance name (pod name):
     /// - Designates a specific instance (pod) as the primary or leader.
     /// - The name must match one of the pods in the component. Any non-valid pod name is considered invalid.
@@ -4580,18 +4011,14 @@ pub enum OpsRequestType {
 }
 
 /// Specifies the desired new version of the Cluster.
-///
-///
+/// 
+/// 
 /// Note: This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestUpgrade {
     /// Deprecated: since v0.9 because ClusterVersion is deprecated.
     /// Specifies the name of the target ClusterVersion for the upgrade.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterVersionRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersionRef")]
     pub cluster_version_ref: Option<String>,
     /// Lists components to be upgrade based on desired ComponentDefinition and ServiceVersion.
     /// From the perspective of cluster API, the reasonable combinations should be:
@@ -4606,11 +4033,7 @@ pub struct OpsRequestUpgrade {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestUpgradeComponents {
     /// Specifies the name of the ComponentDefinition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentDefinitionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefinitionName")]
     pub component_definition_name: Option<String>,
     /// Specifies the name of the Component.
     #[serde(rename = "componentName")]
@@ -4619,11 +4042,7 @@ pub struct OpsRequestUpgradeComponents {
     /// Referring to the ServiceVersion defined by the ComponentDefinition and ComponentVersion.
     /// And ServiceVersion in ClusterComponentSpec is optional, when no version is specified,
     /// use the latest available version in ComponentVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
 }
 
@@ -4633,12 +4052,12 @@ pub struct OpsRequestUpgradeComponents {
 pub struct OpsRequestVerticalScaling {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<OpsRequestVerticalScalingClaims>>,
@@ -4673,12 +4092,12 @@ pub struct OpsRequestVerticalScalingClaims {
 pub struct OpsRequestVerticalScalingInstances {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<OpsRequestVerticalScalingInstancesClaims>>,
@@ -4753,25 +4172,13 @@ pub struct OpsRequestVolumeExpansionVolumeClaimTemplates {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatus {
     /// Records the time when the OpsRequest was cancelled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cancelTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cancelTimestamp")]
     pub cancel_timestamp: Option<String>,
     /// Records the cluster generation after the OpsRequest action has been handled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterGeneration")]
     pub cluster_generation: Option<i64>,
     /// Records the time when the OpsRequest was completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTimestamp")]
     pub completion_timestamp: Option<String>,
     /// Records the status information of Components changed due to the OpsRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4786,11 +4193,7 @@ pub struct OpsRequestStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extras: Option<Vec<BTreeMap<String, String>>>,
     /// Records the configuration prior to any changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastConfiguration")]
     pub last_configuration: Option<OpsRequestStatusLastConfiguration>,
     /// Represents the phase of the OpsRequest.
     /// Possible values include "Pending", "Creating", "Running", "Cancelling", "Cancelled", "Failed", "Succeed".
@@ -4800,26 +4203,13 @@ pub struct OpsRequestStatus {
     pub progress: String,
     /// Deprecated: Replaced by ReconfiguringStatusAsComponent.
     /// Defines the status information of reconfiguring.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconfiguringStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconfiguringStatus")]
     pub reconfiguring_status: Option<OpsRequestStatusReconfiguringStatus>,
     /// Records the status of a reconfiguring operation if `opsRequest.spec.type` equals to "Reconfiguring".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconfiguringStatusAsComponent"
-    )]
-    pub reconfiguring_status_as_component:
-        Option<BTreeMap<String, OpsRequestStatusReconfiguringStatusAsComponent>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconfiguringStatusAsComponent")]
+    pub reconfiguring_status_as_component: Option<BTreeMap<String, OpsRequestStatusReconfiguringStatusAsComponent>>,
     /// Records the time when the OpsRequest started processing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
 }
 
@@ -4827,11 +4217,7 @@ pub struct OpsRequestStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusComponents {
     /// Records the timestamp when the Component last transitioned to a "Failed" or "Abnormal" phase.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastFailedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastFailedTime")]
     pub last_failed_time: Option<String>,
     /// Provides a human-readable message indicating details about this operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4844,11 +4230,7 @@ pub struct OpsRequestStatusComponents {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCheck")]
     pub pre_check: Option<OpsRequestStatusComponentsPreCheck>,
     /// Describes the progress details of objects or actions associated with the Component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "progressDetails"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "progressDetails")]
     pub progress_details: Option<Vec<OpsRequestStatusComponentsProgressDetails>>,
     /// Provides an explanation for the Component being in its current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4882,18 +4264,10 @@ pub struct OpsRequestStatusComponentsPreCheck {
 pub struct OpsRequestStatusComponentsProgressDetails {
     /// Indicates the name of an OpsAction, as defined in `opsDefinition.spec.actions[*].name`.
     /// Either `objectKey` or `actionName` must be provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "actionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionName")]
     pub action_name: Option<String>,
     /// Lists the tasks, such as Jobs or Pods, that carry out the action.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "actionTasks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionTasks")]
     pub action_tasks: Option<Vec<OpsRequestStatusComponentsProgressDetailsActionTasks>>,
     /// Records the completion time of object processing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
@@ -4928,11 +4302,7 @@ pub struct OpsRequestStatusComponentsProgressDetailsActionTasks {
     /// Indicates the current status of the task, including "Processing", "Failed", "Succeed".
     pub status: OpsRequestStatusComponentsProgressDetailsActionTasksStatus,
     /// The name of the Pod that the task is associated with or operates on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPodName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodName")]
     pub target_pod_name: Option<String>,
 }
 
@@ -4956,11 +4326,7 @@ pub enum OpsRequestStatusComponentsProgressDetailsStatus {
 pub struct OpsRequestStatusLastConfiguration {
     /// Specifies the name of the ClusterVersion.
     /// Deprecated and should be removed in the future version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterVersionRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersionRef")]
     pub cluster_version_ref: Option<String>,
     /// Records the configuration of each Component prior to any changes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4972,21 +4338,17 @@ pub struct OpsRequestStatusLastConfiguration {
 pub struct OpsRequestStatusLastConfigurationComponents {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<OpsRequestStatusLastConfigurationComponentsClaims>>,
     /// Records the name of the ComponentDefinition prior to any changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentDefinitionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentDefinitionName")]
     pub component_definition_name: Option<String>,
     /// Records the InstanceTemplate list of the Component prior to any changes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4996,11 +4358,7 @@ pub struct OpsRequestStatusLastConfigurationComponents {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// Records the offline instances of the Component prior to any changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "offlineInstances"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
     /// Records the `replicas` of the Component prior to any changes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5012,11 +4370,7 @@ pub struct OpsRequestStatusLastConfigurationComponents {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
     /// Records the version of the Service expected to be provisioned by this Component prior to any changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
     /// Records the ClusterComponentService list of the Component prior to any changes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5024,20 +4378,11 @@ pub struct OpsRequestStatusLastConfigurationComponents {
     /// Records the information about various types of resources associated with the Component prior to any changes.
     /// Currently, only one type of resource is supported: "pods".
     /// The "pods" key maps to a list of names of all Pods of the Component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetResources")]
     pub target_resources: Option<BTreeMap<String, String>>,
     /// Records volumes' storage size of the Component prior to any changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplates"
-    )]
-    pub volume_claim_templates:
-        Option<Vec<OpsRequestStatusLastConfigurationComponentsVolumeClaimTemplates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
+    pub volume_claim_templates: Option<Vec<OpsRequestStatusLastConfigurationComponentsVolumeClaimTemplates>>,
 }
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -5083,31 +4428,16 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstances {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpsRequestStatusLastConfigurationComponentsInstancesResources>,
     /// Specifies the scheduling policy for the Component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingPolicy"
-    )]
-    pub scheduling_policy:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
+    pub scheduling_policy: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicy>,
     /// Defines VolumeClaimTemplates to override.
     /// Add new or override existing volume claim templates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplates"
-    )]
-    pub volume_claim_templates:
-        Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumeClaimTemplates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
+    pub volume_claim_templates: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumeClaimTemplates>>,
     /// Defines VolumeMounts to override.
     /// Add new or override existing volume mounts of the first container in the Pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumeMounts>>,
     /// Defines Volumes to override.
     /// Add new or override existing volumes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5139,34 +4469,19 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -5189,11 +4504,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromConfi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -5205,11 +4516,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromField
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5239,12 +4546,12 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromSecre
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesResourcesClaims>>,
@@ -5312,32 +4619,14 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicy 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity: Option<
-        OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinity,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity: Option<
-        OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinity,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity: Option<
-        OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinity,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -5387,8 +4676,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5406,8 +4694,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5450,8 +4737,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5469,8 +4755,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5589,8 +4874,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5624,8 +4908,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5712,8 +4995,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5747,8 +5029,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5866,8 +5147,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5901,8 +5181,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5989,8 +5268,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6024,8 +5302,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6061,11 +5338,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyT
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -6211,8 +5484,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyT
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6229,18 +5501,18 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesSchedulingPolicyT
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumeClaimTemplates {
     /// Refers to the name of a volumeMount defined in either:
-    ///
-    ///
+    /// 
+    /// 
     /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
     /// - `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)
-    ///
-    ///
+    /// 
+    /// 
     /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
     pub name: String,
     /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
     /// with the mount name specified in the `name` field.
-    ///
-    ///
+    /// 
+    /// 
     /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
     /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6249,42 +5521,28 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumeClaimTempla
 
 /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
 /// with the mount name specified in the `name` field.
-///
-///
+/// 
+/// 
 /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
 /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumeClaimTemplatesSpec {
     /// Contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// Represents the minimum resources the volume should have.
     /// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
     /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        OpsRequestStatusLastConfigurationComponentsInstancesVolumeClaimTemplatesSpecResources,
-    >,
+    pub resources: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumeClaimTemplatesSpecResources>,
     /// The name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
 }
 
@@ -6317,11 +5575,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -6337,11 +5591,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -6351,13 +5601,8 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesAzureDisk>,
@@ -6378,13 +5623,8 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
@@ -6392,8 +5632,8 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -6403,18 +5643,18 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6424,11 +5664,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumes {
     pub fc: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6436,13 +5672,8 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
@@ -6479,29 +5710,14 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesPersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesPhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesPortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjected>,
@@ -6523,13 +5739,8 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
-    pub vsphere_volume:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesVsphereVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
@@ -6564,11 +5775,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesAwsElastic
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -6621,17 +5828,12 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesCephfsSecretRef>,
+    pub secret_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesCephfsSecretRef>,
     /// user is optional: User is the rados user name, default is admin
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6667,8 +5869,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesCinder {
     /// secretRef is optional: points to a secret object containing parameters used to connect
     /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesCinderSecretRef>,
+    pub secret_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesCinderSecretRef>,
     /// volumeID used to identify the volume in cinder.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
@@ -6696,11 +5897,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesConfigMap 
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -6710,8 +5907,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesConfigMap 
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumesConfigMapItems>>,
+    pub items: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumesConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -6758,24 +5954,15 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -6804,16 +5991,11 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardAp
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApiItems>>,
+    pub items: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -6821,8 +6003,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardAp
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -6835,25 +6016,15 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardAp
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -6863,14 +6034,9 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardAp
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApiItemsResourceFieldRef
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6902,8 +6068,8 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -6913,18 +6079,18 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6936,8 +6102,8 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeral 
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -6946,21 +6112,15 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeral 
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template: Option<
-        OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplate,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -6970,8 +6130,8 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeral 
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -6980,12 +6140,12 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeral 
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplate {
@@ -7005,8 +6165,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralV
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplateMetadata
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplateMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7110,8 +6269,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralV
 /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
 /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -7147,8 +6305,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralV
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -7171,8 +6328,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralV
 /// status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplateSpecResources
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7201,8 +6357,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralV
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7233,11 +6388,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -7269,8 +6420,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesFlexVolume
     /// contains more than one secret, all secrets are passed to the plugin
     /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesFlexVolumeSecretRef>,
 }
 
 /// secretRef is Optional: secretRef is reference to the secret object containing
@@ -7292,18 +6442,10 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesFlexVolume
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -7400,18 +6542,10 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -7423,21 +6557,13 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -7451,8 +6577,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesIscsi {
     pub read_only: Option<bool>,
     /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesIscsiSecretRef>,
+    pub secret_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesIscsiSecretRef>,
     /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
     /// is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
@@ -7540,16 +6665,11 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjected 
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources:
-        Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSources>>,
+    pub sources: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSources>>,
 }
 
 /// Projection that may be projected along with other supported volume types
@@ -7589,15 +6709,15 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedS
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -7650,8 +6770,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7689,8 +6808,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedS
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesConfigMapItems
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -7740,14 +6858,9 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedS
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -7757,14 +6870,9 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedS
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7784,9 +6892,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedS
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -7819,8 +6925,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedS
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesServiceAccountToken
-{
+pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedSourcesServiceAccountToken {
     /// audience is the intended audience of the token. A recipient of a token
     /// must identify itself with an identifier specified in the audience of the
     /// token, and otherwise should reject the token. The audience defaults to the
@@ -7833,11 +6938,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesProjectedS
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -7941,11 +7042,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -7956,36 +7053,20 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: OpsRequestStatusLastConfigurationComponentsInstancesVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -8011,11 +7092,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -8031,11 +7108,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -8074,15 +7147,10 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesStorageos 
     /// secretRef specifies the secret to use for obtaining the StorageOS API
     /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesStorageosSecretRef>,
+    pub secret_ref: Option<OpsRequestStatusLastConfigurationComponentsInstancesVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -8090,11 +7158,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesStorageos 
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -8118,18 +7182,10 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesVolumesVsphereVol
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -8146,33 +7202,25 @@ pub struct OpsRequestStatusLastConfigurationComponentsServices {
     pub name: String,
     /// Indicates whether to generate individual Services for each Pod.
     /// If set to true, a separate Service will be created for each Pod in the Cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podService")]
     pub pod_service: Option<bool>,
     /// Determines how the Service is exposed. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`.
-    ///
-    ///
+    /// 
+    /// 
     /// - `ClusterIP` allocates a Cluster-internal IP address for load-balancing to endpoints.
     ///    Endpoints are determined by the selector or if that is not specified,
     ///    they are determined by manual construction of an Endpoints object or EndpointSlice objects.
     /// - `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the ClusterIP.
     /// - `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud)
     ///    which routes to the same endpoints as the ClusterIP.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: although K8s Service type allows the 'ExternalName' type, it is not a valid option for ClusterComponentService.
-    ///
-    ///
+    /// 
+    /// 
     /// For more info, see:
     /// https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<OpsRequestStatusLastConfigurationComponentsServicesServiceType>,
 }
 
@@ -8224,33 +7272,21 @@ pub struct OpsRequestStatusReconfiguringStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusReconfiguringStatusConfigurationStatus {
     /// Represents the total count of pods intended to be updated by a configuration change.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expectedCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectedCount")]
     pub expected_count: Option<i32>,
     /// Stores the last applied configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAppliedConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedConfiguration")]
     pub last_applied_configuration: Option<BTreeMap<String, String>>,
     /// Records the last state of the reconfiguration finite state machine.
     /// Possible values include "None", "Retry", "Failed", "NotSupport", "FailedAndRetry".
-    ///
-    ///
+    /// 
+    /// 
     /// - "None" describes fsm has finished and quit.
     /// - "Retry" describes fsm is running.
     /// - "Failed" describes fsm is failed and exited.
     /// - "NotSupport" describes fsm does not support the feature.
     /// - "FailedAndRetry" describes fsm is failed in current state, but can be retried.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStatus")]
     pub last_status: Option<String>,
     /// Provides details about the operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8263,27 +7299,14 @@ pub struct OpsRequestStatusReconfiguringStatusConfigurationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// Records the number of pods successfully updated following a configuration change.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "succeedCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "succeedCount")]
     pub succeed_count: Option<i32>,
     /// Records the UpgradePolicy of the configuration change operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
     pub update_policy: Option<OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatePolicy>,
     /// Contains the updated parameters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedParameters"
-    )]
-    pub updated_parameters:
-        Option<OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatedParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedParameters")]
+    pub updated_parameters: Option<OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatedParameters>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -8309,18 +7332,10 @@ pub struct OpsRequestStatusReconfiguringStatusConfigurationStatusUpdatedParamete
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addedKeys")]
     pub added_keys: Option<BTreeMap<String, String>>,
     /// Lists the name of configuration files that have been deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletedKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletedKeys")]
     pub deleted_keys: Option<BTreeMap<String, String>>,
     /// Maps the name of configuration files to their updated content, detailing the changes made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedKeys")]
     pub updated_keys: Option<BTreeMap<String, String>>,
 }
 
@@ -8333,45 +7348,28 @@ pub struct OpsRequestStatusReconfiguringStatusAsComponent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Describes the status of the component reconfiguring.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configurationStatus"
-    )]
-    pub configuration_status:
-        Option<Vec<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatus>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationStatus")]
+    pub configuration_status: Option<Vec<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatus>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatus {
     /// Represents the total count of pods intended to be updated by a configuration change.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expectedCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectedCount")]
     pub expected_count: Option<i32>,
     /// Stores the last applied configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAppliedConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedConfiguration")]
     pub last_applied_configuration: Option<BTreeMap<String, String>>,
     /// Records the last state of the reconfiguration finite state machine.
     /// Possible values include "None", "Retry", "Failed", "NotSupport", "FailedAndRetry".
-    ///
-    ///
+    /// 
+    /// 
     /// - "None" describes fsm has finished and quit.
     /// - "Retry" describes fsm is running.
     /// - "Failed" describes fsm is failed and exited.
     /// - "NotSupport" describes fsm does not support the feature.
     /// - "FailedAndRetry" describes fsm is failed in current state, but can be retried.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStatus")]
     pub last_status: Option<String>,
     /// Provides details about the operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8384,28 +7382,14 @@ pub struct OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// Records the number of pods successfully updated following a configuration change.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "succeedCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "succeedCount")]
     pub succeed_count: Option<i32>,
     /// Records the UpgradePolicy of the configuration change operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatePolicy"
-    )]
-    pub update_policy:
-        Option<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePolicy")]
+    pub update_policy: Option<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatePolicy>,
     /// Contains the updated parameters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedParameters"
-    )]
-    pub updated_parameters:
-        Option<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatedParameters>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedParameters")]
+    pub updated_parameters: Option<OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpdatedParameters>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -8431,17 +7415,10 @@ pub struct OpsRequestStatusReconfiguringStatusAsComponentConfigurationStatusUpda
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addedKeys")]
     pub added_keys: Option<BTreeMap<String, String>>,
     /// Lists the name of configuration files that have been deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletedKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletedKeys")]
     pub deleted_keys: Option<BTreeMap<String, String>>,
     /// Maps the name of configuration files to their updated content, detailing the changes made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedKeys")]
     pub updated_keys: Option<BTreeMap<String, String>>,
 }
+

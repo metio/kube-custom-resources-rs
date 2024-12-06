@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// PolicyEndpointSpec defines the desired state of PolicyEndpoint
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "networking.k8s.aws",
-    version = "v1alpha1",
-    kind = "PolicyEndpoint",
-    plural = "policyendpoints"
-)]
+#[kube(group = "networking.k8s.aws", version = "v1alpha1", kind = "PolicyEndpoint", plural = "policyendpoints")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PolicyEndpointSpec {
     /// Egress is the list of egress rules containing resolved network addresses
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33,26 +28,14 @@ pub struct PolicyEndpointSpec {
     /// particular traffic direction Ingress or Egress, or both. If default isolation is not
     /// specified, and there are no ingress/egress rules, then the pod is not isolated
     /// from the point of view of this policy. This follows the NetworkPolicy spec.PolicyTypes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podIsolation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIsolation")]
     pub pod_isolation: Option<Vec<String>>,
     /// PodSelector is the podSelector from the policy resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<PolicyEndpointPodSelector>,
     /// PodSelectorEndpoints contains information about the pods
     /// matching the podSelector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSelectorEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelectorEndpoints")]
     pub pod_selector_endpoints: Option<Vec<PolicyEndpointPodSelectorEndpoints>>,
     /// PolicyRef is a reference to the Kubernetes NetworkPolicy resource.
     #[serde(rename = "policyRef")]
@@ -119,20 +102,12 @@ pub struct PolicyEndpointIngressPorts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyEndpointPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyEndpointPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -179,4 +154,6 @@ pub struct PolicyEndpointPolicyRef {
 
 /// PolicyEndpointStatus defines the observed state of PolicyEndpoint
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PolicyEndpointStatus {}
+pub struct PolicyEndpointStatus {
+}
+

@@ -5,56 +5,35 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VirtualServerSpec is the spec of the VirtualServer resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.nginx.org",
-    version = "v1",
-    kind = "VirtualServer",
-    plural = "virtualservers"
-)]
+#[kube(group = "k8s.nginx.org", version = "v1", kind = "VirtualServer", plural = "virtualservers")]
 #[kube(namespaced)]
 #[kube(status = "VirtualServerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VirtualServerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dos: Option<String>,
     /// ExternalDNS defines externaldns sub-resource of a virtual server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalDNS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDNS")]
     pub external_dns: Option<VirtualServerExternalDns>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gunzip: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-snippets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-snippets")]
     pub http_snippets: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// InternalRoute allows for the configuration of internal routing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internalRoute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalRoute")]
     pub internal_route: Option<bool>,
     /// VirtualServerListener references a custom http and/or https listener defined in GlobalConfiguration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -63,11 +42,7 @@ pub struct VirtualServerSpec {
     pub policies: Option<Vec<VirtualServerPolicies>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub routes: Option<Vec<VirtualServerRoutes>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "server-snippets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "server-snippets")]
     pub server_snippets: Option<String>,
     /// TLS defines TLS configuration for a VirtualServer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -85,20 +60,12 @@ pub struct VirtualServerExternalDns {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// ProviderSpecific stores provider specific config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerSpecific"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerSpecific")]
     pub provider_specific: Option<Vec<VirtualServerExternalDnsProviderSpecific>>,
     /// TTL for the record
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordTTL")]
     pub record_ttl: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordType")]
     pub record_type: Option<String>,
 }
 
@@ -140,17 +107,9 @@ pub struct VirtualServerRoutes {
     pub action: Option<VirtualServerRoutesAction>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dos: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorPages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorPages")]
     pub error_pages: Option<Vec<VirtualServerRoutesErrorPages>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "location-snippets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "location-snippets")]
     pub location_snippets: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matches: Option<Vec<VirtualServerRoutesMatches>>,
@@ -184,24 +143,12 @@ pub struct VirtualServerRoutesAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesActionProxy {
     /// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<VirtualServerRoutesActionProxyRequestHeaders>,
     /// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaders")]
     pub response_headers: Option<VirtualServerRoutesActionProxyResponseHeaders>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rewritePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewritePath")]
     pub rewrite_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstream: Option<String>,
@@ -356,24 +303,12 @@ pub struct VirtualServerRoutesMatchesAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesActionProxy {
     /// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<VirtualServerRoutesMatchesActionProxyRequestHeaders>,
     /// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaders")]
     pub response_headers: Option<VirtualServerRoutesMatchesActionProxyResponseHeaders>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rewritePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewritePath")]
     pub rewrite_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstream: Option<String>,
@@ -497,24 +432,12 @@ pub struct VirtualServerRoutesMatchesSplitsAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesSplitsActionProxy {
     /// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<VirtualServerRoutesMatchesSplitsActionProxyRequestHeaders>,
     /// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaders")]
     pub response_headers: Option<VirtualServerRoutesMatchesSplitsActionProxyResponseHeaders>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rewritePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewritePath")]
     pub rewrite_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstream: Option<String>,
@@ -632,24 +555,12 @@ pub struct VirtualServerRoutesSplitsAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesSplitsActionProxy {
     /// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<VirtualServerRoutesSplitsActionProxyRequestHeaders>,
     /// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaders")]
     pub response_headers: Option<VirtualServerRoutesSplitsActionProxyResponseHeaders>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rewritePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewritePath")]
     pub rewrite_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstream: Option<String>,
@@ -732,11 +643,7 @@ pub struct VirtualServerRoutesSplitsActionReturnHeaders {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerTls {
     /// CertManager defines a cert manager config for a TLS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cert-manager"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cert-manager")]
     pub cert_manager: Option<VirtualServerTlsCertManager>,
     /// TLSRedirect defines a redirect for a TLS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -748,45 +655,21 @@ pub struct VirtualServerTls {
 /// CertManager defines a cert manager config for a TLS.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerTlsCertManager {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cluster-issuer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cluster-issuer")]
     pub cluster_issuer: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "common-name"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "common-name")]
     pub common_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "issue-temp-cert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issue-temp-cert")]
     pub issue_temp_cert: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "issuer-group"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuer-group")]
     pub issuer_group: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "issuer-kind"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuer-kind")]
     pub issuer_kind: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "renew-before"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "renew-before")]
     pub renew_before: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usages: Option<String>,
@@ -808,47 +691,23 @@ pub struct VirtualServerTlsRedirect {
 pub struct VirtualServerUpstreams {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPort")]
     pub backup_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "buffer-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buffer-size")]
     pub buffer_size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buffering: Option<bool>,
     /// UpstreamBuffers defines Buffer Configuration for an Upstream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buffers: Option<VirtualServerUpstreamsBuffers>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "client-max-body-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "client-max-body-size")]
     pub client_max_body_size: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connect-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connect-timeout")]
     pub connect_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fail-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fail-timeout")]
     pub fail_timeout: Option<String>,
     /// HealthCheck defines the parameters for active Upstream HealthChecks.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<VirtualServerUpstreamsHealthCheck>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keepalive: Option<i64>,
@@ -860,23 +719,11 @@ pub struct VirtualServerUpstreams {
     pub max_fails: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "next-upstream"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "next-upstream")]
     pub next_upstream: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "next-upstream-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "next-upstream-timeout")]
     pub next_upstream_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "next-upstream-tries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "next-upstream-tries")]
     pub next_upstream_tries: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ntlm: Option<bool>,
@@ -885,32 +732,16 @@ pub struct VirtualServerUpstreams {
     /// UpstreamQueue defines Queue Configuration for an Upstream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queue: Option<VirtualServerUpstreamsQueue>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "read-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "read-timeout")]
     pub read_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "send-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "send-timeout")]
     pub send_timeout: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
     /// SessionCookie defines the parameters for session persistence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionCookie"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionCookie")]
     pub session_cookie: Option<VirtualServerUpstreamsSessionCookie>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "slow-start"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slow-start")]
     pub slow_start: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subselector: Option<BTreeMap<String, String>>,
@@ -919,11 +750,7 @@ pub struct VirtualServerUpstreams {
     pub tls: Option<VirtualServerUpstreamsTls>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-cluster-ip"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-cluster-ip")]
     pub use_cluster_ip: Option<bool>,
 }
 
@@ -939,27 +766,15 @@ pub struct VirtualServerUpstreamsBuffers {
 /// HealthCheck defines the parameters for active Upstream HealthChecks.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerUpstreamsHealthCheck {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connect-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connect-timeout")]
     pub connect_timeout: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fails: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grpcService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcService")]
     pub grpc_service: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grpcStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcStatus")]
     pub grpc_status: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<VirtualServerUpstreamsHealthCheckHeaders>>,
@@ -967,11 +782,7 @@ pub struct VirtualServerUpstreamsHealthCheck {
     pub interval: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jitter: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepalive-time"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepalive-time")]
     pub keepalive_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mandatory: Option<bool>,
@@ -983,23 +794,11 @@ pub struct VirtualServerUpstreamsHealthCheck {
     pub persistent: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "read-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "read-timeout")]
     pub read_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "send-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "send-timeout")]
     pub send_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMatch")]
     pub status_match: Option<String>,
     /// UpstreamTLS defines a TLS configuration for an Upstream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1062,11 +861,7 @@ pub struct VirtualServerUpstreamsTls {
 /// VirtualServerStatus defines the status for the VirtualServer resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEndpoints")]
     pub external_endpoints: Option<Vec<VirtualServerStatusExternalEndpoints>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -1086,3 +881,4 @@ pub struct VirtualServerStatusExternalEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<String>,
 }
+

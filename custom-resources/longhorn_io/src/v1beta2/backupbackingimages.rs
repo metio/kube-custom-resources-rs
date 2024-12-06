@@ -5,34 +5,25 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// BackupBackingImageSpec defines the desired state of the Longhorn backing image backup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "BackupBackingImage",
-    plural = "backupbackingimages"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "BackupBackingImage", plural = "backupbackingimages")]
 #[kube(namespaced)]
 #[kube(status = "BackupBackingImageStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackupBackingImageSpec {
     /// The labels of backing image backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// The time to request run sync the remote backing image backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncRequestedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncRequestedAt")]
     pub sync_requested_at: Option<String>,
     /// Is this CR created by user through API or UI.
     /// Required
@@ -44,28 +35,16 @@ pub struct BackupBackingImageSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupBackingImageStatus {
     /// The backing image name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backingImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
     pub backing_image: Option<String>,
     /// The backing image backup upload finished time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupCreatedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupCreatedAt")]
     pub backup_created_at: Option<String>,
     /// The checksum of the backing image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
     /// Compression method
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMethod")]
     pub compression_method: Option<String>,
     /// The error message when taking the backing image backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -74,18 +53,10 @@ pub struct BackupBackingImageStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// The last time that the backing image backup was synced with the remote backup target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncedAt")]
     pub last_synced_at: Option<String>,
     /// The address of the backing image manager that runs backing image backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managerAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managerAddress")]
     pub manager_address: Option<String>,
     /// The error messages when listing or inspecting backing image backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -100,11 +71,7 @@ pub struct BackupBackingImageStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// Record the secret namespace if this backup backing image is encrypted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
     pub secret_namespace: Option<String>,
     /// The backing image size.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -117,3 +84,4 @@ pub struct BackupBackingImageStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
+

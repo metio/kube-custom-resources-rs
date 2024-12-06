@@ -4,31 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apisix.apache.org",
-    version = "v2",
-    kind = "ApisixClusterConfig",
-    plural = "apisixclusterconfigs"
-)]
+#[kube(group = "apisix.apache.org", version = "v2", kind = "ApisixClusterConfig", plural = "apisixclusterconfigs")]
 #[kube(status = "ApisixClusterConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ApisixClusterConfigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub admin: Option<ApisixClusterConfigAdmin>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitoring: Option<ApisixClusterConfigMonitoring>,
@@ -62,11 +53,7 @@ pub struct ApisixClusterConfigMonitoringPrometheus {
 pub struct ApisixClusterConfigMonitoringSkywalking {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleRatio")]
     pub sample_ratio: Option<f64>,
 }
 
@@ -74,10 +61,7 @@ pub struct ApisixClusterConfigMonitoringSkywalking {
 pub struct ApisixClusterConfigStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

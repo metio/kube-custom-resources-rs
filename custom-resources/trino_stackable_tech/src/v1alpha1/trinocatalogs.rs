@@ -5,30 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// The TrinoCatalog resource can be used to define catalogs in Kubernetes objects. Read more about it in the [Trino operator concept docs](https://docs.stackable.tech/home/nightly/trino/concepts) and the [Trino operator usage guide](https://docs.stackable.tech/home/nightly/trino/usage-guide/catalogs/). The documentation also contains a list of all the supported backends.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "trino.stackable.tech",
-    version = "v1alpha1",
-    kind = "TrinoCatalog",
-    plural = "trinocatalogs"
-)]
+#[kube(group = "trino.stackable.tech", version = "v1alpha1", kind = "TrinoCatalog", plural = "trinocatalogs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TrinoCatalogSpec {
     /// The `configOverrides` allow overriding arbitrary Trino settings. For example, for Hive you could add `hive.metastore.username: trino`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, String>>,
     /// The `connector` defines which connector is used.
     pub connector: TrinoCatalogConnector,
@@ -47,11 +38,7 @@ pub struct TrinoCatalogConnector {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generic: Option<TrinoCatalogConnectorGeneric>,
     /// A [Google sheets](https://docs.stackable.tech/home/nightly/trino/usage-guide/catalogs/google-sheets) connector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "googleSheet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "googleSheet")]
     pub google_sheet: Option<TrinoCatalogConnectorGoogleSheet>,
     /// An [Apache Hive](https://docs.stackable.tech/home/nightly/trino/usage-guide/catalogs/hive) connector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -69,7 +56,8 @@ pub struct TrinoCatalogConnector {
 
 /// A [Black Hole](https://docs.stackable.tech/home/nightly/trino/usage-guide/catalogs/black-hole) connector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TrinoCatalogConnectorBlackHole {}
+pub struct TrinoCatalogConnectorBlackHole {
+}
 
 /// An [Delta Lake](https://docs.stackable.tech/home/nightly/trino/usage-guide/catalogs/delta-lake) connector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -114,11 +102,7 @@ pub struct TrinoCatalogConnectorDeltaLakeS3 {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorDeltaLakeS3Inline {
     /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessStyle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<TrinoCatalogConnectorDeltaLakeS3InlineAccessStyle>,
     /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -155,11 +139,7 @@ pub struct TrinoCatalogConnectorDeltaLakeS3InlineCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorDeltaLakeS3InlineCredentialsScope {
     /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenerVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
     /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -192,7 +172,8 @@ pub struct TrinoCatalogConnectorDeltaLakeS3InlineTlsVerification {
 
 /// Use TLS but don't verify certificates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TrinoCatalogConnectorDeltaLakeS3InlineTlsVerificationNone {}
+pub struct TrinoCatalogConnectorDeltaLakeS3InlineTlsVerificationNone {
+}
 
 /// Use TLS and a CA certificate to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -206,11 +187,7 @@ pub struct TrinoCatalogConnectorDeltaLakeS3InlineTlsVerificationServer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorDeltaLakeS3InlineTlsVerificationServerCaCert {
     /// Name of the [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
     /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
@@ -219,7 +196,8 @@ pub struct TrinoCatalogConnectorDeltaLakeS3InlineTlsVerificationServerCaCert {
 
 /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TrinoCatalogConnectorDeltaLakeS3InlineTlsVerificationServerCaCertWebPki {}
+pub struct TrinoCatalogConnectorDeltaLakeS3InlineTlsVerificationServerCaCertWebPki {
+}
 
 /// A [generic](https://docs.stackable.tech/home/nightly/trino/usage-guide/catalogs/generic) connector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -238,18 +216,10 @@ pub struct TrinoCatalogConnectorGenericProperties {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Selects a key from a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "valueFromConfigMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFromConfigMap")]
     pub value_from_config_map: Option<TrinoCatalogConnectorGenericPropertiesValueFromConfigMap>,
     /// SecretKeySelector selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "valueFromSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFromSecret")]
     pub value_from_secret: Option<TrinoCatalogConnectorGenericPropertiesValueFromSecret>,
 }
 
@@ -295,18 +265,10 @@ pub struct TrinoCatalogConnectorGoogleSheet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorGoogleSheetCache {
     /// How long to cache spreadsheet data or metadata, defaults to `5m`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sheetsDataExpireAfterWrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sheetsDataExpireAfterWrite")]
     pub sheets_data_expire_after_write: Option<String>,
     /// Maximum number of spreadsheets to cache, defaults to 1000.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sheetsDataMaxCacheSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sheetsDataMaxCacheSize")]
     pub sheets_data_max_cache_size: Option<String>,
 }
 
@@ -353,11 +315,7 @@ pub struct TrinoCatalogConnectorHiveS3 {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorHiveS3Inline {
     /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessStyle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<TrinoCatalogConnectorHiveS3InlineAccessStyle>,
     /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -394,11 +352,7 @@ pub struct TrinoCatalogConnectorHiveS3InlineCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorHiveS3InlineCredentialsScope {
     /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenerVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
     /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -431,7 +385,8 @@ pub struct TrinoCatalogConnectorHiveS3InlineTlsVerification {
 
 /// Use TLS but don't verify certificates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TrinoCatalogConnectorHiveS3InlineTlsVerificationNone {}
+pub struct TrinoCatalogConnectorHiveS3InlineTlsVerificationNone {
+}
 
 /// Use TLS and a CA certificate to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -445,11 +400,7 @@ pub struct TrinoCatalogConnectorHiveS3InlineTlsVerificationServer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorHiveS3InlineTlsVerificationServerCaCert {
     /// Name of the [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
     /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
@@ -458,7 +409,8 @@ pub struct TrinoCatalogConnectorHiveS3InlineTlsVerificationServerCaCert {
 
 /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TrinoCatalogConnectorHiveS3InlineTlsVerificationServerCaCertWebPki {}
+pub struct TrinoCatalogConnectorHiveS3InlineTlsVerificationServerCaCertWebPki {
+}
 
 /// An [Apache Iceberg](https://docs.stackable.tech/home/nightly/trino/usage-guide/catalogs/iceberg) connector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -503,11 +455,7 @@ pub struct TrinoCatalogConnectorIcebergS3 {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorIcebergS3Inline {
     /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessStyle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<TrinoCatalogConnectorIcebergS3InlineAccessStyle>,
     /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -544,11 +492,7 @@ pub struct TrinoCatalogConnectorIcebergS3InlineCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorIcebergS3InlineCredentialsScope {
     /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenerVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
     /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -581,7 +525,8 @@ pub struct TrinoCatalogConnectorIcebergS3InlineTlsVerification {
 
 /// Use TLS but don't verify certificates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TrinoCatalogConnectorIcebergS3InlineTlsVerificationNone {}
+pub struct TrinoCatalogConnectorIcebergS3InlineTlsVerificationNone {
+}
 
 /// Use TLS and a CA certificate to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -595,11 +540,7 @@ pub struct TrinoCatalogConnectorIcebergS3InlineTlsVerificationServer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorIcebergS3InlineTlsVerificationServerCaCert {
     /// Name of the [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
     /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
@@ -608,12 +549,16 @@ pub struct TrinoCatalogConnectorIcebergS3InlineTlsVerificationServerCaCert {
 
 /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TrinoCatalogConnectorIcebergS3InlineTlsVerificationServerCaCertWebPki {}
+pub struct TrinoCatalogConnectorIcebergS3InlineTlsVerificationServerCaCertWebPki {
+}
 
 /// A [TPC-DS](https://docs.stackable.tech/home/nightly/trino/usage-guide/catalogs/tpcds) connector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TrinoCatalogConnectorTpcds {}
+pub struct TrinoCatalogConnectorTpcds {
+}
 
 /// A [TPC-H](https://docs.stackable.tech/home/nightly/trino/usage-guide/catalogs/tpch) connector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TrinoCatalogConnectorTpch {}
+pub struct TrinoCatalogConnectorTpch {
+}
+

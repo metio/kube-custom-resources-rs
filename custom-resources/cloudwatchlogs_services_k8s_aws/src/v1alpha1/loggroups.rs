@@ -4,28 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// LogGroupSpec defines the desired state of LogGroup.
-///
+/// 
 /// Represents a log group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cloudwatchlogs.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "LogGroup",
-    plural = "loggroups"
-)]
+#[kube(group = "cloudwatchlogs.services.k8s.aws", version = "v1alpha1", kind = "LogGroup", plural = "loggroups")]
 #[kube(namespaced)]
 #[kube(status = "LogGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct LogGroupSpec {
     /// The Amazon Resource Name (ARN) of the KMS key to use when encrypting log
     /// data. For more information, see Amazon Resource Names (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kms).
@@ -35,26 +30,18 @@ pub struct LogGroupSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyRef")]
     pub kms_key_ref: Option<LogGroupKmsKeyRef>,
     pub name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retentionDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionDays")]
     pub retention_days: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subscriptionFilters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subscriptionFilters")]
     pub subscription_filters: Option<Vec<LogGroupSubscriptionFilters>>,
     /// The key-value pairs to use for the tags.
-    ///
+    /// 
     /// You can grant users access to certain log groups while preventing them from
     /// accessing other log groups. To do so, tag your groups and use IAM policies
     /// that refer to those tags. To assign tags when you create a log group, you
@@ -71,7 +58,7 @@ pub struct LogGroupSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -94,31 +81,19 @@ pub struct LogGroupKmsKeyRefFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LogGroupSubscriptionFilters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationARN")]
     pub destination_arn: Option<String>,
     /// The method used to distribute log data to the destination, which can be either
     /// random or grouped by log stream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub distribution: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterName")]
     pub filter_name: Option<String>,
     /// A symbolic description of how CloudWatch Logs should interpret the data in
     /// each log event. For example, a log event can contain timestamps, IP addresses,
     /// strings, and so on. You use the filter pattern to specify what to look for
     /// in the log event message.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterPattern")]
     pub filter_pattern: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
     pub role_arn: Option<String>,
@@ -130,11 +105,7 @@ pub struct LogGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<LogGroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -144,39 +115,19 @@ pub struct LogGroupStatus {
     pub conditions: Option<Vec<Condition>>,
     /// The creation time of the log group, expressed as the number of milliseconds
     /// after Jan 1, 1970 00:00:00 UTC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<i64>,
     /// Displays whether this log group has a protection policy, or whether it had
     /// one in the past. For more information, see PutDataProtectionPolicy (https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDataProtectionPolicy.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataProtectionStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataProtectionStatus")]
     pub data_protection_status: Option<String>,
     /// The number of metric filters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricFilterCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricFilterCount")]
     pub metric_filter_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retentionInDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionInDays")]
     pub retention_in_days: Option<i64>,
     /// The number of bytes stored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storedBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storedBytes")]
     pub stored_bytes: Option<i64>,
 }
 
@@ -201,3 +152,4 @@ pub struct LogGroupStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

@@ -4,36 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// EndpointSpec defines the desired state of Endpoint.
-///
-///
+/// 
+/// 
 /// A hosted endpoint for real-time inference.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sagemaker.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Endpoint",
-    plural = "endpoints"
-)]
+#[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "Endpoint", plural = "endpoints")]
 #[kube(namespaced)]
 #[kube(status = "EndpointStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EndpointSpec {
     /// The deployment configuration for an endpoint, which contains the desired
     /// deployment strategy and rollback configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentConfig")]
     pub deployment_config: Option<EndpointDeploymentConfig>,
     /// The name of an endpoint configuration. For more information, see CreateEndpointConfig
     /// (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html).
@@ -59,11 +50,7 @@ pub struct EndpointSpec {
 pub struct EndpointDeploymentConfig {
     /// Automatic rollback configuration for handling endpoint deployment failures
     /// and recovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoRollbackConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRollbackConfiguration")]
     pub auto_rollback_configuration: Option<EndpointDeploymentConfigAutoRollbackConfiguration>,
     /// Update policy for a blue/green deployment. If this update policy is specified,
     /// SageMaker creates a new fleet during the deployment while maintaining the
@@ -71,18 +58,10 @@ pub struct EndpointDeploymentConfig {
     /// traffic routing configuration. Only one update policy should be used in the
     /// deployment configuration. If no update policy is specified, SageMaker uses
     /// a blue/green deployment strategy with all at once traffic shifting by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blueGreenUpdatePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blueGreenUpdatePolicy")]
     pub blue_green_update_policy: Option<EndpointDeploymentConfigBlueGreenUpdatePolicy>,
     /// Specifies a rolling deployment strategy for updating a SageMaker endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdatePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdatePolicy")]
     pub rolling_update_policy: Option<EndpointDeploymentConfigRollingUpdatePolicy>,
 }
 
@@ -109,27 +88,14 @@ pub struct EndpointDeploymentConfigAutoRollbackConfigurationAlarms {
 /// a blue/green deployment strategy with all at once traffic shifting by default.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointDeploymentConfigBlueGreenUpdatePolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumExecutionTimeoutInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumExecutionTimeoutInSeconds")]
     pub maximum_execution_timeout_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationWaitInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationWaitInSeconds")]
     pub termination_wait_in_seconds: Option<i64>,
     /// Defines the traffic routing strategy during an endpoint deployment to shift
     /// traffic from the old fleet to the new fleet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trafficRoutingConfiguration"
-    )]
-    pub traffic_routing_configuration:
-        Option<EndpointDeploymentConfigBlueGreenUpdatePolicyTrafficRoutingConfiguration>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficRoutingConfiguration")]
+    pub traffic_routing_configuration: Option<EndpointDeploymentConfigBlueGreenUpdatePolicyTrafficRoutingConfiguration>,
 }
 
 /// Defines the traffic routing strategy during an endpoint deployment to shift
@@ -139,49 +105,34 @@ pub struct EndpointDeploymentConfigBlueGreenUpdatePolicyTrafficRoutingConfigurat
     /// Specifies the type and size of the endpoint capacity to activate for a blue/green
     /// deployment, a rolling deployment, or a rollback strategy. You can specify
     /// your batches as either instance count or the overall percentage or your fleet.
-    ///
-    ///
+    /// 
+    /// 
     /// For a rollback strategy, if you don't specify the fields in this object,
     /// or if you set the Value to 100%, then SageMaker uses a blue/green rollback
     /// strategy and rolls all traffic back to the blue fleet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "canarySize"
-    )]
-    pub canary_size:
-        Option<EndpointDeploymentConfigBlueGreenUpdatePolicyTrafficRoutingConfigurationCanarySize>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "canarySize")]
+    pub canary_size: Option<EndpointDeploymentConfigBlueGreenUpdatePolicyTrafficRoutingConfigurationCanarySize>,
     /// Specifies the type and size of the endpoint capacity to activate for a blue/green
     /// deployment, a rolling deployment, or a rollback strategy. You can specify
     /// your batches as either instance count or the overall percentage or your fleet.
-    ///
-    ///
+    /// 
+    /// 
     /// For a rollback strategy, if you don't specify the fields in this object,
     /// or if you set the Value to 100%, then SageMaker uses a blue/green rollback
     /// strategy and rolls all traffic back to the blue fleet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linearStepSize"
-    )]
-    pub linear_step_size: Option<
-        EndpointDeploymentConfigBlueGreenUpdatePolicyTrafficRoutingConfigurationLinearStepSize,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linearStepSize")]
+    pub linear_step_size: Option<EndpointDeploymentConfigBlueGreenUpdatePolicyTrafficRoutingConfigurationLinearStepSize>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
     pub r#type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitIntervalInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitIntervalInSeconds")]
     pub wait_interval_in_seconds: Option<i64>,
 }
 
 /// Specifies the type and size of the endpoint capacity to activate for a blue/green
 /// deployment, a rolling deployment, or a rollback strategy. You can specify
 /// your batches as either instance count or the overall percentage or your fleet.
-///
-///
+/// 
+/// 
 /// For a rollback strategy, if you don't specify the fields in this object,
 /// or if you set the Value to 100%, then SageMaker uses a blue/green rollback
 /// strategy and rolls all traffic back to the blue fleet.
@@ -196,8 +147,8 @@ pub struct EndpointDeploymentConfigBlueGreenUpdatePolicyTrafficRoutingConfigurat
 /// Specifies the type and size of the endpoint capacity to activate for a blue/green
 /// deployment, a rolling deployment, or a rollback strategy. You can specify
 /// your batches as either instance count or the overall percentage or your fleet.
-///
-///
+/// 
+/// 
 /// For a rollback strategy, if you don't specify the fields in this object,
 /// or if you set the Value to 100%, then SageMaker uses a blue/green rollback
 /// strategy and rolls all traffic back to the blue fleet.
@@ -215,51 +166,34 @@ pub struct EndpointDeploymentConfigRollingUpdatePolicy {
     /// Specifies the type and size of the endpoint capacity to activate for a blue/green
     /// deployment, a rolling deployment, or a rollback strategy. You can specify
     /// your batches as either instance count or the overall percentage or your fleet.
-    ///
-    ///
+    /// 
+    /// 
     /// For a rollback strategy, if you don't specify the fields in this object,
     /// or if you set the Value to 100%, then SageMaker uses a blue/green rollback
     /// strategy and rolls all traffic back to the blue fleet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumBatchSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumBatchSize")]
     pub maximum_batch_size: Option<EndpointDeploymentConfigRollingUpdatePolicyMaximumBatchSize>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumExecutionTimeoutInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumExecutionTimeoutInSeconds")]
     pub maximum_execution_timeout_in_seconds: Option<i64>,
     /// Specifies the type and size of the endpoint capacity to activate for a blue/green
     /// deployment, a rolling deployment, or a rollback strategy. You can specify
     /// your batches as either instance count or the overall percentage or your fleet.
-    ///
-    ///
+    /// 
+    /// 
     /// For a rollback strategy, if you don't specify the fields in this object,
     /// or if you set the Value to 100%, then SageMaker uses a blue/green rollback
     /// strategy and rolls all traffic back to the blue fleet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollbackMaximumBatchSize"
-    )]
-    pub rollback_maximum_batch_size:
-        Option<EndpointDeploymentConfigRollingUpdatePolicyRollbackMaximumBatchSize>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitIntervalInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollbackMaximumBatchSize")]
+    pub rollback_maximum_batch_size: Option<EndpointDeploymentConfigRollingUpdatePolicyRollbackMaximumBatchSize>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitIntervalInSeconds")]
     pub wait_interval_in_seconds: Option<i64>,
 }
 
 /// Specifies the type and size of the endpoint capacity to activate for a blue/green
 /// deployment, a rolling deployment, or a rollback strategy. You can specify
 /// your batches as either instance count or the overall percentage or your fleet.
-///
-///
+/// 
+/// 
 /// For a rollback strategy, if you don't specify the fields in this object,
 /// or if you set the Value to 100%, then SageMaker uses a blue/green rollback
 /// strategy and rolls all traffic back to the blue fleet.
@@ -274,8 +208,8 @@ pub struct EndpointDeploymentConfigRollingUpdatePolicyMaximumBatchSize {
 /// Specifies the type and size of the endpoint capacity to activate for a blue/green
 /// deployment, a rolling deployment, or a rollback strategy. You can specify
 /// your batches as either instance count or the overall percentage or your fleet.
-///
-///
+/// 
+/// 
 /// For a rollback strategy, if you don't specify the fields in this object,
 /// or if you set the Value to 100%, then SageMaker uses a blue/green rollback
 /// strategy and rolls all traffic back to the blue fleet.
@@ -289,14 +223,14 @@ pub struct EndpointDeploymentConfigRollingUpdatePolicyRollbackMaximumBatchSize {
 
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
-///
-///
+/// 
+/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-///
-///
+/// 
+/// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
 /// For advice on best practices for managing Amazon Web Services resources with
@@ -316,11 +250,7 @@ pub struct EndpointStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<EndpointStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -329,33 +259,29 @@ pub struct EndpointStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// A timestamp that shows when the endpoint was created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     /// The status of the endpoint.
-    ///
-    ///
+    /// 
+    /// 
     ///    * OutOfService: Endpoint is not available to take incoming requests.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Creating: CreateEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html)
     ///    is executing.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Updating: UpdateEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html)
     ///    or UpdateEndpointWeightsAndCapacities (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html)
     ///    is executing.
-    ///
-    ///
+    /// 
+    /// 
     ///    * SystemUpdating: Endpoint is undergoing maintenance and cannot be updated
     ///    or deleted or re-scaled until it has completed. This maintenance operation
     ///    does not change any customer-specified values such as VPC config, KMS
     ///    encryption, model, instance type, or instance count.
-    ///
-    ///
+    /// 
+    /// 
     ///    * RollingBack: Endpoint fails to scale up or down or change its variant
     ///    weight and is in the process of rolling back to its previous configuration.
     ///    Once the rollback completes, endpoint returns to an InService status.
@@ -364,60 +290,40 @@ pub struct EndpointStatus {
     ///    an UpdateEndpointWeightsAndCapacities (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html)
     ///    call or when the UpdateEndpointWeightsAndCapacities (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpointWeightsAndCapacities.html)
     ///    operation is called explicitly.
-    ///
-    ///
+    /// 
+    /// 
     ///    * InService: Endpoint is available to process incoming requests.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Deleting: DeleteEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpoint.html)
     ///    is executing.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Failed: Endpoint could not be created, updated, or re-scaled. Use the
     ///    FailureReason value returned by DescribeEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeEndpoint.html)
     ///    for information about the failure. DeleteEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteEndpoint.html)
     ///    is the only operation that can be performed on a failed endpoint.
-    ///
-    ///
+    /// 
+    /// 
     ///    * UpdateRollbackFailed: Both the rolling deployment and auto-rollback
     ///    failed. Your endpoint is in service with a mix of the old and new endpoint
     ///    configurations. For information about how to remedy this issue and restore
     ///    the endpoint's status to InService, see Rolling Deployments (https://docs.aws.amazon.com/sagemaker/latest/dg/deployment-guardrails-rolling.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointStatus")]
     pub endpoint_status: Option<String>,
     /// If the status of the endpoint is Failed, the reason why it failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// A timestamp that shows when the endpoint was last modified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModifiedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
     /// Returns the summary of an in-progress deployment. This field is only returned
     /// when the endpoint is creating or updating with a new endpoint configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pendingDeploymentSummary"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingDeploymentSummary")]
     pub pending_deployment_summary: Option<EndpointStatusPendingDeploymentSummary>,
     /// An array of ProductionVariantSummary (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ProductionVariantSummary.html)
     /// objects, one for each model hosted behind this endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "productionVariants"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "productionVariants")]
     pub production_variants: Option<Vec<EndpointStatusProductionVariants>>,
 }
 
@@ -448,17 +354,9 @@ pub struct EndpointStatusAckResourceMetadata {
 /// when the endpoint is creating or updating with a new endpoint configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusPendingDeploymentSummary {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointConfigName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointConfigName")]
     pub endpoint_config_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "productionVariants"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "productionVariants")]
     pub production_variants: Option<Vec<EndpointStatusPendingDeploymentSummaryProductionVariants>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
@@ -471,125 +369,55 @@ pub struct EndpointStatusPendingDeploymentSummary {
 /// variant associated with an endpoint.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusPendingDeploymentSummaryProductionVariants {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "acceleratorType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceleratorType")]
     pub accelerator_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentInstanceCount")]
     pub current_instance_count: Option<i64>,
     /// Specifies the serverless configuration for an endpoint variant.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentServerlessConfig"
-    )]
-    pub current_serverless_config:
-        Option<EndpointStatusPendingDeploymentSummaryProductionVariantsCurrentServerlessConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentWeight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentServerlessConfig")]
+    pub current_serverless_config: Option<EndpointStatusPendingDeploymentSummaryProductionVariantsCurrentServerlessConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentWeight")]
     pub current_weight: Option<f64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deployedImages"
-    )]
-    pub deployed_images:
-        Option<Vec<EndpointStatusPendingDeploymentSummaryProductionVariantsDeployedImages>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployedImages")]
+    pub deployed_images: Option<Vec<EndpointStatusPendingDeploymentSummaryProductionVariantsDeployedImages>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredInstanceCount")]
     pub desired_instance_count: Option<i64>,
     /// Specifies the serverless configuration for an endpoint variant.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredServerlessConfig"
-    )]
-    pub desired_serverless_config:
-        Option<EndpointStatusPendingDeploymentSummaryProductionVariantsDesiredServerlessConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredWeight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredServerlessConfig")]
+    pub desired_serverless_config: Option<EndpointStatusPendingDeploymentSummaryProductionVariantsDesiredServerlessConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredWeight")]
     pub desired_weight: Option<f64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     /// Settings that control the range in the number of instances that the endpoint
     /// provisions as it scales up or down to accommodate traffic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managedInstanceScaling"
-    )]
-    pub managed_instance_scaling:
-        Option<EndpointStatusPendingDeploymentSummaryProductionVariantsManagedInstanceScaling>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedInstanceScaling")]
+    pub managed_instance_scaling: Option<EndpointStatusPendingDeploymentSummaryProductionVariantsManagedInstanceScaling>,
     /// Settings that control how the endpoint routes incoming traffic to the instances
     /// that the endpoint hosts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routingConfig"
-    )]
-    pub routing_config:
-        Option<EndpointStatusPendingDeploymentSummaryProductionVariantsRoutingConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "variantName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingConfig")]
+    pub routing_config: Option<EndpointStatusPendingDeploymentSummaryProductionVariantsRoutingConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "variantName")]
     pub variant_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "variantStatus"
-    )]
-    pub variant_status:
-        Option<Vec<EndpointStatusPendingDeploymentSummaryProductionVariantsVariantStatus>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "variantStatus")]
+    pub variant_status: Option<Vec<EndpointStatusPendingDeploymentSummaryProductionVariantsVariantStatus>>,
 }
 
 /// Specifies the serverless configuration for an endpoint variant.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsCurrentServerlessConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrency")]
     pub max_concurrency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memorySizeInMB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySizeInMB")]
     pub memory_size_in_mb: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionedConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedConcurrency")]
     pub provisioned_concurrency: Option<i64>,
 }
 
 /// Gets the Amazon EC2 Container Registry path of the docker image of the model
 /// that is hosted in this ProductionVariant (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ProductionVariant.html).
-///
-///
+/// 
+/// 
 /// If you used the registry/repository[:tag] form to specify the image path
 /// of the primary container when you created the model hosted in this ProductionVariant,
 /// the path resolves to a path of the form registry/repository[@digest]. A digest
@@ -598,46 +426,22 @@ pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsCurrentServer
 /// in the Amazon ECR User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsDeployedImages {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolutionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolutionTime")]
     pub resolution_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolvedImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvedImage")]
     pub resolved_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "specifiedImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "specifiedImage")]
     pub specified_image: Option<String>,
 }
 
 /// Specifies the serverless configuration for an endpoint variant.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsDesiredServerlessConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrency")]
     pub max_concurrency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memorySizeInMB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySizeInMB")]
     pub memory_size_in_mb: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionedConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedConcurrency")]
     pub provisioned_concurrency: Option<i64>,
 }
 
@@ -645,17 +449,9 @@ pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsDesiredServer
 /// provisions as it scales up or down to accommodate traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsManagedInstanceScaling {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInstanceCount")]
     pub max_instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minInstanceCount")]
     pub min_instance_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
@@ -665,11 +461,7 @@ pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsManagedInstan
 /// that the endpoint hosts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsRoutingConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routingStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingStrategy")]
     pub routing_strategy: Option<String>,
 }
 
@@ -680,11 +472,7 @@ pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsVariantStatus
     pub start_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMessage")]
     pub status_message: Option<String>,
 }
 
@@ -694,107 +482,51 @@ pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsVariantStatus
 /// values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusProductionVariants {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentInstanceCount")]
     pub current_instance_count: Option<i64>,
     /// Specifies the serverless configuration for an endpoint variant.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentServerlessConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentServerlessConfig")]
     pub current_serverless_config: Option<EndpointStatusProductionVariantsCurrentServerlessConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentWeight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentWeight")]
     pub current_weight: Option<f64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deployedImages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployedImages")]
     pub deployed_images: Option<Vec<EndpointStatusProductionVariantsDeployedImages>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredInstanceCount")]
     pub desired_instance_count: Option<i64>,
     /// Specifies the serverless configuration for an endpoint variant.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredServerlessConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredServerlessConfig")]
     pub desired_serverless_config: Option<EndpointStatusProductionVariantsDesiredServerlessConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredWeight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredWeight")]
     pub desired_weight: Option<f64>,
     /// Settings that control the range in the number of instances that the endpoint
     /// provisions as it scales up or down to accommodate traffic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managedInstanceScaling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedInstanceScaling")]
     pub managed_instance_scaling: Option<EndpointStatusProductionVariantsManagedInstanceScaling>,
     /// Settings that control how the endpoint routes incoming traffic to the instances
     /// that the endpoint hosts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routingConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingConfig")]
     pub routing_config: Option<EndpointStatusProductionVariantsRoutingConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "variantName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "variantName")]
     pub variant_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "variantStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "variantStatus")]
     pub variant_status: Option<Vec<EndpointStatusProductionVariantsVariantStatus>>,
 }
 
 /// Specifies the serverless configuration for an endpoint variant.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusProductionVariantsCurrentServerlessConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrency")]
     pub max_concurrency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memorySizeInMB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySizeInMB")]
     pub memory_size_in_mb: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionedConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedConcurrency")]
     pub provisioned_concurrency: Option<i64>,
 }
 
 /// Gets the Amazon EC2 Container Registry path of the docker image of the model
 /// that is hosted in this ProductionVariant (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ProductionVariant.html).
-///
-///
+/// 
+/// 
 /// If you used the registry/repository[:tag] form to specify the image path
 /// of the primary container when you created the model hosted in this ProductionVariant,
 /// the path resolves to a path of the form registry/repository[@digest]. A digest
@@ -803,46 +535,22 @@ pub struct EndpointStatusProductionVariantsCurrentServerlessConfig {
 /// in the Amazon ECR User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusProductionVariantsDeployedImages {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolutionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolutionTime")]
     pub resolution_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolvedImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvedImage")]
     pub resolved_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "specifiedImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "specifiedImage")]
     pub specified_image: Option<String>,
 }
 
 /// Specifies the serverless configuration for an endpoint variant.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusProductionVariantsDesiredServerlessConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrency")]
     pub max_concurrency: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memorySizeInMB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySizeInMB")]
     pub memory_size_in_mb: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionedConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedConcurrency")]
     pub provisioned_concurrency: Option<i64>,
 }
 
@@ -850,17 +558,9 @@ pub struct EndpointStatusProductionVariantsDesiredServerlessConfig {
 /// provisions as it scales up or down to accommodate traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusProductionVariantsManagedInstanceScaling {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInstanceCount")]
     pub max_instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minInstanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minInstanceCount")]
     pub min_instance_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
@@ -870,11 +570,7 @@ pub struct EndpointStatusProductionVariantsManagedInstanceScaling {
 /// that the endpoint hosts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusProductionVariantsRoutingConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routingStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingStrategy")]
     pub routing_strategy: Option<String>,
 }
 
@@ -885,10 +581,7 @@ pub struct EndpointStatusProductionVariantsVariantStatus {
     pub start_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMessage")]
     pub status_message: Option<String>,
 }
+

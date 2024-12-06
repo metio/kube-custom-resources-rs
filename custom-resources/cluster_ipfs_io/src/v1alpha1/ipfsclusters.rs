@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// IpfsClusterSpec defines the desired state of the IpfsCluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cluster.ipfs.io",
-    version = "v1alpha1",
-    kind = "IpfsCluster",
-    plural = "ipfsclusters"
-)]
+#[kube(group = "cluster.ipfs.io", version = "v1alpha1", kind = "IpfsCluster", plural = "ipfsclusters")]
 #[kube(namespaced)]
 #[kube(status = "IpfsClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IpfsClusterSpec {
     /// clusterStorage defines the amount of storage to be used by IPFS Cluster.
     #[serde(rename = "clusterStorage")]
@@ -33,11 +28,7 @@ pub struct IpfsClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub follows: Option<Vec<IpfsClusterFollows>>,
     /// ipfsResources specifies the resource requirements for each IPFS container. If this value is omitted, then the operator will automatically determine these settings based on the storage sizes used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipfsResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipfsResources")]
     pub ipfs_resources: Option<IpfsClusterIpfsResources>,
     /// ipfsStorage defines the total storage to be allocated by this resource.
     #[serde(rename = "ipfsStorage")]
@@ -103,12 +94,9 @@ pub enum IpfsClusterReproviderStrategy {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IpfsClusterStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "circuitRelays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "circuitRelays")]
     pub circuit_relays: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

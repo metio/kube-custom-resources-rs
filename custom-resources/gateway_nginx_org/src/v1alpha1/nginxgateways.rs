@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// NginxGatewaySpec defines the desired state of the NginxGateway.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "gateway.nginx.org",
-    version = "v1alpha1",
-    kind = "NginxGateway",
-    plural = "nginxgateways"
-)]
+#[kube(group = "gateway.nginx.org", version = "v1alpha1", kind = "NginxGateway", plural = "nginxgateways")]
 #[kube(namespaced)]
 #[kube(status = "NginxGatewayStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NginxGatewaySpec {
     /// Logging defines logging related settings for the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -54,3 +49,4 @@ pub struct NginxGatewayStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

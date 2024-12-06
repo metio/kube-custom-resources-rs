@@ -4,35 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SubnetGroupSpec defines the desired state of SubnetGroup.
-///
+/// 
 /// Represents the output of one of the following operations:
-///
+/// 
 ///    * CreateSubnetGroup
-///
+/// 
 ///    * UpdateSubnetGroup
-///
+/// 
 /// A subnet group is a collection of subnets (typically private) that you can
 /// designate for your clusters running in an Amazon Virtual Private Cloud (VPC)
 /// environment.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "memorydb.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "SubnetGroup",
-    plural = "subnetgroups"
-)]
+#[kube(group = "memorydb.services.k8s.aws", version = "v1alpha1", kind = "SubnetGroup", plural = "subnetgroups")]
 #[kube(namespaced)]
 #[kube(status = "SubnetGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SubnetGroupSpec {
     /// A description for the subnet group.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,11 +37,7 @@ pub struct SubnetGroupSpec {
     /// A list of VPC subnet IDs for the subnet group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIDs")]
     pub subnet_i_ds: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRefs")]
     pub subnet_refs: Option<Vec<SubnetGroupSubnetRefs>>,
     /// A list of tags to be added to this resource. A tag is a key-value pair. A
     /// tag key must be accompanied by a tag value, although null is accepted.
@@ -58,7 +49,7 @@ pub struct SubnetGroupSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -98,11 +89,7 @@ pub struct SubnetGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<SubnetGroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -146,11 +133,7 @@ pub struct SubnetGroupStatusAckResourceMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubnetGroupStatusSubnets {
     /// Indicates if the cluster has a Multi-AZ configuration (multiaz) or not (singleaz).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZone")]
     pub availability_zone: Option<SubnetGroupStatusSubnetsAvailabilityZone>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identifier: Option<String>,
@@ -162,3 +145,4 @@ pub struct SubnetGroupStatusSubnetsAvailabilityZone {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

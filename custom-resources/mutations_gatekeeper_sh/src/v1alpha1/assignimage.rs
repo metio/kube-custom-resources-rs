@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// AssignImageSpec defines the desired state of AssignImage.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "mutations.gatekeeper.sh",
-    version = "v1alpha1",
-    kind = "AssignImage",
-    plural = "assignimage"
-)]
+#[kube(group = "mutations.gatekeeper.sh", version = "v1alpha1", kind = "AssignImage", plural = "assignimage")]
 #[kube(status = "AssignImageStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AssignImageSpec {
     /// ApplyTo lists the specific groups, versions and kinds a mutation will be applied to.
     /// This is necessary because every mutation implies part of an object schema and object
@@ -64,11 +59,7 @@ pub struct AssignImageMatch {
     /// `excludedNamespaces: [kube-*]` matches both `kube-system` and
     /// `kube-public`, and `excludedNamespaces: [*-system]` matches both `kube-system` and
     /// `gatekeeper-system`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedNamespaces")]
     pub excluded_namespaces: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kinds: Option<Vec<AssignImageMatchKinds>>,
@@ -78,11 +69,7 @@ pub struct AssignImageMatch {
     /// included in object metadata.  All selection expressions from both
     /// sections are ANDed to determine if an object meets the cumulative
     /// requirements of the selector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<AssignImageMatchLabelSelector>,
     /// Name is the name of an object.  If defined, it will match against objects with the specified
     /// name.  Name also supports a prefix or suffix glob.  For example, `name: pod-*` would match
@@ -91,11 +78,7 @@ pub struct AssignImageMatch {
     pub name: Option<String>,
     /// NamespaceSelector is a label selector against an object's containing
     /// namespace or the object itself, if the object is a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<AssignImageMatchNamespaceSelector>,
     /// Namespaces is a list of namespace names. If defined, a constraint only
     /// applies to resources in a listed namespace.  Namespaces also supports a
@@ -140,20 +123,12 @@ pub struct AssignImageMatchKinds {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AssignImageMatchLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AssignImageMatchLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -179,20 +154,12 @@ pub struct AssignImageMatchLabelSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AssignImageMatchNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<AssignImageMatchNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -228,18 +195,10 @@ pub enum AssignImageMatchSource {
 pub struct AssignImageParameters {
     /// AssignDomain sets the domain component on an image string. The trailing
     /// slash should not be included.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "assignDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignDomain")]
     pub assign_domain: Option<String>,
     /// AssignPath sets the domain component on an image string.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "assignPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignPath")]
     pub assign_path: Option<String>,
     /// AssignImage sets the image component on an image string. It must start
     /// with a `:` or `@`.
@@ -255,8 +214,8 @@ pub struct AssignImageParameters {
 /// not applied. All `subPath` entries must be a prefix of `location`. Any
 /// glob characters will take on the same value as was used to
 /// expand the matching glob in `location`.
-///
-///
+/// 
+/// 
 /// Available Tests:
 /// * MustExist    - the path must exist or do not mutate
 /// * MustNotExist - the path must not exist or do not mutate.
@@ -275,8 +234,8 @@ pub struct AssignImageParametersPathTests {
 /// not applied. All `subPath` entries must be a prefix of `location`. Any
 /// glob characters will take on the same value as was used to
 /// expand the matching glob in `location`.
-///
-///
+/// 
+/// 
 /// Available Tests:
 /// * MustExist    - the path must exist or do not mutate
 /// * MustNotExist - the path must not exist or do not mutate.
@@ -305,17 +264,9 @@ pub struct AssignImageStatusByPod {
     /// Storing the mutator UID allows us to detect drift, such as
     /// when a mutator has been recreated after its CRD was deleted
     /// out from under it, interrupting the watch
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mutatorUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutatorUID")]
     pub mutator_uid: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
@@ -330,3 +281,4 @@ pub struct AssignImageStatusByPodErrors {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

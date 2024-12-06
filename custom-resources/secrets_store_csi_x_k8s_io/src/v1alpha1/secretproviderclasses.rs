@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// SecretProviderClassSpec defines the desired state of SecretProviderClass
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "secrets-store.csi.x-k8s.io",
-    version = "v1alpha1",
-    kind = "SecretProviderClass",
-    plural = "secretproviderclasses"
-)]
+#[kube(group = "secrets-store.csi.x-k8s.io", version = "v1alpha1", kind = "SecretProviderClass", plural = "secretproviderclasses")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SecretProviderClassSpec {
     /// Configuration for specific provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -29,11 +24,7 @@ pub struct SecretProviderClassSpec {
     /// Configuration for provider name
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretObjects")]
     pub secret_objects: Option<Vec<SecretProviderClassSecretObjects>>,
 }
 
@@ -49,11 +40,7 @@ pub struct SecretProviderClassSecretObjects {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// name of the K8s secret object
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// type of K8s secret object
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -67,11 +54,7 @@ pub struct SecretProviderClassSecretObjectsData {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// name of the object to sync
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectName")]
     pub object_name: Option<String>,
 }
 
@@ -93,3 +76,4 @@ pub struct SecretProviderClassStatusByPod {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
+

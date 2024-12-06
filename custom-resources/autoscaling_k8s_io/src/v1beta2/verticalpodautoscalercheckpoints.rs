@@ -5,37 +5,24 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Specification of the checkpoint. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "autoscaling.k8s.io",
-    version = "v1beta2",
-    kind = "VerticalPodAutoscalerCheckpoint",
-    plural = "verticalpodautoscalercheckpoints"
-)]
+#[kube(group = "autoscaling.k8s.io", version = "v1beta2", kind = "VerticalPodAutoscalerCheckpoint", plural = "verticalpodautoscalercheckpoints")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VerticalPodAutoscalerCheckpointSpec {
     /// Name of the checkpointed container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Name of the VPA object that stored VerticalPodAutoscalerCheckpoint object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpaObjectName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpaObjectName")]
     pub vpa_object_name: Option<String>,
 }
 
@@ -43,46 +30,22 @@ pub struct VerticalPodAutoscalerCheckpointSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VerticalPodAutoscalerCheckpointStatus {
     /// Checkpoint of histogram for consumption of CPU.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuHistogram"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuHistogram")]
     pub cpu_histogram: Option<VerticalPodAutoscalerCheckpointStatusCpuHistogram>,
     /// Timestamp of the fist sample from the histograms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firstSampleStart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstSampleStart")]
     pub first_sample_start: Option<String>,
     /// Timestamp of the last sample from the histograms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSampleStart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSampleStart")]
     pub last_sample_start: Option<String>,
     /// The time when the status was last refreshed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdateTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
     pub last_update_time: Option<String>,
     /// Checkpoint of histogram for consumption of memory.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memoryHistogram"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryHistogram")]
     pub memory_histogram: Option<VerticalPodAutoscalerCheckpointStatusMemoryHistogram>,
     /// Total number of samples in the histograms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalSamplesCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalSamplesCount")]
     pub total_samples_count: Option<i64>,
     /// Version of the format of the stored data.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -93,25 +56,13 @@ pub struct VerticalPodAutoscalerCheckpointStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VerticalPodAutoscalerCheckpointStatusCpuHistogram {
     /// Map from bucket index to bucket weight.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketWeights"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketWeights")]
     pub bucket_weights: Option<BTreeMap<String, serde_json::Value>>,
     /// Reference timestamp for samples collected within this histogram.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "referenceTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "referenceTimestamp")]
     pub reference_timestamp: Option<String>,
     /// Sum of samples to be used as denominator for weights from BucketWeights.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalWeight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalWeight")]
     pub total_weight: Option<f64>,
 }
 
@@ -119,24 +70,13 @@ pub struct VerticalPodAutoscalerCheckpointStatusCpuHistogram {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VerticalPodAutoscalerCheckpointStatusMemoryHistogram {
     /// Map from bucket index to bucket weight.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketWeights"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketWeights")]
     pub bucket_weights: Option<BTreeMap<String, serde_json::Value>>,
     /// Reference timestamp for samples collected within this histogram.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "referenceTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "referenceTimestamp")]
     pub reference_timestamp: Option<String>,
     /// Sum of samples to be used as denominator for weights from BucketWeights.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalWeight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalWeight")]
     pub total_weight: Option<f64>,
 }
+

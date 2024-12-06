@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "metal3.io",
-    version = "v1alpha1",
-    kind = "BMCEventSubscription",
-    plural = "bmceventsubscriptions"
-)]
+#[kube(group = "metal3.io", version = "v1alpha1", kind = "BMCEventSubscription", plural = "bmceventsubscriptions")]
 #[kube(namespaced)]
 #[kube(status = "BMCEventSubscriptionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BMCEventSubscriptionSpec {
     /// Arbitrary user-provided context for the event
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33,11 +28,7 @@ pub struct BMCEventSubscriptionSpec {
     pub host_name: Option<String>,
     /// A secret containing HTTP headers which should be passed along to the Destination
     /// when making a request
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeadersRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeadersRef")]
     pub http_headers_ref: Option<BMCEventSubscriptionHttpHeadersRef>,
 }
 
@@ -57,10 +48,7 @@ pub struct BMCEventSubscriptionHttpHeadersRef {
 pub struct BMCEventSubscriptionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subscriptionID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subscriptionID")]
     pub subscription_id: Option<String>,
 }
+

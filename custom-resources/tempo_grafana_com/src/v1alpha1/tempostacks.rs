@@ -4,34 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TempoStackSpec defines the desired state of TempoStack.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "tempo.grafana.com",
-    version = "v1alpha1",
-    kind = "TempoStack",
-    plural = "tempostacks"
-)]
+#[kube(group = "tempo.grafana.com", version = "v1alpha1", kind = "TempoStack", plural = "tempostacks")]
 #[kube(namespaced)]
 #[kube(status = "TempoStackStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct TempoStackSpec {
     /// ExtraConfigSpec defines extra configurations for tempo that will be merged with the operator generated, configurations defined here
     /// has precedence and could override generated config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraConfig")]
     pub extra_config: Option<TempoStackExtraConfig>,
     /// HashRing defines the spec for the distributed hash ring configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashRing")]
@@ -44,21 +35,13 @@ pub struct TempoStackSpec {
     pub limits: Option<TempoStackLimits>,
     /// ManagementState defines if the CR should be managed by the operator or not.
     /// Default is managed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managementState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementState")]
     pub management_state: Option<TempoStackManagementState>,
     /// ObservabilitySpec defines how telemetry data gets handled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub observability: Option<TempoStackObservability>,
     /// The replication factor is a configuration setting that determines how many ingesters need to acknowledge the data from the distributors before accepting a span.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationFactor")]
     pub replication_factor: Option<i64>,
     /// Resources defines resources configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -71,28 +54,16 @@ pub struct TempoStackSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub search: Option<TempoStackSearch>,
     /// ServiceAccount defines the service account to use for all tempo components.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// Storage defines the spec for the object storage endpoint to store traces.
     /// User is required to create secret and supply it.
     pub storage: TempoStackStorage,
     /// StorageClassName for PVCs used by ingester. Defaults to nil (default storage class in the cluster).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// StorageSize for PVCs used by ingester. Defaults to 10Gi.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageSize")]
     pub storage_size: Option<IntOrString>,
     /// Template defines requirements for a set of tempo components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -128,21 +99,13 @@ pub struct TempoStackHashRing {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackHashRingMemberlist {
     /// EnableIPv6 enables IPv6 support for the memberlist based hash ring.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableIPv6"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableIPv6")]
     pub enable_i_pv6: Option<bool>,
     /// InstanceAddrType defines the type of address to use to advertise to the ring.
     /// Defaults to the first address from any private network interfaces of the current pod.
     /// Alternatively the public pod IP can be used in case private networks (RFC 1918 and RFC 6598)
     /// are not available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceAddrType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceAddrType")]
     pub instance_addr_type: Option<TempoStackHashRingMemberlistInstanceAddrType>,
 }
 
@@ -159,42 +122,22 @@ pub enum TempoStackHashRingMemberlistInstanceAddrType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackImages {
     /// JaegerQuery defines the tempo-query container image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jaegerQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jaegerQuery")]
     pub jaeger_query: Option<String>,
     /// OauthProxy defines the oauth proxy image used to protect the jaegerUI on single tenant.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oauthProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oauthProxy")]
     pub oauth_proxy: Option<String>,
     /// Tempo defines the tempo container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tempo: Option<String>,
     /// TempoGateway defines the tempo-gateway container image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tempoGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tempoGateway")]
     pub tempo_gateway: Option<String>,
     /// TempoGatewayOpa defines the OPA sidecar container for TempoGateway.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tempoGatewayOpa"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tempoGatewayOpa")]
     pub tempo_gateway_opa: Option<String>,
     /// TempoQuery defines the tempo-query container image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tempoQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tempoQuery")]
     pub tempo_query: Option<String>,
 }
 
@@ -224,32 +167,16 @@ pub struct TempoStackLimitsGlobal {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackLimitsGlobalIngestion {
     /// IngestionBurstSizeBytes defines the burst size (bytes) used in ingestion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionBurstSizeBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionBurstSizeBytes")]
     pub ingestion_burst_size_bytes: Option<i64>,
     /// IngestionRateLimitBytes defines the Per-user ingestion rate limit (bytes) used in ingestion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionRateLimitBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionRateLimitBytes")]
     pub ingestion_rate_limit_bytes: Option<i64>,
     /// MaxBytesPerTrace defines the maximum number of bytes of an acceptable trace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxBytesPerTrace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytesPerTrace")]
     pub max_bytes_per_trace: Option<i64>,
     /// MaxTracesPerUser defines the maximum number of traces a user can send.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTracesPerUser"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTracesPerUser")]
     pub max_traces_per_user: Option<i64>,
 }
 
@@ -257,28 +184,16 @@ pub struct TempoStackLimitsGlobalIngestion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackLimitsGlobalQuery {
     /// MaxBytesPerTagValues defines the maximum size in bytes of a tag-values query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxBytesPerTagValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytesPerTagValues")]
     pub max_bytes_per_tag_values: Option<i64>,
     /// DEPRECATED. MaxSearchBytesPerTrace defines the maximum size of search data for a single
     /// trace in bytes.
     /// default: `0` to disable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxSearchBytesPerTrace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSearchBytesPerTrace")]
     pub max_search_bytes_per_trace: Option<i64>,
     /// MaxSearchDuration defines the maximum allowed time range for a search.
     /// If this value is not set, then spec.search.maxDuration is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxSearchDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSearchDuration")]
     pub max_search_duration: Option<String>,
 }
 
@@ -297,32 +212,16 @@ pub struct TempoStackLimitsPerTenant {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackLimitsPerTenantIngestion {
     /// IngestionBurstSizeBytes defines the burst size (bytes) used in ingestion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionBurstSizeBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionBurstSizeBytes")]
     pub ingestion_burst_size_bytes: Option<i64>,
     /// IngestionRateLimitBytes defines the Per-user ingestion rate limit (bytes) used in ingestion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingestionRateLimitBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingestionRateLimitBytes")]
     pub ingestion_rate_limit_bytes: Option<i64>,
     /// MaxBytesPerTrace defines the maximum number of bytes of an acceptable trace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxBytesPerTrace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytesPerTrace")]
     pub max_bytes_per_trace: Option<i64>,
     /// MaxTracesPerUser defines the maximum number of traces a user can send.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxTracesPerUser"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTracesPerUser")]
     pub max_traces_per_user: Option<i64>,
 }
 
@@ -330,28 +229,16 @@ pub struct TempoStackLimitsPerTenantIngestion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackLimitsPerTenantQuery {
     /// MaxBytesPerTagValues defines the maximum size in bytes of a tag-values query.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxBytesPerTagValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytesPerTagValues")]
     pub max_bytes_per_tag_values: Option<i64>,
     /// DEPRECATED. MaxSearchBytesPerTrace defines the maximum size of search data for a single
     /// trace in bytes.
     /// default: `0` to disable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxSearchBytesPerTrace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSearchBytesPerTrace")]
     pub max_search_bytes_per_trace: Option<i64>,
     /// MaxSearchDuration defines the maximum allowed time range for a search.
     /// If this value is not set, then spec.search.maxDuration is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxSearchDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSearchDuration")]
     pub max_search_duration: Option<String>,
 }
 
@@ -380,18 +267,10 @@ pub struct TempoStackObservability {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackObservabilityGrafana {
     /// CreateDatasource specifies if a Grafana Datasource should be created for Tempo.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createDatasource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createDatasource")]
     pub create_datasource: Option<bool>,
     /// InstanceSelector specifies the Grafana instance where the datasource should be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceSelector")]
     pub instance_selector: Option<TempoStackObservabilityGrafanaInstanceSelector>,
 }
 
@@ -399,21 +278,12 @@ pub struct TempoStackObservabilityGrafana {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackObservabilityGrafanaInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<TempoStackObservabilityGrafanaInstanceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TempoStackObservabilityGrafanaInstanceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -438,18 +308,10 @@ pub struct TempoStackObservabilityGrafanaInstanceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackObservabilityMetrics {
     /// CreatePrometheusRules specifies if Prometheus rules for alerts should be created for Tempo components.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createPrometheusRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createPrometheusRules")]
     pub create_prometheus_rules: Option<bool>,
     /// CreateServiceMonitors specifies if ServiceMonitors should be created for Tempo components.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createServiceMonitors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createServiceMonitors")]
     pub create_service_monitors: Option<bool>,
 }
 
@@ -483,12 +345,12 @@ pub struct TempoStackResources {
 pub struct TempoStackResourcesTotal {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackResourcesTotalClaims>>,
@@ -549,27 +411,15 @@ pub struct TempoStackRetentionPerTenant {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackSearch {
     /// Limit used for search requests if none is set by the caller (default: 20)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultResultLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResultLimit")]
     pub default_result_limit: Option<i64>,
     /// The maximum allowed time range for a search, default: 0s which means unlimited.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxDuration")]
     pub max_duration: Option<String>,
     /// The maximum allowed value of the limit parameter on search requests. If the search request limit parameter
     /// exceeds the value configured here it will be set to the value configured here.
     /// The default value of 0 disables this limit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxResultLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxResultLimit")]
     pub max_result_limit: Option<i64>,
 }
 
@@ -623,11 +473,7 @@ pub struct TempoStackStorageTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// MinVersion defines the minimum acceptable TLS version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<String>,
 }
 
@@ -650,11 +496,7 @@ pub struct TempoStackTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub querier: Option<TempoStackTemplateQuerier>,
     /// TempoQueryFrontendSpec defines the query frontend spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryFrontend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryFrontend")]
     pub query_frontend: Option<TempoStackTemplateQueryFrontend>,
 }
 
@@ -662,18 +504,10 @@ pub struct TempoStackTemplate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateCompactor {
     /// NodeSelector defines the simple form of the node-selection constraint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodSecurityContext defines security context will be applied to all pods of this component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<TempoStackTemplateCompactorPodSecurityContext>,
     /// Replicas defines the number of replicas to be created for this component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -692,13 +526,13 @@ pub struct TempoStackTemplateCompactorPodSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -710,11 +544,7 @@ pub struct TempoStackTemplateCompactorPodSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -722,11 +552,7 @@ pub struct TempoStackTemplateCompactorPodSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -734,11 +560,7 @@ pub struct TempoStackTemplateCompactorPodSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -754,19 +576,11 @@ pub struct TempoStackTemplateCompactorPodSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<TempoStackTemplateCompactorPodSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<TempoStackTemplateCompactorPodSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -775,11 +589,7 @@ pub struct TempoStackTemplateCompactorPodSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -790,11 +600,7 @@ pub struct TempoStackTemplateCompactorPodSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TempoStackTemplateCompactorPodSecurityContextWindowsOptions>,
 }
 
@@ -828,16 +634,12 @@ pub struct TempoStackTemplateCompactorPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -863,38 +665,22 @@ pub struct TempoStackTemplateCompactorPodSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -903,12 +689,12 @@ pub struct TempoStackTemplateCompactorPodSecurityContextWindowsOptions {
 pub struct TempoStackTemplateCompactorResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateCompactorResourcesClaims>>,
@@ -955,11 +741,7 @@ pub struct TempoStackTemplateCompactorTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -971,15 +753,15 @@ pub struct TempoStackTemplateCompactorTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateDistributor {
     /// TempoComponentSpec is embedded to extend this definition with further options.
-    ///
-    ///
+    /// 
+    /// 
     /// Currently, there is no way to inline this field.
     /// See: https://github.com/golang/go/issues/6213
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub component: Option<TempoStackTemplateDistributorComponent>,
     /// TLS defines TLS configuration for distributor receivers
-    ///
-    ///
+    /// 
+    /// 
     /// If openshift feature flag `servingCertsService` is enabled and TLS is enabled but no
     /// certName or caName is specified, OpenShift service serving certificates will  be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -987,25 +769,17 @@ pub struct TempoStackTemplateDistributor {
 }
 
 /// TempoComponentSpec is embedded to extend this definition with further options.
-///
-///
+/// 
+/// 
 /// Currently, there is no way to inline this field.
 /// See: https://github.com/golang/go/issues/6213
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateDistributorComponent {
     /// NodeSelector defines the simple form of the node-selection constraint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodSecurityContext defines security context will be applied to all pods of this component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<TempoStackTemplateDistributorComponentPodSecurityContext>,
     /// Replicas defines the number of replicas to be created for this component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1024,13 +798,13 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -1042,11 +816,7 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -1054,11 +824,7 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -1066,11 +832,7 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -1086,22 +848,12 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<TempoStackTemplateDistributorComponentPodSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<TempoStackTemplateDistributorComponentPodSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<TempoStackTemplateDistributorComponentPodSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<TempoStackTemplateDistributorComponentPodSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
     /// defined in the container image for the uid of the container process. If unspecified,
@@ -1109,11 +861,7 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -1124,13 +872,8 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<TempoStackTemplateDistributorComponentPodSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<TempoStackTemplateDistributorComponentPodSecurityContextWindowsOptions>,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -1163,16 +906,12 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContextSeccompProfil
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1198,38 +937,22 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContextWindowsOption
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1238,12 +961,12 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContextWindowsOption
 pub struct TempoStackTemplateDistributorComponentResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateDistributorComponentResourcesClaims>>,
@@ -1290,11 +1013,7 @@ pub struct TempoStackTemplateDistributorComponentTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1303,8 +1022,8 @@ pub struct TempoStackTemplateDistributorComponentTolerations {
 }
 
 /// TLS defines TLS configuration for distributor receivers
-///
-///
+/// 
+/// 
 /// If openshift feature flag `servingCertsService` is enabled and TLS is enabled but no
 /// certName or caName is specified, OpenShift service serving certificates will  be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1321,11 +1040,7 @@ pub struct TempoStackTemplateDistributorTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// MinVersion defines the minimum acceptable TLS version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<String>,
 }
 
@@ -1333,8 +1048,8 @@ pub struct TempoStackTemplateDistributorTls {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateGateway {
     /// TempoComponentSpec is embedded to extend this definition with further options.
-    ///
-    ///
+    /// 
+    /// 
     /// Currently there is no way to inline this field.
     /// See: https://github.com/golang/go/issues/6213
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1346,25 +1061,17 @@ pub struct TempoStackTemplateGateway {
 }
 
 /// TempoComponentSpec is embedded to extend this definition with further options.
-///
-///
+/// 
+/// 
 /// Currently there is no way to inline this field.
 /// See: https://github.com/golang/go/issues/6213
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateGatewayComponent {
     /// NodeSelector defines the simple form of the node-selection constraint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodSecurityContext defines security context will be applied to all pods of this component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<TempoStackTemplateGatewayComponentPodSecurityContext>,
     /// Replicas defines the number of replicas to be created for this component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1383,13 +1090,13 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -1401,11 +1108,7 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -1413,11 +1116,7 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -1425,11 +1124,7 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -1445,20 +1140,11 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<TempoStackTemplateGatewayComponentPodSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<TempoStackTemplateGatewayComponentPodSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<TempoStackTemplateGatewayComponentPodSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -1467,11 +1153,7 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -1482,11 +1164,7 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TempoStackTemplateGatewayComponentPodSecurityContextWindowsOptions>,
 }
 
@@ -1520,16 +1198,12 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1555,38 +1229,22 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1595,12 +1253,12 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContextWindowsOptions {
 pub struct TempoStackTemplateGatewayComponentResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateGatewayComponentResourcesClaims>>,
@@ -1647,11 +1305,7 @@ pub struct TempoStackTemplateGatewayComponentTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1670,11 +1324,7 @@ pub struct TempoStackTemplateGatewayIngress {
     pub host: Option<String>,
     /// IngressClassName defines the name of an IngressClass cluster resource.
     /// Defines which ingress controller serves this ingress resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// Route defines the options for the OpenShift route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1722,18 +1372,10 @@ pub enum TempoStackTemplateGatewayIngressType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateIngester {
     /// NodeSelector defines the simple form of the node-selection constraint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodSecurityContext defines security context will be applied to all pods of this component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<TempoStackTemplateIngesterPodSecurityContext>,
     /// Replicas defines the number of replicas to be created for this component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1752,13 +1394,13 @@ pub struct TempoStackTemplateIngesterPodSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -1770,11 +1412,7 @@ pub struct TempoStackTemplateIngesterPodSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -1782,11 +1420,7 @@ pub struct TempoStackTemplateIngesterPodSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -1794,11 +1428,7 @@ pub struct TempoStackTemplateIngesterPodSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -1814,19 +1444,11 @@ pub struct TempoStackTemplateIngesterPodSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<TempoStackTemplateIngesterPodSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<TempoStackTemplateIngesterPodSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -1835,11 +1457,7 @@ pub struct TempoStackTemplateIngesterPodSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -1850,11 +1468,7 @@ pub struct TempoStackTemplateIngesterPodSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TempoStackTemplateIngesterPodSecurityContextWindowsOptions>,
 }
 
@@ -1888,16 +1502,12 @@ pub struct TempoStackTemplateIngesterPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1923,38 +1533,22 @@ pub struct TempoStackTemplateIngesterPodSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1963,12 +1557,12 @@ pub struct TempoStackTemplateIngesterPodSecurityContextWindowsOptions {
 pub struct TempoStackTemplateIngesterResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateIngesterResourcesClaims>>,
@@ -2015,11 +1609,7 @@ pub struct TempoStackTemplateIngesterTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2031,18 +1621,10 @@ pub struct TempoStackTemplateIngesterTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQuerier {
     /// NodeSelector defines the simple form of the node-selection constraint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodSecurityContext defines security context will be applied to all pods of this component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<TempoStackTemplateQuerierPodSecurityContext>,
     /// Replicas defines the number of replicas to be created for this component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2061,13 +1643,13 @@ pub struct TempoStackTemplateQuerierPodSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -2079,11 +1661,7 @@ pub struct TempoStackTemplateQuerierPodSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -2091,11 +1669,7 @@ pub struct TempoStackTemplateQuerierPodSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -2103,11 +1677,7 @@ pub struct TempoStackTemplateQuerierPodSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -2123,19 +1693,11 @@ pub struct TempoStackTemplateQuerierPodSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<TempoStackTemplateQuerierPodSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<TempoStackTemplateQuerierPodSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -2144,11 +1706,7 @@ pub struct TempoStackTemplateQuerierPodSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -2159,11 +1717,7 @@ pub struct TempoStackTemplateQuerierPodSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TempoStackTemplateQuerierPodSecurityContextWindowsOptions>,
 }
 
@@ -2197,16 +1751,12 @@ pub struct TempoStackTemplateQuerierPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -2232,38 +1782,22 @@ pub struct TempoStackTemplateQuerierPodSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -2272,12 +1806,12 @@ pub struct TempoStackTemplateQuerierPodSecurityContextWindowsOptions {
 pub struct TempoStackTemplateQuerierResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateQuerierResourcesClaims>>,
@@ -2324,11 +1858,7 @@ pub struct TempoStackTemplateQuerierTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2340,41 +1870,29 @@ pub struct TempoStackTemplateQuerierTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontend {
     /// TempoComponentSpec is embedded to extend this definition with further options.
-    ///
-    ///
+    /// 
+    /// 
     /// Currently there is no way to inline this field.
     /// See: https://github.com/golang/go/issues/6213
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub component: Option<TempoStackTemplateQueryFrontendComponent>,
     /// JaegerQuery defines options specific to the Jaeger Query component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jaegerQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jaegerQuery")]
     pub jaeger_query: Option<TempoStackTemplateQueryFrontendJaegerQuery>,
 }
 
 /// TempoComponentSpec is embedded to extend this definition with further options.
-///
-///
+/// 
+/// 
 /// Currently there is no way to inline this field.
 /// See: https://github.com/golang/go/issues/6213
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTemplateQueryFrontendComponent {
     /// NodeSelector defines the simple form of the node-selection constraint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodSecurityContext defines security context will be applied to all pods of this component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<TempoStackTemplateQueryFrontendComponentPodSecurityContext>,
     /// Replicas defines the number of replicas to be created for this component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2393,13 +1911,13 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -2411,11 +1929,7 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -2423,11 +1937,7 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -2435,11 +1945,7 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -2455,22 +1961,12 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<TempoStackTemplateQueryFrontendComponentPodSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<TempoStackTemplateQueryFrontendComponentPodSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<TempoStackTemplateQueryFrontendComponentPodSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<TempoStackTemplateQueryFrontendComponentPodSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
     /// defined in the container image for the uid of the container process. If unspecified,
@@ -2478,11 +1974,7 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -2493,13 +1985,8 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<TempoStackTemplateQueryFrontendComponentPodSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<TempoStackTemplateQueryFrontendComponentPodSecurityContextWindowsOptions>,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -2532,16 +2019,12 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContextSeccompProf
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -2567,38 +2050,22 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContextWindowsOpti
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -2607,12 +2074,12 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContextWindowsOpti
 pub struct TempoStackTemplateQueryFrontendComponentResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateQueryFrontendComponentResourcesClaims>>,
@@ -2659,11 +2126,7 @@ pub struct TempoStackTemplateQueryFrontendComponentTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2688,38 +2151,22 @@ pub struct TempoStackTemplateQueryFrontendJaegerQuery {
     /// See also Tempo's extraConfig:
     /// querier.max_concurrent_queries (20 default)
     /// query_frontend.max_outstanding_per_tenant: (2000 default). Increase if the query-frontend returns 429
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "findTracesConcurrentRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "findTracesConcurrentRequests")]
     pub find_traces_concurrent_requests: Option<i64>,
     /// Ingress defines the options for the Jaeger Query ingress.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<TempoStackTemplateQueryFrontendJaegerQueryIngress>,
     /// MonitorTab defines the monitor tab configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitorTab"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorTab")]
     pub monitor_tab: Option<TempoStackTemplateQueryFrontendJaegerQueryMonitorTab>,
     /// Resources defines resources for this component, this will override the calculated resources derived from total
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TempoStackTemplateQueryFrontendJaegerQueryResources>,
     /// ServicesQueryDuration defines how long the services will be available in the services list
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicesQueryDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicesQueryDuration")]
     pub services_query_duration: Option<String>,
     /// TempoQuery defines options specific to the Tempoo Query component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tempoQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tempoQuery")]
     pub tempo_query: Option<TempoStackTemplateQueryFrontendJaegerQueryTempoQuery>,
 }
 
@@ -2745,16 +2192,15 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryAuthentication {
 pub struct TempoStackTemplateQueryFrontendJaegerQueryAuthenticationResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<TempoStackTemplateQueryFrontendJaegerQueryAuthenticationResourcesClaims>>,
+    pub claims: Option<Vec<TempoStackTemplateQueryFrontendJaegerQueryAuthenticationResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2787,11 +2233,7 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryIngress {
     pub host: Option<String>,
     /// IngressClassName defines the name of an IngressClass cluster resource.
     /// Defines which ingress controller serves this ingress resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// Route defines the options for the OpenShift route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2844,19 +2286,11 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryMonitorTab {
     pub enabled: Option<bool>,
     /// PrometheusEndpoint defines the endpoint to the Prometheus instance that contains the span rate, error, and duration (RED) metrics.
     /// For instance on OpenShift this is set to https://thanos-querier.openshift-monitoring.svc.cluster.local:9091
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prometheusEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusEndpoint")]
     pub prometheus_endpoint: Option<String>,
     /// REDMetricsNamespace defines the a prefix used retrieve span rate, error, and duration (RED) metrics.
     /// By default it is set to `traces.span.metrics` following the default namespace of the OpenTelemetry Collector since Version 0.109.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redMetricsNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redMetricsNamespace")]
     pub red_metrics_namespace: Option<String>,
 }
 
@@ -2865,12 +2299,12 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryMonitorTab {
 pub struct TempoStackTemplateQueryFrontendJaegerQueryResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateQueryFrontendJaegerQueryResourcesClaims>>,
@@ -2908,12 +2342,12 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryTempoQuery {
 pub struct TempoStackTemplateQueryFrontendJaegerQueryTempoQueryResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TempoStackTemplateQueryFrontendJaegerQueryTempoQueryResourcesClaims>>,
@@ -2972,31 +2406,19 @@ pub struct TempoStackTenantsAuthentication {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTenantsAuthenticationOidc {
     /// Group claim field from ID Token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupClaim")]
     pub group_claim: Option<String>,
     /// IssuerURL defines the URL for issuer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerURL")]
     pub issuer_url: Option<String>,
     /// RedirectURL defines the URL for redirect.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redirectURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectURL")]
     pub redirect_url: Option<String>,
     /// Secret defines the spec for the clientID, clientSecret and issuerCAPath for tenant's authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<TempoStackTenantsAuthenticationOidcSecret>,
     /// User claim field from ID Token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameClaim")]
     pub username_claim: Option<String>,
 }
 
@@ -3012,11 +2434,7 @@ pub struct TempoStackTenantsAuthenticationOidcSecret {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackTenantsAuthorization {
     /// RoleBindings defines configuration to bind a set of roles to a set of subjects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleBindings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleBindings")]
     pub role_bindings: Option<Vec<TempoStackTenantsAuthorizationRoleBindings>>,
     /// Roles defines a set of permissions to interact with a tenant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3077,25 +2495,13 @@ pub struct TempoStackStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Version of the Tempo Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorVersion")]
     pub operator_version: Option<String>,
     /// DEPRECATED. Version of the Tempo Query component used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tempoQueryVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tempoQueryVersion")]
     pub tempo_query_version: Option<String>,
     /// Version of the managed Tempo instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tempoVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tempoVersion")]
     pub tempo_version: Option<String>,
 }
 
@@ -3119,10 +2525,7 @@ pub struct TempoStackStatusComponents {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub querier: Option<BTreeMap<String, String>>,
     /// QueryFrontend is a map to the per pod status of the query frontend deployment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryFrontend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryFrontend")]
     pub query_frontend: Option<BTreeMap<String, String>>,
 }
+

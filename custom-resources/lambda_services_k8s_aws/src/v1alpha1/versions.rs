@@ -4,91 +4,62 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "lambda.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Version",
-    plural = "versions"
-)]
+#[kube(group = "lambda.services.k8s.aws", version = "v1alpha1", kind = "Version", plural = "versions")]
 #[kube(namespaced)]
 #[kube(status = "VersionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VersionSpec {
     /// Only publish a version if the hash value matches the value that's specified.
     /// Use this option to avoid publishing a version if the function code has changed
     /// since you last updated it. You can get the hash for the version that you
     /// uploaded from the output of UpdateFunctionCode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "codeSHA256"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeSHA256")]
     pub code_sha256: Option<String>,
     /// A description for the version to override the description in the function
     /// configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionEventInvokeConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionEventInvokeConfig")]
     pub function_event_invoke_config: Option<VersionFunctionEventInvokeConfig>,
     /// The name of the Lambda function.
-    ///
+    /// 
     /// Name formats
-    ///
+    /// 
     ///    * Function name - MyFunction.
-    ///
+    /// 
     ///    * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.
-    ///
+    /// 
     ///    * Partial ARN - 123456789012:function:MyFunction.
-    ///
+    /// 
     /// The length constraint applies only to the full ARN. If you specify only the
     /// function name, it is limited to 64 characters in length.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
     pub function_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionRef")]
     pub function_ref: Option<VersionFunctionRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionedConcurrencyConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedConcurrencyConfig")]
     pub provisioned_concurrency_config: Option<VersionProvisionedConcurrencyConfig>,
     /// Only update the function if the revision ID matches the ID that's specified.
     /// Use this option to avoid publishing a version if the function configuration
     /// has changed since you last updated it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revisionID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionID")]
     pub revision_id: Option<String>,
 }
 
@@ -96,29 +67,13 @@ pub struct VersionSpec {
 pub struct VersionFunctionEventInvokeConfig {
     /// A configuration object that specifies the destination of an event after Lambda
     /// processes it.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationConfig")]
     pub destination_config: Option<VersionFunctionEventInvokeConfigDestinationConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
     pub function_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumEventAgeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumEventAgeInSeconds")]
     pub maximum_event_age_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumRetryAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRetryAttempts")]
     pub maximum_retry_attempts: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub qualifier: Option<String>,
@@ -154,7 +109,7 @@ pub struct VersionFunctionEventInvokeConfigDestinationConfigOnSuccess {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -177,17 +132,9 @@ pub struct VersionFunctionRefFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VersionProvisionedConcurrencyConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
     pub function_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionedConcurrentExecutions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedConcurrentExecutions")]
     pub provisioned_concurrent_executions: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub qualifier: Option<String>,
@@ -199,11 +146,7 @@ pub struct VersionStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<VersionStatusAckResourceMetadata>,
     /// The instruction set architecture that the function supports. Architecture
     /// is a string array with one of the valid values. The default architecture
@@ -220,11 +163,7 @@ pub struct VersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The function's dead letter queue.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deadLetterConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deadLetterConfig")]
     pub dead_letter_config: Option<VersionStatusDeadLetterConfig>,
     /// The function's environment variables (https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html).
     /// Omitted from CloudTrail logs.
@@ -232,35 +171,19 @@ pub struct VersionStatus {
     pub environment: Option<VersionStatusEnvironment>,
     /// The size of the function’s /tmp directory in MB. The default value is 512,
     /// but it can be any whole number between 512 and 10,240 MB.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeralStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralStorage")]
     pub ephemeral_storage: Option<VersionStatusEphemeralStorage>,
     /// Connection settings for an Amazon EFS file system (https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemConfigs")]
     pub file_system_configs: Option<Vec<VersionStatusFileSystemConfigs>>,
     /// The function's Amazon Resource Name (ARN).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionARN")]
     pub function_arn: Option<String>,
     /// The function that Lambda calls to begin running your function.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub handler: Option<String>,
     /// The function's image configuration values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageConfigResponse"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageConfigResponse")]
     pub image_config_response: Option<VersionStatusImageConfigResponse>,
     /// The KMS key that's used to encrypt the function's environment variables.
     /// This key is returned only if you've configured a customer managed key.
@@ -268,33 +191,17 @@ pub struct VersionStatus {
     pub kms_key_arn: Option<String>,
     /// The date and time that the function was last updated, in ISO-8601 format
     /// (https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModified"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModified")]
     pub last_modified: Option<String>,
     /// The status of the last update that was performed on the function. This is
     /// first set to Successful after function creation completes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdateStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateStatus")]
     pub last_update_status: Option<String>,
     /// The reason for the last update that was performed on the function.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdateStatusReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateStatusReason")]
     pub last_update_status_reason: Option<String>,
     /// The reason code for the last update that was performed on the function.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdateStatusReasonCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateStatusReasonCode")]
     pub last_update_status_reason_code: Option<String>,
     /// The function's layers (https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -303,19 +210,11 @@ pub struct VersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterARN")]
     pub master_arn: Option<String>,
     /// The amount of memory available to the function at runtime.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memorySize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySize")]
     pub memory_size: Option<i64>,
     /// The type of deployment package. Set to Image for container image and set
     /// Zip for .zip file archive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packageType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packageType")]
     pub package_type: Option<String>,
     /// The version of the Lambda function.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -327,18 +226,10 @@ pub struct VersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub runtime: Option<String>,
     /// The ARN of the signing job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signingJobARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingJobARN")]
     pub signing_job_arn: Option<String>,
     /// The ARN of the signing profile version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signingProfileVersionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingProfileVersionARN")]
     pub signing_profile_version_arn: Option<String>,
     /// Set ApplyOn to PublishedVersions to create a snapshot of the initialized
     /// execution environment when you publish a function version. For more information,
@@ -350,30 +241,18 @@ pub struct VersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
     /// The reason for the function's current state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stateReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateReason")]
     pub state_reason: Option<String>,
     /// The reason code for the function's current state. When the code is Creating,
     /// you can't invoke or modify the function.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stateReasonCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateReasonCode")]
     pub state_reason_code: Option<String>,
     /// The amount of time in seconds that Lambda allows a function to run before
     /// stopping it.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i64>,
     /// The function's X-Ray tracing configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tracingConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfig")]
     pub tracing_config: Option<VersionStatusTracingConfig>,
     /// The version of the Lambda function.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -446,11 +325,7 @@ pub struct VersionStatusEphemeralStorage {
 pub struct VersionStatusFileSystemConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localMountPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localMountPath")]
     pub local_mount_path: Option<String>,
 }
 
@@ -462,11 +337,7 @@ pub struct VersionStatusImageConfigResponse {
     pub error: Option<VersionStatusImageConfigResponseError>,
     /// Configuration values that override the container image Dockerfile settings.
     /// For more information, see Container image settings (https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-parms).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageConfig")]
     pub image_config: Option<VersionStatusImageConfigResponseImageConfig>,
 }
 
@@ -485,17 +356,9 @@ pub struct VersionStatusImageConfigResponseError {
 pub struct VersionStatusImageConfigResponseImageConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "entryPoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoint")]
     pub entry_point: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDirectory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDirectory")]
     pub working_directory: Option<String>,
 }
 
@@ -506,17 +369,9 @@ pub struct VersionStatusLayers {
     pub arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeSize")]
     pub code_size: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signingJobARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingJobARN")]
     pub signing_job_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signingProfileVersionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingProfileVersionARN")]
     pub signing_profile_version_arn: Option<String>,
 }
 
@@ -527,11 +382,7 @@ pub struct VersionStatusLayers {
 pub struct VersionStatusSnapStart {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyOn")]
     pub apply_on: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "optimizationStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "optimizationStatus")]
     pub optimization_status: Option<String>,
 }
 
@@ -545,14 +396,11 @@ pub struct VersionStatusTracingConfig {
 /// The function's networking configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VersionStatusVpcConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIDs")]
     pub subnet_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
     pub vpc_id: Option<String>,
 }
+

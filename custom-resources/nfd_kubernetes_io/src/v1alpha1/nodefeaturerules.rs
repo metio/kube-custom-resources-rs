@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// NodeFeatureRuleSpec describes a NodeFeatureRule.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "nfd.kubernetes.io",
-    version = "v1alpha1",
-    kind = "NodeFeatureRule",
-    plural = "nodefeaturerules"
-)]
+#[kube(group = "nfd.kubernetes.io", version = "v1alpha1", kind = "NodeFeatureRule", plural = "nodefeaturerules")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeFeatureRuleSpec {
     /// Rules is a list of node customization rules.
     pub rules: Vec<NodeFeatureRuleRules>,
@@ -34,21 +29,13 @@ pub struct NodeFeatureRuleRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// LabelsTemplate specifies a template to expand for dynamically generating multiple labels. Data (after template expansion) must be keys with an optional value (<key>[=<value>]) separated by newlines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelsTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsTemplate")]
     pub labels_template: Option<String>,
     /// MatchAny specifies a list of matchers one of which must match.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchAny")]
     pub match_any: Option<Vec<NodeFeatureRuleRulesMatchAny>>,
     /// MatchFeatures specifies a set of matcher terms all of which must match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchFeatures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFeatures")]
     pub match_features: Option<Vec<NodeFeatureRuleRulesMatchFeatures>>,
     /// Name of the rule.
     pub name: String,
@@ -56,11 +43,7 @@ pub struct NodeFeatureRuleRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vars: Option<BTreeMap<String, String>>,
     /// VarsTemplate specifies a template to expand for dynamically generating multiple variables. Data (after template expansion) must be keys with an optional value (<key>[=<value>]) separated by newlines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "varsTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "varsTemplate")]
     pub vars_template: Option<String>,
 }
 
@@ -78,8 +61,7 @@ pub struct NodeFeatureRuleRulesMatchAnyMatchFeatures {
     pub feature: String,
     /// MatchExpressionSet contains a set of MatchExpressions, each of which is evaluated against a set of input values.
     #[serde(rename = "matchExpressions")]
-    pub match_expressions:
-        BTreeMap<String, NodeFeatureRuleRulesMatchAnyMatchFeaturesMatchExpressions>,
+    pub match_expressions: BTreeMap<String, NodeFeatureRuleRulesMatchAnyMatchFeaturesMatchExpressions>,
 }
 
 /// MatchExpressionSet contains a set of MatchExpressions, each of which is evaluated against a set of input values.
@@ -142,3 +124,4 @@ pub enum NodeFeatureRuleRulesMatchFeaturesMatchExpressionsOp {
     IsTrue,
     IsFalse,
 }
+

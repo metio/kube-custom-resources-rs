@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// KubevirtClusterTemplateSpec defines the desired state of KubevirtClusterTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1alpha1",
-    kind = "KubevirtClusterTemplate",
-    plural = "kubevirtclustertemplates"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1alpha1", kind = "KubevirtClusterTemplate", plural = "kubevirtclustertemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KubevirtClusterTemplateSpec {
     /// KubevirtClusterTemplateResource describes the data needed to create a KubevirtCluster from a template.
     pub template: KubevirtClusterTemplateTemplate,
@@ -33,27 +28,27 @@ pub struct KubevirtClusterTemplateSpec {
 pub struct KubevirtClusterTemplateTemplate {
     /// ObjectMeta is metadata that all persisted resources must have, which includes all objects
     /// users must create. This is a copy of customizable fields from metav1.ObjectMeta.
-    ///
-    ///
+    /// 
+    /// 
     /// ObjectMeta is embedded in `Machine.Spec`, `MachineDeployment.Template` and `MachineSet.Template`,
     /// which are not top-level Kubernetes objects. Given that metav1.ObjectMeta has lots of special cases
     /// and read-only fields which end up in the generated CRD validation, having it as a subset simplifies
     /// the API and some issues that can impact user experience.
-    ///
-    ///
+    /// 
+    /// 
     /// During the [upgrade to controller-tools@v2](https://github.com/kubernetes-sigs/cluster-api/pull/1054)
     /// for v1alpha2, we noticed a failure would occur running Cluster API test suite against the new CRDs,
     /// specifically `spec.metadata.creationTimestamp in body must be of type string: "null"`.
     /// The investigation showed that `controller-tools@v2` behaves differently than its previous version
     /// when handling types from [metav1](k8s.io/apimachinery/pkg/apis/meta/v1) package.
-    ///
-    ///
+    /// 
+    /// 
     /// In more details, we found that embedded (non-top level) types that embedded `metav1.ObjectMeta`
     /// had validation properties, including for `creationTimestamp` (metav1.Time).
     /// The `metav1.Time` type specifies a custom json marshaller that, when IsZero() is true, returns `null`
     /// which breaks validation because the field isn't marked as nullable.
-    ///
-    ///
+    /// 
+    /// 
     /// In future versions, controller-tools@v2 might allow overriding the type and validation for embedded
     /// types. When that happens, this hack should be revisited.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -64,27 +59,27 @@ pub struct KubevirtClusterTemplateTemplate {
 
 /// ObjectMeta is metadata that all persisted resources must have, which includes all objects
 /// users must create. This is a copy of customizable fields from metav1.ObjectMeta.
-///
-///
+/// 
+/// 
 /// ObjectMeta is embedded in `Machine.Spec`, `MachineDeployment.Template` and `MachineSet.Template`,
 /// which are not top-level Kubernetes objects. Given that metav1.ObjectMeta has lots of special cases
 /// and read-only fields which end up in the generated CRD validation, having it as a subset simplifies
 /// the API and some issues that can impact user experience.
-///
-///
+/// 
+/// 
 /// During the [upgrade to controller-tools@v2](https://github.com/kubernetes-sigs/cluster-api/pull/1054)
 /// for v1alpha2, we noticed a failure would occur running Cluster API test suite against the new CRDs,
 /// specifically `spec.metadata.creationTimestamp in body must be of type string: "null"`.
 /// The investigation showed that `controller-tools@v2` behaves differently than its previous version
 /// when handling types from [metav1](k8s.io/apimachinery/pkg/apis/meta/v1) package.
-///
-///
+/// 
+/// 
 /// In more details, we found that embedded (non-top level) types that embedded `metav1.ObjectMeta`
 /// had validation properties, including for `creationTimestamp` (metav1.Time).
 /// The `metav1.Time` type specifies a custom json marshaller that, when IsZero() is true, returns `null`
 /// which breaks validation because the field isn't marked as nullable.
-///
-///
+/// 
+/// 
 /// In future versions, controller-tools@v2 might allow overriding the type and validation for embedded
 /// types. When that happens, this hack should be revisited.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -107,30 +102,17 @@ pub struct KubevirtClusterTemplateTemplateMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtClusterTemplateTemplateSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<KubevirtClusterTemplateTemplateSpecControlPlaneEndpoint>,
     /// ControlPlaneServiceTemplate can be used to modify service that fronts the control plane nodes to handle the
     /// api-server traffic (port 6443). This field is optional, by default control plane nodes will use a service
     /// of type ClusterIP, which will make workload cluster only accessible within the same cluster. Note, this does
     /// not aim to expose the entire Service spec to users, but only provides capability to modify the service metadata
     /// and the service type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneServiceTemplate"
-    )]
-    pub control_plane_service_template:
-        Option<KubevirtClusterTemplateTemplateSpecControlPlaneServiceTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneServiceTemplate")]
+    pub control_plane_service_template: Option<KubevirtClusterTemplateTemplateSpecControlPlaneServiceTemplate>,
     /// InfraClusterSecretRef is a reference to a secret with a kubeconfig for external cluster used for infra.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "infraClusterSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infraClusterSecretRef")]
     pub infra_cluster_secret_ref: Option<ObjectReference>,
     /// SSHKeys is a reference to a local struct for SSH keys persistence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKeys")]
@@ -179,11 +161,7 @@ pub struct KubevirtClusterTemplateTemplateSpecControlPlaneServiceTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtClusterTemplateTemplateSpecInfraClusterSecretRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -209,11 +187,7 @@ pub struct KubevirtClusterTemplateTemplateSpecInfraClusterSecretRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -230,11 +204,7 @@ pub struct KubevirtClusterTemplateTemplateSpecSshKeys {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configRef")]
     pub config_ref: Option<ObjectReference>,
     /// DataSecretName is the name of the secret that stores ssh keys.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSecretName")]
     pub data_secret_name: Option<String>,
 }
 
@@ -244,11 +214,7 @@ pub struct KubevirtClusterTemplateTemplateSpecSshKeys {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtClusterTemplateTemplateSpecSshKeysConfigRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -274,14 +240,11 @@ pub struct KubevirtClusterTemplateTemplateSpecSshKeysConfigRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
+

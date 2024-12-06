@@ -4,25 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// OperatorConfigSpec defines the desired state of OperatorConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "crane.konveyor.io",
-    version = "v1alpha1",
-    kind = "OperatorConfig",
-    plural = "operatorconfigs"
-)]
+#[kube(group = "crane.konveyor.io", version = "v1alpha1", kind = "OperatorConfig", plural = "operatorconfigs")]
 #[kube(status = "OperatorConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct OperatorConfigSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct OperatorConfigSpec {
+}
 
 /// OperatorConfigStatus defines the observed state of OperatorConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -30,3 +26,4 @@ pub struct OperatorConfigStatus {
     /// Conditions for operator config status
     pub conditions: Vec<Condition>,
 }
+

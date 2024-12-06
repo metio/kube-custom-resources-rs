@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -14,23 +14,14 @@ use self::prelude::*;
 /// ClusterDeploymentSelector indicating which clusters the SelectorSyncIdentityProvider applies
 /// to in any namespace.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hive.openshift.io",
-    version = "v1",
-    kind = "SelectorSyncIdentityProvider",
-    plural = "selectorsyncidentityproviders"
-)]
+#[kube(group = "hive.openshift.io", version = "v1", kind = "SelectorSyncIdentityProvider", plural = "selectorsyncidentityproviders")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SelectorSyncIdentityProviderSpec {
     /// ClusterDeploymentSelector is a LabelSelector indicating which clusters the SelectorIdentityProvider
     /// applies to in any namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterDeploymentSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDeploymentSelector")]
     pub cluster_deployment_selector: Option<SelectorSyncIdentityProviderClusterDeploymentSelector>,
     /// IdentityProviders is an ordered list of ways for a user to identify themselves
     #[serde(rename = "identityProviders")]
@@ -42,21 +33,12 @@ pub struct SelectorSyncIdentityProviderSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SelectorSyncIdentityProviderClusterDeploymentSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<SelectorSyncIdentityProviderClusterDeploymentSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<SelectorSyncIdentityProviderClusterDeploymentSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -103,11 +85,7 @@ pub struct SelectorSyncIdentityProviderIdentityProviders {
     pub ldap: Option<SelectorSyncIdentityProviderIdentityProvidersLdap>,
     /// mappingMethod determines how identities from this provider are mapped to users
     /// Defaults to "claim"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mappingMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mappingMethod")]
     pub mapping_method: Option<String>,
     /// name is used to qualify the identities returned by this provider.
     /// - It MUST be unique and not shared by any other identity provider used
@@ -119,11 +97,7 @@ pub struct SelectorSyncIdentityProviderIdentityProviders {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openID")]
     pub open_id: Option<SelectorSyncIdentityProviderIdentityProvidersOpenId>,
     /// requestHeader enables user authentication using request header credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeader")]
     pub request_header: Option<SelectorSyncIdentityProviderIdentityProvidersRequestHeader>,
     /// type identifies the identity provider type for this entry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -148,24 +122,15 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersBasicAuth {
     /// If specified and the secret or expected key is not found, the identity provider is not honored.
     /// If the specified certificate data is not valid, the identity provider is not honored.
     /// The namespace for this secret is openshift-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientCert"
-    )]
-    pub tls_client_cert:
-        Option<SelectorSyncIdentityProviderIdentityProvidersBasicAuthTlsClientCert>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientCert")]
+    pub tls_client_cert: Option<SelectorSyncIdentityProviderIdentityProvidersBasicAuthTlsClientCert>,
     /// tlsClientKey is an optional reference to a secret by name that contains the
     /// PEM-encoded TLS private key for the client certificate referenced in tlsClientCert.
     /// The key "tls.key" is used to locate the data.
     /// If specified and the secret or expected key is not found, the identity provider is not honored.
     /// If the specified certificate data is not valid, the identity provider is not honored.
     /// The namespace for this secret is openshift-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientKey")]
     pub tls_client_key: Option<SelectorSyncIdentityProviderIdentityProvidersBasicAuthTlsClientKey>,
     /// url is the remote URL to connect to
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -229,11 +194,7 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersGithub {
     /// The key "clientSecret" is used to locate the data.
     /// If the secret or expected key is not found, the identity provider is not honored.
     /// The namespace for this secret is openshift-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<SelectorSyncIdentityProviderIdentityProvidersGithubClientSecret>,
     /// hostname is the optional domain (e.g. "mycompany.com") for use with a hosted instance of
     /// GitHub Enterprise.
@@ -291,11 +252,7 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersGitlab {
     /// The key "clientSecret" is used to locate the data.
     /// If the secret or expected key is not found, the identity provider is not honored.
     /// The namespace for this secret is openshift-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<SelectorSyncIdentityProviderIdentityProvidersGitlabClientSecret>,
     /// url is the oauth server base URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -335,18 +292,10 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersGoogle {
     /// The key "clientSecret" is used to locate the data.
     /// If the secret or expected key is not found, the identity provider is not honored.
     /// The namespace for this secret is openshift-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<SelectorSyncIdentityProviderIdentityProvidersGoogleClientSecret>,
     /// hostedDomain is the optional Google App domain (e.g. "mycompany.com") to restrict logins to
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostedDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostedDomain")]
     pub hosted_domain: Option<String>,
 }
 
@@ -396,11 +345,7 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersKeystone {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<SelectorSyncIdentityProviderIdentityProvidersKeystoneCa>,
     /// domainName is required for keystone v3
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "domainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
     pub domain_name: Option<String>,
     /// tlsClientCert is an optional reference to a secret by name that contains the
     /// PEM-encoded TLS client certificate to present when connecting to the server.
@@ -408,11 +353,7 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersKeystone {
     /// If specified and the secret or expected key is not found, the identity provider is not honored.
     /// If the specified certificate data is not valid, the identity provider is not honored.
     /// The namespace for this secret is openshift-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientCert")]
     pub tls_client_cert: Option<SelectorSyncIdentityProviderIdentityProvidersKeystoneTlsClientCert>,
     /// tlsClientKey is an optional reference to a secret by name that contains the
     /// PEM-encoded TLS private key for the client certificate referenced in tlsClientCert.
@@ -420,11 +361,7 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersKeystone {
     /// If specified and the secret or expected key is not found, the identity provider is not honored.
     /// If the specified certificate data is not valid, the identity provider is not honored.
     /// The namespace for this secret is openshift-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientKey")]
     pub tls_client_key: Option<SelectorSyncIdentityProviderIdentityProvidersKeystoneTlsClientKey>,
     /// url is the remote URL to connect to
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -482,11 +419,7 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersLdap {
     /// The key "bindPassword" is used to locate the data.
     /// If specified and the secret or expected key is not found, the identity provider is not honored.
     /// The namespace for this secret is openshift-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bindPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindPassword")]
     pub bind_password: Option<SelectorSyncIdentityProviderIdentityProvidersLdapBindPassword>,
     /// ca is an optional reference to a config map by name containing the PEM-encoded CA bundle.
     /// It is used as a trust anchor to validate the TLS certificate presented by the remote server.
@@ -531,11 +464,7 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersLdapAttributes {
     pub name: Option<Vec<String>>,
     /// preferredUsername is the list of attributes whose values should be used as the preferred username.
     /// LDAP standard login attribute is "uid"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredUsername")]
     pub preferred_username: Option<Vec<String>>,
 }
 
@@ -585,25 +514,13 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersOpenId {
     /// The key "clientSecret" is used to locate the data.
     /// If the secret or expected key is not found, the identity provider is not honored.
     /// The namespace for this secret is openshift-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<SelectorSyncIdentityProviderIdentityProvidersOpenIdClientSecret>,
     /// extraAuthorizeParameters are any custom parameters to add to the authorize request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraAuthorizeParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraAuthorizeParameters")]
     pub extra_authorize_parameters: Option<BTreeMap<String, String>>,
     /// extraScopes are any scopes to request in addition to the standard "openid" scope.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraScopes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraScopes")]
     pub extra_scopes: Option<Vec<String>>,
     /// issuer is the URL that the OpenID Provider asserts as its Issuer Identifier.
     /// It must use the https scheme with no query or fragment component.
@@ -642,11 +559,7 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersOpenIdClaims {
     pub name: Option<Vec<String>>,
     /// preferredUsername is the list of claims whose values should be used as the preferred username.
     /// If unspecified, the preferred username is determined from the value of the sub claim
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredUsername")]
     pub preferred_username: Option<Vec<String>>,
 }
 
@@ -680,26 +593,14 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersRequestHeader {
     /// ${query} is replaced with the current query string
     ///   https://www.example.com/auth-proxy/oauth/authorize?${query}
     /// Required when challenge is set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "challengeURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "challengeURL")]
     pub challenge_url: Option<String>,
     /// clientCommonNames is an optional list of common names to require a match from. If empty, any
     /// client certificate validated against the clientCA bundle is considered authoritative.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCommonNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCommonNames")]
     pub client_common_names: Option<Vec<String>>,
     /// emailHeaders is the set of headers to check for the email address
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emailHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailHeaders")]
     pub email_headers: Option<Vec<String>>,
     /// headers is the set of headers to check for identity information
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -714,18 +615,10 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersRequestHeader {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loginURL")]
     pub login_url: Option<String>,
     /// nameHeaders is the set of headers to check for the display name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nameHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameHeaders")]
     pub name_headers: Option<Vec<String>>,
     /// preferredUsernameHeaders is the set of headers to check for the preferred username
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredUsernameHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredUsernameHeaders")]
     pub preferred_username_headers: Option<Vec<String>>,
 }
 
@@ -744,4 +637,6 @@ pub struct SelectorSyncIdentityProviderIdentityProvidersRequestHeaderCa {
 
 /// IdentityProviderStatus defines the observed state of SyncSet
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SelectorSyncIdentityProviderStatus {}
+pub struct SelectorSyncIdentityProviderStatus {
+}
+

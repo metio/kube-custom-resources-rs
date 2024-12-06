@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// The specification of the topic.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kafka.strimzi.io",
-    version = "v1alpha1",
-    kind = "KafkaTopic",
-    plural = "kafkatopics"
-)]
+#[kube(group = "kafka.strimzi.io", version = "v1alpha1", kind = "KafkaTopic", plural = "kafkatopics")]
 #[kube(namespaced)]
 #[kube(status = "KafkaTopicStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KafkaTopicSpec {
     /// The topic configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -46,18 +41,10 @@ pub struct KafkaTopicStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The generation of the CRD that was last reconciled by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Replication factor change status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasChange"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasChange")]
     pub replicas_change: Option<KafkaTopicStatusReplicasChange>,
     /// The topic's id. For a KafkaTopic with the ready condition, this will change only if the topic gets deleted and recreated with the same name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicId")]
@@ -80,11 +67,7 @@ pub struct KafkaTopicStatusReplicasChange {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<KafkaTopicStatusReplicasChangeState>,
     /// The target replicas value requested by the user. This may be different from .spec.replicas when a change is ongoing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetReplicas")]
     pub target_replicas: Option<i64>,
 }
 
@@ -96,3 +79,4 @@ pub enum KafkaTopicStatusReplicasChangeState {
     #[serde(rename = "ongoing")]
     Ongoing,
 }
+

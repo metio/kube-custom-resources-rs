@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// IBMPowerVSMachineTemplateSpec defines the desired state of IBMPowerVSMachineTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "IBMPowerVSMachineTemplate",
-    plural = "ibmpowervsmachinetemplates"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta1", kind = "IBMPowerVSMachineTemplate", plural = "ibmpowervsmachinetemplates")]
 #[kube(namespaced)]
 #[kube(status = "IBMPowerVSMachineTemplateStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMPowerVSMachineTemplateSpec {
     /// IBMPowerVSMachineTemplateResource holds the IBMPowerVSMachine spec.
     pub template: IBMPowerVSMachineTemplateTemplate,
@@ -58,11 +53,7 @@ pub struct IBMPowerVSMachineTemplateTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub processors: Option<String>,
     /// ProviderID is the unique identifier as specified by the cloud provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
     /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.
     #[serde(rename = "serviceInstanceID")]
@@ -129,3 +120,4 @@ pub struct IBMPowerVSMachineTemplateStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<BTreeMap<String, IntOrString>>,
 }
+

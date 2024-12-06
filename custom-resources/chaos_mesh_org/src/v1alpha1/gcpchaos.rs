@@ -5,30 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// GCPChaosSpec is the content of the specification for a GCPChaos
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "GCPChaos",
-    plural = "gcpchaos"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "GCPChaos", plural = "gcpchaos")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct GCPChaosSpec {
     /// Action defines the specific gcp chaos action. Supported action: node-stop / node-reset / disk-loss Default action: node-stop
     pub action: GCPChaosAction,
     /// The device name of disks to detach. Needed in disk-loss.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceNames")]
     pub device_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -38,18 +29,10 @@ pub struct GCPChaosSpec {
     /// Project defines the ID of gcp project.
     pub project: String,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// SecretName defines the name of kubernetes secret. It is used for GCP credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// Zone defines the zone of gcp project.
     pub zone: String,
@@ -70,11 +53,7 @@ pub enum GCPChaosAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GCPChaosStatus {
     /// The attached disk info strings. Needed in disk-loss.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attachedDiskStrings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachedDiskStrings")]
     pub attached_disk_strings: Option<Vec<String>>,
     /// Conditions represents the current global condition of the chaos
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -96,17 +75,9 @@ pub struct GCPChaosStatusConditions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GCPChaosStatusExperiment {
     /// Records are used to track the running status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerRecords")]
     pub container_records: Option<Vec<GCPChaosStatusExperimentContainerRecords>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredPhase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredPhase")]
     pub desired_phase: Option<GCPChaosStatusExperimentDesiredPhase>,
 }
 
@@ -147,3 +118,4 @@ pub enum GCPChaosStatusExperimentDesiredPhase {
     Run,
     Stop,
 }
+

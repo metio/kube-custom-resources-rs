@@ -5,30 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DeviceSpec represents a single device instance.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "devices.kubeedge.io",
-    version = "v1beta1",
-    kind = "Device",
-    plural = "devices"
-)]
+#[kube(group = "devices.kubeedge.io", version = "v1beta1", kind = "Device", plural = "devices")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DeviceSpec {
     /// Required: DeviceModelRef is reference to the device model used as a template to create the device instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceModelRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceModelRef")]
     pub device_model_ref: Option<DeviceDeviceModelRef>,
     /// List of methods of device. methods list item must be unique by method.Name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -62,11 +53,7 @@ pub struct DeviceMethods {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// PropertyNames are list of device properties that device methods can control. Required: A device method can control multiple device properties.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propertyNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyNames")]
     pub property_names: Option<Vec<String>>,
 }
 
@@ -74,11 +61,7 @@ pub struct DeviceMethods {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceProperties {
     /// Define how frequent mapper will collect from device.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectCycle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectCycle")]
     pub collect_cycle: Option<i64>,
     /// The desired property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -87,25 +70,13 @@ pub struct DeviceProperties {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// PushMethod represents the protocol used to push data, please ensure that the mapper can access the destination address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pushMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pushMethod")]
     pub push_method: Option<DevicePropertiesPushMethod>,
     /// Define how frequent mapper will report the value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reportCycle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportCycle")]
     pub report_cycle: Option<i64>,
     /// whether be reported to the cloud
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reportToCloud"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportToCloud")]
     pub report_to_cloud: Option<bool>,
     /// Visitors are intended to be consumed by device mappers which connect to devices and collect data / perform actions on the device. Required: Protocol relevant config details about the how to access the device property.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -156,13 +127,8 @@ pub struct DevicePropertiesPushMethodDbMethod {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertiesPushMethodDbMethodTdEngine {
     /// tdengineClientConfig of tdengine database
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "TDEngineClientConfig"
-    )]
-    pub td_engine_client_config:
-        Option<DevicePropertiesPushMethodDbMethodTdEngineTdEngineClientConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "TDEngineClientConfig")]
+    pub td_engine_client_config: Option<DevicePropertiesPushMethodDbMethodTdEngineTdEngineClientConfig>,
 }
 
 /// tdengineClientConfig of tdengine database
@@ -180,21 +146,11 @@ pub struct DevicePropertiesPushMethodDbMethodTdEngineTdEngineClientConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertiesPushMethodDbMethodInfluxdb2 {
     /// Config of influx database
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "influxdb2ClientConfig"
-    )]
-    pub influxdb2_client_config:
-        Option<DevicePropertiesPushMethodDbMethodInfluxdb2Influxdb2ClientConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "influxdb2ClientConfig")]
+    pub influxdb2_client_config: Option<DevicePropertiesPushMethodDbMethodInfluxdb2Influxdb2ClientConfig>,
     /// config of device data when push to influx database
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "influxdb2DataConfig"
-    )]
-    pub influxdb2_data_config:
-        Option<DevicePropertiesPushMethodDbMethodInfluxdb2Influxdb2DataConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "influxdb2DataConfig")]
+    pub influxdb2_data_config: Option<DevicePropertiesPushMethodDbMethodInfluxdb2Influxdb2DataConfig>,
 }
 
 /// Config of influx database
@@ -227,11 +183,7 @@ pub struct DevicePropertiesPushMethodDbMethodInfluxdb2Influxdb2DataConfig {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertiesPushMethodDbMethodMysql {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mysqlClientConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlClientConfig")]
     pub mysql_client_config: Option<DevicePropertiesPushMethodDbMethodMysqlMysqlClientConfig>,
 }
 
@@ -251,11 +203,7 @@ pub struct DevicePropertiesPushMethodDbMethodMysqlMysqlClientConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertiesPushMethodDbMethodRedis {
     /// RedisClientConfig of redis database
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redisClientConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisClientConfig")]
     pub redis_client_config: Option<DevicePropertiesPushMethodDbMethodRedisRedisClientConfig>,
 }
 
@@ -269,11 +217,7 @@ pub struct DevicePropertiesPushMethodDbMethodRedisRedisClientConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub db: Option<i64>,
     /// MinIdleConns of Redis database
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minIdleConns"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minIdleConns")]
     pub min_idle_conns: Option<i64>,
     /// Poolsize of Redis database
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -287,11 +231,7 @@ pub struct DevicePropertiesPushMethodHttp {
     pub host_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestPath")]
     pub request_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i64>,
@@ -318,11 +258,7 @@ pub struct DevicePropertiesPushMethodMqtt {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertiesPushMethodOtel {
     /// the target endpoint URL the Exporter will connect to, like https://localhost:4318/v1/metrics
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointURL")]
     pub endpoint_url: Option<String>,
 }
 
@@ -330,18 +266,10 @@ pub struct DevicePropertiesPushMethodOtel {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertiesVisitors {
     /// Required: The configData of customized protocol
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
     pub config_data: Option<BTreeMap<String, serde_json::Value>>,
     /// Required: name of customized protocol
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolName")]
     pub protocol_name: Option<String>,
 }
 
@@ -349,18 +277,10 @@ pub struct DevicePropertiesVisitors {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceProtocol {
     /// Any config data
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
     pub config_data: Option<BTreeMap<String, serde_json::Value>>,
     /// Unique protocol name Required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolName")]
     pub protocol_name: Option<String>,
 }
 
@@ -368,25 +288,13 @@ pub struct DeviceProtocol {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceStatus {
     /// Optional: The last time the device was online.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastOnlineTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastOnlineTime")]
     pub last_online_time: Option<String>,
     /// Optional: Define how frequent mapper will report the device status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reportCycle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportCycle")]
     pub report_cycle: Option<i64>,
     /// Optional: whether be reported to the cloud
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reportToCloud"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportToCloud")]
     pub report_to_cloud: Option<bool>,
     /// Optional: The state of the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -400,18 +308,10 @@ pub struct DeviceStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceStatusTwins {
     /// The meaning of here is to indicate desired value of `deviceProperty.Desired` that the mapper has received in current cycle. Useful in cases that people want to check whether the mapper is working appropriately and its internal status is up-to-date. This value should be only updated by devicecontroller upstream.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedDesired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedDesired")]
     pub observed_desired: Option<DeviceStatusTwinsObservedDesired>,
     /// Required: The property name for which the desired/reported values are specified. This property should be present in the device model.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propertyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyName")]
     pub property_name: Option<String>,
     /// Required: the reported property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -437,3 +337,4 @@ pub struct DeviceStatusTwinsReported {
     /// Required: The value for this property.
     pub value: String,
 }
+

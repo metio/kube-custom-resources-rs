@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Specification of the desired behavior of a GitLab Runner instance
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.gitlab.com",
-    version = "v1beta2",
-    kind = "Runner",
-    plural = "runners"
-)]
+#[kube(group = "apps.gitlab.com", version = "v1beta2", kind = "Runner", plural = "runners")]
 #[kube(namespaced)]
 #[kube(status = "RunnerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RunnerSpec {
     /// options used to setup Azure blob
     /// storage as GitLab Runner Cache
@@ -29,11 +24,7 @@ pub struct RunnerSpec {
     pub azure: Option<RunnerAzure>,
     /// The name of the default image to use to run
     /// build jobs, when none is specified
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "buildImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildImage")]
     pub build_image: Option<String>,
     /// Name of tls secret containing the custom certificate
     /// authority (CA) certificates
@@ -43,11 +34,7 @@ pub struct RunnerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachePath")]
     pub cache_path: Option<String>,
     /// Enable sharing of cache between Runners
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheShared"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheShared")]
     pub cache_shared: Option<bool>,
     /// Type of cache used for Runner artifacts
     /// Options are: gcs, s3, azure
@@ -77,21 +64,13 @@ pub struct RunnerSpec {
     #[serde(rename = "gitlabUrl")]
     pub gitlab_url: String,
     /// If specified, overrides the default GitLab Runner helper image
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "helperImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helperImage")]
     pub helper_image: Option<String>,
     /// ImagePullPolicy sets the Image pull policy.
     /// One of Always, Never, IfNotPresent.
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Option to define the number of seconds between checks for new jobs.
     /// This is set to a default of 30s by operator if not set
@@ -108,18 +87,10 @@ pub struct RunnerSpec {
     /// Specify if jobs without tags should be run.
     /// If not specified, runner will default to true if no tags were specified.
     /// In other case it will default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runUntagged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runUntagged")]
     pub run_untagged: Option<bool>,
     /// If specified, overrides the default GitLab Runner image. Default is the Runner image the operator was bundled with.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runnerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runnerImage")]
     pub runner_image: Option<String>,
     /// options used to setup S3
     /// object store as GitLab Runner Cache
@@ -150,11 +121,7 @@ pub struct RunnerAzure {
     pub credentials: Option<String>,
     /// The domain name of the Azure blob storage
     /// e.g. blob.core.windows.net
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageDomain")]
     pub storage_domain: Option<String>,
 }
 
@@ -169,11 +136,7 @@ pub struct RunnerGcs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<String>,
     /// Takes GCS credentials file, 'keys.json'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
 }
 
@@ -234,3 +197,4 @@ pub struct RunnerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registration: Option<String>,
 }
+

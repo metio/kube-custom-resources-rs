@@ -4,56 +4,39 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BrokerSpec defines the desired state of Broker.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "mq.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Broker",
-    plural = "brokers"
-)]
+#[kube(group = "mq.services.k8s.aws", version = "v1alpha1", kind = "Broker", plural = "brokers")]
 #[kube(namespaced)]
 #[kube(status = "BrokerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BrokerSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationStrategy")]
     pub authentication_strategy: Option<String>,
     #[serde(rename = "autoMinorVersionUpgrade")]
     pub auto_minor_version_upgrade: bool,
     /// A list of information about the configuration.
-    ///
+    /// 
     /// Does not apply to RabbitMQ brokers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BrokerConfiguration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creatorRequestID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creatorRequestID")]
     pub creator_request_id: Option<String>,
     #[serde(rename = "deploymentMode")]
     pub deployment_mode: String,
     /// Does not apply to RabbitMQ brokers.
-    ///
+    /// 
     /// Encryption options for the broker.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionOptions")]
     pub encryption_options: Option<BrokerEncryptionOptions>,
     #[serde(rename = "engineType")]
     pub engine_type: String,
@@ -63,53 +46,29 @@ pub struct BrokerSpec {
     pub host_instance_type: String,
     /// Optional. The metadata of the LDAP server used to authenticate and authorize
     /// connections to the broker.
-    ///
+    /// 
     /// Does not apply to RabbitMQ brokers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ldapServerMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ldapServerMetadata")]
     pub ldap_server_metadata: Option<BrokerLdapServerMetadata>,
     /// The list of information about logs to be enabled for the specified broker.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logs: Option<BrokerLogs>,
     /// The scheduled time period relative to UTC during which Amazon MQ begins to
     /// apply pending updates or patches to the broker.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maintenanceWindowStartTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maintenanceWindowStartTime")]
     pub maintenance_window_start_time: Option<BrokerMaintenanceWindowStartTime>,
     pub name: String,
     #[serde(rename = "publiclyAccessible")]
     pub publicly_accessible: bool,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupRefs")]
     pub security_group_refs: Option<Vec<BrokerSecurityGroupRefs>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageType")]
     pub storage_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIDs")]
     pub subnet_i_ds: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRefs")]
     pub subnet_refs: Option<Vec<BrokerSubnetRefs>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
@@ -117,7 +76,7 @@ pub struct BrokerSpec {
 }
 
 /// A list of information about the configuration.
-///
+/// 
 /// Does not apply to RabbitMQ brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerConfiguration {
@@ -128,23 +87,19 @@ pub struct BrokerConfiguration {
 }
 
 /// Does not apply to RabbitMQ brokers.
-///
+/// 
 /// Encryption options for the broker.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerEncryptionOptions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useAWSOwnedKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useAWSOwnedKey")]
     pub use_aws_owned_key: Option<bool>,
 }
 
 /// Optional. The metadata of the LDAP server used to authenticate and authorize
 /// connections to the broker.
-///
+/// 
 /// Does not apply to RabbitMQ brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerLdapServerMetadata {
@@ -154,49 +109,21 @@ pub struct BrokerLdapServerMetadata {
     pub role_base: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleName")]
     pub role_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleSearchMatching"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSearchMatching")]
     pub role_search_matching: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roleSearchSubtree"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleSearchSubtree")]
     pub role_search_subtree: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountPassword")]
     pub service_account_password: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountUsername")]
     pub service_account_username: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userBase")]
     pub user_base: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userRoleName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userRoleName")]
     pub user_role_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userSearchMatching"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userSearchMatching")]
     pub user_search_matching: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userSearchSubtree"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userSearchSubtree")]
     pub user_search_subtree: Option<bool>,
 }
 
@@ -225,7 +152,7 @@ pub struct BrokerMaintenanceWindowStartTime {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -250,7 +177,7 @@ pub struct BrokerSecurityGroupRefsFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -277,11 +204,7 @@ pub struct BrokerSubnetRefsFrom {
 /// to brokers or via the RabbitMQ web console.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerUsers {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consoleAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consoleAccess")]
     pub console_access: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub groups: Option<Vec<String>>,
@@ -313,25 +236,13 @@ pub struct BrokerStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<BrokerStatusAckResourceMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerID")]
     pub broker_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerInstances"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerInstances")]
     pub broker_instances: Option<Vec<BrokerStatusBrokerInstances>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerState")]
     pub broker_state: Option<String>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -366,14 +277,11 @@ pub struct BrokerStatusAckResourceMetadata {
 /// Returns information about all brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerStatusBrokerInstances {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consoleURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consoleURL")]
     pub console_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddress")]
     pub ip_address: Option<String>,
 }
+

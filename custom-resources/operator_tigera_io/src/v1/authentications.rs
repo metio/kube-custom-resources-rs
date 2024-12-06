@@ -4,52 +4,35 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// AuthenticationSpec defines the desired state of Authentication
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "Authentication",
-    plural = "authentications"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "Authentication", plural = "authentications")]
 #[kube(status = "AuthenticationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AuthenticationSpec {
     /// DexDeployment configures the Dex Deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dexDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dexDeployment")]
     pub dex_deployment: Option<AuthenticationDexDeployment>,
     /// If specified, GroupsPrefix is prepended to each group obtained from the identity provider. Note that
     /// Kibana does not support a groups prefix, so this prefix is removed from Kubernetes Groups when translating log access
     /// ClusterRoleBindings into Elastic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupsPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupsPrefix")]
     pub groups_prefix: Option<String>,
     /// LDAP contains the configuration needed to setup LDAP authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ldap: Option<AuthenticationLdap>,
     /// ManagerDomain is the domain name of the Manager
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managerDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managerDomain")]
     pub manager_domain: Option<String>,
     /// OIDC contains the configuration needed to setup OIDC authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,11 +43,7 @@ pub struct AuthenticationSpec {
     /// If specified, UsernamePrefix is prepended to each user obtained from the identity provider. Note that
     /// Kibana does not support a user prefix, so this prefix is removed from Kubernetes User when translating log access
     /// ClusterRoleBindings into Elastic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernamePrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernamePrefix")]
     pub username_prefix: Option<String>,
 }
 
@@ -103,11 +82,7 @@ pub struct AuthenticationDexDeploymentSpecTemplateSpec {
     /// InitContainers is a list of Dex init containers.
     /// If specified, this overrides the specified Dex Deployment init containers.
     /// If omitted, the Dex Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecInitContainers>>,
 }
 
@@ -195,8 +170,7 @@ pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainersResources {
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
+    pub claims: Option<Vec<AuthenticationDexDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -222,11 +196,7 @@ pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainersResourcesCla
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthenticationLdap {
     /// Group search configuration to find the groups that a user is in.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupSearch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupSearch")]
     pub group_search: Option<AuthenticationLdapGroupSearch>,
     /// The host and port of the LDAP server. Example: ad.example.com:636
     pub host: String,
@@ -282,11 +252,7 @@ pub struct AuthenticationLdapUserSearch {
     pub filter: Option<String>,
     /// A mapping of the attribute that is used as the username. This attribute can be used to apply RBAC to a user.
     /// Default: uid
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nameAttribute"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameAttribute")]
     pub name_attribute: Option<String>,
 }
 
@@ -297,25 +263,13 @@ pub struct AuthenticationOidc {
     /// process or if they are acting as a proxy for another identity provider. By default those tokens are deemed invalid.
     /// To skip this check, set the value to "InsecureSkip".
     /// Default: Verify
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emailVerification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailVerification")]
     pub email_verification: Option<AuthenticationOidcEmailVerification>,
     /// GroupsClaim specifies which claim to use from the OIDC provider as the group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupsClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupsClaim")]
     pub groups_claim: Option<String>,
     /// Deprecated. Please use Authentication.Spec.GroupsPrefix instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupsPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupsPrefix")]
     pub groups_prefix: Option<String>,
     /// IssuerURL is the URL to the OIDC provider.
     #[serde(rename = "issuerURL")]
@@ -324,19 +278,11 @@ pub struct AuthenticationOidc {
     /// for re-authentication and consent. See the RFC for more information on prompt types:
     /// https://openid.net/specs/openid-connect-core-1_0.html.
     /// Default: "Consent"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "promptTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "promptTypes")]
     pub prompt_types: Option<Vec<String>>,
     /// RequestedScopes is a list of scopes to request from the OIDC provider. If not provided, the following scopes are
     /// requested: ["openid", "email", "profile", "groups", "offline_access"].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestedScopes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedScopes")]
     pub requested_scopes: Option<Vec<String>>,
     /// Default: "Dex"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -345,11 +291,7 @@ pub struct AuthenticationOidc {
     #[serde(rename = "usernameClaim")]
     pub username_claim: String,
     /// Deprecated. Please use Authentication.Spec.UsernamePrefix instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernamePrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernamePrefix")]
     pub username_prefix: Option<String>,
 }
 
@@ -386,3 +328,4 @@ pub struct AuthenticationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

@@ -5,66 +5,37 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ScaledObjectSpec is the spec for a ScaledObject resource
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "keda.sh",
-    version = "v1alpha1",
-    kind = "ScaledObject",
-    plural = "scaledobjects"
-)]
+#[kube(group = "keda.sh", version = "v1alpha1", kind = "ScaledObject", plural = "scaledobjects")]
 #[kube(namespaced)]
 #[kube(status = "ScaledObjectStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ScaledObjectSpec {
     /// AdvancedConfig specifies advance scaling options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub advanced: Option<ScaledObjectAdvanced>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cooldownPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cooldownPeriod")]
     pub cooldown_period: Option<i32>,
     /// Fallback is the spec for fallback options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fallback: Option<ScaledObjectFallback>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleReplicaCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleReplicaCount")]
     pub idle_replica_count: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialCooldownPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialCooldownPeriod")]
     pub initial_cooldown_period: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxReplicaCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicaCount")]
     pub max_replica_count: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReplicaCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicaCount")]
     pub min_replica_count: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingInterval")]
     pub polling_interval: Option<i32>,
     /// ScaleTarget holds the reference to the scale target Object
     #[serde(rename = "scaleTargetRef")]
@@ -76,24 +47,12 @@ pub struct ScaledObjectSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectAdvanced {
     /// HorizontalPodAutoscalerConfig specifies horizontal scale config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "horizontalPodAutoscalerConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "horizontalPodAutoscalerConfig")]
     pub horizontal_pod_autoscaler_config: Option<ScaledObjectAdvancedHorizontalPodAutoscalerConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreToOriginalReplicaCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreToOriginalReplicaCount")]
     pub restore_to_original_replica_count: Option<bool>,
     /// ScalingModifiers describes advanced scaling logic options like formula
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scalingModifiers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalingModifiers")]
     pub scaling_modifiers: Option<ScaledObjectAdvancedScalingModifiers>,
 }
 
@@ -136,15 +95,10 @@ pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleDown {
     /// policies is a list of potential scaling polices which can be used during scaling.
     /// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub policies:
-        Option<Vec<ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleDownPolicies>>,
+    pub policies: Option<Vec<ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleDownPolicies>>,
     /// selectPolicy is used to specify which policy should be used.
     /// If not set, the default value Max is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selectPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
     /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
     /// considered while scaling up or scaling down.
@@ -152,11 +106,7 @@ pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleDown {
     /// If not set, use the default values:
     /// - For scale up: 0 (i.e. no stabilization is done).
     /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stabilizationWindowSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
 
@@ -185,15 +135,10 @@ pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUp {
     /// policies is a list of potential scaling polices which can be used during scaling.
     /// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub policies:
-        Option<Vec<ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUpPolicies>>,
+    pub policies: Option<Vec<ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUpPolicies>>,
     /// selectPolicy is used to specify which policy should be used.
     /// If not set, the default value Max is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selectPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
     /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
     /// considered while scaling up or scaling down.
@@ -201,11 +146,7 @@ pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUp {
     /// If not set, use the default values:
     /// - For scale up: 0 (i.e. no stabilization is done).
     /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stabilizationWindowSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
 
@@ -227,21 +168,13 @@ pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUpPolic
 /// ScalingModifiers describes advanced scaling logic options like formula
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectAdvancedScalingModifiers {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activationTarget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activationTarget")]
     pub activation_target: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub formula: Option<String>,
     /// MetricTargetType specifies the type of metric being targeted, and should be either
     /// "Value", "AverageValue", or "Utilization"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricType")]
     pub metric_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<String>,
@@ -258,17 +191,9 @@ pub struct ScaledObjectFallback {
 /// ScaleTarget holds the reference to the scale target Object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectScaleTargetRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envSourceContainerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envSourceContainerName")]
     pub env_source_container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
@@ -280,30 +205,18 @@ pub struct ScaledObjectScaleTargetRef {
 pub struct ScaledObjectTriggers {
     /// AuthenticationRef points to the TriggerAuthentication or ClusterTriggerAuthentication object that
     /// is used to authenticate the scaler with the environment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationRef")]
     pub authentication_ref: Option<ScaledObjectTriggersAuthenticationRef>,
     pub metadata: BTreeMap<String, String>,
     /// MetricTargetType specifies the type of metric being targeted, and should be either
     /// "Value", "AverageValue", or "Utilization"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricType")]
     pub metric_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useCachedMetrics"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useCachedMetrics")]
     pub use_cached_metrics: Option<bool>,
 }
 
@@ -320,73 +233,33 @@ pub struct ScaledObjectTriggersAuthenticationRef {
 /// ScaledObjectStatus is the status for a ScaledObject resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationsTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationsTypes")]
     pub authentications_types: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compositeScalerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compositeScalerName")]
     pub composite_scaler_name: Option<String>,
     /// Conditions an array representation to store multiple Conditions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ScaledObjectStatusConditions>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalMetricNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalMetricNames")]
     pub external_metric_names: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<BTreeMap<String, ScaledObjectStatusHealth>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hpaName")]
     pub hpa_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastActiveTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastActiveTime")]
     pub last_active_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originalReplicaCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originalReplicaCount")]
     pub original_replica_count: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pausedReplicaCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pausedReplicaCount")]
     pub paused_replica_count: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceMetricNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceMetricNames")]
     pub resource_metric_names: Option<Vec<String>>,
     /// GroupVersionKindResource provides unified structure for schema.GroupVersionKind and Resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scaleTargetGVKR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleTargetGVKR")]
     pub scale_target_gvkr: Option<ScaledObjectStatusScaleTargetGvkr>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scaleTargetKind"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleTargetKind")]
     pub scale_target_kind: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggersTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggersTypes")]
     pub triggers_types: Option<String>,
 }
 
@@ -408,11 +281,7 @@ pub struct ScaledObjectStatusConditions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectStatusHealth {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numberOfFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberOfFailures")]
     pub number_of_failures: Option<i32>,
     /// HealthStatusType is an indication of whether the health status is happy or failing
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -427,3 +296,4 @@ pub struct ScaledObjectStatusScaleTargetGvkr {
     pub resource: String,
     pub version: String,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// CouchbaseAutoscalerSpec allows control over an autoscaling group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "couchbase.com",
-    version = "v2",
-    kind = "CouchbaseAutoscaler",
-    plural = "couchbaseautoscalers"
-)]
+#[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseAutoscaler", plural = "couchbaseautoscalers")]
 #[kube(namespaced)]
 #[kube(status = "CouchbaseAutoscalerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CouchbaseAutoscalerSpec {
     /// Servers specifies the server group that this autoscaler belongs to.
     pub servers: String,
@@ -40,3 +35,4 @@ pub struct CouchbaseAutoscalerStatus {
     /// Size is the current size of the server group.
     pub size: i64,
 }
+

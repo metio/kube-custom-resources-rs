@@ -5,38 +5,25 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// CruiseControlOperationSpec defines the desired state of CruiseControlOperation.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kafka.banzaicloud.io",
-    version = "v1alpha1",
-    kind = "CruiseControlOperation",
-    plural = "cruisecontroloperations"
-)]
+#[kube(group = "kafka.banzaicloud.io", version = "v1alpha1", kind = "CruiseControlOperation", plural = "cruisecontroloperations")]
 #[kube(namespaced)]
 #[kube(status = "CruiseControlOperationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CruiseControlOperationSpec {
     /// ErrorPolicy defines how failed Cruise Control operation should be handled. When it is "retry", the Koperator re-executes the failed task in every 30 sec (by default). When it is "ignore", the Koperator handles the failed task as completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorPolicy")]
     pub error_policy: Option<CruiseControlOperationErrorPolicy>,
     /// When TTLSecondsAfterFinished is specified, the created and finished (completed successfully or completedWithError and errorPolicy: ignore) cruiseControlOperation custom resource will be deleted after the given time elapsed. When it is 0 then the resource is going to be deleted instantly after the operation is finished. When it is not specified the resource is not going to be removed. Value can be only zero and positive integers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ttlSecondsAfterFinished"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
     pub ttl_seconds_after_finished: Option<i64>,
 }
 
@@ -53,20 +40,12 @@ pub enum CruiseControlOperationErrorPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CruiseControlOperationStatus {
     /// CruiseControlTask defines the observed state of the Cruise Control user task.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentTask"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentTask")]
     pub current_task: Option<CruiseControlOperationStatusCurrentTask>,
     /// ErrorPolicyType defines methods of handling Cruise Control user task errors.
     #[serde(rename = "errorPolicy")]
     pub error_policy: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedTasks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedTasks")]
     pub failed_tasks: Option<Vec<CruiseControlOperationStatusFailedTasks>>,
     #[serde(rename = "retryCount")]
     pub retry_count: i64,
@@ -75,26 +54,14 @@ pub struct CruiseControlOperationStatus {
 /// CruiseControlTask defines the observed state of the Cruise Control user task.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CruiseControlOperationStatusCurrentTask {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMessage")]
     pub error_message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finished: Option<String>,
     /// HTTPRequest is a Cruise Control user task HTTP request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRequest")]
     pub http_request: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpResponseCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpResponseCode")]
     pub http_response_code: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -116,26 +83,14 @@ pub struct CruiseControlOperationStatusCurrentTask {
 /// CruiseControlTask defines the observed state of the Cruise Control user task.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CruiseControlOperationStatusFailedTasks {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMessage")]
     pub error_message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finished: Option<String>,
     /// HTTPRequest is a Cruise Control user task HTTP request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRequest")]
     pub http_request: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpResponseCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpResponseCode")]
     pub http_response_code: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -153,3 +108,4 @@ pub struct CruiseControlOperationStatusFailedTasks {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub summary: Option<BTreeMap<String, String>>,
 }
+

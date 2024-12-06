@@ -5,79 +5,46 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kubean.io",
-    version = "v1alpha1",
-    kind = "Manifest",
-    plural = "manifests"
-)]
+#[kube(group = "kubean.io", version = "v1alpha1", kind = "Manifest", plural = "manifests")]
 #[kube(status = "ManifestStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ManifestSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<Vec<ManifestComponents>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub docker: Option<Vec<ManifestDocker>>,
     /// KubeanVersion , the tag of kubean-io
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeanVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeanVersion")]
     pub kubean_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubesprayVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubesprayVersion")]
     pub kubespray_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localService")]
     pub local_service: Option<ManifestLocalService>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManifestComponents {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultVersion")]
     pub default_version: Option<String>,
     pub name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "versionRange"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionRange")]
     pub version_range: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManifestDocker {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultVersion")]
     pub default_version: Option<String>,
     pub os: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "versionRange"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionRange")]
     pub version_range: Option<Vec<String>>,
 }
 
@@ -89,17 +56,9 @@ pub struct ManifestLocalService {
     pub hosts_map: Option<Vec<ManifestLocalServiceHostsMap>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRepo")]
     pub image_repo: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRepoAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRepoAuth")]
     pub image_repo_auth: Option<Vec<ManifestLocalServiceImageRepoAuth>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRepoScheme"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRepoScheme")]
     pub image_repo_scheme: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "yumRepos")]
     pub yum_repos: Option<BTreeMap<String, String>>,
@@ -115,17 +74,9 @@ pub struct ManifestLocalServiceHostsMap {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManifestLocalServiceImageRepoAuth {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRepoAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRepoAddress")]
     pub image_repo_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordBase64"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordBase64")]
     pub password_base64: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userName")]
     pub user_name: Option<String>,
@@ -133,11 +84,7 @@ pub struct ManifestLocalServiceImageRepoAuth {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManifestStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localAvailable")]
     pub local_available: Option<ManifestStatusLocalAvailable>,
 }
 
@@ -147,32 +94,21 @@ pub struct ManifestStatusLocalAvailable {
     pub components: Option<Vec<ManifestStatusLocalAvailableComponents>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub docker: Option<Vec<ManifestStatusLocalAvailableDocker>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubesprayImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubesprayImage")]
     pub kubespray_image: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManifestStatusLocalAvailableComponents {
     pub name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "versionRange"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionRange")]
     pub version_range: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManifestStatusLocalAvailableDocker {
     pub os: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "versionRange"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionRange")]
     pub version_range: Option<Vec<String>>,
 }
+

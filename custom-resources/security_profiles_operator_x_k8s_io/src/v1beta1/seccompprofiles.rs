@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SeccompProfileSpec defines the desired state of SeccompProfile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "security-profiles-operator.x-k8s.io",
-    version = "v1beta1",
-    kind = "SeccompProfile",
-    plural = "seccompprofiles"
-)]
+#[kube(group = "security-profiles-operator.x-k8s.io", version = "v1beta1", kind = "SeccompProfile", plural = "seccompprofiles")]
 #[kube(namespaced)]
 #[kube(status = "SeccompProfileStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct SeccompProfileSpec {
     /// the architecture used for system calls
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -29,11 +24,7 @@ pub struct SeccompProfileSpec {
     /// BaseProfileName is the name of base profile (in the same namespace) that
     /// will be unioned into this profile. Base profiles can be references as
     /// remote OCI artifacts as well when prefixed with `oci://`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseProfileName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseProfileName")]
     pub base_profile_name: Option<String>,
     /// the default action for seccomp
     #[serde(rename = "defaultAction")]
@@ -45,18 +36,10 @@ pub struct SeccompProfileSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flags: Option<Vec<String>>,
     /// opaque data to pass to the seccomp agent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenerMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerMetadata")]
     pub listener_metadata: Option<String>,
     /// path of UNIX domain socket to contact a seccomp agent for SCMP_ACT_NOTIFY
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenerPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerPath")]
     pub listener_path: Option<String>,
     /// match a syscall in seccomp. While this property is OPTIONAL, some values
     /// of defaultAction are not useful without syscalls entries. For example,
@@ -165,22 +148,14 @@ pub enum SeccompProfileSyscallsArgsOp {
 /// SeccompProfileStatus contains status of the deployed SeccompProfile.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SeccompProfileStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeWorkloads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeWorkloads")]
     pub active_workloads: Option<Vec<String>>,
     /// Conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The path that should be provided to the `securityContext.seccompProfile.localhostProfile`
     /// field of a Pod or container spec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -190,3 +165,4 @@ pub struct SeccompProfileStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

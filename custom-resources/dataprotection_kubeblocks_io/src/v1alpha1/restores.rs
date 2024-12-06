@@ -4,94 +4,65 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// RestoreSpec defines the desired state of Restore
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "dataprotection.kubeblocks.io",
-    version = "v1alpha1",
-    kind = "Restore",
-    plural = "restores"
-)]
+#[kube(group = "dataprotection.kubeblocks.io", version = "v1alpha1", kind = "Restore", plural = "restores")]
 #[kube(namespaced)]
 #[kube(status = "RestoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RestoreSpec {
     /// Specifies the number of retries before marking the restore failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backoffLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
     /// Specifies the backup to be restored. The restore behavior is based on the backup type:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. Full: will be restored the full backup directly.
     /// 2. Incremental: will be restored sequentially from the most recent full backup of this incremental backup.
     /// 3. Differential: will be restored sequentially from the parent backup of the differential backup.
     /// 4. Continuous: will find the most recent full backup at this time point and the continuous backups after it to restore.
     pub backup: RestoreBackup,
     /// Specifies the required resources of restore job's container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResources")]
     pub container_resources: Option<RestoreContainerResources>,
     /// List of environment variables to set in the container for restore. These will be
     /// merged with the env of Backup and ActionSet.
-    ///
-    ///
+    /// 
+    /// 
     /// The priority of merging is as follows: `Restore env > Backup env > ActionSet env`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<RestoreEnv>>,
     /// Configuration for the action of "prepareData" phase, including the persistent volume claims
     /// that need to be restored and scheduling strategy of temporary recovery pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prepareDataConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prepareDataConfig")]
     pub prepare_data_config: Option<RestorePrepareDataConfig>,
     /// Configuration for the action of "postReady" phase.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyConfig")]
     pub ready_config: Option<RestoreReadyConfig>,
     /// Restores the specified resources of Kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RestoreResources>,
     /// Specifies the point in time for restoring.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restoreTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreTime")]
     pub restore_time: Option<String>,
     /// Specifies the service account name needed for recovery pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
 }
 
 /// Specifies the backup to be restored. The restore behavior is based on the backup type:
-///
-///
+/// 
+/// 
 /// 1. Full: will be restored the full backup directly.
 /// 2. Incremental: will be restored sequentially from the most recent full backup of this incremental backup.
 /// 3. Differential: will be restored sequentially from the parent backup of the differential backup.
@@ -103,11 +74,7 @@ pub struct RestoreBackup {
     /// Specifies the backup namespace.
     pub namespace: String,
     /// Specifies the source target for restoration, identified by its name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceTargetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceTargetName")]
     pub source_target_name: Option<String>,
 }
 
@@ -116,12 +83,12 @@ pub struct RestoreBackup {
 pub struct RestoreContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<RestoreContainerResourcesClaims>>,
@@ -171,11 +138,7 @@ pub struct RestoreEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<RestoreEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -183,18 +146,10 @@ pub struct RestoreEnvValueFrom {
     pub field_ref: Option<RestoreEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<RestoreEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<RestoreEnvValueFromSecretKeyRef>,
 }
 
@@ -218,11 +173,7 @@ pub struct RestoreEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -234,11 +185,7 @@ pub struct RestoreEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -268,52 +215,31 @@ pub struct RestoreEnvValueFromSecretKeyRef {
 pub struct RestorePrepareDataConfig {
     /// Specifies the configuration when using `persistentVolumeClaim.spec.dataSourceRef` method for restoring.
     /// Describes the source volume of the backup targetVolumes and the mount path in the restoring container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<RestorePrepareDataConfigDataSourceRef>,
     /// Specifies the restore policy, which is required when the pod selection strategy for the source target is 'All'.
     /// This field is ignored if the pod selection strategy is 'Any'.
     /// optional
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredPolicyForAllPodSelection"
-    )]
-    pub required_policy_for_all_pod_selection:
-        Option<RestorePrepareDataConfigRequiredPolicyForAllPodSelection>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredPolicyForAllPodSelection")]
+    pub required_policy_for_all_pod_selection: Option<RestorePrepareDataConfigRequiredPolicyForAllPodSelection>,
     /// Specifies the scheduling spec for the restoring pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingSpec")]
     pub scheduling_spec: Option<RestorePrepareDataConfigSchedulingSpec>,
     /// Defines restore policy for persistent volume claim.
     /// Supported policies are as follows:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Parallel`: parallel recovery of persistent volume claim.
     /// - `Serial`: restore the persistent volume claim in sequence, and wait until the previous persistent volume claim is restored before restoring a new one.
     #[serde(rename = "volumeClaimRestorePolicy")]
     pub volume_claim_restore_policy: RestorePrepareDataConfigVolumeClaimRestorePolicy,
     /// Defines the persistent Volume claims that need to be restored and mounted together into the restore job.
     /// These persistent Volume claims will be created if they do not exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaims"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaims")]
     pub volume_claims: Option<Vec<RestorePrepareDataConfigVolumeClaims>>,
     /// Defines a template to build persistent Volume claims that need to be restored.
     /// These claims will be created in an orderly manner based on the number of replicas or reused if they already exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimsTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimsTemplate")]
     pub volume_claims_template: Option<RestorePrepareDataConfigVolumeClaimsTemplate>,
 }
 
@@ -326,11 +252,7 @@ pub struct RestorePrepareDataConfigDataSourceRef {
     pub mount_path: Option<String>,
     /// Describes the volume that will be restored from the specified volume of the backup targetVolumes.
     /// This is required if the backup uses a volume snapshot.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<String>,
 }
 
@@ -347,13 +269,8 @@ pub struct RestorePrepareDataConfigRequiredPolicyForAllPodSelection {
     #[serde(rename = "dataRestorePolicy")]
     pub data_restore_policy: String,
     /// Specifies the name of the source target pod. This field is mandatory when the DataRestorePolicy is configured to 'OneToMany'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceOfOneToMany"
-    )]
-    pub source_of_one_to_many:
-        Option<RestorePrepareDataConfigRequiredPolicyForAllPodSelectionSourceOfOneToMany>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceOfOneToMany")]
+    pub source_of_one_to_many: Option<RestorePrepareDataConfigRequiredPolicyForAllPodSelectionSourceOfOneToMany>,
 }
 
 /// Specifies the name of the source target pod. This field is mandatory when the DataRestorePolicy is configured to 'OneToMany'.
@@ -379,19 +296,11 @@ pub struct RestorePrepareDataConfigSchedulingSpec {
     /// Defines a selector which must be true for the pod to fit on a node.
     /// The selector must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Specifies the scheduler to dispatch the pod.
     /// If not specified, the pod will be dispatched by the default scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// Specifies the tolerations for the restoring pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -399,13 +308,8 @@ pub struct RestorePrepareDataConfigSchedulingSpec {
     /// Describes how a group of pods ought to spread across topology
     /// domains. The scheduler will schedule pods in a way which abides by the constraints.
     /// Refer to https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraints>>,
 }
 
 /// Contains a group of affinity scheduling rules.
@@ -413,25 +317,13 @@ pub struct RestorePrepareDataConfigSchedulingSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestorePrepareDataConfigSchedulingSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<RestorePrepareDataConfigSchedulingSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinity>,
 }
 
@@ -482,8 +374,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityPreferredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -501,8 +392,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityPreferredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -545,8 +435,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityRequiredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -564,8 +453,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityRequiredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -684,8 +572,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityPreferredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -719,8 +606,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityPreferredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -807,8 +693,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityRequiredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -842,8 +727,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityRequiredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -961,8 +845,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityPreferre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -996,8 +879,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityPreferre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1084,8 +966,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityRequired
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1119,8 +1000,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityRequired
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1156,11 +1036,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1174,13 +1050,8 @@ pub struct RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -1189,14 +1060,10 @@ pub struct RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraints {
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -1227,8 +1094,8 @@ pub struct RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -1237,43 +1104,31 @@ pub struct RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -1327,8 +1182,7 @@ pub struct RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraintsLabelS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct RestorePrepareDataConfigSchedulingSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1363,11 +1217,7 @@ pub struct RestorePrepareDataConfigVolumeClaims {
     pub volume_claim_spec: RestorePrepareDataConfigVolumeClaimsVolumeClaimSpec,
     /// Describes the volume that will be restored from the specified volume of the backup targetVolumes.
     /// This is required if the backup uses a volume snapshot.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<String>,
 }
 
@@ -1392,11 +1242,7 @@ pub struct RestorePrepareDataConfigVolumeClaimsMetadata {
 pub struct RestorePrepareDataConfigVolumeClaimsVolumeClaimSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -1406,11 +1252,7 @@ pub struct RestorePrepareDataConfigVolumeClaimsVolumeClaimSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<RestorePrepareDataConfigVolumeClaimsVolumeClaimSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
@@ -1435,11 +1277,7 @@ pub struct RestorePrepareDataConfigVolumeClaimsVolumeClaimSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<RestorePrepareDataConfigVolumeClaimsVolumeClaimSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
@@ -1453,11 +1291,7 @@ pub struct RestorePrepareDataConfigVolumeClaimsVolumeClaimSpec {
     pub selector: Option<RestorePrepareDataConfigVolumeClaimsVolumeClaimSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -1471,26 +1305,14 @@ pub struct RestorePrepareDataConfigVolumeClaimsVolumeClaimSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -1579,21 +1401,12 @@ pub struct RestorePrepareDataConfigVolumeClaimsVolumeClaimSpecResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestorePrepareDataConfigVolumeClaimsVolumeClaimSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<RestorePrepareDataConfigVolumeClaimsVolumeClaimSpecSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<RestorePrepareDataConfigVolumeClaimsVolumeClaimSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1623,11 +1436,7 @@ pub struct RestorePrepareDataConfigVolumeClaimsTemplate {
     pub replicas: i32,
     /// Specifies the starting index for the created persistent volume claim according to the template.
     /// The minimum value is 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startingIndex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingIndex")]
     pub starting_index: Option<i32>,
     /// Contains a list of volume claims.
     pub templates: Vec<RestorePrepareDataConfigVolumeClaimsTemplateTemplates>,
@@ -1646,11 +1455,7 @@ pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplates {
     pub volume_claim_spec: RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpec,
     /// Describes the volume that will be restored from the specified volume of the backup targetVolumes.
     /// This is required if the backup uses a volume snapshot.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<String>,
 }
 
@@ -1675,11 +1480,7 @@ pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesMetadata {
 pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -1689,13 +1490,8 @@ pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpec 
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
-    pub data_source:
-        Option<RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecDataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -1719,32 +1515,21 @@ pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpec 
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecResources>,
+    pub resources: Option<RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector:
-        Option<RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecSelector>,
+    pub selector: Option<RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -1758,26 +1543,14 @@ pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpec 
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -1878,8 +1651,7 @@ pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecSelectorMatchExpressions
-{
+pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1897,18 +1669,10 @@ pub struct RestorePrepareDataConfigVolumeClaimsTemplateTemplatesVolumeClaimSpecS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreReadyConfig {
     /// Defines the credential template used to create a connection credential.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionCredential"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionCredential")]
     pub connection_credential: Option<RestoreReadyConfigConnectionCredential>,
     /// Specifies the configuration for an exec action.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "execAction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "execAction")]
     pub exec_action: Option<RestoreReadyConfigExecAction>,
     /// Specifies the configuration for a job action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobAction")]
@@ -1916,11 +1680,7 @@ pub struct RestoreReadyConfig {
     /// Defines a periodic probe of the service readiness.
     /// The controller will perform postReadyHooks of BackupScript.spec.restore
     /// after the service readiness when readinessProbe is configured.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<RestoreReadyConfigReadinessProbe>,
 }
 
@@ -1933,11 +1693,7 @@ pub struct RestoreReadyConfigConnectionCredential {
     /// Specifies the map key of the password in the connection credential secret.
     /// This password will be saved in the backup annotation for full backup.
     /// You can use the environment variable DP_ENCRYPTION_KEY to specify encryption key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// Specifies the map key of the port in the connection credential secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portKey")]
@@ -1946,11 +1702,7 @@ pub struct RestoreReadyConfigConnectionCredential {
     #[serde(rename = "secretName")]
     pub secret_name: String,
     /// Specifies the map key of the user in the connection credential secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
@@ -1976,21 +1728,12 @@ pub struct RestoreReadyConfigExecActionTarget {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreReadyConfigExecActionTargetPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<RestoreReadyConfigExecActionTargetPodSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<RestoreReadyConfigExecActionTargetPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2017,13 +1760,8 @@ pub struct RestoreReadyConfigJobAction {
     /// Specifies the restore policy, which is required when the pod selection strategy for the source target is 'All'.
     /// This field is ignored if the pod selection strategy is 'Any'.
     /// optional
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredPolicyForAllPodSelection"
-    )]
-    pub required_policy_for_all_pod_selection:
-        Option<RestoreReadyConfigJobActionRequiredPolicyForAllPodSelection>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredPolicyForAllPodSelection")]
+    pub required_policy_for_all_pod_selection: Option<RestoreReadyConfigJobActionRequiredPolicyForAllPodSelection>,
     /// Defines the pods that needs to be executed for the job action.
     pub target: RestoreReadyConfigJobActionTarget,
 }
@@ -2041,13 +1779,8 @@ pub struct RestoreReadyConfigJobActionRequiredPolicyForAllPodSelection {
     #[serde(rename = "dataRestorePolicy")]
     pub data_restore_policy: String,
     /// Specifies the name of the source target pod. This field is mandatory when the DataRestorePolicy is configured to 'OneToMany'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceOfOneToMany"
-    )]
-    pub source_of_one_to_many:
-        Option<RestoreReadyConfigJobActionRequiredPolicyForAllPodSelectionSourceOfOneToMany>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceOfOneToMany")]
+    pub source_of_one_to_many: Option<RestoreReadyConfigJobActionRequiredPolicyForAllPodSelectionSourceOfOneToMany>,
 }
 
 /// Specifies the name of the source target pod. This field is mandatory when the DataRestorePolicy is configured to 'OneToMany'.
@@ -2066,11 +1799,7 @@ pub struct RestoreReadyConfigJobActionTarget {
     #[serde(rename = "podSelector")]
     pub pod_selector: RestoreReadyConfigJobActionTargetPodSelector,
     /// Defines which volumes of the selected pod need to be mounted on the restoring pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<RestoreReadyConfigJobActionTargetVolumeMounts>>,
 }
 
@@ -2080,34 +1809,20 @@ pub struct RestoreReadyConfigJobActionTarget {
 pub struct RestoreReadyConfigJobActionTargetPodSelector {
     /// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
     /// This only takes effect when the `strategy` field below is set to `Any`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fallbackLabelSelector"
-    )]
-    pub fallback_label_selector:
-        Option<RestoreReadyConfigJobActionTargetPodSelectorFallbackLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackLabelSelector")]
+    pub fallback_label_selector: Option<RestoreReadyConfigJobActionTargetPodSelectorFallbackLabelSelector>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<RestoreReadyConfigJobActionTargetPodSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<RestoreReadyConfigJobActionTargetPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
     /// Specifies the strategy to select the target pod when multiple pods are selected.
     /// Valid values are:
-    ///
-    ///
+    /// 
+    /// 
     /// - `Any`: select any one pod that match the labelsSelector.
     /// - `All`: select all pods that match the labelsSelector. The backup data for the current pod
     /// will be stored in a subdirectory named after the pod.
@@ -2120,22 +1835,12 @@ pub struct RestoreReadyConfigJobActionTargetPodSelector {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreReadyConfigJobActionTargetPodSelectorFallbackLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<RestoreReadyConfigJobActionTargetPodSelectorFallbackLabelSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<RestoreReadyConfigJobActionTargetPodSelectorFallbackLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2192,11 +1897,7 @@ pub struct RestoreReadyConfigJobActionTargetVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -2212,11 +1913,7 @@ pub struct RestoreReadyConfigJobActionTargetVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -2228,27 +1925,15 @@ pub struct RestoreReadyConfigReadinessProbe {
     /// Specifies the action to take.
     pub exec: RestoreReadyConfigReadinessProbeExec,
     /// Specifies the number of seconds after the container has started before the probe is initiated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
     /// Specifies how often (in seconds) to perform the probe.
     /// The default value is 5 seconds, and the minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
     /// Specifies the number of seconds after which the probe times out.
     /// The default value is 30 seconds, and the minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
@@ -2274,11 +1959,7 @@ pub struct RestoreResourcesIncluded {
     #[serde(rename = "groupResource")]
     pub group_resource: String,
     /// Selects the specified resource for recovery by label.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<RestoreResourcesIncludedLabelSelector>,
 }
 
@@ -2286,20 +1967,12 @@ pub struct RestoreResourcesIncluded {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreResourcesIncludedLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<RestoreResourcesIncludedLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2327,11 +2000,7 @@ pub struct RestoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub actions: Option<RestoreStatusActions>,
     /// Records the date/time when the restore finished being processed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTimestamp")]
     pub completion_timestamp: Option<String>,
     /// Describes the current state of the restore API Resource, like warning.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2344,11 +2013,7 @@ pub struct RestoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<RestoreStatusPhase>,
     /// Records the date/time when the restore started being processed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
 }
 
@@ -2359,11 +2024,7 @@ pub struct RestoreStatusActions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postReady")]
     pub post_ready: Option<Vec<RestoreStatusActionsPostReady>>,
     /// Records the actions for the prepareData phase.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prepareData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prepareData")]
     pub prepare_data: Option<Vec<RestoreStatusActionsPrepareData>>,
 }
 
@@ -2437,3 +2098,4 @@ pub enum RestoreStatusPhase {
     Failed,
     AsDataSource,
 }
+

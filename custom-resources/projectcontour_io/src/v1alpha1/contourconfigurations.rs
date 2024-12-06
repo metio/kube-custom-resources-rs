@@ -4,10 +4,10 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -15,17 +15,12 @@ use self::prelude::*;
 /// It contains most of all the options that can be customized, the
 /// other remaining options being command line flags.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "projectcontour.io",
-    version = "v1alpha1",
-    kind = "ContourConfiguration",
-    plural = "contourconfigurations"
-)]
+#[kube(group = "projectcontour.io", version = "v1alpha1", kind = "ContourConfiguration", plural = "contourconfigurations")]
 #[kube(namespaced)]
 #[kube(status = "ContourConfigurationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ContourConfigurationSpec {
     /// Debug contains parameters to enable debug logging
     /// and debug interfaces inside Contour.
@@ -33,11 +28,7 @@ pub struct ContourConfigurationSpec {
     pub debug: Option<ContourConfigurationDebug>,
     /// EnableExternalNameService allows processing of ExternalNameServices
     /// Contour's default is false for security reasons.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableExternalNameService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableExternalNameService")]
     pub enable_external_name_service: Option<bool>,
     /// Envoy contains parameters for Envoy as well
     /// as how to optionally configure a managed Envoy fleet.
@@ -48,11 +39,7 @@ pub struct ContourConfigurationSpec {
     /// useEndpointSlices - Configures contour to fetch endpoint data
     /// from k8s endpoint slices. defaults to true,
     /// If false then reads endpoint data from the k8s endpoints.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureFlags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureFlags")]
     pub feature_flags: Option<Vec<String>>,
     /// Gateway contains parameters for the gateway-api Gateway that Contour
     /// is configured to serve traffic.
@@ -60,11 +47,7 @@ pub struct ContourConfigurationSpec {
     pub gateway: Option<ContourConfigurationGateway>,
     /// GlobalExternalAuthorization allows envoys external authorization filter
     /// to be enabled for all virtual hosts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalExtAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalExtAuth")]
     pub global_ext_auth: Option<ContourConfigurationGlobalExtAuth>,
     /// Health defines the endpoints Contour uses to serve health checks.
     /// Contour's default is { address: "0.0.0.0", port: 8000 }.
@@ -85,11 +68,7 @@ pub struct ContourConfigurationSpec {
     pub policy: Option<ContourConfigurationPolicy>,
     /// RateLimitService optionally holds properties of the Rate Limit Service
     /// to be used for global rate limiting.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rateLimitService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitService")]
     pub rate_limit_service: Option<ContourConfigurationRateLimitService>,
     /// Tracing defines properties for exporting trace data to OpenTelemetry.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -121,11 +100,7 @@ pub struct ContourConfigurationEnvoy {
     /// secret containing the client certificate and private key
     /// to be used when establishing TLS connection to upstream
     /// cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<ContourConfigurationEnvoyClientCertificate>,
     /// Cluster holds various configurable Envoy cluster values that can
     /// be set in the config file.
@@ -137,11 +112,7 @@ pub struct ContourConfigurationEnvoy {
     /// "HTTP/1.1" and "HTTP/2".
     /// Values: `HTTP/1.1`, `HTTP/2` (default: both).
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultHTTPVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultHTTPVersions")]
     pub default_http_versions: Option<Vec<String>>,
     /// Health defines the endpoint Envoy uses to serve health checks.
     /// Contour's default is { address: "0.0.0.0", port: 8002 }.
@@ -194,11 +165,7 @@ pub struct ContourConfigurationEnvoyClientCertificate {
 pub struct ContourConfigurationEnvoyCluster {
     /// GlobalCircuitBreakerDefaults specifies default circuit breaker budget across all services.
     /// If defined, this will be used as the default for all services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "circuitBreakers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "circuitBreakers")]
     pub circuit_breakers: Option<ContourConfigurationEnvoyClusterCircuitBreakers>,
     /// DNSLookupFamily defines how external names are looked up
     /// When configured as V4, the DNS resolver will only perform a lookup
@@ -215,37 +182,21 @@ pub struct ContourConfigurationEnvoyCluster {
     /// for more information.
     /// Values: `auto` (default), `v4`, `v6`, `all`.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsLookupFamily"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsLookupFamily")]
     pub dns_lookup_family: Option<String>,
     /// Defines the maximum requests for upstream connections. If not specified, there is no limit.
     /// see https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-msg-config-core-v3-httpprotocoloptions
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
     /// Defines the soft limit on size of the cluster’s new connection read and write buffers in bytes.
     /// If unspecified, an implementation defined default is applied (1MiB).
     /// see https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto#envoy-v3-api-field-config-cluster-v3-cluster-per-connection-buffer-limit-bytes
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "per-connection-buffer-limit-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "per-connection-buffer-limit-bytes")]
     pub per_connection_buffer_limit_bytes: Option<i32>,
     /// UpstreamTLS contains the TLS policy parameters for upstream connections
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upstreamTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upstreamTLS")]
     pub upstream_tls: Option<ContourConfigurationEnvoyClusterUpstreamTls>,
 }
 
@@ -254,40 +205,20 @@ pub struct ContourConfigurationEnvoyCluster {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourConfigurationEnvoyClusterCircuitBreakers {
     /// The maximum number of connections that a single Envoy instance allows to the Kubernetes Service; defaults to 1024.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// The maximum number of pending requests that a single Envoy instance allows to the Kubernetes Service; defaults to 1024.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingRequests")]
     pub max_pending_requests: Option<i32>,
     /// The maximum parallel requests a single Envoy instance allows to the Kubernetes Service; defaults to 1024
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequests")]
     pub max_requests: Option<i32>,
     /// The maximum number of parallel retries a single Envoy instance allows to the Kubernetes Service; defaults to 3.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
     /// PerHostMaxConnections is the maximum number of connections
     /// that Envoy will allow to each individual host in a cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perHostMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perHostMaxConnections")]
     pub per_host_max_connections: Option<i32>,
 }
 
@@ -324,31 +255,19 @@ pub struct ContourConfigurationEnvoyClusterUpstreamTls {
     /// Contour recommends leaving this undefined unless you are sure you must.
     /// See: https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/transport_sockets/tls/v3/common.proto#extensions-transport-sockets-tls-v3-tlsparameters
     /// Note: This list is a superset of what is valid for stock Envoy builds and those using BoringSSL FIPS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipherSuites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
     pub cipher_suites: Option<Vec<String>>,
     /// MaximumProtocolVersion is the maximum TLS version this vhost should
     /// negotiate.
     /// Values: `1.2`, `1.3`(default).
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumProtocolVersion")]
     pub maximum_protocol_version: Option<String>,
     /// MinimumProtocolVersion is the minimum TLS version this vhost should
     /// negotiate.
     /// Values: `1.2` (default), `1.3`.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumProtocolVersion")]
     pub minimum_protocol_version: Option<String>,
 }
 
@@ -402,11 +321,7 @@ pub struct ContourConfigurationEnvoyListener {
     /// for more information.
     /// Values: (empty string): use the default ConnectionBalancer, `exact`: use the Exact ConnectionBalancer.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionBalancer")]
     pub connection_balancer: Option<String>,
     /// DisableAllowChunkedLength disables the RFC-compliant Envoy behavior to
     /// strip the "Content-Length" header if "Transfer-Encoding: chunked" is
@@ -415,20 +330,12 @@ pub struct ContourConfigurationEnvoyListener {
     /// are encountered.
     /// See: https://github.com/projectcontour/contour/issues/3221
     /// Contour's default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableAllowChunkedLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAllowChunkedLength")]
     pub disable_allow_chunked_length: Option<bool>,
     /// DisableMergeSlashes disables Envoy's non-standard merge_slashes path transformation option
     /// which strips duplicate slashes from request URL paths.
     /// Contour's default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableMergeSlashes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMergeSlashes")]
     pub disable_merge_slashes: Option<bool>,
     /// Defines the value for SETTINGS_MAX_CONCURRENT_STREAMS Envoy will advertise in the
     /// SETTINGS frame in HTTP/2 connections and the limit for concurrent streams allowed
@@ -436,49 +343,29 @@ pub struct ContourConfigurationEnvoyListener {
     /// than 100 but this field can be used to bound resource usage by HTTP/2 connections
     /// and mitigate attacks like CVE-2023-44487. The default value when this is not set is
     /// unlimited.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpMaxConcurrentStreams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpMaxConcurrentStreams")]
     pub http_max_concurrent_streams: Option<i32>,
     /// Defines the limit on number of active connections to a listener. The limit is applied
     /// per listener. The default value when this is not set is unlimited.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionsPerListener"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionsPerListener")]
     pub max_connections_per_listener: Option<i32>,
     /// Defines the maximum requests for downstream connections. If not specified, there is no limit.
     /// see https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-msg-config-core-v3-httpprotocoloptions
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
     /// Defines the limit on number of HTTP requests that Envoy will process from a single
     /// connection in a single I/O cycle. Requests over this limit are processed in subsequent
     /// I/O cycles. Can be used as a mitigation for CVE-2023-44487 when abusive traffic is
     /// detected. Configures the http.max_requests_per_io_cycle Envoy runtime setting. The default
     /// value when this is not set is no limit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerIOCycle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerIOCycle")]
     pub max_requests_per_io_cycle: Option<i32>,
     /// Defines the soft limit on size of the listener’s new connection read and write buffers in bytes.
     /// If unspecified, an implementation defined default is applied (1MiB).
     /// see https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/listener/v3/listener.proto#envoy-v3-api-field-config-listener-v3-listener-per-connection-buffer-limit-bytes
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "per-connection-buffer-limit-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "per-connection-buffer-limit-bytes")]
     pub per_connection_buffer_limit_bytes: Option<i32>,
     /// Defines the action to be applied to the Server header on the response path.
     /// When configured as overwrite, overwrites any Server header with "envoy".
@@ -487,30 +374,18 @@ pub struct ContourConfigurationEnvoyListener {
     /// Values: `overwrite` (default), `append_if_absent`, `pass_through`
     /// Other values will produce an error.
     /// Contour's default is overwrite.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverHeaderTransformation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverHeaderTransformation")]
     pub server_header_transformation: Option<String>,
     /// SocketOptions defines configurable socket options for the listeners.
     /// Single set of options are applied to all listeners.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "socketOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "socketOptions")]
     pub socket_options: Option<ContourConfigurationEnvoyListenerSocketOptions>,
     /// TLS holds various configurable Envoy TLS listener values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ContourConfigurationEnvoyListenerTls>,
     /// Use PROXY protocol for all listeners.
     /// Contour's default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useProxyProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useProxyProtocol")]
     pub use_proxy_protocol: Option<bool>,
 }
 
@@ -526,11 +401,7 @@ pub struct ContourConfigurationEnvoyListenerSocketOptions {
     /// Defines the value for IPv6 Traffic Class field (including 6 bit DSCP field) for IP packets originating from the Envoy listeners.
     /// Single value is applied to all listeners.
     /// If listeners are bound to IPv4-only addresses, setting this option will cause an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trafficClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficClass")]
     pub traffic_class: Option<i32>,
 }
 
@@ -567,31 +438,19 @@ pub struct ContourConfigurationEnvoyListenerTls {
     /// Contour recommends leaving this undefined unless you are sure you must.
     /// See: https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/transport_sockets/tls/v3/common.proto#extensions-transport-sockets-tls-v3-tlsparameters
     /// Note: This list is a superset of what is valid for stock Envoy builds and those using BoringSSL FIPS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipherSuites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
     pub cipher_suites: Option<Vec<String>>,
     /// MaximumProtocolVersion is the maximum TLS version this vhost should
     /// negotiate.
     /// Values: `1.2`, `1.3`(default).
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumProtocolVersion")]
     pub maximum_protocol_version: Option<String>,
     /// MinimumProtocolVersion is the minimum TLS version this vhost should
     /// negotiate.
     /// Values: `1.2` (default), `1.3`.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumProtocolVersion")]
     pub minimum_protocol_version: Option<String>,
 }
 
@@ -601,36 +460,20 @@ pub struct ContourConfigurationEnvoyLogging {
     /// AccessLogFormat sets the global access log format.
     /// Values: `envoy` (default), `json`.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogFormat")]
     pub access_log_format: Option<String>,
     /// AccessLogFormatString sets the access log format when format is set to `envoy`.
     /// When empty, Envoy's default format is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogFormatString"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogFormatString")]
     pub access_log_format_string: Option<String>,
     /// AccessLogJSONFields sets the fields that JSON logging will
     /// output when AccessLogFormat is json.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogJSONFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogJSONFields")]
     pub access_log_json_fields: Option<Vec<String>>,
     /// AccessLogLevel sets the verbosity level of the access log.
     /// Values: `info` (default, all requests are logged), `error` (all non-success requests, i.e. 300+ response code, are logged), `critical` (all 5xx requests are logged) and `disabled`.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogLevel")]
     pub access_log_level: Option<String>,
 }
 
@@ -679,11 +522,7 @@ pub struct ContourConfigurationEnvoyNetwork {
     /// See https://www.envoyproxy.io/docs/envoy/v1.17.0/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto?highlight=xff_num_trusted_hops
     /// for more information.
     /// Contour's default is 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numTrustedHops"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numTrustedHops")]
     pub num_trusted_hops: Option<i32>,
 }
 
@@ -703,22 +542,14 @@ pub struct ContourConfigurationEnvoyTimeouts {
     /// If not set, a default value of 2 seconds will be used.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto#envoy-v3-api-field-config-cluster-v3-cluster-connect-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
     /// ConnectionIdleTimeout defines how long the proxy should wait while there are
     /// no active requests (for HTTP/1.1) or streams (for HTTP/2) before terminating
     /// an HTTP connection. Set to "infinity" to disable the timeout entirely.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-field-config-core-v3-httpprotocoloptions-idle-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionIdleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionIdleTimeout")]
     pub connection_idle_timeout: Option<String>,
     /// ConnectionShutdownGracePeriod defines how long the proxy will wait between sending an
     /// initial GOAWAY frame and a second, final GOAWAY frame when terminating an HTTP/2 connection.
@@ -726,11 +557,7 @@ pub struct ContourConfigurationEnvoyTimeouts {
     /// GOAWAY frame has been sent, the proxy will refuse new streams.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-drain-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionShutdownGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionShutdownGracePeriod")]
     pub connection_shutdown_grace_period: Option<String>,
     /// DelayedCloseTimeout defines how long envoy will wait, once connection
     /// close processing has been initiated, for the downstream peer to close
@@ -739,11 +566,7 @@ pub struct ContourConfigurationEnvoyTimeouts {
     /// in Envoy. Leaving it unset will result in the Envoy default value being used.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-delayed-close-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "delayedCloseTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "delayedCloseTimeout")]
     pub delayed_close_timeout: Option<String>,
     /// MaxConnectionDuration defines the maximum period of time after an HTTP connection
     /// has been established from the client to the proxy before it is closed by the proxy,
@@ -751,22 +574,14 @@ pub struct ContourConfigurationEnvoyTimeouts {
     /// no max duration.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-field-config-core-v3-httpprotocoloptions-max-connection-duration
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionDuration")]
     pub max_connection_duration: Option<String>,
     /// RequestTimeout sets the client request timeout globally for Contour. Note that
     /// this is a timeout for the entire request, not an idle timeout. Omit or set to
     /// "infinity" to disable the timeout entirely.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
     pub request_timeout: Option<String>,
     /// StreamIdleTimeout defines how long the proxy should wait while there is no
     /// request activity (for HTTP/1.1) or stream activity (for HTTP/2) before
@@ -774,11 +589,7 @@ pub struct ContourConfigurationEnvoyTimeouts {
     /// timeout entirely.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-idle-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "streamIdleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamIdleTimeout")]
     pub stream_idle_timeout: Option<String>,
 }
 
@@ -806,18 +617,10 @@ pub struct ContourConfigurationGatewayGatewayRef {
 pub struct ContourConfigurationGlobalExtAuth {
     /// AuthPolicy sets a default authorization policy for client requests.
     /// This policy will be used unless overridden by individual routes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authPolicy")]
     pub auth_policy: Option<ContourConfigurationGlobalExtAuthAuthPolicy>,
     /// ExtensionServiceRef specifies the extension resource that will authorize client requests.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extensionRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extensionRef")]
     pub extension_ref: Option<ContourConfigurationGlobalExtAuthExtensionRef>,
     /// If FailOpen is true, the client request is forwarded to the upstream service
     /// even if the authorization server fails to respond. This field should not be
@@ -829,18 +632,10 @@ pub struct ContourConfigurationGlobalExtAuth {
     /// Timeout durations are expressed in the Go [Duration format](https://godoc.org/time#ParseDuration).
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     /// The string "infinity" is also a valid input and specifies no timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseTimeout")]
     pub response_timeout: Option<String>,
     /// WithRequestBody specifies configuration for sending the client request's body to authorization server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withRequestBody"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withRequestBody")]
     pub with_request_body: Option<ContourConfigurationGlobalExtAuthWithRequestBody>,
 }
 
@@ -866,11 +661,7 @@ pub struct ContourConfigurationGlobalExtAuthAuthPolicy {
 pub struct ContourConfigurationGlobalExtAuthExtensionRef {
     /// API version of the referent.
     /// If this field is not specified, the default "projectcontour.io/v1alpha1" will be used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
@@ -887,25 +678,13 @@ pub struct ContourConfigurationGlobalExtAuthExtensionRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourConfigurationGlobalExtAuthWithRequestBody {
     /// If AllowPartialMessage is true, then Envoy will buffer the body until MaxRequestBytes are reached.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPartialMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPartialMessage")]
     pub allow_partial_message: Option<bool>,
     /// MaxRequestBytes sets the maximum size of message body ExtAuthz filter will hold in-memory.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestBytes")]
     pub max_request_bytes: Option<i32>,
     /// If PackAsBytes is true, the body sent to Authorization Server is in raw bytes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packAsBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packAsBytes")]
     pub pack_as_bytes: Option<bool>,
 }
 
@@ -927,26 +706,14 @@ pub struct ContourConfigurationHttpproxy {
     /// DisablePermitInsecure disables the use of the
     /// permitInsecure field in HTTPProxy.
     /// Contour's default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disablePermitInsecure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePermitInsecure")]
     pub disable_permit_insecure: Option<bool>,
     /// FallbackCertificate defines the namespace/name of the Kubernetes secret to
     /// use as fallback when a non-SNI request is received.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fallbackCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackCertificate")]
     pub fallback_certificate: Option<ContourConfigurationHttpproxyFallbackCertificate>,
     /// Restrict Contour to searching these namespaces for root ingress routes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootNamespaces")]
     pub root_namespaces: Option<Vec<String>>,
 }
 
@@ -962,18 +729,10 @@ pub struct ContourConfigurationHttpproxyFallbackCertificate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourConfigurationIngress {
     /// Ingress Class Names Contour should use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "classNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "classNames")]
     pub class_names: Option<Vec<String>>,
     /// Address to set in Ingress object status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusAddress")]
     pub status_address: Option<String>,
 }
 
@@ -1013,25 +772,13 @@ pub struct ContourConfigurationMetricsTls {
 pub struct ContourConfigurationPolicy {
     /// ApplyToIngress determines if the Policies will apply to ingress objects
     /// Contour's default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applyToIngress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyToIngress")]
     pub apply_to_ingress: Option<bool>,
     /// RequestHeadersPolicy defines the request headers set/removed on all routes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<ContourConfigurationPolicyRequestHeaders>,
     /// ResponseHeadersPolicy defines the response headers set/removed on all routes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaders")]
     pub response_headers: Option<ContourConfigurationPolicyResponseHeaders>,
 }
 
@@ -1059,34 +806,21 @@ pub struct ContourConfigurationPolicyResponseHeaders {
 pub struct ContourConfigurationRateLimitService {
     /// DefaultGlobalRateLimitPolicy allows setting a default global rate limit policy for every HTTPProxy.
     /// HTTPProxy can overwrite this configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultGlobalRateLimitPolicy"
-    )]
-    pub default_global_rate_limit_policy:
-        Option<ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultGlobalRateLimitPolicy")]
+    pub default_global_rate_limit_policy: Option<ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicy>,
     /// Domain is passed to the Rate Limit Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub domain: Option<String>,
     /// EnableResourceExhaustedCode enables translating error code 429 to
     /// grpc code RESOURCE_EXHAUSTED. When disabled it's translated to UNAVAILABLE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableResourceExhaustedCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableResourceExhaustedCode")]
     pub enable_resource_exhausted_code: Option<bool>,
     /// EnableXRateLimitHeaders defines whether to include the X-RateLimit
     /// headers X-RateLimit-Limit, X-RateLimit-Remaining, and X-RateLimit-Reset
     /// (as defined by the IETF Internet-Draft linked below), on responses
     /// to clients when the Rate Limit Service is consulted for a request.
     /// ref. https://tools.ietf.org/id/draft-polli-ratelimit-headers-03.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableXRateLimitHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableXRateLimitHeaders")]
     pub enable_x_rate_limit_headers: Option<bool>,
     /// ExtensionService identifies the extension service defining the RLS.
     #[serde(rename = "extensionService")]
@@ -1106,8 +840,7 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicy {
     /// be generated and sent to the rate limit service. Each
     /// descriptor contains 1+ key-value pair entries.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub descriptors:
-        Option<Vec<ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptors>>,
+    pub descriptors: Option<Vec<ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptors>>,
     /// Disabled configures the HTTPProxy to not use
     /// the default global rate limit policy defined by the Contour configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1118,8 +851,7 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptors {
     /// Entries is the list of key-value pair generators.
-    pub entries:
-        Vec<ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntries>,
+    pub entries: Vec<ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntries>,
 }
 
 /// RateLimitDescriptorEntry is a key-value pair generator. Exactly
@@ -1147,8 +879,7 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescr
 
 /// GenericKey defines a descriptor entry with a static key and value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesGenericKey
-{
+pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesGenericKey {
     /// Key defines the key of the descriptor entry. If not set, the
     /// key is set to "generic_key".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1160,15 +891,14 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescr
 /// RemoteAddress defines a descriptor entry with a key of "remote_address"
 /// and a value equal to the client's IP address (from x-forwarded-for).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRemoteAddress
-{}
+pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRemoteAddress {
+}
 
 /// RequestHeader defines a descriptor entry that's populated only if
 /// a given header is present on the request. The descriptor key is static,
 /// and the descriptor value is equal to the value of the header.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRequestHeader
-{
+pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRequestHeader {
     /// DescriptorKey defines the key to use on the descriptor entry.
     #[serde(rename = "descriptorKey")]
     pub descriptor_key: String,
@@ -1203,8 +933,7 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescr
 /// TreatMissingAsEmpty.
 /// IgnoreCase has no effect for Regex.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRequestHeaderValueMatchHeaders
-{
+pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRequestHeaderValueMatchHeaders {
     /// Contains specifies a substring that must be present in
     /// the header value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1214,11 +943,7 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescr
     pub exact: Option<String>,
     /// IgnoreCase specifies that string matching should be case insensitive.
     /// Note that this has no effect on the Regex parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
     pub ignore_case: Option<bool>,
     /// Name is the name of the header to match against. Name is required.
     /// Header names are case insensitive.
@@ -1250,11 +975,7 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescr
     /// does not exist, this header value will be treated as empty. Defaults to false.
     /// Unlike the underlying Envoy implementation this is **only** supported for
     /// negative matches (e.g. NotContains, NotExact).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "treatMissingAsEmpty"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "treatMissingAsEmpty")]
     pub treat_missing_as_empty: Option<bool>,
 }
 
@@ -1269,11 +990,7 @@ pub struct ContourConfigurationRateLimitServiceExtensionService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourConfigurationTracing {
     /// CustomTags defines a list of custom tags with unique tag name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTags")]
     pub custom_tags: Option<Vec<ContourConfigurationTracingCustomTags>>,
     /// ExtensionService identifies the extension service defining the otel-collector.
     #[serde(rename = "extensionService")]
@@ -1282,36 +999,20 @@ pub struct ContourConfigurationTracing {
     /// If it is true, contour will add the pod name and namespace to the span of the trace.
     /// the default is true.
     /// Note: The Envoy pods MUST have the HOSTNAME and CONTOUR_NAMESPACE environment variables set for this to work properly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includePodDetail"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includePodDetail")]
     pub include_pod_detail: Option<bool>,
     /// MaxPathTagLength defines maximum length of the request path
     /// to extract and include in the HttpUrl tag.
     /// contour's default is 256.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPathTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPathTagLength")]
     pub max_path_tag_length: Option<i32>,
     /// OverallSampling defines the sampling rate of trace data.
     /// contour's default is 100.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overallSampling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overallSampling")]
     pub overall_sampling: Option<String>,
     /// ServiceName defines the name for the service.
     /// contour's default is contour.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -1326,11 +1027,7 @@ pub struct ContourConfigurationTracingCustomTags {
     /// RequestHeaderName indicates which request header
     /// the label value is obtained from.
     /// Precisely one of Literal, RequestHeaderName must be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaderName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaderName")]
     pub request_header_name: Option<String>,
     /// TagName is the unique name of the custom tag.
     #[serde(rename = "tagName")]
@@ -1396,3 +1093,4 @@ pub struct ContourConfigurationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

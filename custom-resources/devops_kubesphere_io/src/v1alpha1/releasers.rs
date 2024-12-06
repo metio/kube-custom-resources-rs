@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ReleaserSpec defines the desired state of Releaser
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "devops.kubesphere.io",
-    version = "v1alpha1",
-    kind = "Releaser",
-    plural = "releasers"
-)]
+#[kube(group = "devops.kubesphere.io", version = "v1alpha1", kind = "Releaser", plural = "releasers")]
 #[kube(namespaced)]
 #[kube(status = "ReleaserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ReleaserSpec {
     /// GitOps indicates to integrate with GitOps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitOps")]
@@ -116,11 +111,7 @@ pub struct ReleaserSecret {
 /// ReleaserStatus defines the observed state of Releaser
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReleaserStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTime")]
     pub completion_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ReleaserStatusConditions>>,
@@ -138,3 +129,4 @@ pub struct ReleaserStatusConditions {
     /// ConditionStatus is the status of a condition
     pub status: String,
 }
+

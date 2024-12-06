@@ -4,59 +4,42 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// Specification of machine health check policy
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cluster.x-k8s.io",
-    version = "v1alpha3",
-    kind = "MachineHealthCheck",
-    plural = "machinehealthchecks"
-)]
+#[kube(group = "cluster.x-k8s.io", version = "v1alpha3", kind = "MachineHealthCheck", plural = "machinehealthchecks")]
 #[kube(namespaced)]
 #[kube(status = "MachineHealthCheckStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MachineHealthCheckSpec {
     /// clusterName is the name of the Cluster this object belongs to.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
     /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
     /// "selector" are not healthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnhealthy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
     /// Machines older than this duration without a node will be considered to have
     /// failed and will be remediated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeStartupTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
     /// remediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
-    ///
+    /// 
     /// This field is completely optional, when filled, the MachineHealthCheck controller
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remediationTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
     /// Label selector to match machines whose health will be exercised
     pub selector: MachineHealthCheckSelector,
@@ -69,18 +52,14 @@ pub struct MachineHealthCheckSpec {
 
 /// remediationTemplate is a reference to a remediation template
 /// provided by an infrastructure provider.
-///
+/// 
 /// This field is completely optional, when filled, the MachineHealthCheck controller
 /// creates a new object from the template referenced and hands off remediation of the machine to
 /// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineHealthCheckRemediationTemplate {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -105,11 +84,7 @@ pub struct MachineHealthCheckRemediationTemplate {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -121,20 +96,12 @@ pub struct MachineHealthCheckRemediationTemplate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineHealthCheckSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<MachineHealthCheckSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -173,35 +140,20 @@ pub struct MachineHealthCheckStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// total number of healthy machines counted by this machine health check
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentHealthy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentHealthy")]
     pub current_healthy: Option<i32>,
     /// total number of machines counted by this machine health check
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expectedMachines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectedMachines")]
     pub expected_machines: Option<i32>,
     /// observedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// remediationsAllowed is the number of further remediations allowed by this machine health check before
     /// maxUnhealthy short circuiting will be applied
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remediationsAllowed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationsAllowed")]
     pub remediations_allowed: Option<i32>,
     /// targets shows the current list of machines the machine health check is watching
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub targets: Option<Vec<String>>,
 }
+

@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// FederatedClusterSpec defines the desired state of FederatedCluster
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "core.kubeadmiral.io",
-    version = "v1alpha1",
-    kind = "FederatedCluster",
-    plural = "federatedclusters"
-)]
+#[kube(group = "core.kubeadmiral.io", version = "v1alpha1", kind = "FederatedCluster", plural = "federatedclusters")]
 #[kube(status = "FederatedClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FederatedClusterSpec {
     /// The API endpoint of the member cluster. This can be a hostname, hostname:port, IP or IP:port.
     #[serde(rename = "apiEndpoint")]
@@ -38,11 +33,7 @@ pub struct FederatedClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<FederatedClusterTaints>>,
     /// Whether to use service account token to authenticate to the member cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useServiceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useServiceAccount")]
     pub use_service_account: Option<bool>,
 }
 
@@ -72,21 +63,13 @@ pub struct FederatedClusterTaints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedClusterStatus {
     /// The list of api resource types defined in the federated cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiResourceTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiResourceTypes")]
     pub api_resource_types: Option<Vec<FederatedClusterStatusApiResourceTypes>>,
     /// Conditions is an array of current cluster conditions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Whether any effectual action was performed in the cluster while joining. If true, clean-up is required on cluster removal to undo the side-effects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "joinPerformed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "joinPerformed")]
     pub join_performed: Option<bool>,
     /// Resources describes the cluster's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -120,10 +103,7 @@ pub struct FederatedClusterStatusResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub available: Option<BTreeMap<String, IntOrString>>,
     /// SchedulableNodes represents number of nodes which is ready and schedulable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulableNodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulableNodes")]
     pub schedulable_nodes: Option<i64>,
 }
+

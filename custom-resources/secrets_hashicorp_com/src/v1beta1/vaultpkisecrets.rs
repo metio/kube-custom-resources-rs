@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VaultPKISecretSpec defines the desired state of VaultPKISecret
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "secrets.hashicorp.com",
-    version = "v1beta1",
-    kind = "VaultPKISecret",
-    plural = "vaultpkisecrets"
-)]
+#[kube(group = "secrets.hashicorp.com", version = "v1beta1", kind = "VaultPKISecret", plural = "vaultpkisecrets")]
 #[kube(namespaced)]
 #[kube(status = "VaultPKISecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VaultPKISecretSpec {
     /// AltNames to include in the request
     /// May contain both DNS names and email addresses.
@@ -32,11 +27,7 @@ pub struct VaultPKISecretSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clear: Option<bool>,
     /// CommonName to include in the request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "commonName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonName")]
     pub common_name: Option<String>,
     /// Destination provides configuration necessary for syncing the Vault secret
     /// to Kubernetes. If the type is set to "kubernetes.io/tls", "tls.key" will
@@ -47,20 +38,12 @@ pub struct VaultPKISecretSpec {
     pub destination: VaultPKISecretDestination,
     /// ExcludeCNFromSans from DNS or Email Subject Alternate Names.
     /// Default: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeCNFromSans"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeCNFromSans")]
     pub exclude_cn_from_sans: Option<bool>,
     /// ExpiryOffset to use for computing when the certificate should be renewed.
     /// The rotation time will be difference between the expiration and the offset.
     /// Should be in duration notation e.g. 30s, 120s, etc.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expiryOffset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expiryOffset")]
     pub expiry_offset: Option<String>,
     /// Format for the certificate. Choices: "pem", "der", "pem_bundle".
     /// If "pem_bundle",
@@ -98,11 +81,7 @@ pub struct VaultPKISecretSpec {
     /// private key contain base64-encoded pkcs8 or PEM-encoded
     /// pkcs8 instead.
     /// Default: der
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKeyFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyFormat")]
     pub private_key_format: Option<String>,
     /// Revoke the certificate when the resource is deleted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -114,11 +93,7 @@ pub struct VaultPKISecretSpec {
     /// In that case one, or more RolloutRestartTarget(s) can be configured here. The Operator will
     /// trigger a "rollout-restart" for each target whenever the Vault secret changes between reconciliation events.
     /// See RolloutRestartTarget for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rolloutRestartTargets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutRestartTargets")]
     pub rollout_restart_targets: Option<Vec<VaultPKISecretRolloutRestartTargets>>,
     /// TTL for the certificate; sets the expiration date.
     /// If not specified the Vault role's default,
@@ -140,11 +115,7 @@ pub struct VaultPKISecretSpec {
     /// eg: `namespaceA/vaultAuthRefB`. If no namespace prefix is provided it will default to
     /// the namespace of the VaultAuth CR. If no value is specified for VaultAuthRef the Operator
     /// will default to the `default` VaultAuth, configured in the operator's namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vaultAuthRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultAuthRef")]
     pub vault_auth_ref: Option<String>,
 }
 
@@ -190,11 +161,7 @@ pub struct VaultPKISecretDestinationTransformation {
     /// globally by including 'exclude-raw` in the '--global-transformation-options'
     /// command line flag. If set, the command line flag always takes precedence over
     /// this configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeRaw"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeRaw")]
     pub exclude_raw: Option<bool>,
     /// Excludes contains regex patterns used to filter top-level source secret data
     /// fields for exclusion from the final K8s Secret data. These pattern filters are
@@ -216,11 +183,7 @@ pub struct VaultPKISecretDestinationTransformation {
     pub templates: Option<BTreeMap<String, VaultPKISecretDestinationTransformationTemplates>>,
     /// TransformationRefs contain references to template configuration from
     /// SecretTransformation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transformationRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformationRefs")]
     pub transformation_refs: Option<Vec<VaultPKISecretDestinationTransformationTransformationRefs>>,
 }
 
@@ -246,19 +209,11 @@ pub struct VaultPKISecretDestinationTransformationTemplates {
 pub struct VaultPKISecretDestinationTransformationTransformationRefs {
     /// IgnoreExcludes controls whether to use the SecretTransformation's Excludes
     /// data key filters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreExcludes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreExcludes")]
     pub ignore_excludes: Option<bool>,
     /// IgnoreIncludes controls whether to use the SecretTransformation's Includes
     /// data key filters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreIncludes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreIncludes")]
     pub ignore_includes: Option<bool>,
     /// Name of the SecretTransformation resource.
     pub name: String,
@@ -267,13 +222,8 @@ pub struct VaultPKISecretDestinationTransformationTransformationRefs {
     pub namespace: Option<String>,
     /// TemplateRefs map to a Template found in this TransformationRef. If empty, then
     /// all templates from the SecretTransformation will be rendered to the K8s Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRefs"
-    )]
-    pub template_refs:
-        Option<Vec<VaultPKISecretDestinationTransformationTransformationRefsTemplateRefs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRefs")]
+    pub template_refs: Option<Vec<VaultPKISecretDestinationTransformationTransformationRefsTemplateRefs>>,
 }
 
 /// TemplateRef points to templating text that is stored in a
@@ -283,11 +233,7 @@ pub struct VaultPKISecretDestinationTransformationTransformationRefsTemplateRefs
     /// KeyOverride to the rendered template in the Destination secret. If Key is
     /// empty, then the Key from reference spec will be used. Set this to override the
     /// Key set from the reference spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyOverride"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyOverride")]
     pub key_override: Option<String>,
     /// Name of the Template in SecretTransformationSpec.Templates.
     /// the rendered secret data.
@@ -300,7 +246,7 @@ pub struct VaultPKISecretDestinationTransformationTransformationRefsTemplateRefs
 /// 'spec.template.metadata.annotations' to include 'vso.secrets.hashicorp.com/restartedAt'
 /// with a timestamp value of when the trigger was executed.
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
-///
+/// 
 /// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VaultPKISecretRolloutRestartTargets {
@@ -316,7 +262,7 @@ pub struct VaultPKISecretRolloutRestartTargets {
 /// 'spec.template.metadata.annotations' to include 'vso.secrets.hashicorp.com/restartedAt'
 /// with a timestamp value of when the trigger was executed.
 /// E.g. vso.secrets.hashicorp.com/restartedAt: "2023-03-23T13:39:31Z"
-///
+/// 
 /// Supported resources: Deployment, DaemonSet, StatefulSet, argo.Rollout
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VaultPKISecretRolloutRestartTargetsKind {
@@ -340,19 +286,16 @@ pub struct VaultPKISecretStatus {
     #[serde(rename = "lastRotation")]
     pub last_rotation: i64,
     /// SecretMAC used when deciding whether new Vault secret data should be synced.
-    ///
+    /// 
     /// The controller will compare the "new" Vault secret data to this value using HMAC,
     /// if they are different, then the data will be synced to the Destination.
-    ///
+    /// 
     /// The SecretMac is also used to detect drift in the Destination Secret's Data.
     /// If drift is detected the data will be synced to the Destination.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretMAC")]
     pub secret_mac: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serialNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serialNumber")]
     pub serial_number: Option<String>,
     pub valid: bool,
 }
+

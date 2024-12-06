@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Specification of desired alerting rule definitions for Prometheus.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "monitoring.coreos.com",
-    version = "v1",
-    kind = "PrometheusRule",
-    plural = "prometheusrules"
-)]
+#[kube(group = "monitoring.coreos.com", version = "v1", kind = "PrometheusRule", plural = "prometheusrules")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PrometheusRuleSpec {
     /// Content of Prometheus rule file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -48,7 +43,7 @@ pub struct PrometheusRuleGroups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partial_response_strategy: Option<String>,
     /// Defines the offset the rule evaluation timestamp of this particular group by the specified duration into the past.
-    ///
+    /// 
     /// It requires Prometheus >= v2.53.0.
     /// It is not supported for ThanosRuler.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -86,3 +81,4 @@ pub struct PrometheusRuleGroupsRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub record: Option<String>,
 }
+

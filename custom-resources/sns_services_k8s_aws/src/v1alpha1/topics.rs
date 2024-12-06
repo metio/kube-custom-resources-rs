@@ -4,87 +4,58 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TopicSpec defines the desired state of Topic.
-///
+/// 
 /// A wrapper type for the topic's Amazon Resource Name (ARN). To retrieve a
 /// topic's attributes, use GetTopicAttributes.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sns.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Topic",
-    plural = "topics"
-)]
+#[kube(group = "sns.services.k8s.aws", version = "v1alpha1", kind = "Topic", plural = "topics")]
 #[kube(namespaced)]
 #[kube(status = "TopicStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TopicSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentBasedDeduplication"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentBasedDeduplication")]
     pub content_based_deduplication: Option<String>,
     /// The body of the policy document you want to use for this topic.
-    ///
+    /// 
     /// You can only add one policy per topic.
-    ///
+    /// 
     /// The policy must be in JSON string format.
-    ///
+    /// 
     /// Length Constraints: Maximum length of 30,720.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataProtectionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataProtectionPolicy")]
     pub data_protection_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deliveryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deliveryPolicy")]
     pub delivery_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fifoTopic")]
     pub fifo_topic: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kmsMasterKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsMasterKeyID")]
     pub kms_master_key_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kmsMasterKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsMasterKeyRef")]
     pub kms_master_key_ref: Option<TopicKmsMasterKeyRef>,
     /// The name of the topic you want to create.
-    ///
+    /// 
     /// Constraints: Topic names must be made up of only uppercase and lowercase
     /// ASCII letters, numbers, underscores, and hyphens, and must be between 1 and
     /// 256 characters long.
-    ///
+    /// 
     /// For a FIFO (first-in-first-out) topic, the name must end with the .fifo suffix.
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -93,28 +64,20 @@ pub struct TopicSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyRef")]
     pub policy_ref: Option<TopicPolicyRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signatureVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureVersion")]
     pub signature_version: Option<String>,
     /// The list of tags to add to a new topic.
-    ///
+    /// 
     /// To be able to tag a topic on creation, you must have the sns:CreateTopic
     /// and sns:TagResource permissions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<TopicTags>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tracingConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfig")]
     pub tracing_config: Option<String>,
 }
 
@@ -122,7 +85,7 @@ pub struct TopicSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -147,7 +110,7 @@ pub struct TopicKmsMasterKeyRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -183,11 +146,7 @@ pub struct TopicStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<TopicStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -195,11 +154,7 @@ pub struct TopicStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveDeliveryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveDeliveryPolicy")]
     pub effective_delivery_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner: Option<String>,
@@ -228,3 +183,4 @@ pub struct TopicStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

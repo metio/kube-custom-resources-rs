@@ -5,20 +5,15 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "authentication.stackable.tech",
-    version = "v1alpha1",
-    kind = "AuthenticationClass",
-    plural = "authenticationclasses"
-)]
+#[kube(group = "authentication.stackable.tech", version = "v1alpha1", kind = "AuthenticationClass", plural = "authenticationclasses")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AuthenticationClassSpec {
     /// Protocol used for authentication
     pub protocol: AuthenticationClassProtocol,
@@ -34,58 +29,30 @@ pub struct AuthenticationClassProtocol {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthenticationClassProtocolLdap {
     /// In case you need a special account for searching the LDAP server you can specify it here
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bindCredentials"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindCredentials")]
     pub bind_credentials: Option<AuthenticationClassProtocolLdapBindCredentials>,
     /// The name of the email field
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emailField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailField")]
     pub email_field: Option<String>,
     /// The name of the firstname field
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firstnameField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstnameField")]
     pub firstname_field: Option<String>,
     /// The name of the group field
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupField")]
     pub group_field: Option<String>,
     /// Hostname of the LDAP server
     pub hostname: String,
     /// The name of the lastname field
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastnameField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastnameField")]
     pub lastname_field: Option<String>,
     /// Port of the LDAP server
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
     /// LDAP search base
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "searchBase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "searchBase")]
     pub search_base: Option<String>,
     /// LDAP query to filter users
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "searchFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "searchFilter")]
     pub search_filter: Option<String>,
     /// Use a TLS connection. If not specified no TLS will be used
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -124,31 +91,20 @@ pub struct AuthenticationClassProtocolLdapTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<AuthenticationClassProtocolLdapTlsInsecure>,
     /// Use TLS and ca certificate to verify the server and the client
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mutualVerification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutualVerification")]
     pub mutual_verification: Option<AuthenticationClassProtocolLdapTlsMutualVerification>,
     /// Use TLS and ca certificate to verify the server
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverVerification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverVerification")]
     pub server_verification: Option<AuthenticationClassProtocolLdapTlsServerVerification>,
     /// Use TLS and the ca certificates provided by the system - in this case the Docker image - to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemProvided"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemProvided")]
     pub system_provided: Option<AuthenticationClassProtocolLdapTlsSystemProvided>,
 }
 
 /// Use TLS but don't verify certificates. We have to use an empty struct instead of an empty Enum because of limitations of [kube-rs](https://github.com/kube-rs/kube-rs/)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AuthenticationClassProtocolLdapTlsInsecure {}
+pub struct AuthenticationClassProtocolLdapTlsInsecure {
+}
 
 /// Use TLS and ca certificate to verify the server and the client
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -179,14 +135,12 @@ pub struct AuthenticationClassProtocolLdapTlsServerVerificationServerCaCert {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// Name of the SecretClass which will provide the ca cert
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
 }
 
 /// Use TLS and the ca certificates provided by the system - in this case the Docker image - to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AuthenticationClassProtocolLdapTlsSystemProvided {}
+pub struct AuthenticationClassProtocolLdapTlsSystemProvided {
+}
+

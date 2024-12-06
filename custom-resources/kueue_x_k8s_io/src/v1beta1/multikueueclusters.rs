@@ -4,22 +4,17 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "kueue.x-k8s.io",
-    version = "v1beta1",
-    kind = "MultiKueueCluster",
-    plural = "multikueueclusters"
-)]
+#[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "MultiKueueCluster", plural = "multikueueclusters")]
 #[kube(status = "MultiKueueClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct MultiKueueClusterSpec {
     /// Information how to connect to the cluster.
     #[serde(rename = "kubeConfig")]
@@ -30,7 +25,7 @@ pub struct MultiKueueClusterSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MultiKueueClusterKubeConfig {
     /// Location of the KubeConfig.
-    ///
+    /// 
     /// If LocationType is Secret then Location is the name of the secret inside the namespace in
     /// which the kueue controller manager is running. The config should be stored in the "kubeconfig" key.
     pub location: String,
@@ -51,3 +46,4 @@ pub struct MultiKueueClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

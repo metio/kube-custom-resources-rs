@@ -5,37 +5,24 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ManagedResourceSpec defines the desired state of ManagedResource
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "automation.kubensync.com",
-    version = "v1alpha1",
-    kind = "ManagedResource",
-    plural = "managedresources"
-)]
+#[kube(group = "automation.kubensync.com", version = "v1alpha1", kind = "ManagedResource", plural = "managedresources")]
 #[kube(status = "ManagedResourceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ManagedResourceSpec {
     /// AvoidResourceUpdate defines if the created resources should be updated if they already exists. Default value is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "avoidResourceUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "avoidResourceUpdate")]
     pub avoid_resource_update: Option<bool>,
     /// ManagedResourceSpecNamespaceSelector defines the selector used to specify which namespaces are affected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ManagedResourceNamespaceSelector>,
     /// ManagedResourceSpecTemplate defines the resources to be created when a namespace matches the selector
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -46,11 +33,7 @@ pub struct ManagedResourceSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagedResourceNamespaceSelector {
     /// Labels that the namespace must have to be selected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<ManagedResourceNamespaceSelectorLabelSelector>,
     /// Regex that the namespace name must match to be selected
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -61,19 +44,10 @@ pub struct ManagedResourceNamespaceSelector {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagedResourceNamespaceSelectorLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<ManagedResourceNamespaceSelectorLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ManagedResourceNamespaceSelectorLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -128,21 +102,13 @@ pub struct ManagedResourceTemplateDataRef {
 /// ManagedResourceStatus defines the observed state of ManagedResource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagedResourceStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createdResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdResources")]
     pub created_resources: Option<Vec<ManagedResourceStatusCreatedResources>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagedResourceStatusCreatedResources {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
@@ -150,12 +116,9 @@ pub struct ManagedResourceStatusCreatedResources {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerNamespace")]
     pub trigger_namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
+

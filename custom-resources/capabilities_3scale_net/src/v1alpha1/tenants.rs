@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TenantSpec defines the desired state of Tenant
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "capabilities.3scale.net",
-    version = "v1alpha1",
-    kind = "Tenant",
-    plural = "tenants"
-)]
+#[kube(group = "capabilities.3scale.net", version = "v1alpha1", kind = "Tenant", plural = "tenants")]
 #[kube(namespaced)]
 #[kube(status = "TenantStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TenantSpec {
     pub email: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "financeSupportEmail"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "financeSupportEmail")]
     pub finance_support_email: Option<String>,
     /// additional parameters, used for Update, as in master portal Api Docs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEmail")]
@@ -42,17 +33,9 @@ pub struct TenantSpec {
     /// SecretReference represents a Secret Reference. It has enough information to retrieve secret in any namespace
     #[serde(rename = "passwordCredentialsRef")]
     pub password_credentials_ref: TenantPasswordCredentialsRef,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "siteAccessCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "siteAccessCode")]
     pub site_access_code: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportEmail"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportEmail")]
     pub support_email: Option<String>,
     #[serde(rename = "systemMasterUrl")]
     pub system_master_url: String,
@@ -106,3 +89,4 @@ pub struct TenantStatus {
     #[serde(rename = "tenantId")]
     pub tenant_id: i64,
 }
+

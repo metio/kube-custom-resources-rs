@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Dest is the destination URL
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "TLSPassThroughRoute",
-    plural = "tlspassthroughroutes"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "TLSPassThroughRoute", plural = "tlspassthroughroutes")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct TLSPassThroughRouteSpec {
     /// Destination is the destination url to proxy the request to.
     pub destination: String,
@@ -44,3 +39,4 @@ pub struct TLSPassThroughRouteSniMatch {
 pub enum TLSPassThroughRouteTarget {
     UpstreamTunnel,
 }
+

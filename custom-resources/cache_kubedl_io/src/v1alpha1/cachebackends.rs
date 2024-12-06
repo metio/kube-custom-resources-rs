@@ -5,28 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cache.kubedl.io",
-    version = "v1alpha1",
-    kind = "CacheBackend",
-    plural = "cachebackends"
-)]
+#[kube(group = "cache.kubedl.io", version = "v1alpha1", kind = "CacheBackend", plural = "cachebackends")]
 #[kube(namespaced)]
 #[kube(status = "CacheBackendStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CacheBackendSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheEngine"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheEngine")]
     pub cache_engine: Option<CacheBackendCacheEngine>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dataset: Option<CacheBackendDataset>,
@@ -46,11 +37,7 @@ pub struct CacheBackendCacheEngine {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CacheBackendCacheEngineFluid {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alluxioRuntime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alluxioRuntime")]
     pub alluxio_runtime: Option<CacheBackendCacheEngineFluidAlluxioRuntime>,
 }
 
@@ -58,11 +45,7 @@ pub struct CacheBackendCacheEngineFluid {
 pub struct CacheBackendCacheEngineFluidAlluxioRuntime {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tieredStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tieredStorage")]
     pub tiered_storage: Option<Vec<CacheBackendCacheEngineFluidAlluxioRuntimeTieredStorage>>,
 }
 
@@ -70,11 +53,7 @@ pub struct CacheBackendCacheEngineFluidAlluxioRuntime {
 pub struct CacheBackendCacheEngineFluidAlluxioRuntimeTieredStorage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachePath")]
     pub cache_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mediumType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mediumType")]
     pub medium_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quota: Option<String>,
@@ -82,11 +61,7 @@ pub struct CacheBackendCacheEngineFluidAlluxioRuntimeTieredStorage {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CacheBackendDataset {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSources")]
     pub data_sources: Option<Vec<CacheBackendDatasetDataSources>>,
 }
 
@@ -94,11 +69,7 @@ pub struct CacheBackendDataset {
 pub struct CacheBackendDatasetDataSources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subDirName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subDirName")]
     pub sub_dir_name: Option<String>,
 }
 
@@ -110,26 +81,15 @@ pub struct CacheBackendOptions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CacheBackendStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheEngine"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheEngine")]
     pub cache_engine: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheStatus")]
     pub cache_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUsedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUsedTime")]
     pub last_used_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usedBy")]
     pub used_by: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usedNum")]
     pub used_num: Option<i64>,
 }
+

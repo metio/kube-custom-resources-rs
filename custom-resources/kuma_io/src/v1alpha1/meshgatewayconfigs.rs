@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// MeshGatewayConfigSpec specifies the options available for a Kuma MeshGateway.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshGatewayConfig",
-    plural = "meshgatewayconfigs"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshGatewayConfig", plural = "meshgatewayconfigs")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshGatewayConfigSpec {
     /// CrossMesh specifies whether listeners configured by this gateway are
     /// cross mesh listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crossMesh")]
     pub cross_mesh: Option<bool>,
     /// PodTemplate configures the Pod owned by this config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplate")]
     pub pod_template: Option<MeshGatewayConfigPodTemplate>,
     /// Replicas is the number of dataplane proxy replicas to create. For
     /// now this is a fixed number, but in the future it could be
@@ -44,22 +35,14 @@ pub struct MeshGatewayConfigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MeshGatewayConfigResources>,
     /// ServiceTemplate configures the Service owned by this config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceTemplate")]
     pub service_template: Option<MeshGatewayConfigServiceTemplate>,
     /// ServiceType specifies the type of managed Service that will be
     /// created to expose the dataplane proxies to traffic from outside
     /// the cluster. The ports to expose will be taken from the matching Gateway
     /// resource. If there is no matching Gateway, the managed Service will
     /// be deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<MeshGatewayConfigServiceType>,
     /// Tags specifies a set of Kuma tags that are included in the
     /// MeshGatewayInstance and thus propagated to every Dataplane generated to
@@ -98,18 +81,10 @@ pub struct MeshGatewayConfigPodTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<MeshGatewayConfigPodTemplateSpecContainer>,
     /// PodSecurityContext corresponds to PodSpec.SecurityContext
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MeshGatewayConfigPodTemplateSpecSecurityContext>,
     /// ServiceAccountName corresponds to PodSpec.ServiceAccountName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
 }
 
@@ -117,11 +92,7 @@ pub struct MeshGatewayConfigPodTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshGatewayConfigPodTemplateSpecContainer {
     /// ContainerSecurityContext corresponds to PodSpec.Container.SecurityContext
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MeshGatewayConfigPodTemplateSpecContainerSecurityContext>,
 }
 
@@ -129,11 +100,7 @@ pub struct MeshGatewayConfigPodTemplateSpecContainer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshGatewayConfigPodTemplateSpecContainerSecurityContext {
     /// ReadOnlyRootFilesystem corresponds to PodSpec.Container.SecurityContext.ReadOnlyRootFilesystem
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
 }
 
@@ -151,10 +118,10 @@ pub struct MeshGatewayConfigPodTemplateSpecSecurityContext {
 pub struct MeshGatewayConfigResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<MeshGatewayConfigResourcesClaims>>,
@@ -210,11 +177,7 @@ pub struct MeshGatewayConfigServiceTemplateMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshGatewayConfigServiceTemplateSpec {
     /// LoadBalancerIP corresponds to ServiceSpec.LoadBalancerIP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
 }
 
@@ -230,4 +193,6 @@ pub enum MeshGatewayConfigServiceType {
 /// MeshGatewayConfigStatus holds information about the status of the gateway
 /// instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MeshGatewayConfigStatus {}
+pub struct MeshGatewayConfigStatus {
+}
+

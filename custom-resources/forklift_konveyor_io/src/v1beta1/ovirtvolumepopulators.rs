@@ -4,23 +4,18 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "forklift.konveyor.io",
-    version = "v1beta1",
-    kind = "OvirtVolumePopulator",
-    plural = "ovirtvolumepopulators"
-)]
+#[kube(group = "forklift.konveyor.io", version = "v1beta1", kind = "OvirtVolumePopulator", plural = "ovirtvolumepopulators")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct OvirtVolumePopulatorSpec {
     #[serde(rename = "diskId")]
     pub disk_id: String,
@@ -29,11 +24,7 @@ pub struct OvirtVolumePopulatorSpec {
     #[serde(rename = "engineUrl")]
     pub engine_url: String,
     /// The network attachment definition that should be used for disk transfer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transferNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transferNetwork")]
     pub transfer_network: Option<ObjectReference>,
 }
 
@@ -41,11 +32,7 @@ pub struct OvirtVolumePopulatorSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OvirtVolumePopulatorTransferNetwork {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -71,11 +58,7 @@ pub struct OvirtVolumePopulatorTransferNetwork {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -88,3 +71,4 @@ pub struct OvirtVolumePopulatorStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub progress: Option<String>,
 }
+

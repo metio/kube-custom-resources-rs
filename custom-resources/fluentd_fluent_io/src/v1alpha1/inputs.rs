@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// InputSpec defines the desired state of Input
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "fluentd.fluent.io",
-    version = "v1alpha1",
-    kind = "Input",
-    plural = "inputs"
-)]
+#[kube(group = "fluentd.fluent.io", version = "v1alpha1", kind = "Input", plural = "inputs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct InputSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inputs: Option<Vec<InputInputs>>,
@@ -31,11 +26,7 @@ pub struct InputSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputs {
     /// Custom plugin type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customPlugin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPlugin")]
     pub custom_plugin: Option<InputInputsCustomPlugin>,
     /// in_forward plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -53,11 +44,7 @@ pub struct InputInputs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
     /// monitor_agent plugin
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "monitorAgent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorAgent")]
     pub monitor_agent: Option<InputInputsMonitorAgent>,
     /// in_sample plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -77,86 +64,46 @@ pub struct InputInputsCustomPlugin {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsForward {
     /// Adds the prefix to the incoming event's tag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addTagPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addTagPrefix")]
     pub add_tag_prefix: Option<String>,
     /// The port to listen to, default is "0.0.0.0"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bind: Option<String>,
     /// The size limit of the received chunk. If the chunk size is larger than this value, the received chunk is dropped.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chunkSizeLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkSizeLimit")]
     pub chunk_size_limit: Option<String>,
     /// The warning size limit of the received chunk. If the chunk size is larger than this value, a warning message will be sent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chunkSizeWarnLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkSizeWarnLimit")]
     pub chunk_size_warn_limit: Option<String>,
     /// The security section of client plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client: Option<InputInputsForwardClient>,
     /// The connections will be disconnected right after receiving a message, if true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "denyKeepalive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "denyKeepalive")]
     pub deny_keepalive: Option<bool>,
     /// The timeout used to set the linger option.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lingerTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lingerTimeout")]
     pub linger_timeout: Option<i64>,
     /// The port to listen to, default is 24224.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// Tries to resolve hostname from IP addresses or not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolveHostname"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolveHostname")]
     pub resolve_hostname: Option<bool>,
     /// The security section of forward plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<InputInputsForwardSecurity>,
     /// Enables the TCP keepalive for sockets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sendKeepalivePacket"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendKeepalivePacket")]
     pub send_keepalive_packet: Option<bool>,
     /// Skips the invalid incoming event.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipInvalidEvent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipInvalidEvent")]
     pub skip_invalid_event: Option<bool>,
     /// The field name of the client's source address. If set, the client's address will be set to its key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceAddressKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddressKey")]
     pub source_address_key: Option<String>,
     /// The field name of the client's hostname. If set, the client's hostname will be set to its key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceHostnameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceHostnameKey")]
     pub source_hostname_key: Option<String>,
     /// in_forward uses incoming event's tag by default (See Protocol Section).
     /// If the tag parameter is set, its value is used instead.
@@ -191,18 +138,10 @@ pub struct InputInputsForwardClient {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsForwardSecurity {
     /// Allows the anonymous source. <client> sections are required, if disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowAnonymousSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowAnonymousSource")]
     pub allow_anonymous_source: Option<String>,
     /// The hostname.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selfHostname"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selfHostname")]
     pub self_hostname: Option<String>,
     /// The shared key for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedKey")]
@@ -238,11 +177,7 @@ pub struct InputInputsForwardSecurityUserPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsForwardSecurityUserPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InputInputsForwardSecurityUserPasswordValueFromSecretKeyRef>,
 }
 
@@ -277,11 +212,7 @@ pub struct InputInputsForwardSecurityUserUsername {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsForwardSecurityUserUsernameValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InputInputsForwardSecurityUserUsernameValueFromSecretKeyRef>,
 }
 
@@ -308,57 +239,29 @@ pub struct InputInputsForwardSecurityUserUsernameValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsForwardTransport {
     /// for Cert generated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertPath")]
     pub ca_cert_path: Option<String>,
     /// for Cert signed by public CA
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caPath")]
     pub ca_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caPrivateKeyPassphrase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caPrivateKeyPassphrase")]
     pub ca_private_key_passphrase: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caPrivateKeyPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caPrivateKeyPath")]
     pub ca_private_key_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certPath")]
     pub cert_path: Option<String>,
     /// other parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certVerifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certVerifier")]
     pub cert_verifier: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ciphers: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertAuth")]
     pub client_cert_auth: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKeyPassphrase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPassphrase")]
     pub private_key_passphrase: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKeyPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
     pub private_key_path: Option<String>,
     /// The protocal name of this plugin, i.e: tls
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -390,11 +293,7 @@ pub struct InputInputsForwardUserPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsForwardUserPasswordValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InputInputsForwardUserPasswordValueFromSecretKeyRef>,
 }
 
@@ -429,11 +328,7 @@ pub struct InputInputsForwardUserUsername {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsForwardUserUsernameValueFrom {
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InputInputsForwardUserUsernameValueFromSecretKeyRef>,
 }
 
@@ -460,50 +355,26 @@ pub struct InputInputsForwardUserUsernameValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsHttp {
     /// Adds HTTP_ prefix headers to the record.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addHttpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addHttpHeaders")]
     pub add_http_headers: Option<bool>,
     /// Adds REMOTE_ADDR field to the record. The value of REMOTE_ADDR is the client's address.
     /// i.e: X-Forwarded-For: host1, host2
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addRemoteAddr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addRemoteAddr")]
     pub add_remote_addr: Option<String>,
     /// The port to listen to, default is "0.0.0.0"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bind: Option<String>,
     /// The size limit of the POSTed element.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bodySizeLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodySizeLimit")]
     pub body_size_limit: Option<String>,
     /// Whitelist domains for CORS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "corsAllOrigins"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "corsAllOrigins")]
     pub cors_all_origins: Option<String>,
     /// Add Access-Control-Allow-Credentials header. It's needed when a request's credentials mode is include
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "corsAllowCredentials"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "corsAllowCredentials")]
     pub cors_allow_credentials: Option<String>,
     /// The timeout limit for keeping the connection alive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepaliveTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveTimeout")]
     pub keepalive_timeout: Option<String>,
     /// The parse section of http plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -512,11 +383,7 @@ pub struct InputInputsHttp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// Responds with an empty GIF image of 1x1 pixel (rather than an empty string).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "respondsWithEmptyImg"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "respondsWithEmptyImg")]
     pub responds_with_empty_img: Option<bool>,
     /// The transport section of http plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -527,18 +394,10 @@ pub struct InputInputsHttp {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InputInputsHttpParse {
     /// Path to the file that includes custom grok patterns.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customPatternPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPatternPath")]
     pub custom_pattern_path: Option<String>,
     /// If true, use Fluent::Eventnow(current time) as a timestamp when time_key is specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "estimateCurrentEvent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "estimateCurrentEvent")]
     pub estimate_current_event: Option<bool>,
     /// Specifies the regular expression for matching logs. Regular expression also supports i and m suffix.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -547,35 +406,19 @@ pub struct InputInputsHttpParse {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grok: Option<Vec<InputInputsHttpParseGrok>>,
     /// The key has grok failure reason.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grokFailureKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grokFailureKey")]
     pub grok_failure_key: Option<String>,
     /// The pattern of grok.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grokPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grokPattern")]
     pub grok_pattern: Option<String>,
     /// Specify grok pattern series set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grokPatternSeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grokPatternSeries")]
     pub grok_pattern_series: Option<String>,
     /// The @id parameter specifies a unique name for the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// If true, keep time field in th record.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepTimeKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepTimeKey")]
     pub keep_time_key: Option<bool>,
     /// If true, uses local time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -584,25 +427,13 @@ pub struct InputInputsHttpParse {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
     /// The regexp to match beginning of multiline. This is only for "multiline_grok".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiLineStartRegexp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiLineStartRegexp")]
     pub multi_line_start_regexp: Option<String>,
     /// Process value according to the specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Uses the specified time format as a fallback in the specified order. You can parse undetermined time format by using time_format_fallbacks. This options is enabled when time_type is mixed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormatFallbacks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormatFallbacks")]
     pub time_format_fallbacks: Option<String>,
     /// Specify time field for event time. If the event doesn't have this field, current time is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
@@ -630,11 +461,7 @@ pub struct InputInputsHttpParse {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsHttpParseGrok {
     /// If true, keep time field in the record.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepTimeKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepTimeKey")]
     pub keep_time_key: Option<bool>,
     /// The name of this grok section.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -643,11 +470,7 @@ pub struct InputInputsHttpParseGrok {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
     /// Process value using specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Specify time field for event time. If the event doesn't have this field, current time is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
@@ -705,57 +528,29 @@ pub enum InputInputsHttpParseType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsHttpTransport {
     /// for Cert generated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertPath")]
     pub ca_cert_path: Option<String>,
     /// for Cert signed by public CA
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caPath")]
     pub ca_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caPrivateKeyPassphrase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caPrivateKeyPassphrase")]
     pub ca_private_key_passphrase: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caPrivateKeyPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caPrivateKeyPath")]
     pub ca_private_key_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certPath")]
     pub cert_path: Option<String>,
     /// other parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certVerifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certVerifier")]
     pub cert_verifier: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ciphers: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertAuth")]
     pub client_cert_auth: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKeyPassphrase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPassphrase")]
     pub private_key_passphrase: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKeyPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
     pub private_key_path: Option<String>,
     /// The protocal name of this plugin, i.e: tls
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -771,25 +566,13 @@ pub struct InputInputsMonitorAgent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bind: Option<String>,
     /// The interval time between event emits. This will be used when "tag" is configured.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitInterval")]
     pub emit_interval: Option<i64>,
     /// You can set this option to false to remove the config field from the response.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeConfig")]
     pub include_config: Option<bool>,
     /// You can set this option to false to remove the retry field from the response.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeRetry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeRetry")]
     pub include_retry: Option<bool>,
     /// The port to listen to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -803,11 +586,7 @@ pub struct InputInputsMonitorAgent {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsSample {
     /// If specified, each generated event has an auto-incremented key field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoIncrementKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoIncrementKey")]
     pub auto_increment_key: Option<String>,
     /// It configures how many events to generate per second.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -827,27 +606,15 @@ pub struct InputInputsSample {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InputInputsTail {
     /// Emits unmatched lines when <parse> format is not matched for incoming logs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitUnmatchedLines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitUnmatchedLines")]
     pub emit_unmatched_lines: Option<bool>,
     /// Enables the additional inotify-based watcher. Setting this parameter to false will disable the inotify events and use only timer watcher for file tailing.
     /// This option is mainly for avoiding the stuck issue with inotify.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableStatWatcher"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableStatWatcher")]
     pub enable_stat_watcher: Option<bool>,
     /// Enables the additional watch timer. Setting this parameter to false will significantly reduce CPU and I/O consumption when tailing a large number of files on systems with inotify support.
     /// The default is true which results in an additional 1 second timer being used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableWatchTimer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableWatchTimer")]
     pub enable_watch_timer: Option<bool>,
     /// Specifies the encoding of reading lines. By default, in_tail emits string value as ASCII-8BIT encoding.
     /// If encoding is specified, in_tail changes string to encoding.
@@ -855,66 +622,34 @@ pub struct InputInputsTail {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub encoding: Option<String>,
     /// The paths excluded from the watcher list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludePath")]
     pub exclude_path: Option<Vec<String>>,
     /// Avoid to read rotated files duplicately. You should set true when you use * or strftime format in path.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followInodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followInodes")]
     pub follow_inodes: Option<bool>,
     /// Specifies the encoding of reading lines. By default, in_tail emits string value as ASCII-8BIT encoding.
     /// If encoding is specified, in_tail changes string to encoding.
     /// If encoding and fromEncoding both are specified, in_tail tries to encode string from fromEncoding to encoding.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromEncoding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEncoding")]
     pub from_encoding: Option<String>,
     /// The in_tail plugin can assign each log file to a group, based on user defined rules.
     /// The limit parameter controls the total number of lines collected for a group within a rate_period time interval.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<InputInputsTailGroup>,
     /// If you have to exclude the non-permission files from the watch list, set this parameter to true. It suppresses the repeated permission error logs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreRepeatedPermissionError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreRepeatedPermissionError")]
     pub ignore_repeated_permission_error: Option<bool>,
     /// Limits the watching files that the modification time is within the specified time range when using * in path.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitRecentlyModified"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitRecentlyModified")]
     pub limit_recently_modified: Option<i32>,
     /// The maximum length of a line. Longer lines than it will be just skipped.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxLineSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLineSize")]
     pub max_line_size: Option<i32>,
     /// The interval of flushing the buffer for multiline format.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multilineFlushInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multilineFlushInterval")]
     pub multiline_flush_interval: Option<i32>,
     /// Opens and closes the file on every update instead of leaving it open until it gets rotated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openOnEveryUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openOnEveryUpdate")]
     pub open_on_every_update: Option<bool>,
     /// Parse defines various parameters for the parse plugin
     pub parse: InputInputsTailParse,
@@ -924,11 +659,7 @@ pub struct InputInputsTail {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathKey")]
     pub path_key: Option<String>,
     /// This parameter is for strftime formatted path like /path/to/%Y/%m/%d/.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathTimezone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathTimezone")]
     pub path_timezone: Option<String>,
     /// (recommended) Fluentd will record the position it last read from this file.
     /// pos_file handles multiple positions in one file so no need to have multiple pos_file parameters per source.
@@ -936,56 +667,28 @@ pub struct InputInputsTail {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "posFile")]
     pub pos_file: Option<String>,
     /// The interval of doing compaction of pos file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "posFileCompactionInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "posFileCompactionInterval")]
     pub pos_file_compaction_interval: Option<i32>,
     /// The number of reading bytes per second to read with I/O operation. This value should be equal or greater than 8192.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readBytesLimitPerSecond"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readBytesLimitPerSecond")]
     pub read_bytes_limit_per_second: Option<i32>,
     /// Starts to read the logs from the head of the file or the last read position recorded in pos_file, not tail.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readFromHead"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readFromHead")]
     pub read_from_head: Option<bool>,
     /// The number of lines to read with each I/O operation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLinesLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLinesLimit")]
     pub read_lines_limit: Option<i32>,
     /// The interval to refresh the list of watch files. This is used when the path includes *.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<i32>,
     /// in_tail actually does a bit more than tail -F itself. When rotating a file, some data may still need to be written to the old file as opposed to the new one.
     /// in_tail takes care of this by keeping a reference to the old file (even after it has been rotated) for some time before transitioning completely to the new file.
     /// This helps prevent data designated for the old file from getting lost. By default, this time interval is 5 seconds.
     /// The rotate_wait parameter accepts a single integer representing the number of seconds you want this time interval to be.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rotateWait"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotateWait")]
     pub rotate_wait: Option<i32>,
     /// Skips the refresh of the watch list on startup. This reduces the startup time when * is used in path.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipRefreshOnStartup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipRefreshOnStartup")]
     pub skip_refresh_on_startup: Option<bool>,
     /// The tag of the event.
     pub tag: String,
@@ -1000,11 +703,7 @@ pub struct InputInputsTailGroup {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
     /// Time period in which the group line limit is applied. in_tail resets the counter after every rate_period interval.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ratePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ratePeriod")]
     pub rate_period: Option<i32>,
     /// Grouping rules for log files.
     pub rule: InputInputsTailGroupRule,
@@ -1025,18 +724,10 @@ pub struct InputInputsTailGroupRule {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InputInputsTailParse {
     /// Path to the file that includes custom grok patterns.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customPatternPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPatternPath")]
     pub custom_pattern_path: Option<String>,
     /// If true, use Fluent::Eventnow(current time) as a timestamp when time_key is specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "estimateCurrentEvent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "estimateCurrentEvent")]
     pub estimate_current_event: Option<bool>,
     /// Specifies the regular expression for matching logs. Regular expression also supports i and m suffix.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1045,35 +736,19 @@ pub struct InputInputsTailParse {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grok: Option<Vec<InputInputsTailParseGrok>>,
     /// The key has grok failure reason.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grokFailureKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grokFailureKey")]
     pub grok_failure_key: Option<String>,
     /// The pattern of grok.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grokPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grokPattern")]
     pub grok_pattern: Option<String>,
     /// Specify grok pattern series set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grokPatternSeries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grokPatternSeries")]
     pub grok_pattern_series: Option<String>,
     /// The @id parameter specifies a unique name for the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// If true, keep time field in th record.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepTimeKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepTimeKey")]
     pub keep_time_key: Option<bool>,
     /// If true, uses local time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1082,25 +757,13 @@ pub struct InputInputsTailParse {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
     /// The regexp to match beginning of multiline. This is only for "multiline_grok".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiLineStartRegexp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiLineStartRegexp")]
     pub multi_line_start_regexp: Option<String>,
     /// Process value according to the specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Uses the specified time format as a fallback in the specified order. You can parse undetermined time format by using time_format_fallbacks. This options is enabled when time_type is mixed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormatFallbacks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormatFallbacks")]
     pub time_format_fallbacks: Option<String>,
     /// Specify time field for event time. If the event doesn't have this field, current time is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
@@ -1128,11 +791,7 @@ pub struct InputInputsTailParse {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputInputsTailParseGrok {
     /// If true, keep time field in the record.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepTimeKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepTimeKey")]
     pub keep_time_key: Option<bool>,
     /// The name of this grok section.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1141,11 +800,7 @@ pub struct InputInputsTailParseGrok {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
     /// Process value using specified format. This is available only when time_type is string
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
     pub time_format: Option<String>,
     /// Specify time field for event time. If the event doesn't have this field, current time is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
@@ -1201,4 +856,6 @@ pub enum InputInputsTailParseType {
 
 /// InputStatus defines the observed state of Input
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InputStatus {}
+pub struct InputStatus {
+}
+

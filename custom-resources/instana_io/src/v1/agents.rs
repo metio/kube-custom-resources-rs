@@ -4,174 +4,77 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// InstanaAgentSpec defines the desired state of the Instana Agent
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "instana.io",
-    version = "v1",
-    kind = "InstanaAgent",
-    plural = "agents"
-)]
+#[kube(group = "instana.io", version = "v1", kind = "InstanaAgent", plural = "agents")]
 #[kube(namespaced)]
 #[kube(status = "InstanaAgentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct InstanaAgentSpec {
     /// Agent deployment specific fields.
     pub agent: InstanaAgentAgent,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.clusterRoleBindingName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.clusterRoleBindingName")]
     pub agent_cluster_role_binding_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.clusterRoleName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.clusterRoleName")]
     pub agent_cluster_role_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.configMapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.configMapName")]
     pub agent_config_map_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.cpuLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.cpuLimit")]
     pub agent_cpu_limit: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.cpuReq"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.cpuReq")]
     pub agent_cpu_req: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.daemonSetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.daemonSetName")]
     pub agent_daemon_set_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.downloadKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.downloadKey")]
     pub agent_download_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.endpoint.host"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.endpoint.host")]
     pub agent_endpoint_host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.endpoint.port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.endpoint.port")]
     pub agent_endpoint_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.env")]
     pub agent_env: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.host.repository"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.host.repository")]
     pub agent_host_repository: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.image"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.image")]
     pub agent_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.imagePullPolicy")]
     pub agent_image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.key")]
     pub agent_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.memLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.memLimit")]
     pub agent_mem_limit: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.memReq"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.memReq")]
     pub agent_mem_req: Option<IntOrString>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.rbac.create"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.rbac.create")]
     pub agent_rbac_create: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.secretName")]
     pub agent_secret_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.serviceAccountName")]
     pub agent_service_account_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.tls.certificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.tls.certificate")]
     pub agent_tls_certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.tls.key"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.tls.key")]
     pub agent_tls_key: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.tls.secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.tls.secretName")]
     pub agent_tls_secret_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agent.zone.name"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agent.zone.name")]
     pub agent_zone_name: Option<String>,
     /// Name of the cluster, that will be assigned to this cluster in Instana. Either specifying the 'cluster.name' or 'zone.name'
     /// is mandatory.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<InstanaAgentCluster>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cluster.name"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cluster.name")]
     pub cluster_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "config.files"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "config.files")]
     pub config_files: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub k8s_sensor: Option<InstanaAgentK8sSensor>,
@@ -186,27 +89,15 @@ pub struct InstanaAgentSpec {
     /// Enables the OpenTelemetry gRPC endpoint on the Agent. If true, it will also apply `service.create: true`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opentelemetry: Option<InstanaAgentOpentelemetry>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "opentelemetry.enabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "opentelemetry.enabled")]
     pub opentelemetry_enabled: Option<bool>,
     /// Specifying the PinnedChartVersion allows for 'pinning' the Helm Chart used by the Operator for installing the Agent
     /// DaemonSet. Normally the Operator will always install and update to the latest Helm Chart version.
     /// The Operator will check and make sure no 'unsupported' Chart versions can be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pinnedChartVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pinnedChartVersion")]
     pub pinned_chart_version: Option<String>,
     /// Specify a PodSecurityPolicy for the Instana Agent Pods. If enabled requires `rbac.create: true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityPolicy")]
     pub pod_security_policy: Option<InstanaAgentPodSecurityPolicy>,
     /// Enables the Prometheus endpoint on the Agent. If true, it will also apply `service.create: true`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -220,11 +111,7 @@ pub struct InstanaAgentSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<InstanaAgentService>,
     /// Specifies whether a ServiceAccount should be created (default `true`), and possibly the name to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<InstanaAgentServiceAccount>,
     /// Name of the zone in which the host(s) will be displayed on the map. Optional, but then 'cluster.name' must be specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -236,11 +123,7 @@ pub struct InstanaAgentSpec {
 pub struct InstanaAgentAgent {
     /// These are additional backends the Instana agent will report to besides
     /// the one configured via the `agent.endpointHost`, `agent.endpointPort` and `agent.key` setting.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalBackends"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalBackends")]
     pub additional_backends: Option<Vec<InstanaAgentAgentAdditionalBackends>>,
     /// Custom agent charts url.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -253,11 +136,7 @@ pub struct InstanaAgentAgent {
     pub configuration_yaml: Option<String>,
     /// The DownloadKey, sometimes known as "sales key", that allows you to download software from Instana. It might be needed to
     /// specify this in addition to the Key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downloadKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downloadKey")]
     pub download_key: Option<String>,
     /// EndpointHost is the hostname of the Instana server your agents will connect to.
     #[serde(rename = "endpointHost")]
@@ -278,11 +157,7 @@ pub struct InstanaAgentAgent {
     pub image: Option<InstanaAgentAgentImage>,
     /// Override for the Maven repository URL when the Agent needs to connect to a locally provided Maven repository 'proxy'
     /// Alternative to `Host` for referencing a different Maven repo.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanaMvnRepoUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanaMvnRepoUrl")]
     pub instana_mvn_repo_url: Option<String>,
     /// Key is the secret token which your agent uses to authenticate to Instana's servers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -291,27 +166,15 @@ pub struct InstanaAgentAgent {
     /// own secret" creating it in the namespace in which you install the `instana-agent` and
     /// specify its name in the `KeysSecret` field. The secret you create must contain a field called `key` and optionally one
     /// called `downloadKey`, which contain, respectively, the values you'd otherwise set in `.agent.key` and `agent.downloadKey`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keysSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keysSecret")]
     pub keys_secret: Option<String>,
     /// ListenAddress is the IP addresses the Agent HTTP server will listen on. Normally this will just be localhost (`127.0.0.1`),
     /// the pod public IP and any container runtime bridge interfaces. Set `listenAddress: *` for making the Agent listen on all
     /// network interfaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenAddress")]
     pub listen_address: Option<String>,
     /// The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i64>,
     /// Set agent mode, possible options are APM, INFRASTRUCTURE or AWS. KUBERNETES should not be used but instead enabled via
     /// `kubernetes.deployment.enabled: true`.
@@ -324,38 +187,22 @@ pub struct InstanaAgentAgent {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyHost")]
     pub proxy_host: Option<String>,
     /// proxyPassword sets the INSTANA_AGENT_PROXY_PASSWORD environment variable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyPassword")]
     pub proxy_password: Option<String>,
     /// proxyPort sets the INSTANA_AGENT_PROXY_PORT environment variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyPort")]
     pub proxy_port: Option<String>,
     /// proxyProtocol sets the INSTANA_AGENT_PROXY_PROTOCOL environment variable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyProtocol")]
     pub proxy_protocol: Option<String>,
     /// proxyUseDNS sets the INSTANA_AGENT_PROXY_USE_DNS environment variable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyUseDNS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUseDNS")]
     pub proxy_use_dns: Option<bool>,
     /// proxyUser sets the INSTANA_AGENT_PROXY_USER environment variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUser")]
     pub proxy_user: Option<String>,
     /// RedactKubernetesSecrets sets the INSTANA_KUBERNETES_REDACT_SECRETS environment variable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redactKubernetesSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redactKubernetesSecrets")]
     pub redact_kubernetes_secrets: Option<String>,
     /// TLS for end-to-end encryption between the Instana Agent and clients accessing the Agent.
     /// The Instana Agent does not yet allow enforcing TLS encryption, enabling makes it possible for clients to 'opt-in'.
@@ -363,11 +210,7 @@ pub struct InstanaAgentAgent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<InstanaAgentAgentTls>,
     /// Control how to update the Agent DaemonSet
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<InstanaAgentAgentUpdateStrategy>,
 }
 
@@ -387,11 +230,7 @@ pub struct InstanaAgentAgentConfiguration {
     /// of the default instana-agent ConfigMap, and mount as agent configuration files
     /// under /opt/instana/agent/etc/instana all entries with keys that match the
     /// 'configuration-*.yaml' scheme
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoMountConfigEntries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMountConfigEntries")]
     pub auto_mount_config_entries: Option<bool>,
 }
 
@@ -413,19 +252,11 @@ pub struct InstanaAgentAgentImage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// PullPolicy specifies when to pull the image container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
     /// PullSecrets allows you to override the default pull secret that is created when `agent.image.name` starts with
     /// "containers.instana.io". Setting `agent.image.pullSecrets` prevents the creation of the default "containers-instana-io" secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecrets")]
     pub pull_secrets: Option<Vec<InstanaAgentAgentImagePullSecrets>>,
     /// Tag is the name of the agent container image; if `agent.image.digest` is specified, this property is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -457,11 +288,7 @@ pub struct InstanaAgentAgentPod {
     pub limits: Option<BTreeMap<String, IntOrString>>,
     /// agent.pod.priorityClassName is the name of an existing PriorityClass that should be set on the agent pods
     /// https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Requests describes the minimum amount of compute resources required.
     /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
@@ -479,25 +306,13 @@ pub struct InstanaAgentAgentPod {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanaAgentAgentPodAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<InstanaAgentAgentPodAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<InstanaAgentAgentPodAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<InstanaAgentAgentPodAffinityPodAntiAffinity>,
 }
 
@@ -513,29 +328,15 @@ pub struct InstanaAgentAgentPodAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<
-            InstanaAgentAgentPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<InstanaAgentAgentPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        InstanaAgentAgentPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<InstanaAgentAgentPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -562,8 +363,7 @@ pub struct InstanaAgentAgentPodAffinityNodeAffinityPreferredDuringSchedulingIgno
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstanaAgentAgentPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -581,8 +381,7 @@ pub struct InstanaAgentAgentPodAffinityNodeAffinityPreferredDuringSchedulingIgno
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstanaAgentAgentPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -625,8 +424,7 @@ pub struct InstanaAgentAgentPodAffinityNodeAffinityRequiredDuringSchedulingIgnor
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstanaAgentAgentPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -644,8 +442,7 @@ pub struct InstanaAgentAgentPodAffinityNodeAffinityRequiredDuringSchedulingIgnor
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstanaAgentAgentPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -672,14 +469,8 @@ pub struct InstanaAgentAgentPodAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<InstanaAgentAgentPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<InstanaAgentAgentPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -687,14 +478,8 @@ pub struct InstanaAgentAgentPodAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<InstanaAgentAgentPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<InstanaAgentAgentPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -753,8 +538,7 @@ pub struct InstanaAgentAgentPodAffinityPodAffinityPreferredDuringSchedulingIgnor
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstanaAgentAgentPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -789,8 +573,7 @@ pub struct InstanaAgentAgentPodAffinityPodAffinityPreferredDuringSchedulingIgnor
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstanaAgentAgentPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -854,8 +637,7 @@ pub struct InstanaAgentAgentPodAffinityPodAffinityRequiredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstanaAgentAgentPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -890,8 +672,7 @@ pub struct InstanaAgentAgentPodAffinityPodAffinityRequiredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstanaAgentAgentPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -986,8 +767,7 @@ pub struct InstanaAgentAgentPodAffinityPodAntiAffinityPreferredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstanaAgentAgentPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1022,8 +802,7 @@ pub struct InstanaAgentAgentPodAffinityPodAntiAffinityPreferredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstanaAgentAgentPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1087,8 +866,7 @@ pub struct InstanaAgentAgentPodAffinityPodAntiAffinityRequiredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstanaAgentAgentPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1123,8 +901,7 @@ pub struct InstanaAgentAgentPodAffinityPodAntiAffinityRequiredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanaAgentAgentPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstanaAgentAgentPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1160,11 +937,7 @@ pub struct InstanaAgentAgentPodTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1184,11 +957,7 @@ pub struct InstanaAgentAgentTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// secretName is the name of the secret that has the relevant files.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -1200,11 +969,7 @@ pub struct InstanaAgentAgentUpdateStrategy {
     /// TODO: Update this to follow our convention for oneOf, whatever we decide it
     /// to be. Same as Deployment `strategy.rollingUpdate`.
     /// See https://github.com/kubernetes/kubernetes/issues/35345
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<InstanaAgentAgentUpdateStrategyRollingUpdate>,
     /// Type of daemon set update. Can be "RollingUpdate" or "OnDelete". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1253,11 +1018,7 @@ pub struct InstanaAgentAgentUpdateStrategyRollingUpdate {
     /// it then proceeds onto other DaemonSet pods, thus ensuring that at least
     /// 70% of original number of DaemonSet pods are available at all times during
     /// the update.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -1282,11 +1043,7 @@ pub struct InstanaAgentK8sSensorDeployment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i64>,
     /// Override pod resource requirements for the Kubernetes Sensor pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1321,19 +1078,11 @@ pub struct InstanaAgentK8sSensorImage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// PullPolicy specifies when to pull the image container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
     /// PullSecrets allows you to override the default pull secret that is created when `agent.image.name` starts with
     /// "containers.instana.io". Setting `agent.image.pullSecrets` prevents the creation of the default "containers-instana-io" secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecrets")]
     pub pull_secrets: Option<Vec<InstanaAgentK8sSensorImagePullSecrets>>,
     /// Tag is the name of the agent container image; if `agent.image.digest` is specified, this property is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1359,11 +1108,7 @@ pub struct InstanaAgentKubernetesDeployment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i64>,
     /// Override pod resource requirements for the Kubernetes Sensor pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1423,11 +1168,7 @@ pub struct InstanaAgentPodSecurityPolicy {
 /// Enables the Prometheus endpoint on the Agent. If true, it will also apply `service.create: true`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanaAgentPrometheus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteWrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteWrite")]
     pub remote_write: Option<InstanaAgentPrometheusRemoteWrite>,
 }
 
@@ -1478,23 +1219,11 @@ pub struct InstanaAgentStatus {
     /// ResourceInfo holds Name and UID to given object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub daemonset: Option<InstanaAgentStatusDaemonset>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "leadingAgentPod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "leadingAgentPod")]
     pub leading_agent_pod: Option<BTreeMap<String, InstanaAgentStatusLeadingAgentPod>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oldVersionsUpdated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oldVersionsUpdated")]
     pub old_versions_updated: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
@@ -1524,3 +1253,4 @@ pub struct InstanaAgentStatusLeadingAgentPod {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
+

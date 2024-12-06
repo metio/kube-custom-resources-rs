@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// APDosLogConfSpec defines the desired state of APDosLogConf
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appprotectdos.f5.com",
-    version = "v1beta1",
-    kind = "APDosLogConf",
-    plural = "apdoslogconfs"
-)]
+#[kube(group = "appprotectdos.f5.com", version = "v1beta1", kind = "APDosLogConf", plural = "apdoslogconfs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct APDosLogConfSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<APDosLogConfContent>,
@@ -50,23 +45,11 @@ pub enum APDosLogConfContentFormat {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APDosLogConfFilter {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attack-signatures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attack-signatures")]
     pub attack_signatures: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bad-actors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bad-actors")]
     pub bad_actors: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "traffic-mitigation-stats"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "traffic-mitigation-stats")]
     pub traffic_mitigation_stats: Option<APDosLogConfFilterTrafficMitigationStats>,
 }
 
@@ -77,3 +60,4 @@ pub enum APDosLogConfFilterTrafficMitigationStats {
     #[serde(rename = "all")]
     All,
 }
+

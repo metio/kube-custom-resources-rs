@@ -4,28 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DistributionSpec defines the desired state of Distribution.
-///
+/// 
 /// A distribution tells CloudFront where you want content to be delivered from,
 /// and the details about how to track and manage content delivery.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cloudfront.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Distribution",
-    plural = "distributions"
-)]
+#[kube(group = "cloudfront.services.k8s.aws", version = "v1alpha1", kind = "Distribution", plural = "distributions")]
 #[kube(namespaced)]
 #[kube(status = "DistributionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DistributionSpec {
     /// The distribution's configuration information.
     #[serde(rename = "distributionConfig")]
@@ -40,84 +35,48 @@ pub struct DistributionDistributionConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aliases: Option<DistributionDistributionConfigAliases>,
     /// A complex type that contains zero or more CacheBehavior elements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheBehaviors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheBehaviors")]
     pub cache_behaviors: Option<DistributionDistributionConfigCacheBehaviors>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub comment: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "continuousDeploymentPolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "continuousDeploymentPolicyID")]
     pub continuous_deployment_policy_id: Option<String>,
     /// A complex type that controls:
-    ///
+    /// 
     ///    * Whether CloudFront replaces HTTP status codes in the 4xx and 5xx range
     ///    with custom error messages before returning the response to the viewer.
-    ///
+    /// 
     ///    * How long CloudFront caches HTTP status codes in the 4xx and 5xx range.
-    ///
+    /// 
     /// For more information about custom error pages, see Customizing Error Responses
     /// (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html)
     /// in the Amazon CloudFront Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customErrorResponses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customErrorResponses")]
     pub custom_error_responses: Option<DistributionDistributionConfigCustomErrorResponses>,
     /// A complex type that describes the default cache behavior if you don't specify
     /// a CacheBehavior element or if request URLs don't match any of the values
     /// of PathPattern in CacheBehavior elements. You must create exactly one default
     /// cache behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultCacheBehavior"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultCacheBehavior")]
     pub default_cache_behavior: Option<DistributionDistributionConfigDefaultCacheBehavior>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultRootObject"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRootObject")]
     pub default_root_object: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpVersion")]
     pub http_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isIPV6Enabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isIPV6Enabled")]
     pub is_ipv6_enabled: Option<bool>,
     /// A complex type that controls whether access logs are written for the distribution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DistributionDistributionConfigLogging>,
     /// A complex data type for the origin groups specified for a distribution.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originGroups")]
     pub origin_groups: Option<DistributionDistributionConfigOriginGroups>,
     /// Contains information about the origins for this distribution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub origins: Option<DistributionDistributionConfigOrigins>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priceClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priceClass")]
     pub price_class: Option<String>,
     /// A complex type that identifies ways in which you want to restrict distribution
     /// of your content.
@@ -127,15 +86,15 @@ pub struct DistributionDistributionConfig {
     pub staging: Option<bool>,
     /// A complex type that determines the distribution's SSL/TLS configuration for
     /// communicating with viewers.
-    ///
+    /// 
     /// If the distribution doesn't use Aliases (also known as alternate domain names
     /// or CNAMEs)—that is, if the distribution uses the CloudFront domain name
     /// such as d111111abcdef8.cloudfront.net—set CloudFrontDefaultCertificate
     /// to true and leave all other fields empty.
-    ///
+    /// 
     /// If the distribution uses Aliases (alternate domain names or CNAMEs), use
     /// the fields in this type to specify the following settings:
-    ///
+    /// 
     ///    * Which viewers the distribution accepts HTTPS connections from: only
     ///    viewers that support server name indication (SNI) (https://en.wikipedia.org/wiki/Server_Name_Indication)
     ///    (recommended), or all viewers including those that don't support SNI.
@@ -144,31 +103,27 @@ pub struct DistributionDistributionConfig {
     ///    To accept HTTPS connections from all viewers, including those that don't
     ///    support SNI, set SSLSupportMethod to vip. This is not recommended, and
     ///    results in additional monthly charges from CloudFront.
-    ///
+    /// 
     ///    * The minimum SSL/TLS protocol version that the distribution can use to
     ///    communicate with viewers. To specify a minimum version, choose a value
     ///    for MinimumProtocolVersion. For more information, see Security Policy
     ///    (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValues-security-policy)
     ///    in the Amazon CloudFront Developer Guide.
-    ///
+    /// 
     ///    * The location of the SSL/TLS certificate, Certificate Manager (ACM) (https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html)
     ///    (recommended) or Identity and Access Management (IAM) (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html).
     ///    You specify the location by setting a value in one of the following fields
     ///    (not both): ACMCertificateArn IAMCertificateId
-    ///
+    /// 
     /// All distributions support HTTPS connections from viewers. To require viewers
     /// to use HTTPS only, or to redirect them from HTTP to HTTPS, use ViewerProtocolPolicy
     /// in the CacheBehavior or DefaultCacheBehavior. To specify how CloudFront should
     /// use SSL/TLS to communicate with your custom origin, use CustomOriginConfig.
-    ///
+    /// 
     /// For more information, see Using HTTPS with CloudFront (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https.html)
     /// and Using Alternate Domain Names and HTTPS (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html)
     /// in the Amazon CloudFront Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "viewerCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "viewerCertificate")]
     pub viewer_certificate: Option<DistributionDistributionConfigViewerCertificate>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webACLID")]
     pub web_aclid: Option<String>,
@@ -190,28 +145,28 @@ pub struct DistributionDistributionConfigCacheBehaviors {
 }
 
 /// A complex type that describes how CloudFront processes requests.
-///
+/// 
 /// You must create at least as many cache behaviors (including the default cache
 /// behavior) as you have origins if you want CloudFront to serve objects from
 /// all of the origins. Each cache behavior specifies the one origin from which
 /// you want CloudFront to get objects. If you have two origins and only the
 /// default cache behavior, the default cache behavior will cause CloudFront
 /// to get objects from one of the origins, but the other origin is never used.
-///
+/// 
 /// For the current quota (formerly known as limit) on the number of cache behaviors
 /// that you can add to a distribution, see Quotas (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html)
 /// in the Amazon CloudFront Developer Guide.
-///
+/// 
 /// If you don't want to specify any cache behaviors, include only an empty CacheBehaviors
 /// element. Don't include an empty CacheBehavior element because this is invalid.
-///
+/// 
 /// To delete all cache behaviors in an existing distribution, update the distribution
 /// configuration and include only an empty CacheBehaviors element.
-///
+/// 
 /// To add, change, or remove one or more cache behaviors, update the distribution
 /// configuration and specify all of the cache behaviors that you want to include
 /// in the updated distribution.
-///
+/// 
 /// For more information about cache behaviors, see Cache Behavior Settings (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesCacheBehavior)
 /// in the Amazon CloudFront Developer Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -219,168 +174,101 @@ pub struct DistributionDistributionConfigCacheBehaviorsItems {
     /// A complex type that controls which HTTP methods CloudFront processes and
     /// forwards to your Amazon S3 bucket or your custom origin. There are three
     /// choices:
-    ///
+    /// 
     ///    * CloudFront forwards only GET and HEAD requests.
-    ///
+    /// 
     ///    * CloudFront forwards only GET, HEAD, and OPTIONS requests.
-    ///
+    /// 
     ///    * CloudFront forwards GET, HEAD, OPTIONS, PUT, PATCH, POST, and DELETE
     ///    requests.
-    ///
+    /// 
     /// If you pick the third choice, you may need to restrict access to your Amazon
     /// S3 bucket or to your custom origin so users can't perform operations that
     /// you don't want them to. For example, you might not want users to have permissions
     /// to delete objects from your origin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedMethods"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedMethods")]
     pub allowed_methods: Option<DistributionDistributionConfigCacheBehaviorsItemsAllowedMethods>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachePolicyID")]
     pub cache_policy_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compress: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTTL")]
     pub default_ttl: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldLevelEncryptionID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldLevelEncryptionID")]
     pub field_level_encryption_id: Option<String>,
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
-    ///
+    /// 
     /// If you want to include values in the cache key, use a cache policy. For more
     /// information, see Creating cache policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy)
     /// in the Amazon CloudFront Developer Guide.
-    ///
+    /// 
     /// If you want to send values to the origin but not include them in the cache
     /// key, use an origin request policy. For more information, see Creating origin
     /// request policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy)
     /// in the Amazon CloudFront Developer Guide.
-    ///
+    /// 
     /// A complex type that specifies how CloudFront handles query strings, cookies,
     /// and HTTP headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardedValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardedValues")]
     pub forwarded_values: Option<DistributionDistributionConfigCacheBehaviorsItemsForwardedValues>,
     /// A list of CloudFront functions that are associated with a cache behavior
     /// in a CloudFront distribution. CloudFront functions must be published to the
     /// LIVE stage to associate them with a cache behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionAssociations"
-    )]
-    pub function_associations:
-        Option<DistributionDistributionConfigCacheBehaviorsItemsFunctionAssociations>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionAssociations")]
+    pub function_associations: Option<DistributionDistributionConfigCacheBehaviorsItemsFunctionAssociations>,
     /// A complex type that specifies a list of Lambda@Edge functions associations
     /// for a cache behavior.
-    ///
+    /// 
     /// If you want to invoke one or more Lambda@Edge functions triggered by requests
     /// that match the PathPattern of the cache behavior, specify the applicable
     /// values for Quantity and Items. Note that there can be up to 4 LambdaFunctionAssociation
     /// items in this list (one for each possible value of EventType) and each EventType
     /// can be associated with only one function.
-    ///
+    /// 
     /// If you don't want to invoke any Lambda@Edge functions for the requests that
     /// match PathPattern, specify 0 for Quantity and omit Items.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lambdaFunctionAssociations"
-    )]
-    pub lambda_function_associations:
-        Option<DistributionDistributionConfigCacheBehaviorsItemsLambdaFunctionAssociations>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lambdaFunctionAssociations")]
+    pub lambda_function_associations: Option<DistributionDistributionConfigCacheBehaviorsItemsLambdaFunctionAssociations>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTTL")]
     pub max_ttl: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minTTL")]
     pub min_ttl: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originRequestPolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originRequestPolicyID")]
     pub origin_request_policy_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathPattern")]
     pub path_pattern: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "realtimeLogConfigARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realtimeLogConfigARN")]
     pub realtime_log_config_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeadersPolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeadersPolicyID")]
     pub response_headers_policy_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "smoothStreaming"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "smoothStreaming")]
     pub smooth_streaming: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetOriginID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetOriginID")]
     pub target_origin_id: Option<String>,
     /// A list of key groups whose public keys CloudFront can use to verify the signatures
     /// of signed URLs and signed cookies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedKeyGroups"
-    )]
-    pub trusted_key_groups:
-        Option<DistributionDistributionConfigCacheBehaviorsItemsTrustedKeyGroups>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedKeyGroups")]
+    pub trusted_key_groups: Option<DistributionDistributionConfigCacheBehaviorsItemsTrustedKeyGroups>,
     /// A list of Amazon Web Services accounts whose public keys CloudFront can use
     /// to verify the signatures of signed URLs and signed cookies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedSigners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedSigners")]
     pub trusted_signers: Option<DistributionDistributionConfigCacheBehaviorsItemsTrustedSigners>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "viewerProtocolPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "viewerProtocolPolicy")]
     pub viewer_protocol_policy: Option<String>,
 }
 
 /// A complex type that controls which HTTP methods CloudFront processes and
 /// forwards to your Amazon S3 bucket or your custom origin. There are three
 /// choices:
-///
+/// 
 ///    * CloudFront forwards only GET and HEAD requests.
-///
+/// 
 ///    * CloudFront forwards only GET, HEAD, and OPTIONS requests.
-///
+/// 
 ///    * CloudFront forwards GET, HEAD, OPTIONS, PUT, PATCH, POST, and DELETE
 ///    requests.
-///
+/// 
 /// If you pick the third choice, you may need to restrict access to your Amazon
 /// S3 bucket or to your custom origin so users can't perform operations that
 /// you don't want them to. For example, you might not want users to have permissions
@@ -389,32 +277,27 @@ pub struct DistributionDistributionConfigCacheBehaviorsItems {
 pub struct DistributionDistributionConfigCacheBehaviorsItemsAllowedMethods {
     /// A complex type that controls whether CloudFront caches the response to requests
     /// using the specified HTTP methods. There are two choices:
-    ///
+    /// 
     ///    * CloudFront caches responses to GET and HEAD requests.
-    ///
+    /// 
     ///    * CloudFront caches responses to GET, HEAD, and OPTIONS requests.
-    ///
+    /// 
     /// If you pick the second choice for your Amazon S3 Origin, you may need to
     /// forward Access-Control-Request-Method, Access-Control-Request-Headers, and
     /// Origin headers for the responses to be cached correctly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachedMethods"
-    )]
-    pub cached_methods:
-        Option<DistributionDistributionConfigCacheBehaviorsItemsAllowedMethodsCachedMethods>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachedMethods")]
+    pub cached_methods: Option<DistributionDistributionConfigCacheBehaviorsItemsAllowedMethodsCachedMethods>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<String>>,
 }
 
 /// A complex type that controls whether CloudFront caches the response to requests
 /// using the specified HTTP methods. There are two choices:
-///
+/// 
 ///    * CloudFront caches responses to GET and HEAD requests.
-///
+/// 
 ///    * CloudFront caches responses to GET, HEAD, and OPTIONS requests.
-///
+/// 
 /// If you pick the second choice for your Amazon S3 Origin, you may need to
 /// forward Access-Control-Request-Method, Access-Control-Request-Headers, and
 /// Origin headers for the responses to be cached correctly.
@@ -426,29 +309,29 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsAllowedMethodsCached
 
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
-///
+/// 
 /// If you want to include values in the cache key, use a cache policy. For more
 /// information, see Creating cache policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy)
 /// in the Amazon CloudFront Developer Guide.
-///
+/// 
 /// If you want to send values to the origin but not include them in the cache
 /// key, use an origin request policy. For more information, see Creating origin
 /// request policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy)
 /// in the Amazon CloudFront Developer Guide.
-///
+/// 
 /// A complex type that specifies how CloudFront handles query strings, cookies,
 /// and HTTP headers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigCacheBehaviorsItemsForwardedValues {
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
-    ///
+    /// 
     /// If you want to include cookies in the cache key, use CookiesConfig in a cache
     /// policy. See CachePolicy.
-    ///
+    /// 
     /// If you want to send cookies to the origin but not include them in the cache
     /// key, use CookiesConfig in an origin request policy. See OriginRequestPolicy.
-    ///
+    /// 
     /// A complex type that specifies whether you want CloudFront to forward cookies
     /// to the origin and, if so, which ones. For more information about forwarding
     /// cookies to the origin, see Caching Content Based on Cookies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Cookies.html)
@@ -458,42 +341,32 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsForwardedValues {
     /// Contains a list of HTTP header names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<DistributionDistributionConfigCacheBehaviorsItemsForwardedValuesHeaders>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryString"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryString")]
     pub query_string: Option<bool>,
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
-    ///
+    /// 
     /// If you want to include query strings in the cache key, use QueryStringsConfig
     /// in a cache policy. See CachePolicy.
-    ///
+    /// 
     /// If you want to send query strings to the origin but not include them in the
     /// cache key, use QueryStringsConfig in an origin request policy. See OriginRequestPolicy.
-    ///
+    /// 
     /// A complex type that contains information about the query string parameters
     /// that you want CloudFront to use for caching for a cache behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryStringCacheKeys"
-    )]
-    pub query_string_cache_keys: Option<
-        DistributionDistributionConfigCacheBehaviorsItemsForwardedValuesQueryStringCacheKeys,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryStringCacheKeys")]
+    pub query_string_cache_keys: Option<DistributionDistributionConfigCacheBehaviorsItemsForwardedValuesQueryStringCacheKeys>,
 }
 
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
-///
+/// 
 /// If you want to include cookies in the cache key, use CookiesConfig in a cache
 /// policy. See CachePolicy.
-///
+/// 
 /// If you want to send cookies to the origin but not include them in the cache
 /// key, use CookiesConfig in an origin request policy. See OriginRequestPolicy.
-///
+/// 
 /// A complex type that specifies whether you want CloudFront to forward cookies
 /// to the origin and, if so, which ones. For more information about forwarding
 /// cookies to the origin, see Caching Content Based on Cookies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Cookies.html)
@@ -503,14 +376,8 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsForwardedValuesCooki
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub forward: Option<String>,
     /// Contains a list of cookie names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "whitelistedNames"
-    )]
-    pub whitelisted_names: Option<
-        DistributionDistributionConfigCacheBehaviorsItemsForwardedValuesCookiesWhitelistedNames,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whitelistedNames")]
+    pub whitelisted_names: Option<DistributionDistributionConfigCacheBehaviorsItemsForwardedValuesCookiesWhitelistedNames>,
 }
 
 /// Contains a list of cookie names.
@@ -529,13 +396,13 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsForwardedValuesHeade
 
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
-///
+/// 
 /// If you want to include query strings in the cache key, use QueryStringsConfig
 /// in a cache policy. See CachePolicy.
-///
+/// 
 /// If you want to send query strings to the origin but not include them in the
 /// cache key, use QueryStringsConfig in an origin request policy. See OriginRequestPolicy.
-///
+/// 
 /// A complex type that contains information about the query string parameters
 /// that you want CloudFront to use for caching for a cache behavior.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -550,8 +417,7 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsForwardedValuesQuery
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigCacheBehaviorsItemsFunctionAssociations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<DistributionDistributionConfigCacheBehaviorsItemsFunctionAssociationsItems>>,
+    pub items: Option<Vec<DistributionDistributionConfigCacheBehaviorsItemsFunctionAssociationsItems>>,
 }
 
 /// A CloudFront function that is associated with a cache behavior in a CloudFront
@@ -560,31 +426,25 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsFunctionAssociations
 pub struct DistributionDistributionConfigCacheBehaviorsItemsFunctionAssociationsItems {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventType")]
     pub event_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionARN")]
     pub function_arn: Option<String>,
 }
 
 /// A complex type that specifies a list of Lambda@Edge functions associations
 /// for a cache behavior.
-///
+/// 
 /// If you want to invoke one or more Lambda@Edge functions triggered by requests
 /// that match the PathPattern of the cache behavior, specify the applicable
 /// values for Quantity and Items. Note that there can be up to 4 LambdaFunctionAssociation
 /// items in this list (one for each possible value of EventType) and each EventType
 /// can be associated with only one function.
-///
+/// 
 /// If you don't want to invoke any Lambda@Edge functions for the requests that
 /// match PathPattern, specify 0 for Quantity and omit Items.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigCacheBehaviorsItemsLambdaFunctionAssociations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<DistributionDistributionConfigCacheBehaviorsItemsLambdaFunctionAssociationsItems>,
-    >,
+    pub items: Option<Vec<DistributionDistributionConfigCacheBehaviorsItemsLambdaFunctionAssociationsItems>>,
 }
 
 /// A complex type that contains a Lambda@Edge function association.
@@ -592,17 +452,9 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsLambdaFunctionAssoci
 pub struct DistributionDistributionConfigCacheBehaviorsItemsLambdaFunctionAssociationsItems {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventType")]
     pub event_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeBody"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeBody")]
     pub include_body: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lambdaFunctionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lambdaFunctionARN")]
     pub lambda_function_arn: Option<String>,
 }
 
@@ -627,12 +479,12 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsTrustedSigners {
 }
 
 /// A complex type that controls:
-///
+/// 
 ///    * Whether CloudFront replaces HTTP status codes in the 4xx and 5xx range
 ///    with custom error messages before returning the response to the viewer.
-///
+/// 
 ///    * How long CloudFront caches HTTP status codes in the 4xx and 5xx range.
-///
+/// 
 /// For more information about custom error pages, see Customizing Error Responses
 /// (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html)
 /// in the Amazon CloudFront Developer Guide.
@@ -643,36 +495,24 @@ pub struct DistributionDistributionConfigCustomErrorResponses {
 }
 
 /// A complex type that controls:
-///
+/// 
 ///    * Whether CloudFront replaces HTTP status codes in the 4xx and 5xx range
 ///    with custom error messages before returning the response to the viewer.
-///
+/// 
 ///    * How long CloudFront caches HTTP status codes in the 4xx and 5xx range.
-///
+/// 
 /// For more information about custom error pages, see Customizing Error Responses
 /// (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html)
 /// in the Amazon CloudFront Developer Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigCustomErrorResponsesItems {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorCachingMinTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorCachingMinTTL")]
     pub error_caching_min_ttl: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorCode")]
     pub error_code: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseCode")]
     pub response_code: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responsePagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responsePagePath")]
     pub response_page_path: Option<String>,
 }
 
@@ -685,162 +525,99 @@ pub struct DistributionDistributionConfigDefaultCacheBehavior {
     /// A complex type that controls which HTTP methods CloudFront processes and
     /// forwards to your Amazon S3 bucket or your custom origin. There are three
     /// choices:
-    ///
+    /// 
     ///    * CloudFront forwards only GET and HEAD requests.
-    ///
+    /// 
     ///    * CloudFront forwards only GET, HEAD, and OPTIONS requests.
-    ///
+    /// 
     ///    * CloudFront forwards GET, HEAD, OPTIONS, PUT, PATCH, POST, and DELETE
     ///    requests.
-    ///
+    /// 
     /// If you pick the third choice, you may need to restrict access to your Amazon
     /// S3 bucket or to your custom origin so users can't perform operations that
     /// you don't want them to. For example, you might not want users to have permissions
     /// to delete objects from your origin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedMethods"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedMethods")]
     pub allowed_methods: Option<DistributionDistributionConfigDefaultCacheBehaviorAllowedMethods>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachePolicyID")]
     pub cache_policy_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compress: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTTL")]
     pub default_ttl: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldLevelEncryptionID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldLevelEncryptionID")]
     pub field_level_encryption_id: Option<String>,
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
-    ///
+    /// 
     /// If you want to include values in the cache key, use a cache policy. For more
     /// information, see Creating cache policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy)
     /// in the Amazon CloudFront Developer Guide.
-    ///
+    /// 
     /// If you want to send values to the origin but not include them in the cache
     /// key, use an origin request policy. For more information, see Creating origin
     /// request policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy)
     /// in the Amazon CloudFront Developer Guide.
-    ///
+    /// 
     /// A complex type that specifies how CloudFront handles query strings, cookies,
     /// and HTTP headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardedValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardedValues")]
     pub forwarded_values: Option<DistributionDistributionConfigDefaultCacheBehaviorForwardedValues>,
     /// A list of CloudFront functions that are associated with a cache behavior
     /// in a CloudFront distribution. CloudFront functions must be published to the
     /// LIVE stage to associate them with a cache behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionAssociations"
-    )]
-    pub function_associations:
-        Option<DistributionDistributionConfigDefaultCacheBehaviorFunctionAssociations>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionAssociations")]
+    pub function_associations: Option<DistributionDistributionConfigDefaultCacheBehaviorFunctionAssociations>,
     /// A complex type that specifies a list of Lambda@Edge functions associations
     /// for a cache behavior.
-    ///
+    /// 
     /// If you want to invoke one or more Lambda@Edge functions triggered by requests
     /// that match the PathPattern of the cache behavior, specify the applicable
     /// values for Quantity and Items. Note that there can be up to 4 LambdaFunctionAssociation
     /// items in this list (one for each possible value of EventType) and each EventType
     /// can be associated with only one function.
-    ///
+    /// 
     /// If you don't want to invoke any Lambda@Edge functions for the requests that
     /// match PathPattern, specify 0 for Quantity and omit Items.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lambdaFunctionAssociations"
-    )]
-    pub lambda_function_associations:
-        Option<DistributionDistributionConfigDefaultCacheBehaviorLambdaFunctionAssociations>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lambdaFunctionAssociations")]
+    pub lambda_function_associations: Option<DistributionDistributionConfigDefaultCacheBehaviorLambdaFunctionAssociations>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTTL")]
     pub max_ttl: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minTTL")]
     pub min_ttl: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originRequestPolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originRequestPolicyID")]
     pub origin_request_policy_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "realtimeLogConfigARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realtimeLogConfigARN")]
     pub realtime_log_config_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeadersPolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeadersPolicyID")]
     pub response_headers_policy_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "smoothStreaming"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "smoothStreaming")]
     pub smooth_streaming: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetOriginID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetOriginID")]
     pub target_origin_id: Option<String>,
     /// A list of key groups whose public keys CloudFront can use to verify the signatures
     /// of signed URLs and signed cookies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedKeyGroups"
-    )]
-    pub trusted_key_groups:
-        Option<DistributionDistributionConfigDefaultCacheBehaviorTrustedKeyGroups>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedKeyGroups")]
+    pub trusted_key_groups: Option<DistributionDistributionConfigDefaultCacheBehaviorTrustedKeyGroups>,
     /// A list of Amazon Web Services accounts whose public keys CloudFront can use
     /// to verify the signatures of signed URLs and signed cookies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedSigners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedSigners")]
     pub trusted_signers: Option<DistributionDistributionConfigDefaultCacheBehaviorTrustedSigners>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "viewerProtocolPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "viewerProtocolPolicy")]
     pub viewer_protocol_policy: Option<String>,
 }
 
 /// A complex type that controls which HTTP methods CloudFront processes and
 /// forwards to your Amazon S3 bucket or your custom origin. There are three
 /// choices:
-///
+/// 
 ///    * CloudFront forwards only GET and HEAD requests.
-///
+/// 
 ///    * CloudFront forwards only GET, HEAD, and OPTIONS requests.
-///
+/// 
 ///    * CloudFront forwards GET, HEAD, OPTIONS, PUT, PATCH, POST, and DELETE
 ///    requests.
-///
+/// 
 /// If you pick the third choice, you may need to restrict access to your Amazon
 /// S3 bucket or to your custom origin so users can't perform operations that
 /// you don't want them to. For example, you might not want users to have permissions
@@ -849,32 +626,27 @@ pub struct DistributionDistributionConfigDefaultCacheBehavior {
 pub struct DistributionDistributionConfigDefaultCacheBehaviorAllowedMethods {
     /// A complex type that controls whether CloudFront caches the response to requests
     /// using the specified HTTP methods. There are two choices:
-    ///
+    /// 
     ///    * CloudFront caches responses to GET and HEAD requests.
-    ///
+    /// 
     ///    * CloudFront caches responses to GET, HEAD, and OPTIONS requests.
-    ///
+    /// 
     /// If you pick the second choice for your Amazon S3 Origin, you may need to
     /// forward Access-Control-Request-Method, Access-Control-Request-Headers, and
     /// Origin headers for the responses to be cached correctly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachedMethods"
-    )]
-    pub cached_methods:
-        Option<DistributionDistributionConfigDefaultCacheBehaviorAllowedMethodsCachedMethods>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachedMethods")]
+    pub cached_methods: Option<DistributionDistributionConfigDefaultCacheBehaviorAllowedMethodsCachedMethods>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<String>>,
 }
 
 /// A complex type that controls whether CloudFront caches the response to requests
 /// using the specified HTTP methods. There are two choices:
-///
+/// 
 ///    * CloudFront caches responses to GET and HEAD requests.
-///
+/// 
 ///    * CloudFront caches responses to GET, HEAD, and OPTIONS requests.
-///
+/// 
 /// If you pick the second choice for your Amazon S3 Origin, you may need to
 /// forward Access-Control-Request-Method, Access-Control-Request-Headers, and
 /// Origin headers for the responses to be cached correctly.
@@ -886,29 +658,29 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorAllowedMethodsCache
 
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
-///
+/// 
 /// If you want to include values in the cache key, use a cache policy. For more
 /// information, see Creating cache policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy)
 /// in the Amazon CloudFront Developer Guide.
-///
+/// 
 /// If you want to send values to the origin but not include them in the cache
 /// key, use an origin request policy. For more information, see Creating origin
 /// request policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy)
 /// in the Amazon CloudFront Developer Guide.
-///
+/// 
 /// A complex type that specifies how CloudFront handles query strings, cookies,
 /// and HTTP headers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValues {
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
-    ///
+    /// 
     /// If you want to include cookies in the cache key, use CookiesConfig in a cache
     /// policy. See CachePolicy.
-    ///
+    /// 
     /// If you want to send cookies to the origin but not include them in the cache
     /// key, use CookiesConfig in an origin request policy. See OriginRequestPolicy.
-    ///
+    /// 
     /// A complex type that specifies whether you want CloudFront to forward cookies
     /// to the origin and, if so, which ones. For more information about forwarding
     /// cookies to the origin, see Caching Content Based on Cookies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Cookies.html)
@@ -918,42 +690,32 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValues {
     /// Contains a list of HTTP header names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesHeaders>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryString"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryString")]
     pub query_string: Option<bool>,
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
-    ///
+    /// 
     /// If you want to include query strings in the cache key, use QueryStringsConfig
     /// in a cache policy. See CachePolicy.
-    ///
+    /// 
     /// If you want to send query strings to the origin but not include them in the
     /// cache key, use QueryStringsConfig in an origin request policy. See OriginRequestPolicy.
-    ///
+    /// 
     /// A complex type that contains information about the query string parameters
     /// that you want CloudFront to use for caching for a cache behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryStringCacheKeys"
-    )]
-    pub query_string_cache_keys: Option<
-        DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesQueryStringCacheKeys,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryStringCacheKeys")]
+    pub query_string_cache_keys: Option<DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesQueryStringCacheKeys>,
 }
 
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
-///
+/// 
 /// If you want to include cookies in the cache key, use CookiesConfig in a cache
 /// policy. See CachePolicy.
-///
+/// 
 /// If you want to send cookies to the origin but not include them in the cache
 /// key, use CookiesConfig in an origin request policy. See OriginRequestPolicy.
-///
+/// 
 /// A complex type that specifies whether you want CloudFront to forward cookies
 /// to the origin and, if so, which ones. For more information about forwarding
 /// cookies to the origin, see Caching Content Based on Cookies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Cookies.html)
@@ -963,20 +725,13 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesCook
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub forward: Option<String>,
     /// Contains a list of cookie names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "whitelistedNames"
-    )]
-    pub whitelisted_names: Option<
-        DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesCookiesWhitelistedNames,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whitelistedNames")]
+    pub whitelisted_names: Option<DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesCookiesWhitelistedNames>,
 }
 
 /// Contains a list of cookie names.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesCookiesWhitelistedNames
-{
+pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesCookiesWhitelistedNames {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<String>>,
 }
@@ -990,13 +745,13 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesHead
 
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
-///
+/// 
 /// If you want to include query strings in the cache key, use QueryStringsConfig
 /// in a cache policy. See CachePolicy.
-///
+/// 
 /// If you want to send query strings to the origin but not include them in the
 /// cache key, use QueryStringsConfig in an origin request policy. See OriginRequestPolicy.
-///
+/// 
 /// A complex type that contains information about the query string parameters
 /// that you want CloudFront to use for caching for a cache behavior.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1011,8 +766,7 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesQuer
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigDefaultCacheBehaviorFunctionAssociations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<DistributionDistributionConfigDefaultCacheBehaviorFunctionAssociationsItems>>,
+    pub items: Option<Vec<DistributionDistributionConfigDefaultCacheBehaviorFunctionAssociationsItems>>,
 }
 
 /// A CloudFront function that is associated with a cache behavior in a CloudFront
@@ -1021,31 +775,25 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorFunctionAssociation
 pub struct DistributionDistributionConfigDefaultCacheBehaviorFunctionAssociationsItems {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventType")]
     pub event_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "functionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionARN")]
     pub function_arn: Option<String>,
 }
 
 /// A complex type that specifies a list of Lambda@Edge functions associations
 /// for a cache behavior.
-///
+/// 
 /// If you want to invoke one or more Lambda@Edge functions triggered by requests
 /// that match the PathPattern of the cache behavior, specify the applicable
 /// values for Quantity and Items. Note that there can be up to 4 LambdaFunctionAssociation
 /// items in this list (one for each possible value of EventType) and each EventType
 /// can be associated with only one function.
-///
+/// 
 /// If you don't want to invoke any Lambda@Edge functions for the requests that
 /// match PathPattern, specify 0 for Quantity and omit Items.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigDefaultCacheBehaviorLambdaFunctionAssociations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<DistributionDistributionConfigDefaultCacheBehaviorLambdaFunctionAssociationsItems>,
-    >,
+    pub items: Option<Vec<DistributionDistributionConfigDefaultCacheBehaviorLambdaFunctionAssociationsItems>>,
 }
 
 /// A complex type that contains a Lambda@Edge function association.
@@ -1053,17 +801,9 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorLambdaFunctionAssoc
 pub struct DistributionDistributionConfigDefaultCacheBehaviorLambdaFunctionAssociationsItems {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventType")]
     pub event_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeBody"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeBody")]
     pub include_body: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lambdaFunctionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lambdaFunctionARN")]
     pub lambda_function_arn: Option<String>,
 }
 
@@ -1094,11 +834,7 @@ pub struct DistributionDistributionConfigLogging {
     pub bucket: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeCookies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeCookies")]
     pub include_cookies: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -1123,11 +859,7 @@ pub struct DistributionDistributionConfigOriginGroupsItems {
     /// A complex data type that includes information about the failover criteria
     /// for an origin group, including the status codes for which CloudFront will
     /// failover from the primary origin to the second origin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failoverCriteria"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failoverCriteria")]
     pub failover_criteria: Option<DistributionDistributionConfigOriginGroupsItemsFailoverCriteria>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -1143,13 +875,8 @@ pub struct DistributionDistributionConfigOriginGroupsItems {
 pub struct DistributionDistributionConfigOriginGroupsItemsFailoverCriteria {
     /// A complex data type for the status codes that you specify that, when returned
     /// by a primary origin, trigger CloudFront to failover to a second origin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCodes"
-    )]
-    pub status_codes:
-        Option<DistributionDistributionConfigOriginGroupsItemsFailoverCriteriaStatusCodes>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCodes")]
+    pub status_codes: Option<DistributionDistributionConfigOriginGroupsItemsFailoverCriteriaStatusCodes>,
 }
 
 /// A complex data type for the status codes that you specify that, when returned
@@ -1184,93 +911,57 @@ pub struct DistributionDistributionConfigOrigins {
 }
 
 /// An origin.
-///
+/// 
 /// An origin is the location where content is stored, and from which CloudFront
 /// gets content to serve to viewers. To specify an origin:
-///
+/// 
 ///    * Use S3OriginConfig to specify an Amazon S3 bucket that is not configured
 ///    with static website hosting.
-///
+/// 
 ///    * Use CustomOriginConfig to specify all other kinds of origins, including:
 ///    An Amazon S3 bucket that is configured with static website hosting An
 ///    Elastic Load Balancing load balancer An AWS Elemental MediaPackage endpoint
 ///    An AWS Elemental MediaStore container Any other HTTP server, running on
 ///    an Amazon EC2 instance or any other kind of host
-///
+/// 
 /// For the current maximum number of origins that you can specify per distribution,
 /// see General Quotas on Web Distributions (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html#limits-web-distributions)
 /// in the Amazon CloudFront Developer Guide (quotas were formerly referred to
 /// as limits).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigOriginsItems {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionAttempts")]
     pub connection_attempts: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTimeout")]
     pub connection_timeout: Option<i64>,
     /// A complex type that contains the list of Custom Headers for each origin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHeaders")]
     pub custom_headers: Option<DistributionDistributionConfigOriginsItemsCustomHeaders>,
     /// A custom origin. A custom origin is any origin that is not an Amazon S3 bucket,
     /// with one exception. An Amazon S3 bucket that is configured with static website
     /// hosting (https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html)
     /// is a custom origin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customOriginConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customOriginConfig")]
     pub custom_origin_config: Option<DistributionDistributionConfigOriginsItemsCustomOriginConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "domainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
     pub domain_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originAccessControlID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originAccessControlID")]
     pub origin_access_control_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originPath")]
     pub origin_path: Option<String>,
     /// CloudFront Origin Shield.
-    ///
+    /// 
     /// Using Origin Shield can help reduce the load on your origin. For more information,
     /// see Using Origin Shield (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/origin-shield.html)
     /// in the Amazon CloudFront Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originShield"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originShield")]
     pub origin_shield: Option<DistributionDistributionConfigOriginsItemsOriginShield>,
     /// A complex type that contains information about the Amazon S3 origin. If the
     /// origin is a custom origin or an S3 bucket that is configured as a website
     /// endpoint, use the CustomOriginConfig element instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OriginConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OriginConfig")]
     pub s3_origin_config: Option<DistributionDistributionConfigOriginsItemsS3OriginConfig>,
 }
 
@@ -1285,17 +976,9 @@ pub struct DistributionDistributionConfigOriginsItemsCustomHeaders {
 /// for this distribution.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigOriginsItemsCustomHeadersItems {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerName")]
     pub header_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerValue")]
     pub header_value: Option<String>,
 }
 
@@ -1309,33 +992,16 @@ pub struct DistributionDistributionConfigOriginsItemsCustomOriginConfig {
     pub http_port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpSPort")]
     pub http_s_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originKeepaliveTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originKeepaliveTimeout")]
     pub origin_keepalive_timeout: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originProtocolPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originProtocolPolicy")]
     pub origin_protocol_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originReadTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originReadTimeout")]
     pub origin_read_timeout: Option<i64>,
     /// A complex type that contains information about the SSL/TLS protocols that
     /// CloudFront can use when establishing an HTTPS connection with your origin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originSSLProtocols"
-    )]
-    pub origin_ssl_protocols:
-        Option<DistributionDistributionConfigOriginsItemsCustomOriginConfigOriginSslProtocols>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originSSLProtocols")]
+    pub origin_ssl_protocols: Option<DistributionDistributionConfigOriginsItemsCustomOriginConfigOriginSslProtocols>,
 }
 
 /// A complex type that contains information about the SSL/TLS protocols that
@@ -1347,7 +1013,7 @@ pub struct DistributionDistributionConfigOriginsItemsCustomOriginConfigOriginSsl
 }
 
 /// CloudFront Origin Shield.
-///
+/// 
 /// Using Origin Shield can help reduce the load on your origin. For more information,
 /// see Using Origin Shield (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/origin-shield.html)
 /// in the Amazon CloudFront Developer Guide.
@@ -1355,11 +1021,7 @@ pub struct DistributionDistributionConfigOriginsItemsCustomOriginConfigOriginSsl
 pub struct DistributionDistributionConfigOriginsItemsOriginShield {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originShieldRegion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originShieldRegion")]
     pub origin_shield_region: Option<String>,
 }
 
@@ -1368,11 +1030,7 @@ pub struct DistributionDistributionConfigOriginsItemsOriginShield {
 /// endpoint, use the CustomOriginConfig element instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigOriginsItemsS3OriginConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originAccessIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originAccessIdentity")]
     pub origin_access_identity: Option<String>,
 }
 
@@ -1382,11 +1040,7 @@ pub struct DistributionDistributionConfigOriginsItemsS3OriginConfig {
 pub struct DistributionDistributionConfigRestrictions {
     /// A complex type that controls the countries in which your content is distributed.
     /// CloudFront determines the location of your users using MaxMind GeoIP databases.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "geoRestriction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "geoRestriction")]
     pub geo_restriction: Option<DistributionDistributionConfigRestrictionsGeoRestriction>,
 }
 
@@ -1396,25 +1050,21 @@ pub struct DistributionDistributionConfigRestrictions {
 pub struct DistributionDistributionConfigRestrictionsGeoRestriction {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restrictionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restrictionType")]
     pub restriction_type: Option<String>,
 }
 
 /// A complex type that determines the distribution's SSL/TLS configuration for
 /// communicating with viewers.
-///
+/// 
 /// If the distribution doesn't use Aliases (also known as alternate domain names
 /// or CNAMEs)—that is, if the distribution uses the CloudFront domain name
 /// such as d111111abcdef8.cloudfront.net—set CloudFrontDefaultCertificate
 /// to true and leave all other fields empty.
-///
+/// 
 /// If the distribution uses Aliases (alternate domain names or CNAMEs), use
 /// the fields in this type to specify the following settings:
-///
+/// 
 ///    * Which viewers the distribution accepts HTTPS connections from: only
 ///    viewers that support server name indication (SNI) (https://en.wikipedia.org/wiki/Server_Name_Indication)
 ///    (recommended), or all viewers including those that don't support SNI.
@@ -1423,73 +1073,44 @@ pub struct DistributionDistributionConfigRestrictionsGeoRestriction {
 ///    To accept HTTPS connections from all viewers, including those that don't
 ///    support SNI, set SSLSupportMethod to vip. This is not recommended, and
 ///    results in additional monthly charges from CloudFront.
-///
+/// 
 ///    * The minimum SSL/TLS protocol version that the distribution can use to
 ///    communicate with viewers. To specify a minimum version, choose a value
 ///    for MinimumProtocolVersion. For more information, see Security Policy
 ///    (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValues-security-policy)
 ///    in the Amazon CloudFront Developer Guide.
-///
+/// 
 ///    * The location of the SSL/TLS certificate, Certificate Manager (ACM) (https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html)
 ///    (recommended) or Identity and Access Management (IAM) (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html).
 ///    You specify the location by setting a value in one of the following fields
 ///    (not both): ACMCertificateArn IAMCertificateId
-///
+/// 
 /// All distributions support HTTPS connections from viewers. To require viewers
 /// to use HTTPS only, or to redirect them from HTTP to HTTPS, use ViewerProtocolPolicy
 /// in the CacheBehavior or DefaultCacheBehavior. To specify how CloudFront should
 /// use SSL/TLS to communicate with your custom origin, use CustomOriginConfig.
-///
+/// 
 /// For more information, see Using HTTPS with CloudFront (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https.html)
 /// and Using Alternate Domain Names and HTTPS (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html)
 /// in the Amazon CloudFront Developer Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigViewerCertificate {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "acmCertificateARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acmCertificateARN")]
     pub acm_certificate_arn: Option<String>,
     /// Reference field for ACMCertificateARN
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "acmCertificateRef"
-    )]
-    pub acm_certificate_ref:
-        Option<DistributionDistributionConfigViewerCertificateAcmCertificateRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acmCertificateRef")]
+    pub acm_certificate_ref: Option<DistributionDistributionConfigViewerCertificateAcmCertificateRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateSource")]
     pub certificate_source: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudFrontDefaultCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudFrontDefaultCertificate")]
     pub cloud_front_default_certificate: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iamCertificateID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iamCertificateID")]
     pub iam_certificate_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumProtocolVersion")]
     pub minimum_protocol_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslSupportMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslSupportMethod")]
     pub ssl_support_method: Option<String>,
 }
 
@@ -1518,52 +1139,32 @@ pub struct DistributionStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<DistributionStatusAckResourceMetadata>,
     /// This field contains a list of key groups and the public keys in each key
     /// group that CloudFront can use to verify the signatures of signed URLs or
     /// signed cookies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeTrustedKeyGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeTrustedKeyGroups")]
     pub active_trusted_key_groups: Option<DistributionStatusActiveTrustedKeyGroups>,
     /// We recommend using TrustedKeyGroups instead of TrustedSigners.
-    ///
+    /// 
     /// This field contains a list of Amazon Web Services account IDs and the active
     /// CloudFront key pairs in each account that CloudFront can use to verify the
     /// signatures of signed URLs or signed cookies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeTrustedSigners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeTrustedSigners")]
     pub active_trusted_signers: Option<DistributionStatusActiveTrustedSigners>,
     /// Amazon Web Services services in China customers must file for an Internet
     /// Content Provider (ICP) recordal if they want to serve content publicly on
     /// an alternate domain name, also known as a CNAME, that they've added to CloudFront.
     /// AliasICPRecordal provides the ICP recordal status for CNAMEs associated with
     /// distributions.
-    ///
+    /// 
     /// For more information about ICP recordals, see Signup, Accounts, and Credentials
     /// (https://docs.amazonaws.cn/en_us/aws/latest/userguide/accounts-and-credentials.html)
     /// in Getting Started with Amazon Web Services services in China.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aliasICPRecordals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aliasICPRecordals")]
     pub alias_icp_recordals: Option<Vec<DistributionStatusAliasIcpRecordals>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "callerReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "callerReference")]
     pub caller_reference: Option<String>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -1572,11 +1173,7 @@ pub struct DistributionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The distribution's CloudFront domain name. For example: d111111abcdef8.cloudfront.net.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "domainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
     pub domain_name: Option<String>,
     /// The current version of the distribution created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eTag")]
@@ -1585,18 +1182,10 @@ pub struct DistributionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// The number of invalidation batches currently in progress.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inProgressInvalidationBatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inProgressInvalidationBatches")]
     pub in_progress_invalidation_batches: Option<i64>,
     /// The date and time when the distribution was last modified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModifiedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
     /// The distribution's status. When the status is Deployed, the distribution's
     /// information is fully propagated to all CloudFront edge locations.
@@ -1641,18 +1230,10 @@ pub struct DistributionStatusActiveTrustedKeyGroups {
 /// the signatures of signed URLs and signed cookies.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionStatusActiveTrustedKeyGroupsItems {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyGroupID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyGroupID")]
     pub key_group_id: Option<String>,
     /// A list of CloudFront key pair identifiers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyPairIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPairIDs")]
     pub key_pair_i_ds: Option<DistributionStatusActiveTrustedKeyGroupsItemsKeyPairIDs>,
 }
 
@@ -1666,7 +1247,7 @@ pub struct DistributionStatusActiveTrustedKeyGroupsItemsKeyPairIDs {
 }
 
 /// We recommend using TrustedKeyGroups instead of TrustedSigners.
-///
+/// 
 /// This field contains a list of Amazon Web Services account IDs and the active
 /// CloudFront key pairs in each account that CloudFront can use to verify the
 /// signatures of signed URLs or signed cookies.
@@ -1683,18 +1264,10 @@ pub struct DistributionStatusActiveTrustedSigners {
 /// URLs and signed cookies.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionStatusActiveTrustedSignersItems {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsAccountNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsAccountNumber")]
     pub aws_account_number: Option<String>,
     /// A list of CloudFront key pair identifiers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyPairIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPairIDs")]
     pub key_pair_i_ds: Option<DistributionStatusActiveTrustedSignersItemsKeyPairIDs>,
 }
 
@@ -1713,7 +1286,7 @@ pub struct DistributionStatusActiveTrustedSignersItemsKeyPairIDs {
 /// AliasICPRecordal provides the ICP recordal status for CNAMEs associated with
 /// distributions. The status is returned in the CloudFront response; you can't
 /// configure it yourself.
-///
+/// 
 /// For more information about ICP recordals, see Signup, Accounts, and Credentials
 /// (https://docs.amazonaws.cn/en_us/aws/latest/userguide/accounts-and-credentials.html)
 /// in Getting Started with Amazon Web Services services in China.
@@ -1721,10 +1294,7 @@ pub struct DistributionStatusActiveTrustedSignersItemsKeyPairIDs {
 pub struct DistributionStatusAliasIcpRecordals {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cname: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iCPRecordalStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iCPRecordalStatus")]
     pub i_cp_recordal_status: Option<String>,
 }
+

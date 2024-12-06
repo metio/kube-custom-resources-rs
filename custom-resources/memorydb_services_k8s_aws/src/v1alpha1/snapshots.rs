@@ -4,48 +4,35 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SnapshotSpec defines the desired state of Snapshot.
-///
+/// 
 /// Represents a copy of an entire cluster as of the time when the snapshot was
 /// taken.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "memorydb.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Snapshot",
-    plural = "snapshots"
-)]
+#[kube(group = "memorydb.services.k8s.aws", version = "v1alpha1", kind = "Snapshot", plural = "snapshots")]
 #[kube(namespaced)]
 #[kube(status = "SnapshotStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SnapshotSpec {
     /// The snapshot is created from this cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
     pub cluster_ref: Option<SnapshotClusterRef>,
     /// The ID of the KMS key used to encrypt the snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
@@ -54,7 +41,7 @@ pub struct SnapshotSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyRef")]
@@ -62,11 +49,7 @@ pub struct SnapshotSpec {
     /// A name for the snapshot being created.
     pub name: String,
     /// The name of an existing snapshot from which to make a copy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceSnapshotName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceSnapshotName")]
     pub source_snapshot_name: Option<String>,
     /// A list of tags to be added to this resource. A tag is a key-value pair. A
     /// tag key must be accompanied by a tag value, although null is accepted.
@@ -78,7 +61,7 @@ pub struct SnapshotSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -103,7 +86,7 @@ pub struct SnapshotClusterRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -143,18 +126,10 @@ pub struct SnapshotStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<SnapshotStatusAckResourceMetadata>,
     /// The configuration of the cluster from which the snapshot was taken
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterConfiguration")]
     pub cluster_configuration: Option<SnapshotStatusClusterConfiguration>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -199,17 +174,9 @@ pub struct SnapshotStatusAckResourceMetadata {
 pub struct SnapshotStatusClusterConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "engineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maintenanceWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maintenanceWindow")]
     pub maintenance_window: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -217,33 +184,17 @@ pub struct SnapshotStatusClusterConfiguration {
     pub node_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numShards")]
     pub num_shards: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterGroupName")]
     pub parameter_group_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shards: Option<Vec<SnapshotStatusClusterConfigurationShards>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotRetentionLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotRetentionLimit")]
     pub snapshot_retention_limit: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotWindow")]
     pub snapshot_window: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetGroupName")]
     pub subnet_group_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicARN")]
     pub topic_arn: Option<String>,
@@ -262,11 +213,7 @@ pub struct SnapshotStatusClusterConfigurationShards {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotCreationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotCreationTime")]
     pub snapshot_creation_time: Option<String>,
 }
 
@@ -274,12 +221,9 @@ pub struct SnapshotStatusClusterConfigurationShards {
 /// Slots and ReplicaCount.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SnapshotStatusClusterConfigurationShardsConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaCount")]
     pub replica_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slots: Option<String>,
 }
+

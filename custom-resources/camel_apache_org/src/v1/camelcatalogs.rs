@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// the desired state of the catalog
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "camel.apache.org",
-    version = "v1",
-    kind = "CamelCatalog",
-    plural = "camelcatalogs"
-)]
+#[kube(group = "camel.apache.org", version = "v1", kind = "CamelCatalog", plural = "camelcatalogs")]
 #[kube(namespaced)]
 #[kube(status = "CamelCatalogStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CamelCatalogSpec {
     /// artifacts required by this catalog
     pub artifacts: BTreeMap<String, CamelCatalogArtifacts>,
@@ -37,11 +32,7 @@ pub struct CamelCatalogSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CamelCatalogArtifacts {
     /// Maven Artifact
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "artifactId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "artifactId")]
     pub artifact_id: Option<String>,
     /// Maven Classifier
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -225,11 +216,7 @@ pub struct CamelCatalogArtifactsSchemesProducerDependenciesExclusions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CamelCatalogLoaders {
     /// Maven Artifact
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "artifactId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "artifactId")]
     pub artifact_id: Option<String>,
     /// Maven Classifier
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -298,11 +285,7 @@ pub struct CamelCatalogRuntime {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CamelCatalogRuntimeCapabilities {
     /// Set of required Camel build time properties
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "buildTimeProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildTimeProperties")]
     pub build_time_properties: Option<Vec<CamelCatalogRuntimeCapabilitiesBuildTimeProperties>>,
     /// List of required Maven dependencies
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -311,11 +294,7 @@ pub struct CamelCatalogRuntimeCapabilities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BTreeMap<String, String>>,
     /// Set of required Camel runtime properties
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeProperties")]
     pub runtime_properties: Option<Vec<CamelCatalogRuntimeCapabilitiesRuntimeProperties>>,
 }
 
@@ -385,13 +364,10 @@ pub struct CamelCatalogStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ObservedGeneration is the most recent generation observed for this Catalog.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// the actual phase
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

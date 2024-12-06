@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// SriovIBNetworkSpec defines the desired state of SriovIBNetwork
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sriovnetwork.openshift.io",
-    version = "v1",
-    kind = "SriovIBNetwork",
-    plural = "sriovibnetworks"
-)]
+#[kube(group = "sriovnetwork.openshift.io", version = "v1", kind = "SriovIBNetwork", plural = "sriovibnetworks")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SriovIBNetworkSpec {
     /// Capabilities to be configured for this network.
     /// Capabilities supported: (infinibandGUID), e.g. '{"infinibandGUID": true}'
@@ -34,18 +29,10 @@ pub struct SriovIBNetworkSpec {
     pub link_state: Option<SriovIBNetworkLinkState>,
     /// MetaPluginsConfig configuration to be used in order to chain metaplugins to the sriov interface returned
     /// by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metaPlugins"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metaPlugins")]
     pub meta_plugins: Option<String>,
     /// Namespace of the NetworkAttachmentDefinition custom resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkNamespace")]
     pub network_namespace: Option<String>,
     /// SRIOV Network device plugin endpoint resource name
     #[serde(rename = "resourceName")]
@@ -65,4 +52,6 @@ pub enum SriovIBNetworkLinkState {
 
 /// SriovIBNetworkStatus defines the observed state of SriovIBNetwork
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SriovIBNetworkStatus {}
+pub struct SriovIBNetworkStatus {
+}
+

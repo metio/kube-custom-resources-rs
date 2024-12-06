@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Specification of the numa information of the worker node
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "nodeinfo.volcano.sh",
-    version = "v1alpha1",
-    kind = "Numatopology",
-    plural = "numatopologies"
-)]
+#[kube(group = "nodeinfo.volcano.sh", version = "v1alpha1", kind = "Numatopology", plural = "numatopologies")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NumatopologySpec {
     /// Specifies the cpu topology info
     /// Key is cpu id
@@ -35,11 +30,7 @@ pub struct NumatopologySpec {
     pub policies: Option<BTreeMap<String, String>>,
     /// Specifies the reserved resource of the node
     /// Key is resource name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resReserved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resReserved")]
     pub res_reserved: Option<BTreeMap<String, String>>,
 }
 
@@ -64,3 +55,4 @@ pub struct NumatopologyNumares {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<i64>,
 }
+

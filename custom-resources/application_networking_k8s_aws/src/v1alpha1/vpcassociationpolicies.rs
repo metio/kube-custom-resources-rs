@@ -4,49 +4,36 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VpcAssociationPolicySpec defines the desired state of VpcAssociationPolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "application-networking.k8s.aws",
-    version = "v1alpha1",
-    kind = "VpcAssociationPolicy",
-    plural = "vpcassociationpolicies"
-)]
+#[kube(group = "application-networking.k8s.aws", version = "v1alpha1", kind = "VpcAssociationPolicy", plural = "vpcassociationpolicies")]
 #[kube(namespaced)]
 #[kube(status = "VpcAssociationPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VpcAssociationPolicySpec {
-    /// AssociateWithVpc indicates whether the VpcServiceNetworkAssociation should be created for the current VPC of k8s cluster.
+    /// AssociateWithVpc indicates whether the VpcServiceNetworkAssociation should be created for the current VPC of k8s cluster. 
     ///  This value will be considered true by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "associateWithVpc"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "associateWithVpc")]
     pub associate_with_vpc: Option<bool>,
-    /// SecurityGroupIds defines the security groups enforced on the VpcServiceNetworkAssociation. Security groups does not take effect if AssociateWithVpc is set to false.
+    /// SecurityGroupIds defines the security groups enforced on the VpcServiceNetworkAssociation. Security groups does not take effect if AssociateWithVpc is set to false. 
     ///  For more details, please check the VPC Lattice documentation https://docs.aws.amazon.com/vpc-lattice/latest/ug/security-groups.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIds")]
     pub security_group_ids: Option<Vec<String>>,
-    /// TargetRef points to the kubernetes Gateway resource that will have this policy attached.
+    /// TargetRef points to the kubernetes Gateway resource that will have this policy attached. 
     ///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
     #[serde(rename = "targetRef")]
     pub target_ref: VpcAssociationPolicyTargetRef,
 }
 
-/// TargetRef points to the kubernetes Gateway resource that will have this policy attached.
+/// TargetRef points to the kubernetes Gateway resource that will have this policy attached. 
 ///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VpcAssociationPolicyTargetRef {
@@ -64,10 +51,11 @@ pub struct VpcAssociationPolicyTargetRef {
 /// VpcAssociationPolicyStatus defines the observed state of VpcAssociationPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VpcAssociationPolicyStatus {
-    /// Conditions describe the current conditions of the VpcAssociationPolicy.
-    ///  Implementations should prefer to express Policy conditions using the `PolicyConditionType` and `PolicyConditionReason` constants so that operators and tools can converge on a common vocabulary to describe VpcAssociationPolicy state.
-    ///  Known condition types are:
+    /// Conditions describe the current conditions of the VpcAssociationPolicy. 
+    ///  Implementations should prefer to express Policy conditions using the `PolicyConditionType` and `PolicyConditionReason` constants so that operators and tools can converge on a common vocabulary to describe VpcAssociationPolicy state. 
+    ///  Known condition types are: 
     ///  * "Accepted"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

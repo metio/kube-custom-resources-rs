@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "awx.ansible.com",
-    version = "v1beta1",
-    kind = "AWXBackup",
-    plural = "awxbackups"
-)]
+#[kube(group = "awx.ansible.com", version = "v1beta1", kind = "AWXBackup", plural = "awxbackups")]
 #[kube(namespaced)]
 #[kube(status = "AWXBackupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AWXBackupSpec {
     /// Additional labels defined on the resource, which should be propagated to child resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -115,18 +110,10 @@ pub enum AWXBackupImagePullPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXBackupStatus {
     /// Backup persistent volume claim
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupClaim")]
     pub backup_claim: Option<String>,
     /// Backup directory name on the specified pvc
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupDirectory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupDirectory")]
     pub backup_directory: Option<String>,
     /// The resulting conditions when a Service Telemetry is instantiated
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -135,11 +122,7 @@ pub struct AWXBackupStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWXBackupStatusConditions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
@@ -148,3 +131,4 @@ pub struct AWXBackupStatusConditions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

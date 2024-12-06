@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// UserSpec defines the desired state of User
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "mariadb.mmontes.io",
-    version = "v1alpha1",
-    kind = "User",
-    plural = "users"
-)]
+#[kube(group = "mariadb.mmontes.io", version = "v1alpha1", kind = "User", plural = "users")]
 #[kube(namespaced)]
 #[kube(status = "UserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct UserSpec {
     /// Host related to the User.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -31,11 +26,7 @@ pub struct UserSpec {
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: UserMariaDbRef,
     /// MaxUserConnections defines the maximum number of connections that the User can establish.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUserConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUserConnections")]
     pub max_user_connections: Option<i32>,
     /// Name overrides the default name provided by metadata.name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -44,18 +35,10 @@ pub struct UserSpec {
     #[serde(rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: UserPasswordSecretKeyRef,
     /// RequeueInterval is used to perform requeue reconcilizations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requeueInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueInterval")]
     pub requeue_interval: Option<String>,
     /// RetryInterval is the interval used to perform retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
@@ -63,11 +46,7 @@ pub struct UserSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserMariaDbRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
@@ -82,11 +61,7 @@ pub struct UserMariaDbRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -116,3 +91,4 @@ pub struct UserStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

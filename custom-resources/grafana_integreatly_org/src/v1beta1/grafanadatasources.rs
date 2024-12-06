@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// GrafanaDatasourceSpec defines the desired state of GrafanaDatasource
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "grafana.integreatly.org",
-    version = "v1beta1",
-    kind = "GrafanaDatasource",
-    plural = "grafanadatasources"
-)]
+#[kube(group = "grafana.integreatly.org", version = "v1beta1", kind = "GrafanaDatasource", plural = "grafanadatasources")]
 #[kube(namespaced)]
 #[kube(status = "GrafanaDatasourceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GrafanaDatasourceSpec {
     /// allow to import this resources from an operator in a different namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowCrossNamespaceImport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossNamespaceImport")]
     pub allow_cross_namespace_import: Option<bool>,
     pub datasource: GrafanaDatasourceDatasource,
     /// selects Grafana instances for import
@@ -39,18 +30,10 @@ pub struct GrafanaDatasourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugins: Option<Vec<GrafanaDatasourcePlugins>>,
     /// how often the datasource is refreshed, defaults to 5m if not set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resyncPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
     /// environments variables from secrets or config maps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "valuesFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesFrom")]
     pub values_from: Option<Vec<GrafanaDatasourceValuesFrom>>,
 }
 
@@ -60,11 +43,7 @@ pub struct GrafanaDatasourceDatasource {
     pub access: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "basicAuthUser"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuthUser")]
     pub basic_auth_user: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<String>,
@@ -80,11 +59,7 @@ pub struct GrafanaDatasourceDatasource {
     /// Deprecated field, it has no effect
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "orgId")]
     pub org_id: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secureJsonData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secureJsonData")]
     pub secure_json_data: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -100,20 +75,12 @@ pub struct GrafanaDatasourceDatasource {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDatasourceInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<GrafanaDatasourceInstanceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -151,18 +118,10 @@ pub struct GrafanaDatasourceValuesFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDatasourceValuesFromValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<GrafanaDatasourceValuesFromValueFromConfigMapKeyRef>,
     /// Selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<GrafanaDatasourceValuesFromValueFromSecretKeyRef>,
 }
 
@@ -204,27 +163,16 @@ pub struct GrafanaDatasourceValuesFromValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDatasourceStatus {
     /// The datasource instanceSelector can't find matching grafana instances
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "NoMatchingInstances"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "NoMatchingInstances")]
     pub no_matching_instances: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hash: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastMessage")]
     pub last_message: Option<String>,
     /// Last time the datasource was resynced
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastResync"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastResync")]
     pub last_resync: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
+

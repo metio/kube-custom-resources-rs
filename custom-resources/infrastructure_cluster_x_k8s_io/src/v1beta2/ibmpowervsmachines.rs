@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// IBMPowerVSMachineSpec defines the desired state of IBMPowerVSMachine.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta2",
-    kind = "IBMPowerVSMachine",
-    plural = "ibmpowervsmachines"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "IBMPowerVSMachine", plural = "ibmpowervsmachines")]
 #[kube(namespaced)]
 #[kube(status = "IBMPowerVSMachineStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMPowerVSMachineSpec {
     /// Image the reference to the image which is used to create the instance.
     /// supported image identifier in IBMPowerVSResourceReference are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
@@ -54,11 +49,7 @@ pub struct IBMPowerVSMachineSpec {
     /// if the processorType is selected as Dedicated, then processors value cannot be fractional.
     /// When omitted, this means that the user has no opinion and the platform is left to choose a
     /// reasonable default, which is subject to change over time. The current default is Shared.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "processorType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "processorType")]
     pub processor_type: Option<IBMPowerVSMachineProcessorType>,
     /// processors is the number of virtual processors in a virtual machine.
     /// when the processorType is selected as Dedicated the processors value cannot be fractional.
@@ -75,11 +66,7 @@ pub struct IBMPowerVSMachineSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub processors: Option<IntOrString>,
     /// ProviderID is the unique identifier as specified by the cloud provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
     /// serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created.
     /// Power VS workspace is a container for all Power VS instances at a specific geographic region.
@@ -88,11 +75,7 @@ pub struct IBMPowerVSMachineSpec {
     /// More detail about Power VS service instance.
     /// https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server
     /// when omitted system will dynamically create the service instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceInstance"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IBMPowerVSMachineServiceInstance>,
     /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.
     /// Deprecated: use ServiceInstance instead
@@ -108,11 +91,7 @@ pub struct IBMPowerVSMachineSpec {
     /// e980 systemType available in Datacenters except Dallas and Washington.
     /// When omitted, this means that the user has no opinion and the platform is left to choose a
     /// reasonable default, which is subject to change over time. The current default is s922 which is generally available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemType")]
     pub system_type: Option<IBMPowerVSMachineSystemType>,
 }
 
@@ -221,8 +200,8 @@ pub struct IBMPowerVSMachineStatus {
     /// FailureMessage will be set in the event that there is a terminal problem
     /// reconciling the Machine and will contain a more verbose string suitable
     /// for logging and human consumption.
-    ///
-    ///
+    /// 
+    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
@@ -231,22 +210,18 @@ pub struct IBMPowerVSMachineStatus {
     /// of terminal errors would be invalid combinations of settings in the
     /// spec, values that are unsupported by the controller, or the
     /// responsible controller itself being critically misconfigured.
-    ///
-    ///
+    /// 
+    /// 
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the Machine object and/or logged in the
     /// controller's output.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// FailureReason will be set in the event that there is a terminal problem
     /// reconciling the Machine and will contain a succinct value suitable
     /// for machine interpretation.
-    ///
-    ///
+    /// 
+    /// 
     /// This field should not be set for transitive errors that a controller
     /// faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
@@ -255,16 +230,12 @@ pub struct IBMPowerVSMachineStatus {
     /// of terminal errors would be invalid combinations of settings in the
     /// spec, values that are unsupported by the controller, or the
     /// responsible controller itself being critically misconfigured.
-    ///
-    ///
+    /// 
+    /// 
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the Machine object and/or logged in the
     /// controller's output.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// Fault will report if any fault messages for the vsi.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -272,18 +243,10 @@ pub struct IBMPowerVSMachineStatus {
     /// Health is the health of the vsi.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceID")]
     pub instance_id: Option<String>,
     /// InstanceState is the status of the vsi.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceState")]
     pub instance_state: Option<String>,
     /// Ready is true when the provider resource is ready.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -305,3 +268,4 @@ pub struct IBMPowerVSMachineStatusAddresses {
     #[serde(rename = "type")]
     pub r#type: String,
 }
+

@@ -5,33 +5,28 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec represents the desired behavior of PropagationPolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "policy.karmada.io",
-    version = "v1alpha1",
-    kind = "PropagationPolicy",
-    plural = "propagationpolicies"
-)]
+#[kube(group = "policy.karmada.io", version = "v1alpha1", kind = "PropagationPolicy", plural = "propagationpolicies")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PropagationPolicySpec {
     /// ActivationPreference indicates how the referencing resource template will
     /// be propagated, in case of policy changes.
-    ///
-    ///
+    /// 
+    /// 
     /// If empty, the resource template will respond to policy changes
     /// immediately, in other words, any policy changes will drive the resource
     /// template to be propagated immediately as per the current propagation rules.
-    ///
-    ///
+    /// 
+    /// 
     /// If the value is 'Lazy' means the policy changes will not take effect for now
     /// but defer to the resource template changes, in other words, the resource
     /// template will not be propagated as per the current propagation rules until
@@ -41,11 +36,7 @@ pub struct PropagationPolicySpec {
     /// affect numerous applications simultaneously. A minor misconfiguration
     /// could lead to widespread failures. With this feature, the change can be
     /// gradually rolled out through iterative modifications of resource templates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activationPreference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activationPreference")]
     pub activation_preference: Option<PropagationPolicyActivationPreference>,
     /// Association tells if relevant resources should be selected automatically.
     /// e.g. a ConfigMap referred by a Deployment.
@@ -55,34 +46,26 @@ pub struct PropagationPolicySpec {
     pub association: Option<bool>,
     /// ConflictResolution declares how potential conflict should be handled when
     /// a resource that is being propagated already exists in the target cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// It defaults to "Abort" which means stop propagating to avoid unexpected
     /// overwrites. The "Overwrite" might be useful when migrating legacy cluster
     /// resources to Karmada, in which case conflict is predictable and can be
     /// instructed to Karmada take over the resource by overwriting.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conflictResolution"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conflictResolution")]
     pub conflict_resolution: Option<PropagationPolicyConflictResolution>,
     /// DependentOverrides represents the list of overrides(OverridePolicy)
     /// which must present before the current PropagationPolicy takes effect.
-    ///
-    ///
+    /// 
+    /// 
     /// It used to explicitly specify overrides which current PropagationPolicy rely on.
     /// A typical scenario is the users create OverridePolicy(ies) and resources at the same time,
     /// they want to ensure the new-created policies would be adopted.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: For the overrides, OverridePolicy(ies) in current namespace and ClusterOverridePolicy(ies),
     /// which not present in this list will still be applied if they matches the resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dependentOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependentOverrides")]
     pub dependent_overrides: Option<Vec<String>>,
     /// Failover indicates how Karmada migrates applications in case of failures.
     /// If this value is nil, failover is disabled.
@@ -99,25 +82,21 @@ pub struct PropagationPolicySpec {
     /// member clusters when the resource template is deleted.
     /// If set to true, resources will be preserved on the member clusters.
     /// Default is false, which means resources will be deleted along with the resource template.
-    ///
-    ///
+    /// 
+    /// 
     /// This setting is particularly useful during workload migration scenarios to ensure
     /// that rollback can occur quickly without affecting the workloads running on the
     /// member clusters.
-    ///
-    ///
+    /// 
+    /// 
     /// Additionally, this setting applies uniformly across all member clusters and will not
     /// selectively control preservation on only some clusters.
-    ///
-    ///
+    /// 
+    /// 
     /// Note: This setting does not apply to the deletion of the policy itself.
     /// When the policy is deleted, the resource templates and their corresponding
     /// propagated resources in member clusters will remain unchanged unless explicitly deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preserveResourcesOnDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveResourcesOnDeletion")]
     pub preserve_resources_on_deletion: Option<bool>,
     /// Priority indicates the importance of a policy(PropagationPolicy or ClusterPropagationPolicy).
     /// A policy will be applied for the matched resource templates if there is
@@ -126,8 +105,8 @@ pub struct PropagationPolicySpec {
     /// Once a resource template has been claimed by a policy, by default it will
     /// not be preempted by following policies even with a higher priority.
     /// See Preemption for more details.
-    ///
-    ///
+    /// 
+    /// 
     /// In case of two policies have the same priority, the one with a more precise
     /// matching rules in ResourceSelectors wins:
     /// - matching by name(resourceSelector.name) has higher priority than
@@ -136,8 +115,8 @@ pub struct PropagationPolicySpec {
     ///   than by APIVersion(resourceSelector.apiVersion) and Kind(resourceSelector.kind).
     /// If there is still no winner at this point, the one with the lower alphabetic
     /// order wins, e.g. policy 'bar' has higher priority than 'foo'.
-    ///
-    ///
+    /// 
+    /// 
     /// The higher the value, the higher the priority. Defaults to zero.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
@@ -146,14 +125,10 @@ pub struct PropagationPolicySpec {
     /// the referencing resources could be omitted(for saving config effort) from 'resourceSelectors' as they will be
     /// propagated along with the Deployment. In addition to the propagating process, the referencing resources will be
     /// migrated along with the Deployment in the fail-over scenario.
-    ///
-    ///
+    /// 
+    /// 
     /// Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propagateDeps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propagateDeps")]
     pub propagate_deps: Option<bool>,
     /// ResourceSelectors used to select resources.
     /// Nil or empty selector is not allowed and doesn't mean match all kinds
@@ -164,11 +139,7 @@ pub struct PropagationPolicySpec {
     /// SchedulerName represents which scheduler to proceed the scheduling.
     /// If specified, the policy will be dispatched by specified scheduler.
     /// If not specified, the policy will be dispatched by default scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// Suspension declares the policy for suspending different aspects of propagation.
     /// nil means no suspension. no default values.
@@ -219,11 +190,7 @@ pub struct PropagationPolicyFailoverApplication {
     /// If the application on the new cluster cannot reach a Healthy state,
     /// Karmada will delete the application after GracePeriodSeconds is reached.
     /// Value must be positive integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
     pub grace_period_seconds: Option<i32>,
     /// PurgeMode represents how to deal with the legacy applications on the
     /// cluster from which the application is migrated.
@@ -243,11 +210,7 @@ pub struct PropagationPolicyFailoverApplicationDecisionConditions {
     /// after reaching the desired state before performing failover process.
     /// If not specified, Karmada will immediately perform failover process.
     /// Defaults to 300s.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i32>,
 }
 
@@ -267,76 +230,56 @@ pub enum PropagationPolicyFailoverApplicationPurgeMode {
 pub struct PropagationPolicyPlacement {
     /// ClusterAffinities represents scheduling restrictions to multiple cluster
     /// groups that indicated by ClusterAffinityTerm.
-    ///
-    ///
+    /// 
+    /// 
     /// The scheduler will evaluate these groups one by one in the order they
     /// appear in the spec, the group that does not satisfy scheduling restrictions
     /// will be ignored which means all clusters in this group will not be selected
     /// unless it also belongs to the next group(a cluster could belong to multiple
     /// groups).
-    ///
-    ///
+    /// 
+    /// 
     /// If none of the groups satisfy the scheduling restrictions, then scheduling
     /// fails, which means no cluster will be selected.
-    ///
-    ///
+    /// 
+    /// 
     /// Note:
     ///   1. ClusterAffinities can not co-exist with ClusterAffinity.
     ///   2. If both ClusterAffinity and ClusterAffinities are not set, any cluster
     ///      can be scheduling candidates.
-    ///
-    ///
+    /// 
+    /// 
     /// Potential use case 1:
     /// The private clusters in the local data center could be the main group, and
     /// the managed clusters provided by cluster providers could be the secondary
     /// group. So that the Karmada scheduler would prefer to schedule workloads
     /// to the main group and the second group will only be considered in case of
     /// the main group does not satisfy restrictions(like, lack of resources).
-    ///
-    ///
+    /// 
+    /// 
     /// Potential use case 2:
     /// For the disaster recovery scenario, the clusters could be organized to
     /// primary and backup groups, the workloads would be scheduled to primary
     /// clusters firstly, and when primary cluster fails(like data center power off),
     /// Karmada scheduler could migrate workloads to the backup clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterAffinities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAffinities")]
     pub cluster_affinities: Option<Vec<PropagationPolicyPlacementClusterAffinities>>,
     /// ClusterAffinity represents scheduling restrictions to a certain set of clusters.
     /// Note:
     ///   1. ClusterAffinity can not co-exist with ClusterAffinities.
     ///   2. If both ClusterAffinity and ClusterAffinities are not set, any cluster
     ///      can be scheduling candidates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAffinity")]
     pub cluster_affinity: Option<PropagationPolicyPlacementClusterAffinity>,
     /// ClusterTolerations represents the tolerations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTolerations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTolerations")]
     pub cluster_tolerations: Option<Vec<PropagationPolicyPlacementClusterTolerations>>,
     /// ReplicaScheduling represents the scheduling policy on dealing with the number of replicas
     /// when propagating resources that have replicas in spec (e.g. deployments, statefulsets) to member clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaScheduling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaScheduling")]
     pub replica_scheduling: Option<PropagationPolicyPlacementReplicaScheduling>,
     /// SpreadConstraints represents a list of the scheduling constraints.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spreadConstraints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spreadConstraints")]
     pub spread_constraints: Option<Vec<PropagationPolicyPlacementSpreadConstraints>>,
 }
 
@@ -347,11 +290,7 @@ pub struct PropagationPolicyPlacementClusterAffinities {
     #[serde(rename = "affinityName")]
     pub affinity_name: String,
     /// ClusterNames is the list of clusters to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
     pub cluster_names: Option<Vec<String>>,
     /// ExcludedClusters is the list of clusters to be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -360,19 +299,11 @@ pub struct PropagationPolicyPlacementClusterAffinities {
     /// The key(field) of the match expression should be 'provider', 'region', or 'zone',
     /// and the operator of the match expression should be 'In' or 'NotIn'.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelector")]
     pub field_selector: Option<PropagationPolicyPlacementClusterAffinitiesFieldSelector>,
     /// LabelSelector is a filter to select member clusters by labels.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PropagationPolicyPlacementClusterAffinitiesLabelSelector>,
 }
 
@@ -383,13 +314,8 @@ pub struct PropagationPolicyPlacementClusterAffinities {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PropagationPolicyPlacementClusterAffinitiesFieldSelector {
     /// A list of field selector requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PropagationPolicyPlacementClusterAffinitiesFieldSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PropagationPolicyPlacementClusterAffinitiesFieldSelectorMatchExpressions>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
@@ -415,21 +341,12 @@ pub struct PropagationPolicyPlacementClusterAffinitiesFieldSelectorMatchExpressi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PropagationPolicyPlacementClusterAffinitiesLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PropagationPolicyPlacementClusterAffinitiesLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PropagationPolicyPlacementClusterAffinitiesLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -458,11 +375,7 @@ pub struct PropagationPolicyPlacementClusterAffinitiesLabelSelectorMatchExpressi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PropagationPolicyPlacementClusterAffinity {
     /// ClusterNames is the list of clusters to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
     pub cluster_names: Option<Vec<String>>,
     /// ExcludedClusters is the list of clusters to be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -471,19 +384,11 @@ pub struct PropagationPolicyPlacementClusterAffinity {
     /// The key(field) of the match expression should be 'provider', 'region', or 'zone',
     /// and the operator of the match expression should be 'In' or 'NotIn'.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelector")]
     pub field_selector: Option<PropagationPolicyPlacementClusterAffinityFieldSelector>,
     /// LabelSelector is a filter to select member clusters by labels.
     /// If non-nil and non-empty, only the clusters match this filter will be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PropagationPolicyPlacementClusterAffinityLabelSelector>,
 }
 
@@ -494,13 +399,8 @@ pub struct PropagationPolicyPlacementClusterAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PropagationPolicyPlacementClusterAffinityFieldSelector {
     /// A list of field selector requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PropagationPolicyPlacementClusterAffinityFieldSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PropagationPolicyPlacementClusterAffinityFieldSelectorMatchExpressions>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
@@ -526,21 +426,12 @@ pub struct PropagationPolicyPlacementClusterAffinityFieldSelectorMatchExpression
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PropagationPolicyPlacementClusterAffinityLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PropagationPolicyPlacementClusterAffinityLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PropagationPolicyPlacementClusterAffinityLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -583,11 +474,7 @@ pub struct PropagationPolicyPlacementClusterTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -604,32 +491,18 @@ pub struct PropagationPolicyPlacementReplicaScheduling {
     /// "Aggregated" divides replicas into clusters as few as possible,
     /// while respecting clusters' resource availabilities during the division.
     /// "Weighted" divides replicas by weight according to WeightPreference.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaDivisionPreference"
-    )]
-    pub replica_division_preference:
-        Option<PropagationPolicyPlacementReplicaSchedulingReplicaDivisionPreference>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaDivisionPreference")]
+    pub replica_division_preference: Option<PropagationPolicyPlacementReplicaSchedulingReplicaDivisionPreference>,
     /// ReplicaSchedulingType determines how the replicas is scheduled when karmada propagating
     /// a resource. Valid options are Duplicated and Divided.
     /// "Duplicated" duplicates the same replicas to each candidate member cluster from resource.
     /// "Divided" divides replicas into parts according to number of valid candidate member
     /// clusters, and exact replicas for each cluster are determined by ReplicaDivisionPreference.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaSchedulingType"
-    )]
-    pub replica_scheduling_type:
-        Option<PropagationPolicyPlacementReplicaSchedulingReplicaSchedulingType>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaSchedulingType")]
+    pub replica_scheduling_type: Option<PropagationPolicyPlacementReplicaSchedulingReplicaSchedulingType>,
     /// WeightPreference describes weight for each cluster or for each group of cluster
     /// If ReplicaDivisionPreference is set to "Weighted", and WeightPreference is not set, scheduler will weight all clusters the same.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "weightPreference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "weightPreference")]
     pub weight_preference: Option<PropagationPolicyPlacementReplicaSchedulingWeightPreference>,
 }
 
@@ -655,21 +528,11 @@ pub enum PropagationPolicyPlacementReplicaSchedulingReplicaSchedulingType {
 pub struct PropagationPolicyPlacementReplicaSchedulingWeightPreference {
     /// DynamicWeight specifies the factor to generates dynamic weight list.
     /// If specified, StaticWeightList will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dynamicWeight"
-    )]
-    pub dynamic_weight:
-        Option<PropagationPolicyPlacementReplicaSchedulingWeightPreferenceDynamicWeight>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicWeight")]
+    pub dynamic_weight: Option<PropagationPolicyPlacementReplicaSchedulingWeightPreferenceDynamicWeight>,
     /// StaticWeightList defines the static cluster weight.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticWeightList"
-    )]
-    pub static_weight_list:
-        Option<Vec<PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeightList>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticWeightList")]
+    pub static_weight_list: Option<Vec<PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeightList>>,
 }
 
 /// WeightPreference describes weight for each cluster or for each group of cluster
@@ -684,8 +547,7 @@ pub enum PropagationPolicyPlacementReplicaSchedulingWeightPreferenceDynamicWeigh
 pub struct PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeightList {
     /// TargetCluster describes the filter to select clusters.
     #[serde(rename = "targetCluster")]
-    pub target_cluster:
-        PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetCluster,
+    pub target_cluster: PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetCluster,
     /// Weight expressing the preference to the cluster(s) specified by 'TargetCluster'.
     pub weight: i64,
 }
@@ -725,8 +587,7 @@ pub struct PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeig
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetClusterFieldSelectorMatchExpressions
-{
+pub struct PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetClusterFieldSelectorMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -758,8 +619,7 @@ pub struct PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeig
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetClusterLabelSelectorMatchExpressions
-{
+pub struct PropagationPolicyPlacementReplicaSchedulingWeightPreferenceStaticWeightListTargetClusterLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -789,21 +649,13 @@ pub struct PropagationPolicyPlacementSpreadConstraints {
     /// Available fields for spreading are: cluster, region, zone, and provider.
     /// SpreadByField should not co-exist with SpreadByLabel.
     /// If both SpreadByField and SpreadByLabel are empty, SpreadByField will be set to "cluster" by system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spreadByField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spreadByField")]
     pub spread_by_field: Option<PropagationPolicyPlacementSpreadConstraintsSpreadByField>,
     /// SpreadByLabel represents the label key used for
     /// grouping member clusters into different groups.
     /// Resources will be spread among different cluster groups.
     /// SpreadByLabel should not co-exist with SpreadByField.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spreadByLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spreadByLabel")]
     pub spread_by_label: Option<String>,
 }
 
@@ -837,11 +689,7 @@ pub struct PropagationPolicyResourceSelectors {
     pub kind: String,
     /// A label query over a set of resources.
     /// If name is not empty, labelSelector will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PropagationPolicyResourceSelectorsLabelSelector>,
     /// Name of the target resource.
     /// Default is empty, which means selecting all resources.
@@ -858,21 +706,12 @@ pub struct PropagationPolicyResourceSelectors {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PropagationPolicyResourceSelectorsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PropagationPolicyResourceSelectorsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PropagationPolicyResourceSelectorsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -906,11 +745,7 @@ pub struct PropagationPolicySuspension {
     /// DispatchingOnClusters declares a list of clusters to which the dispatching
     /// should be suspended.
     /// Note: Can not co-exist with Dispatching which is used to suspend all.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dispatchingOnClusters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dispatchingOnClusters")]
     pub dispatching_on_clusters: Option<PropagationPolicySuspensionDispatchingOnClusters>,
 }
 
@@ -920,10 +755,7 @@ pub struct PropagationPolicySuspension {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PropagationPolicySuspensionDispatchingOnClusters {
     /// ClusterNames is the list of clusters to be selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
     pub cluster_names: Option<Vec<String>>,
 }
+

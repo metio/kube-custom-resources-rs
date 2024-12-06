@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// RecordingRuleSpec defines the desired state of RecordingRule
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "loki.grafana.com",
-    version = "v1",
-    kind = "RecordingRule",
-    plural = "recordingrules"
-)]
+#[kube(group = "loki.grafana.com", version = "v1", kind = "RecordingRule", plural = "recordingrules")]
 #[kube(namespaced)]
 #[kube(status = "RecordingRuleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RecordingRuleSpec {
     /// List of groups for recording rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -71,3 +66,4 @@ pub struct RecordingRuleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

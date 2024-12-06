@@ -5,40 +5,27 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// KeycloakRealmSpec defines the desired state of KeycloakRealm.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "keycloak.org",
-    version = "v1alpha1",
-    kind = "KeycloakRealm",
-    plural = "keycloakrealms"
-)]
+#[kube(group = "keycloak.org", version = "v1alpha1", kind = "KeycloakRealm", plural = "keycloakrealms")]
 #[kube(namespaced)]
 #[kube(status = "KeycloakRealmStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KeycloakRealmSpec {
     /// Selector for looking up Keycloak Custom Resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceSelector")]
     pub instance_selector: Option<KeycloakRealmInstanceSelector>,
     /// Keycloak Realm REST object.
     pub realm: KeycloakRealmRealm,
     /// A list of overrides to the default Realm behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "realmOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmOverrides")]
     pub realm_overrides: Option<Vec<KeycloakRealmRealmOverrides>>,
     /// When set to true, this KeycloakRealm will be marked as unmanaged and not be managed by this operator. It can then be used for targeting purposes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -49,18 +36,10 @@ pub struct KeycloakRealmSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakRealmInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KeycloakRealmInstanceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -80,440 +59,200 @@ pub struct KeycloakRealmInstanceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakRealmRealm {
     /// Access Token Lifespan
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTokenLifespan"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenLifespan")]
     pub access_token_lifespan: Option<i32>,
     /// Access Token Lifespan For Implicit Flow
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTokenLifespanForImplicitFlow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenLifespanForImplicitFlow")]
     pub access_token_lifespan_for_implicit_flow: Option<i32>,
     /// Account Theme
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accountTheme"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountTheme")]
     pub account_theme: Option<String>,
     /// Enable admin events details TODO: change to values and use kubebuilder default annotation once supported
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminEventsDetailsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminEventsDetailsEnabled")]
     pub admin_events_details_enabled: Option<bool>,
     /// Enable events recording TODO: change to values and use kubebuilder default annotation once supported
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminEventsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminEventsEnabled")]
     pub admin_events_enabled: Option<bool>,
     /// Admin Console Theme
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminTheme"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminTheme")]
     pub admin_theme: Option<String>,
     /// Authentication flows
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationFlows"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationFlows")]
     pub authentication_flows: Option<Vec<KeycloakRealmRealmAuthenticationFlows>>,
     /// Authenticator config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticatorConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticatorConfig")]
     pub authenticator_config: Option<Vec<KeycloakRealmRealmAuthenticatorConfig>>,
     /// Browser authentication flow
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "browserFlow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "browserFlow")]
     pub browser_flow: Option<String>,
     /// Brute Force Detection
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bruteForceProtected"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bruteForceProtected")]
     pub brute_force_protected: Option<bool>,
     /// Client authentication flow
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientAuthenticationFlow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAuthenticationFlow")]
     pub client_authentication_flow: Option<String>,
     /// Client Scope Mappings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientScopeMappings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientScopeMappings")]
     pub client_scope_mappings: Option<BTreeMap<String, KeycloakRealmRealmClientScopeMappings>>,
     /// Client scopes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientScopes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientScopes")]
     pub client_scopes: Option<Vec<KeycloakRealmRealmClientScopes>>,
     /// A set of Keycloak Clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clients: Option<Vec<KeycloakRealmRealmClients>>,
     /// Default client scopes to add to all new clients
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultDefaultClientScopes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultDefaultClientScopes")]
     pub default_default_client_scopes: Option<Vec<String>>,
     /// Default Locale
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultLocale"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultLocale")]
     pub default_locale: Option<String>,
     /// Default role
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRole")]
     pub default_role: Option<KeycloakRealmRealmDefaultRole>,
     /// Direct Grant authentication flow
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "directGrantFlow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directGrantFlow")]
     pub direct_grant_flow: Option<String>,
     /// Realm display name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
     /// Realm HTML display name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayNameHtml"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayNameHtml")]
     pub display_name_html: Option<String>,
     /// Docker Authentication flow
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dockerAuthenticationFlow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerAuthenticationFlow")]
     pub docker_authentication_flow: Option<String>,
     /// Duplicate emails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "duplicateEmailsAllowed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "duplicateEmailsAllowed")]
     pub duplicate_emails_allowed: Option<bool>,
     /// Edit username
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "editUsernameAllowed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "editUsernameAllowed")]
     pub edit_username_allowed: Option<bool>,
     /// Email Theme
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emailTheme"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailTheme")]
     pub email_theme: Option<String>,
     /// Realm enabled flag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Enabled event types
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enabledEventTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledEventTypes")]
     pub enabled_event_types: Option<Vec<String>>,
     /// Enable events recording TODO: change to values and use kubebuilder default annotation once supported
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventsEnabled")]
     pub events_enabled: Option<bool>,
     /// A set of Event Listeners.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventsListeners"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventsListeners")]
     pub events_listeners: Option<Vec<String>>,
     /// Max Login Failures
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureFactor")]
     pub failure_factor: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// A set of Identity Provider Mappers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityProviderMappers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityProviderMappers")]
     pub identity_provider_mappers: Option<Vec<KeycloakRealmRealmIdentityProviderMappers>>,
     /// A set of Identity Providers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityProviders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityProviders")]
     pub identity_providers: Option<Vec<KeycloakRealmRealmIdentityProviders>>,
     /// Internationalization Enabled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internationalizationEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internationalizationEnabled")]
     pub internationalization_enabled: Option<bool>,
     /// Login Theme
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loginTheme"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loginTheme")]
     pub login_theme: Option<String>,
     /// Login with email
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loginWithEmailAllowed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loginWithEmailAllowed")]
     pub login_with_email_allowed: Option<bool>,
     /// Failure Reset Time
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxDeltaTimeSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxDeltaTimeSeconds")]
     pub max_delta_time_seconds: Option<i32>,
     /// Max Wait
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxFailureWaitSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxFailureWaitSeconds")]
     pub max_failure_wait_seconds: Option<i32>,
     /// Minimum Quick Login Wait
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumQuickLoginWaitSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumQuickLoginWaitSeconds")]
     pub minimum_quick_login_wait_seconds: Option<i32>,
     /// OTP Policy Algorithm
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otpPolicyAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otpPolicyAlgorithm")]
     pub otp_policy_algorithm: Option<String>,
     /// OTP Policy Digits
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otpPolicyDigits"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otpPolicyDigits")]
     pub otp_policy_digits: Option<i32>,
     /// OTP Policy Initial Counter
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otpPolicyInitialCounter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otpPolicyInitialCounter")]
     pub otp_policy_initial_counter: Option<i32>,
     /// OTP Policy Look Ahead Window
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otpPolicyLookAheadWindow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otpPolicyLookAheadWindow")]
     pub otp_policy_look_ahead_window: Option<i32>,
     /// OTP Policy Period
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otpPolicyPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otpPolicyPeriod")]
     pub otp_policy_period: Option<i32>,
     /// OTP Policy Type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otpPolicyType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otpPolicyType")]
     pub otp_policy_type: Option<String>,
     /// OTP Supported Applications
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otpSupportedApplications"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otpSupportedApplications")]
     pub otp_supported_applications: Option<Vec<String>>,
     /// Realm Password Policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordPolicy")]
     pub password_policy: Option<String>,
     /// Permanent Lockout
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "permanentLockout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "permanentLockout")]
     pub permanent_lockout: Option<bool>,
     /// Quick Login Check Milli Seconds
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "quickLoginCheckMilliSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "quickLoginCheckMilliSeconds")]
     pub quick_login_check_milli_seconds: Option<i64>,
     /// Realm name.
     pub realm: String,
     /// User registration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrationAllowed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationAllowed")]
     pub registration_allowed: Option<bool>,
     /// Email as username
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrationEmailAsUsername"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationEmailAsUsername")]
     pub registration_email_as_username: Option<bool>,
     /// Registration flow
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrationFlow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationFlow")]
     pub registration_flow: Option<String>,
     /// Remember me
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rememberMe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rememberMe")]
     pub remember_me: Option<bool>,
     /// Reset Credentials authentication flow
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resetCredentialsFlow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resetCredentialsFlow")]
     pub reset_credentials_flow: Option<String>,
     /// Forgot password
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resetPasswordAllowed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resetPasswordAllowed")]
     pub reset_password_allowed: Option<bool>,
     /// Roles
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<KeycloakRealmRealmRoles>,
     /// Scope Mappings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scopeMappings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeMappings")]
     pub scope_mappings: Option<Vec<KeycloakRealmRealmScopeMappings>>,
     /// Email
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "smtpServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "smtpServer")]
     pub smtp_server: Option<BTreeMap<String, String>>,
     /// Require SSL
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslRequired")]
     pub ssl_required: Option<String>,
     /// Supported Locales
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportedLocales"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedLocales")]
     pub supported_locales: Option<Vec<String>>,
     /// User federation mappers are extension points triggered by the user federation at various points.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userFederationMappers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userFederationMappers")]
     pub user_federation_mappers: Option<Vec<KeycloakRealmRealmUserFederationMappers>>,
     /// Point keycloak to an external user provider to validate credentials or pull in identity information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userFederationProviders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userFederationProviders")]
     pub user_federation_providers: Option<Vec<KeycloakRealmRealmUserFederationProviders>>,
     /// User Managed Access Allowed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userManagedAccessAllowed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userManagedAccessAllowed")]
     pub user_managed_access_allowed: Option<bool>,
     /// A set of Keycloak Users.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<KeycloakRealmRealmUsers>>,
     /// Verify email
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyEmail"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyEmail")]
     pub verify_email: Option<bool>,
     /// Wait Increment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitIncrementSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitIncrementSeconds")]
     pub wait_increment_seconds: Option<i32>,
 }
 
@@ -523,8 +262,7 @@ pub struct KeycloakRealmRealmAuthenticationFlows {
     pub alias: String,
     /// Authentication executions
     #[serde(rename = "authenticationExecutions")]
-    pub authentication_executions:
-        Vec<KeycloakRealmRealmAuthenticationFlowsAuthenticationExecutions>,
+    pub authentication_executions: Vec<KeycloakRealmRealmAuthenticationFlowsAuthenticationExecutions>,
     /// Built in
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "builtIn")]
     pub built_in: Option<bool>,
@@ -535,11 +273,7 @@ pub struct KeycloakRealmRealmAuthenticationFlows {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Provider ID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerId")]
     pub provider_id: Option<String>,
     /// Top level
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topLevel")]
@@ -552,18 +286,10 @@ pub struct KeycloakRealmRealmAuthenticationFlowsAuthenticationExecutions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authenticator: Option<String>,
     /// Authenticator Config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticatorConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticatorConfig")]
     pub authenticator_config: Option<String>,
     /// Authenticator flow
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticatorFlow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticatorFlow")]
     pub authenticator_flow: Option<bool>,
     /// Flow Alias
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flowAlias")]
@@ -575,11 +301,7 @@ pub struct KeycloakRealmRealmAuthenticationFlowsAuthenticationExecutions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requirement: Option<String>,
     /// User setup allowed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userSetupAllowed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userSetupAllowed")]
     pub user_setup_allowed: Option<bool>,
 }
 
@@ -602,11 +324,7 @@ pub struct KeycloakRealmRealmClientScopeMappings {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client: Option<String>,
     /// Client Scope
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientScope"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientScope")]
     pub client_scope: Option<String>,
     /// Roles
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -629,11 +347,7 @@ pub struct KeycloakRealmRealmClientScopes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
     /// Protocol Mappers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolMappers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolMappers")]
     pub protocol_mappers: Option<Vec<KeycloakRealmRealmClientScopesProtocolMappers>>,
 }
 
@@ -643,18 +357,10 @@ pub struct KeycloakRealmRealmClientScopesProtocolMappers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
     /// True if Consent Screen is required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consentRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consentRequired")]
     pub consent_required: Option<bool>,
     /// Text to use for displaying Consent Screen.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consentText"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consentText")]
     pub consent_text: Option<String>,
     /// Protocol Mapper ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -666,11 +372,7 @@ pub struct KeycloakRealmRealmClientScopesProtocolMappers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
     /// Protocol Mapper to use
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolMapper"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolMapper")]
     pub protocol_mapper: Option<String>,
 }
 
@@ -686,147 +388,79 @@ pub struct KeycloakRealmRealmClients {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// Authentication Flow Binding Overrides.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationFlowBindingOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationFlowBindingOverrides")]
     pub authentication_flow_binding_overrides: Option<BTreeMap<String, String>>,
     /// True if fine-grained authorization support is enabled for this client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizationServicesEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizationServicesEnabled")]
     pub authorization_services_enabled: Option<bool>,
     /// Authorization settings for this resource server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authorizationSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizationSettings")]
     pub authorization_settings: Option<KeycloakRealmRealmClientsAuthorizationSettings>,
     /// Application base URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseUrl")]
     pub base_url: Option<String>,
     /// True if a client supports only Bearer Tokens.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerOnly")]
     pub bearer_only: Option<bool>,
     /// What Client authentication type to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientAuthenticatorType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAuthenticatorType")]
     pub client_authenticator_type: Option<String>,
     /// Client ID.
     #[serde(rename = "clientId")]
     pub client_id: String,
     /// True if Consent Screen is required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consentRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consentRequired")]
     pub consent_required: Option<bool>,
     /// A list of default client scopes. Default client scopes are always applied when issuing OpenID Connect tokens or SAML assertions for this client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultClientScopes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultClientScopes")]
     pub default_client_scopes: Option<Vec<String>>,
     /// Default Client roles.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRoles")]
     pub default_roles: Option<Vec<String>>,
     /// Client description.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// True if Direct Grant is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "directAccessGrantsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directAccessGrantsEnabled")]
     pub direct_access_grants_enabled: Option<bool>,
     /// Client enabled flag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// True if this client supports Front Channel logout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "frontchannelLogout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "frontchannelLogout")]
     pub frontchannel_logout: Option<bool>,
     /// True if Full Scope is allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fullScopeAllowed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fullScopeAllowed")]
     pub full_scope_allowed: Option<bool>,
     /// Client ID. If not specified, automatically generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// True if Implicit flow is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "implicitFlowEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "implicitFlowEnabled")]
     pub implicit_flow_enabled: Option<bool>,
     /// Client name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Node registration timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeReRegistrationTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeReRegistrationTimeout")]
     pub node_re_registration_timeout: Option<i64>,
     /// Not Before setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
     pub not_before: Option<i64>,
     /// A list of optional client scopes. Optional client scopes are applied when issuing tokens for this client, but only when they are requested by the scope parameter in the OpenID Connect authorization request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "optionalClientScopes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "optionalClientScopes")]
     pub optional_client_scopes: Option<Vec<String>>,
     /// Protocol used for this Client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
     /// Protocol Mappers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolMappers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolMappers")]
     pub protocol_mappers: Option<Vec<KeycloakRealmRealmClientsProtocolMappers>>,
     /// True if this is a public Client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publicClient"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicClient")]
     pub public_client: Option<bool>,
     /// A list of valid Redirection URLs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redirectUris"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectUris")]
     pub redirect_uris: Option<Vec<String>>,
     /// Application root URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootUrl")]
@@ -835,53 +469,25 @@ pub struct KeycloakRealmRealmClients {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
     /// True if Service Accounts are enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountsEnabled")]
     pub service_accounts_enabled: Option<bool>,
     /// True if Standard flow is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "standardFlowEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "standardFlowEnabled")]
     pub standard_flow_enabled: Option<bool>,
     /// Surrogate Authentication Required option.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "surrogateAuthRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "surrogateAuthRequired")]
     pub surrogate_auth_required: Option<bool>,
     /// True to use a Template Config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useTemplateConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useTemplateConfig")]
     pub use_template_config: Option<bool>,
     /// True to use Template Mappers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useTemplateMappers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useTemplateMappers")]
     pub use_template_mappers: Option<bool>,
     /// True to use Template Scope.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useTemplateScope"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useTemplateScope")]
     pub use_template_scope: Option<bool>,
     /// A list of valid Web Origins.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webOrigins"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webOrigins")]
     pub web_origins: Option<Vec<String>>,
 }
 
@@ -889,21 +495,13 @@ pub struct KeycloakRealmRealmClients {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakRealmRealmClientsAuthorizationSettings {
     /// True if resources should be managed remotely by the resource server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowRemoteResourceManagement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowRemoteResourceManagement")]
     pub allow_remote_resource_management: Option<bool>,
     /// Client ID.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
     pub client_id: Option<String>,
     /// The decision strategy dictates how permissions are evaluated and how a final decision is obtained. 'Affirmative' means that at least one permission must evaluate to a positive decision in order to grant access to a resource and its scopes. 'Unanimous' means that all permissions must evaluate to a positive decision in order for the final decision to be also positive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "decisionStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "decisionStrategy")]
     pub decision_strategy: Option<String>,
     /// ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -915,11 +513,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettings {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<KeycloakRealmRealmClientsAuthorizationSettingsPolicies>>,
     /// The policy enforcement mode dictates how policies are enforced when evaluating authorization requests. 'Enforcing' means requests are denied by default even when there is no policy associated with a given resource. 'Permissive' means requests are allowed even when there is no policy associated with a given resource. 'Disabled' completely disables the evaluation of policies and allows access to any resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "policyEnforcementMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyEnforcementMode")]
     pub policy_enforcement_mode: Option<String>,
     /// Resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -936,11 +530,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
     /// The decision strategy dictates how the policies associated with a given permission are evaluated and how a final decision is obtained. 'Affirmative' means that at least one policy must evaluate to a positive decision in order for the final decision to be also positive. 'Unanimous' means that all policies must evaluate to a positive decision in order for the final decision to be also positive. 'Consensus' means that the number of positive decisions must be greater than the number of negative decisions. If the number of positive and negative is the same, the final decision will be negative.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "decisionStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "decisionStrategy")]
     pub decision_strategy: Option<String>,
     /// A description for this policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -964,22 +554,13 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<String>>,
     /// Resources Data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourcesData"
-    )]
-    pub resources_data:
-        Option<Vec<KeycloakRealmRealmClientsAuthorizationSettingsPoliciesResourcesData>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcesData")]
+    pub resources_data: Option<Vec<KeycloakRealmRealmClientsAuthorizationSettingsPoliciesResourcesData>>,
     /// Scopes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
     /// Scopes Data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scopesData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopesData")]
     pub scopes_data: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// Type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -996,11 +577,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsPoliciesResourcesData {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// A unique name for this resource. The name can be used to uniquely identify a resource, useful when querying for a specific resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
     /// An URI pointing to an icon.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1009,11 +586,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsPoliciesResourcesData {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// True if the access to this resource can be managed by the resource owner.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownerManagedAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerManagedAccess")]
     pub owner_managed_access: Option<bool>,
     /// The scopes associated with this resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1036,11 +609,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// A unique name for this resource. The name can be used to uniquely identify a resource, useful when querying for a specific resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
     /// An URI pointing to an icon.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1049,11 +618,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// True if the access to this resource can be managed by the resource owner.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownerManagedAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerManagedAccess")]
     pub owner_managed_access: Option<bool>,
     /// The scopes associated with this resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1070,11 +635,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakRealmRealmClientsAuthorizationSettingsScopes {
     /// A unique name for this scope. The name can be used to uniquely identify a scope, useful when querying for a specific scope.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
     /// An URI pointing to an icon.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iconUri")]
@@ -1100,11 +661,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsScopesPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
     /// The decision strategy dictates how the policies associated with a given permission are evaluated and how a final decision is obtained. 'Affirmative' means that at least one policy must evaluate to a positive decision in order for the final decision to be also positive. 'Unanimous' means that all policies must evaluate to a positive decision in order for the final decision to be also positive. 'Consensus' means that the number of positive decisions must be greater than the number of negative decisions. If the number of positive and negative is the same, the final decision will be negative.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "decisionStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "decisionStrategy")]
     pub decision_strategy: Option<String>,
     /// A description for this policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1128,22 +685,13 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsScopesPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<String>>,
     /// Resources Data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourcesData"
-    )]
-    pub resources_data:
-        Option<Vec<KeycloakRealmRealmClientsAuthorizationSettingsScopesPoliciesResourcesData>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcesData")]
+    pub resources_data: Option<Vec<KeycloakRealmRealmClientsAuthorizationSettingsScopesPoliciesResourcesData>>,
     /// Scopes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
     /// Scopes Data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scopesData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopesData")]
     pub scopes_data: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// Type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1160,11 +708,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsScopesPoliciesResources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// A unique name for this resource. The name can be used to uniquely identify a resource, useful when querying for a specific resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
     /// An URI pointing to an icon.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1173,11 +717,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsScopesPoliciesResources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// True if the access to this resource can be managed by the resource owner.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownerManagedAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerManagedAccess")]
     pub owner_managed_access: Option<bool>,
     /// The scopes associated with this resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1200,11 +740,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsScopesResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// A unique name for this resource. The name can be used to uniquely identify a resource, useful when querying for a specific resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
     /// An URI pointing to an icon.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1213,11 +749,7 @@ pub struct KeycloakRealmRealmClientsAuthorizationSettingsScopesResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// True if the access to this resource can be managed by the resource owner.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownerManagedAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerManagedAccess")]
     pub owner_managed_access: Option<bool>,
     /// The scopes associated with this resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1236,18 +768,10 @@ pub struct KeycloakRealmRealmClientsProtocolMappers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
     /// True if Consent Screen is required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consentRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consentRequired")]
     pub consent_required: Option<bool>,
     /// Text to use for displaying Consent Screen.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consentText"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consentText")]
     pub consent_text: Option<String>,
     /// Protocol Mapper ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1259,11 +783,7 @@ pub struct KeycloakRealmRealmClientsProtocolMappers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
     /// Protocol Mapper to use
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolMapper"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolMapper")]
     pub protocol_mapper: Option<String>,
 }
 
@@ -1274,11 +794,7 @@ pub struct KeycloakRealmRealmDefaultRole {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// Client Role
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRole")]
     pub client_role: Option<bool>,
     /// Composite
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1287,11 +803,7 @@ pub struct KeycloakRealmRealmDefaultRole {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub composites: Option<KeycloakRealmRealmDefaultRoleComposites>,
     /// Container Id
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerId")]
     pub container_id: Option<String>,
     /// Description
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1322,18 +834,10 @@ pub struct KeycloakRealmRealmIdentityProviderMappers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Identity Provider Alias.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityProviderAlias"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityProviderAlias")]
     pub identity_provider_alias: Option<String>,
     /// Identity Provider Mapper.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityProviderMapper"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityProviderMapper")]
     pub identity_provider_mapper: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1342,11 +846,7 @@ pub struct KeycloakRealmRealmIdentityProviderMappers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakRealmRealmIdentityProviders {
     /// Adds Read Token role when creating this Identity Provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addReadTokenRoleOnCreate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addReadTokenRoleOnCreate")]
     pub add_read_token_role_on_create: Option<bool>,
     /// Identity Provider Alias.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1355,59 +855,31 @@ pub struct KeycloakRealmRealmIdentityProviders {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
     /// Identity Provider Display Name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
     /// Identity Provider enabled flag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Identity Provider First Broker Login Flow Alias.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firstBrokerLoginFlowAlias"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstBrokerLoginFlowAlias")]
     pub first_broker_login_flow_alias: Option<String>,
     /// Identity Provider Internal ID.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internalId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalId")]
     pub internal_id: Option<String>,
     /// Identity Provider Link Only setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "linkOnly")]
     pub link_only: Option<bool>,
     /// Identity Provider Post Broker Login Flow Alias.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postBrokerLoginFlowAlias"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postBrokerLoginFlowAlias")]
     pub post_broker_login_flow_alias: Option<String>,
     /// Identity Provider ID.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerId")]
     pub provider_id: Option<String>,
     /// Identity Provider Store to Token.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storeToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storeToken")]
     pub store_token: Option<bool>,
     /// Identity Provider Trust Email.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustEmail"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustEmail")]
     pub trust_email: Option<bool>,
 }
 
@@ -1429,11 +901,7 @@ pub struct KeycloakRealmRealmRolesClient {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// Client Role
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRole")]
     pub client_role: Option<bool>,
     /// Composite
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1442,11 +910,7 @@ pub struct KeycloakRealmRealmRolesClient {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub composites: Option<KeycloakRealmRealmRolesClientComposites>,
     /// Container Id
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerId")]
     pub container_id: Option<String>,
     /// Description
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1476,11 +940,7 @@ pub struct KeycloakRealmRealmRolesRealm {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// Client Role
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRole")]
     pub client_role: Option<bool>,
     /// Composite
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1489,11 +949,7 @@ pub struct KeycloakRealmRealmRolesRealm {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub composites: Option<KeycloakRealmRealmRolesRealmComposites>,
     /// Container Id
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerId")]
     pub container_id: Option<String>,
     /// Description
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1523,11 +979,7 @@ pub struct KeycloakRealmRealmScopeMappings {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client: Option<String>,
     /// Client Scope
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientScope"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientScope")]
     pub client_scope: Option<String>,
     /// Roles
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1543,18 +995,10 @@ pub struct KeycloakRealmRealmUserFederationMappers {
     /// User federation mapper config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "federationMapperType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "federationMapperType")]
     pub federation_mapper_type: Option<String>,
     /// The displayName for the user federation provider this mapper applies to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "federationProviderDisplayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "federationProviderDisplayName")]
     pub federation_provider_display_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -1565,27 +1009,15 @@ pub struct KeycloakRealmRealmUserFederationMappers {
 /// https://www.keycloak.org/docs-api/10.0/rest-api/index.html#_userfederationproviderrepresentation
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakRealmRealmUserFederationProviders {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "changedSyncPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "changedSyncPeriod")]
     pub changed_sync_period: Option<i32>,
     /// User federation provider config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
     /// The display name of this provider instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fullSyncPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fullSyncPeriod")]
     pub full_sync_period: Option<i32>,
     /// The ID of this provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1594,11 +1026,7 @@ pub struct KeycloakRealmRealmUserFederationProviders {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
     /// The name of the user provider, such as "ldap", "kerberos" or a custom SPI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerName")]
     pub provider_name: Option<String>,
 }
 
@@ -1608,11 +1036,7 @@ pub struct KeycloakRealmRealmUsers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// A set of Client Roles.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
     pub client_roles: Option<BTreeMap<String, String>>,
     /// A set of Credentials.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1621,21 +1045,13 @@ pub struct KeycloakRealmRealmUsers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     /// True if email has already been verified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emailVerified"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailVerified")]
     pub email_verified: Option<bool>,
     /// User enabled flag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// A set of Federated Identities.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "federatedIdentities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "federatedIdentities")]
     pub federated_identities: Option<Vec<KeycloakRealmRealmUsersFederatedIdentities>>,
     /// First Name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstName")]
@@ -1650,18 +1066,10 @@ pub struct KeycloakRealmRealmUsers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastName")]
     pub last_name: Option<String>,
     /// A set of Realm Roles.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "realmRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
     pub realm_roles: Option<Vec<String>>,
     /// A set of Required Actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredActions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredActions")]
     pub required_actions: Option<Vec<String>>,
     /// User Name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1684,11 +1092,7 @@ pub struct KeycloakRealmRealmUsersCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakRealmRealmUsersFederatedIdentities {
     /// Federated Identity Provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityProvider")]
     pub identity_provider: Option<String>,
     /// Federated Identity User ID.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userId")]
@@ -1721,10 +1125,7 @@ pub struct KeycloakRealmStatus {
     /// True if all resources are in a ready state and all work is done.
     pub ready: bool,
     /// A map of all the secondary resources types and names created for this CR. e.g "Deployment": [ "DeploymentName1", "DeploymentName2" ]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryResources")]
     pub secondary_resources: Option<BTreeMap<String, String>>,
 }
+

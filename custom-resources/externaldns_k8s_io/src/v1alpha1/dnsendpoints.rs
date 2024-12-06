@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DNSEndpointSpec defines the desired state of DNSEndpoint
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "externaldns.k8s.io",
-    version = "v1alpha1",
-    kind = "DNSEndpoint",
-    plural = "dnsendpoints"
-)]
+#[kube(group = "externaldns.k8s.io", version = "v1alpha1", kind = "DNSEndpoint", plural = "dnsendpoints")]
 #[kube(namespaced)]
 #[kube(status = "DNSEndpointStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DNSEndpointSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<DNSEndpointEndpoints>>,
@@ -38,28 +33,16 @@ pub struct DNSEndpointEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// ProviderSpecific stores provider specific config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerSpecific"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerSpecific")]
     pub provider_specific: Option<Vec<DNSEndpointEndpointsProviderSpecific>>,
     /// TTL for the record
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordTTL")]
     pub record_ttl: Option<i64>,
     /// RecordType type of record, e.g. CNAME, A, AAAA, SRV, TXT etc
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordType")]
     pub record_type: Option<String>,
     /// Identifier to distinguish multiple records with the same name and type (e.g. Route53 records with routing policies other than 'simple')
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setIdentifier")]
     pub set_identifier: Option<String>,
     /// The targets the DNS record points to
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -79,10 +62,7 @@ pub struct DNSEndpointEndpointsProviderSpecific {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSEndpointStatus {
     /// The generation observed by the external-dns controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// ComponentClassDefinitionSpec defines the desired state of ComponentClassDefinition
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.kubeblocks.io",
-    version = "v1alpha1",
-    kind = "ComponentClassDefinition",
-    plural = "componentclassdefinitions"
-)]
+#[kube(group = "apps.kubeblocks.io", version = "v1alpha1", kind = "ComponentClassDefinition", plural = "componentclassdefinitions")]
 #[kube(status = "ComponentClassDefinitionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ComponentClassDefinitionSpec {
     /// group defines a list of class series that conform to the same constraint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33,8 +28,8 @@ pub struct ComponentClassDefinitionGroups {
     /// series is a series of class definitions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub series: Option<Vec<ComponentClassDefinitionGroupsSeries>>,
-    /// template is a class definition template that uses the Go template syntax and allows for variable declaration. When defining a class in Series, specifying the variable's value is sufficient, as the complete class definition will be generated through rendering the template.
-    ///  For example:
+    /// template is a class definition template that uses the Go template syntax and allows for variable declaration. When defining a class in Series, specifying the variable's value is sufficient, as the complete class definition will be generated through rendering the template. 
+    ///  For example: 
     ///  ```yaml template: | cpu: "{{ or .cpu 1 }}" memory: "{{ or .memory 4 }}Gi" ```
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
@@ -49,11 +44,7 @@ pub struct ComponentClassDefinitionGroupsSeries {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub classes: Option<Vec<ComponentClassDefinitionGroupsSeriesClasses>>,
     /// namingTemplate is a template that uses the Go template syntax and allows for referencing variables defined in ComponentClassGroup.Template. This enables dynamic generation of class names. For example: name: "general-{{ .cpu }}c{{ .memory }}g"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namingTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingTemplate")]
     pub naming_template: Option<String>,
 }
 
@@ -80,11 +71,7 @@ pub struct ComponentClassDefinitionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub classes: Option<Vec<ComponentClassDefinitionStatusClasses>>,
     /// observedGeneration is the most recent generation observed for this ComponentClassDefinition. It corresponds to the ComponentClassDefinition's generation, which is updated on mutation by the API Server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
 
@@ -103,3 +90,4 @@ pub struct ComponentClassDefinitionStatusClasses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

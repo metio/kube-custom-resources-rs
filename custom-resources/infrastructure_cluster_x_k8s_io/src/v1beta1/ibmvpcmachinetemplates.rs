@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// IBMVPCMachineTemplateSpec defines the desired state of IBMVPCMachineTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "IBMVPCMachineTemplate",
-    plural = "ibmvpcmachinetemplates"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta1", kind = "IBMVPCMachineTemplate", plural = "ibmvpcmachinetemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMVPCMachineTemplateSpec {
     /// IBMVPCMachineTemplateResource describes the data needed to create am IBMVPCMachine from a template.
     pub template: IBMVPCMachineTemplateTemplate,
@@ -37,11 +32,7 @@ pub struct IBMVPCMachineTemplateTemplate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMVPCMachineTemplateTemplateSpec {
     /// BootVolume contains machines's boot volume configurations like size, iops etc..
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bootVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootVolume")]
     pub boot_volume: Option<IBMVPCMachineTemplateTemplateSpecBootVolume>,
     /// Image is the id of OS image which would be install on the instance.
     /// Example: r134-ed3f775f-ad7e-4e37-ae62-7199b4988b00
@@ -54,29 +45,17 @@ pub struct IBMVPCMachineTemplateTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// PrimaryNetworkInterface is required to specify subnet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primaryNetworkInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryNetworkInterface")]
     pub primary_network_interface: Option<IBMVPCMachineTemplateTemplateSpecPrimaryNetworkInterface>,
     /// Profile indicates the flavor of instance. Example: bx2-8x32	means 8 vCPUs	32 GB RAM	16 Gbps
     /// TODO: add a reference link of profile
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profile: Option<String>,
     /// ProviderID is the unique identifier as specified by the cloud provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
     /// SSHKeysNames is the SSH pub key names that will be used to access VM.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sshKeyNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKeyNames")]
     pub ssh_key_names: Option<Vec<String>>,
     /// SSHKeys is the SSH pub keys that will be used to access VM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKeys")]
@@ -91,11 +70,7 @@ pub struct IBMVPCMachineTemplateTemplateSpec {
 pub struct IBMVPCMachineTemplateTemplateSpecBootVolume {
     /// DeleteVolumeOnInstanceDelete If set to true, when deleting the instance the volume will also be deleted.
     /// Default is set as true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deleteVolumeOnInstanceDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteVolumeOnInstanceDelete")]
     pub delete_volume_on_instance_delete: Option<bool>,
     /// EncryptionKey is the root key to use to wrap the data encryption key for the volume and this points to the CRN
     /// and possible values are as follows.
@@ -103,11 +78,7 @@ pub struct IBMVPCMachineTemplateTemplateSpecBootVolume {
     /// Key](https://cloud.ibm.com/docs/key-protect?topic=key-protect-getting-started-tutorial) or [Hyper Protect Crypto
     /// Service Root Key](https://cloud.ibm.com/docs/hs-crypto?topic=hs-crypto-get-started) for this resource.
     /// If unspecified, the `encryption` type for the volume will be `provider_managed`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionKeyCRN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKeyCRN")]
     pub encryption_key_crn: Option<String>,
     /// Iops is the maximum I/O operations per second (IOPS) to use for the volume. Applicable only to volumes using a profile
     /// family of `custom`.
@@ -151,4 +122,6 @@ pub struct IBMVPCMachineTemplateTemplateSpecPrimaryNetworkInterface {
 
 /// IBMVPCMachineTemplateStatus defines the observed state of IBMVPCMachineTemplate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IBMVPCMachineTemplateStatus {}
+pub struct IBMVPCMachineTemplateStatus {
+}
+

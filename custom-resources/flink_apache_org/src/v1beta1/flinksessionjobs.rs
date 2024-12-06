@@ -5,97 +5,52 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "flink.apache.org",
-    version = "v1beta1",
-    kind = "FlinkSessionJob",
-    plural = "flinksessionjobs"
-)]
+#[kube(group = "flink.apache.org", version = "v1beta1", kind = "FlinkSessionJob", plural = "flinksessionjobs")]
 #[kube(namespaced)]
 #[kube(status = "FlinkSessionJobStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FlinkSessionJobSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentName")]
     pub deployment_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flinkConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flinkConfiguration")]
     pub flink_configuration: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub job: Option<FlinkSessionJobJob>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartNonce"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartNonce")]
     pub restart_nonce: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkSessionJobJob {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowNonRestoredState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowNonRestoredState")]
     pub allow_non_restored_state: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checkpointTriggerNonce"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkpointTriggerNonce")]
     pub checkpoint_trigger_nonce: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "entryClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryClass")]
     pub entry_class: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialSavepointPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialSavepointPath")]
     pub initial_savepoint_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jarURI")]
     pub jar_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallelism: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "savepointRedeployNonce"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "savepointRedeployNonce")]
     pub savepoint_redeploy_nonce: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "savepointTriggerNonce"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "savepointTriggerNonce")]
     pub savepoint_trigger_nonce: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkSessionJobJobState>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upgradeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeMode")]
     pub upgrade_mode: Option<FlinkSessionJobJobUpgradeMode>,
 }
 
@@ -123,95 +78,47 @@ pub struct FlinkSessionJobStatus {
     pub error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobStatus")]
     pub job_status: Option<FlinkSessionJobStatusJobStatus>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleState")]
     pub lifecycle_state: Option<FlinkSessionJobStatusLifecycleState>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconciliationStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationStatus")]
     pub reconciliation_status: Option<FlinkSessionJobStatusReconciliationStatus>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkSessionJobStatusJobStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checkpointInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkpointInfo")]
     pub checkpoint_info: Option<FlinkSessionJobStatusJobStatusCheckpointInfo>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobId")]
     pub job_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobName")]
     pub job_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "savepointInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "savepointInfo")]
     pub savepoint_info: Option<FlinkSessionJobStatusJobStatusSavepointInfo>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkSessionJobStatusJobStatusState>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateTime")]
     pub update_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upgradeSavepointPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeSavepointPath")]
     pub upgrade_savepoint_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkSessionJobStatusJobStatusCheckpointInfo {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "formatType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "formatType")]
     pub format_type: Option<FlinkSessionJobStatusJobStatusCheckpointInfoFormatType>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastCheckpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastCheckpoint")]
     pub last_checkpoint: Option<FlinkSessionJobStatusJobStatusCheckpointInfoLastCheckpoint>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPeriodicCheckpointTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPeriodicCheckpointTimestamp")]
     pub last_periodic_checkpoint_timestamp: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerId")]
     pub trigger_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerTimestamp")]
     pub trigger_timestamp: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerType")]
     pub trigger_type: Option<FlinkSessionJobStatusJobStatusCheckpointInfoTriggerType>,
 }
 
@@ -227,25 +134,13 @@ pub enum FlinkSessionJobStatusJobStatusCheckpointInfoFormatType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkSessionJobStatusJobStatusCheckpointInfoLastCheckpoint {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "formatType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "formatType")]
     pub format_type: Option<FlinkSessionJobStatusJobStatusCheckpointInfoLastCheckpointFormatType>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeStamp")]
     pub time_stamp: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerNonce"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerNonce")]
     pub trigger_nonce: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerType")]
     pub trigger_type: Option<FlinkSessionJobStatusJobStatusCheckpointInfoLastCheckpointTriggerType>,
 }
 
@@ -285,43 +180,19 @@ pub enum FlinkSessionJobStatusJobStatusCheckpointInfoTriggerType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkSessionJobStatusJobStatusSavepointInfo {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "formatType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "formatType")]
     pub format_type: Option<FlinkSessionJobStatusJobStatusSavepointInfoFormatType>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPeriodicSavepointTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPeriodicSavepointTimestamp")]
     pub last_periodic_savepoint_timestamp: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSavepoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSavepoint")]
     pub last_savepoint: Option<FlinkSessionJobStatusJobStatusSavepointInfoLastSavepoint>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "savepointHistory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "savepointHistory")]
     pub savepoint_history: Option<Vec<FlinkSessionJobStatusJobStatusSavepointInfoSavepointHistory>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerId")]
     pub trigger_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerTimestamp")]
     pub trigger_timestamp: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerType")]
     pub trigger_type: Option<FlinkSessionJobStatusJobStatusSavepointInfoTriggerType>,
 }
 
@@ -337,27 +208,15 @@ pub enum FlinkSessionJobStatusJobStatusSavepointInfoFormatType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkSessionJobStatusJobStatusSavepointInfoLastSavepoint {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "formatType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "formatType")]
     pub format_type: Option<FlinkSessionJobStatusJobStatusSavepointInfoLastSavepointFormatType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeStamp")]
     pub time_stamp: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerNonce"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerNonce")]
     pub trigger_nonce: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerType")]
     pub trigger_type: Option<FlinkSessionJobStatusJobStatusSavepointInfoLastSavepointTriggerType>,
 }
 
@@ -385,29 +244,16 @@ pub enum FlinkSessionJobStatusJobStatusSavepointInfoLastSavepointTriggerType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkSessionJobStatusJobStatusSavepointInfoSavepointHistory {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "formatType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "formatType")]
     pub format_type: Option<FlinkSessionJobStatusJobStatusSavepointInfoSavepointHistoryFormatType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeStamp")]
     pub time_stamp: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerNonce"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerNonce")]
     pub trigger_nonce: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "triggerType"
-    )]
-    pub trigger_type:
-        Option<FlinkSessionJobStatusJobStatusSavepointInfoSavepointHistoryTriggerType>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerType")]
+    pub trigger_type: Option<FlinkSessionJobStatusJobStatusSavepointInfoSavepointHistoryTriggerType>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -492,23 +338,11 @@ pub enum FlinkSessionJobStatusLifecycleState {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkSessionJobStatusReconciliationStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastReconciledSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastReconciledSpec")]
     pub last_reconciled_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastStableSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStableSpec")]
     pub last_stable_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconciliationTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationTimestamp")]
     pub reconciliation_timestamp: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkSessionJobStatusReconciliationStatusState>,
@@ -525,3 +359,4 @@ pub enum FlinkSessionJobStatusReconciliationStatusState {
     #[serde(rename = "UPGRADING")]
     Upgrading,
 }
+

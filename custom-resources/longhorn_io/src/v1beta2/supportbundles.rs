@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SupportBundleSpec defines the desired state of the Longhorn SupportBundle
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "SupportBundle",
-    plural = "supportbundles"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "SupportBundle", plural = "supportbundles")]
 #[kube(namespaced)]
 #[kube(status = "SupportBundleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SupportBundleSpec {
     /// A brief description of the issue
     pub description: String,
@@ -57,3 +52,4 @@ pub struct SupportBundleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

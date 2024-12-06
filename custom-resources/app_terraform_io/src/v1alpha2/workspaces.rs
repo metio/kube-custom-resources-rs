@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// WorkspaceSpec defines the desired state of Workspace.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "app.terraform.io",
-    version = "v1alpha2",
-    kind = "Workspace",
-    plural = "workspaces"
-)]
+#[kube(group = "app.terraform.io", version = "v1alpha2", kind = "Workspace", plural = "workspaces")]
 #[kube(namespaced)]
 #[kube(status = "WorkspaceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct WorkspaceSpec {
     /// HCP Terraform Agents allow HCP Terraform to communicate with isolated, private, or on-premises infrastructure.
     /// More information:
@@ -32,22 +27,14 @@ pub struct WorkspaceSpec {
     /// Default: `true`.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#destruction-and-deletion
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowDestroyPlan"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowDestroyPlan")]
     pub allow_destroy_plan: Option<bool>,
     /// Define either change will be applied automatically(auto) or require an operator to confirm(manual).
     /// Must be one of the following values: `auto`, `manual`.
     /// Default: `manual`.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#auto-apply-and-manual-apply
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applyMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyMethod")]
     pub apply_method: Option<String>,
     /// The Deletion Policy specifies the behavior of the custom resource and its associated workspace when the custom resource is deleted.
     /// - `retain`: When you delete the custom resource, the operator does not delete the workspace.
@@ -55,11 +42,7 @@ pub struct WorkspaceSpec {
     /// - `destroy`: Executes a destroy operation to remove all resources managed by the associated workspace. Once the destruction of these resources is successful, the operator deletes the workspace, and then deletes the custom resource.
     /// - `force`: Forcefully and immediately deletes the workspace and the custom resource.
     /// Default: `retain`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
     pub deletion_policy: Option<WorkspaceDeletionPolicy>,
     /// Workspace description.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -69,22 +52,14 @@ pub struct WorkspaceSpec {
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/variables
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/variables#environment-variables
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "environmentVariables"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "environmentVariables")]
     pub environment_variables: Option<Vec<WorkspaceEnvironmentVariables>>,
     /// Define where the Terraform code will be executed.
     /// Must be one of the following values: `agent`, `local`, `remote`.
     /// Default: `remote`.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#execution-mode
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionMode")]
     pub execution_mode: Option<String>,
     /// Workspace name.
     pub name: String,
@@ -107,11 +82,7 @@ pub struct WorkspaceSpec {
     /// By default, new workspaces in HCP Terraform do not allow other workspaces to access their state.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/state#accessing-state-from-other-workspaces
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteStateSharing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteStateSharing")]
     pub remote_state_sharing: Option<WorkspaceRemoteStateSharing>,
     /// Run tasks allow HCP Terraform to interact with external systems at specific points in the HCP Terraform run lifecycle.
     /// More information:
@@ -122,11 +93,7 @@ pub struct WorkspaceSpec {
     /// These connections allow runs to queue automatically in this workspace on successful apply of runs in any of the source workspaces.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/run-triggers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runTriggers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runTriggers")]
     pub run_triggers: Option<Vec<WorkspaceRunTriggers>>,
     /// SSH key used to clone Terraform modules.
     /// More information:
@@ -143,33 +110,21 @@ pub struct WorkspaceSpec {
     /// with full admin permissions. These teams' access can't be removed from a workspace.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/access
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "teamAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "teamAccess")]
     pub team_access: Option<Vec<WorkspaceTeamAccess>>,
     /// Terraform variables for all plans and applies in this workspace.
     /// Variables defined within a workspace always overwrite variables from variable sets that have the same type and the same key.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/variables
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/variables#terraform-variables
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terraformVariables"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terraformVariables")]
     pub terraform_variables: Option<Vec<WorkspaceTerraformVariables>>,
     /// The version of Terraform to use for this workspace.
     /// If not specified, the latest available version will be used.
     /// Must match pattern: `^\\d{1}\\.\\d{1,2}\\.\\d{1,2}$`
     /// More information:
     ///   - https://www.terraform.io/cloud-docs/workspaces/settings#terraform-version
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terraformVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terraformVersion")]
     pub terraform_version: Option<String>,
     /// API Token to be used for API calls.
     pub token: WorkspaceToken,
@@ -178,20 +133,12 @@ pub struct WorkspaceSpec {
     /// More information:
     ///   - https://www.terraform.io/cloud-docs/run/ui
     ///   - https://www.terraform.io/cloud-docs/vcs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "versionControl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionControl")]
     pub version_control: Option<WorkspaceVersionControl>,
     /// The directory where Terraform will execute, specified as a relative path from the root of the configuration directory.
     /// More information:
     ///   - https://www.terraform.io/cloud-docs/workspaces/settings#terraform-working-directory
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDirectory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDirectory")]
     pub working_directory: Option<String>,
 }
 
@@ -253,18 +200,10 @@ pub struct WorkspaceEnvironmentVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkspaceEnvironmentVariablesValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<WorkspaceEnvironmentVariablesValueFromConfigMapKeyRef>,
     /// Selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<WorkspaceEnvironmentVariablesValueFromSecretKeyRef>,
 }
 
@@ -313,18 +252,10 @@ pub struct WorkspaceEnvironmentVariablesValueFromSecretKeyRef {
 pub struct WorkspaceNotifications {
     /// The list of email addresses that will receive notification emails.
     /// It is only available for Terraform Enterprise users. It is not available in HCP Terraform.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emailAddresses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailAddresses")]
     pub email_addresses: Option<Vec<String>>,
     /// The list of users belonging to the organization that will receive notification emails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emailUsers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailUsers")]
     pub email_users: Option<Vec<String>>,
     /// Whether the notification configuration should be enabled or not.
     /// Default: `true`.
@@ -390,11 +321,7 @@ pub struct WorkspaceProject {
 pub struct WorkspaceRemoteStateSharing {
     /// Allow access to the state for all workspaces within the same organization.
     /// Default: `false`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allWorkspaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allWorkspaces")]
     pub all_workspaces: Option<bool>,
     /// Allow access to the state for specific workspaces within the same organization.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -427,11 +354,7 @@ pub struct WorkspaceRunTasks {
     /// Run Task Enforcement Level. Can be one of `advisory` or `mandatory`. Default: `advisory`.
     /// Must be one of the following values: `advisory`, `mandatory`
     /// Default: `advisory`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enforcementLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcementLevel")]
     pub enforcement_level: Option<String>,
     /// Run Task ID.
     /// Must match pattern: `^task-[a-zA-Z0-9]+$`
@@ -524,11 +447,7 @@ pub struct WorkspaceTeamAccessCustom {
     /// State access.
     /// Must be one of the following values: `none`, `read`, `read-outputs`, `write`.
     /// Default: `none`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stateVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateVersions")]
     pub state_versions: Option<String>,
     /// Variable access.
     /// Must be one of the following values: `none`, `read`, `write`.
@@ -537,11 +456,7 @@ pub struct WorkspaceTeamAccessCustom {
     pub variables: Option<String>,
     /// Lock/unlock workspace.
     /// Default: `false`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workspaceLocking"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceLocking")]
     pub workspace_locking: Option<bool>,
 }
 
@@ -590,18 +505,10 @@ pub struct WorkspaceTerraformVariables {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkspaceTerraformVariablesValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<WorkspaceTerraformVariablesValueFromConfigMapKeyRef>,
     /// Selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<WorkspaceTerraformVariablesValueFromSecretKeyRef>,
 }
 
@@ -682,11 +589,7 @@ pub struct WorkspaceVersionControl {
     pub branch: Option<String>,
     /// The VCS Connection (OAuth Connection + Token) to use.
     /// Must match pattern: `^ot-[a-zA-Z0-9]+$`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oAuthTokenID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthTokenID")]
     pub o_auth_token_id: Option<String>,
     /// A reference to your VCS repository in the format `<organization>/<repository>` where `<organization>` and `<repository>` refer to the organization and repository in your VCS provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -696,11 +599,7 @@ pub struct WorkspaceVersionControl {
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/run/ui#speculative-plans-on-pull-requests
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "speculativePlans"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "speculativePlans")]
     pub speculative_plans: Option<bool>,
 }
 
@@ -708,25 +607,13 @@ pub struct WorkspaceVersionControl {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkspaceStatus {
     /// Default organization project ID.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultProjectID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultProjectID")]
     pub default_project_id: Option<String>,
     /// Workspace Destroy Run ID.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destroyRunID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destroyRunID")]
     pub destroy_run_id: Option<String>,
     /// Real world state generation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Run status of plan-only/speculative plan that was triggered manually.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -738,11 +625,7 @@ pub struct WorkspaceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKeyID")]
     pub ssh_key_id: Option<String>,
     /// Workspace Terraform version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terraformVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terraformVersion")]
     pub terraform_version: Option<String>,
     /// Workspace last update timestamp.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateAt")]
@@ -765,11 +648,7 @@ pub struct WorkspaceStatusPlan {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// The version of Terraform to use for this run.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terraformVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terraformVersion")]
     pub terraform_version: Option<String>,
 }
 
@@ -777,21 +656,13 @@ pub struct WorkspaceStatusPlan {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkspaceStatusRunStatus {
     /// The configuration version of this run.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configurationVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationVersion")]
     pub configuration_version: Option<String>,
     /// Current(both active and finished) HCP Terraform run ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Run ID of the latest run that could update the outputs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputRunID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputRunID")]
     pub output_run_id: Option<String>,
     /// Current(both active and finished) HCP Terraform run status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -813,3 +684,4 @@ pub struct WorkspaceStatusVariables {
     #[serde(rename = "versionID")]
     pub version_id: String,
 }
+

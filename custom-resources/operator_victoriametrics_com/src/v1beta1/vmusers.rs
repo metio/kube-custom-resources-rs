@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VMUserSpec defines the desired state of VMUser
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.victoriametrics.com",
-    version = "v1beta1",
-    kind = "VMUser",
-    plural = "vmusers"
-)]
+#[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMUser", plural = "vmusers")]
 #[kube(namespaced)]
 #[kube(status = "VMUserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VMUserSpec {
     /// BearerToken Authorization header value for accessing protected endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
     /// DefaultURLs backend url for non-matching paths filter
     /// usually used for default backend with error message
@@ -47,11 +38,7 @@ pub struct VMUserSpec {
     pub drop_src_path_prefix_parts: Option<i64>,
     /// GeneratePassword instructs operator to generate password for user
     /// if spec.password if empty.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generatePassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatePassword")]
     pub generate_password: Option<bool>,
     /// Headers represent additional http headers, that vmauth uses
     /// in form of ["header_key: header_value"]
@@ -83,11 +70,7 @@ pub struct VMUserSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// PasswordRef allows fetching password from user-create secret by its name and key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordRef")]
     pub password_ref: Option<VMUserPasswordRef>,
     /// ResponseHeaders represent additional http headers, that vmauth adds for request response
     /// in form of ["header_key: header_value"]
@@ -208,11 +191,7 @@ pub struct VMUserTargetRefs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "static")]
     pub r#static: Option<VMUserTargetRefsStatic>,
     /// TargetRefBasicAuth allow an target endpoint to authenticate over basic authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetRefBasicAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefBasicAuth")]
     pub target_ref_basic_auth: Option<VMUserTargetRefsTargetRefBasicAuth>,
     /// TargetPathSuffix allows to add some suffix to the target path
     /// It allows to hide tenant configuration from user with crd as ref.
@@ -347,11 +326,7 @@ pub struct VMUserTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -360,11 +335,7 @@ pub struct VMUserTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMUserTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -497,13 +468,10 @@ pub struct VMUserTokenRef {
 pub struct VMUserStatus {
     /// LastSyncError contains error message for unsuccessful config generation
     /// for given user
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
     pub last_sync_error: Option<String>,
     /// Status defines update status of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

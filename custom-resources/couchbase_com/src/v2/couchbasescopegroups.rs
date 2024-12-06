@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec defines the desired state of the resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "couchbase.com",
-    version = "v2",
-    kind = "CouchbaseScopeGroup",
-    plural = "couchbasescopegroups"
-)]
+#[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseScopeGroup", plural = "couchbasescopegroups")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CouchbaseScopeGroupSpec {
     /// Collections defines how to collate collections included in this scope or scope group.
     /// Any of the provided methods may be used to collate a set of collections to
@@ -57,11 +52,7 @@ pub struct CouchbaseScopeGroupCollections {
     /// will have no document time-to-live (TTL).  When set to `false`, the operator
     /// will not manage the default collection, which will be deleted and cannot be
     /// used or recreated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preserveDefaultCollection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveDefaultCollection")]
     pub preserve_default_collection: Option<bool>,
     /// Resources is an explicit list of named resources that will be considered
     /// for inclusion in this scope or scopes.  If a resource reference doesn't
@@ -102,20 +93,12 @@ pub enum CouchbaseScopeGroupCollectionsResourcesKind {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseScopeGroupCollectionsSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CouchbaseScopeGroupCollectionsSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -135,3 +118,4 @@ pub struct CouchbaseScopeGroupCollectionsSelectorMatchExpressions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
+

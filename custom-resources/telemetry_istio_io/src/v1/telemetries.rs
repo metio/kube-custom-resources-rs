@@ -4,34 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Telemetry configuration for workloads. See more details at: https://istio.io/docs/reference/config/telemetry.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "telemetry.istio.io",
-    version = "v1",
-    kind = "Telemetry",
-    plural = "telemetries"
-)]
+#[kube(group = "telemetry.istio.io", version = "v1", kind = "Telemetry", plural = "telemetries")]
 #[kube(namespaced)]
 #[kube(status = "TelemetryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TelemetrySpec {
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogging"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogging")]
     pub access_logging: Option<Vec<TelemetryAccessLogging>>,
     /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,11 +33,7 @@ pub struct TelemetrySpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
     pub target_ref: Option<TelemetryTargetRef>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefs")]
     pub target_refs: Option<Vec<TelemetryTargetRefs>>,
     /// Optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -81,7 +68,7 @@ pub struct TelemetryAccessLoggingFilter {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TelemetryAccessLoggingMatch {
     /// This determines whether or not to apply the access logging configuration based on the direction of traffic relative to the proxied workload.
-    ///
+    /// 
     /// Valid Options: CLIENT_AND_SERVER, CLIENT, SERVER
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<TelemetryAccessLoggingMatchMode>,
@@ -113,11 +100,7 @@ pub struct TelemetryMetrics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<TelemetryMetricsProviders>>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reportingInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportingInterval")]
     pub reporting_interval: Option<String>,
 }
 
@@ -130,11 +113,7 @@ pub struct TelemetryMetricsOverrides {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<TelemetryMetricsOverridesMatch>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tagOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagOverrides")]
     pub tag_overrides: Option<BTreeMap<String, TelemetryMetricsOverridesTagOverrides>>,
 }
 
@@ -142,19 +121,15 @@ pub struct TelemetryMetricsOverrides {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TelemetryMetricsOverridesMatch {
     /// Allows free-form specification of a metric.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customMetric"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customMetric")]
     pub custom_metric: Option<String>,
     /// One of the well-known [Istio Standard Metrics](https://istio.io/latest/docs/reference/config/metrics/).
-    ///
+    /// 
     /// Valid Options: ALL_METRICS, REQUEST_COUNT, REQUEST_DURATION, REQUEST_SIZE, RESPONSE_SIZE, TCP_OPENED_CONNECTIONS, TCP_CLOSED_CONNECTIONS, TCP_SENT_BYTES, TCP_RECEIVED_BYTES, GRPC_REQUEST_MESSAGES, GRPC_RESPONSE_MESSAGES
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metric: Option<TelemetryMetricsOverridesMatchMetric>,
     /// Controls which mode of metrics generation is selected: `CLIENT`, `SERVER`, or `CLIENT_AND_SERVER`.
-    ///
+    /// 
     /// Valid Options: CLIENT_AND_SERVER, CLIENT, SERVER
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<TelemetryMetricsOverridesMatchMode>,
@@ -202,7 +177,7 @@ pub enum TelemetryMetricsOverridesMatchMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TelemetryMetricsOverridesTagOverrides {
     /// Operation controls whether or not to update/add a tag, or to remove it.
-    ///
+    /// 
     /// Valid Options: UPSERT, REMOVE
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operation: Option<TelemetryMetricsOverridesTagOverridesOperation>,
@@ -230,11 +205,7 @@ pub struct TelemetryMetricsProviders {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TelemetrySelector {
     /// One or more labels that indicate a specific set of pods/VMs on which a policy should be applied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -269,18 +240,10 @@ pub struct TelemetryTargetRefs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TelemetryTracing {
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTags")]
     pub custom_tags: Option<BTreeMap<String, TelemetryTracingCustomTags>>,
     /// Controls span reporting.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableSpanReporting"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSpanReporting")]
     pub disable_span_reporting: Option<bool>,
     /// Allows tailoring of behavior to specific conditions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
@@ -289,17 +252,9 @@ pub struct TelemetryTracing {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub providers: Option<Vec<TelemetryTracingProviders>>,
     /// Controls the rate at which traffic will be selected for tracing if no prior sampling decision has been made.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "randomSamplingPercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "randomSamplingPercentage")]
     pub random_sampling_percentage: Option<f64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useRequestIdForTraceSampling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useRequestIdForTraceSampling")]
     pub use_request_id_for_trace_sampling: Option<bool>,
 }
 
@@ -321,11 +276,7 @@ pub struct TelemetryTracingCustomTags {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TelemetryTracingCustomTagsEnvironment {
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
     /// Name of the environment variable from which to extract the tag value.
     pub name: String,
@@ -335,11 +286,7 @@ pub struct TelemetryTracingCustomTagsEnvironment {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TelemetryTracingCustomTagsHeader {
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
     pub default_value: Option<String>,
     /// Name of the header from which to extract the tag value.
     pub name: String,
@@ -356,7 +303,7 @@ pub struct TelemetryTracingCustomTagsLiteral {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TelemetryTracingMatch {
     /// This determines whether or not to apply the tracing configuration based on the direction of traffic relative to the proxied workload.
-    ///
+    /// 
     /// Valid Options: CLIENT_AND_SERVER, CLIENT, SERVER
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<TelemetryTracingMatchMode>,
@@ -385,32 +332,20 @@ pub struct TelemetryStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Resource Generation to which the Reconciled Condition refers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<IntOrString>,
     /// Includes any errors or warnings detected by Istio's analyzers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationMessages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationMessages")]
     pub validation_messages: Option<Vec<TelemetryStatusValidationMessages>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TelemetryStatusValidationMessages {
     /// A url pointing to the Istio documentation for this specific error type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "documentationUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "documentationUrl")]
     pub documentation_url: Option<String>,
     /// Represents how severe a message is.
-    ///
+    /// 
     /// Valid Options: UNKNOWN, ERROR, WARNING, INFO
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TelemetryStatusValidationMessagesLevel>,
@@ -439,3 +374,4 @@ pub struct TelemetryStatusValidationMessagesType {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

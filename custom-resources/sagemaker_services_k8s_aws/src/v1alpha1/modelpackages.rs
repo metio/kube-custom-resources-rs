@@ -4,72 +4,46 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ModelPackageSpec defines the desired state of ModelPackage.
-///
-///
+/// 
+/// 
 /// A versioned model that can be deployed for SageMaker inference.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sagemaker.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "ModelPackage",
-    plural = "modelpackages"
-)]
+#[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "ModelPackage", plural = "modelpackages")]
 #[kube(namespaced)]
 #[kube(status = "ModelPackageStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ModelPackageSpec {
     /// An array of additional Inference Specification objects. Each additional Inference
     /// Specification specifies artifacts based on this model package that can be
     /// used on inference endpoints. Generally used with SageMaker Neo to store the
     /// compiled artifacts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalInferenceSpecifications"
-    )]
-    pub additional_inference_specifications:
-        Option<Vec<ModelPackageAdditionalInferenceSpecifications>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalInferenceSpecifications")]
+    pub additional_inference_specifications: Option<Vec<ModelPackageAdditionalInferenceSpecifications>>,
     /// A description for the approval status of the model.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "approvalDescription"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "approvalDescription")]
     pub approval_description: Option<String>,
     /// Whether to certify the model package for listing on Amazon Web Services Marketplace.
-    ///
-    ///
+    /// 
+    /// 
     /// This parameter is optional for unversioned models, and does not apply to
     /// versioned models.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certifyForMarketplace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certifyForMarketplace")]
     pub certify_for_marketplace: Option<bool>,
     /// A unique token that guarantees that the call to this API is idempotent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientToken")]
     pub client_token: Option<String>,
     /// The metadata properties associated with the model package versions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customerMetadataProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customerMetadataProperties")]
     pub customer_metadata_properties: Option<BTreeMap<String, String>>,
     /// The machine learning domain of your model package and its components. Common
     /// machine learning domains include computer vision and natural language processing.
@@ -79,91 +53,59 @@ pub struct ModelPackageSpec {
     /// is set using the model package. For more information, see the topic on Drift
     /// Detection against Previous Baselines in SageMaker Pipelines (https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-quality-clarify-baseline-lifecycle.html#pipelines-quality-clarify-baseline-drift-detection)
     /// in the Amazon SageMaker Developer Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "driftCheckBaselines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "driftCheckBaselines")]
     pub drift_check_baselines: Option<ModelPackageDriftCheckBaselines>,
     /// Specifies details about inference jobs that can be run with models based
     /// on this model package, including the following:
-    ///
-    ///
+    /// 
+    /// 
     ///    * The Amazon ECR paths of containers that contain the inference code and
     ///    model artifacts.
-    ///
-    ///
+    /// 
+    /// 
     ///    * The instance types that the model package supports for transform jobs
     ///    and real-time endpoints used for inference.
-    ///
-    ///
+    /// 
+    /// 
     ///    * The input and output content formats that the model package supports
     ///    for inference.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inferenceSpecification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferenceSpecification")]
     pub inference_specification: Option<ModelPackageInferenceSpecification>,
     /// Metadata properties of the tracking entity, trial, or trial component.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataProperties")]
     pub metadata_properties: Option<ModelPackageMetadataProperties>,
     /// Whether the model is approved for deployment.
-    ///
-    ///
+    /// 
+    /// 
     /// This parameter is optional for versioned models, and does not apply to unversioned
     /// models.
-    ///
-    ///
+    /// 
+    /// 
     /// For versioned models, the value of this parameter must be set to Approved
     /// to deploy the model.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelApprovalStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelApprovalStatus")]
     pub model_approval_status: Option<String>,
     /// A structure that contains model metrics reports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelMetrics"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelMetrics")]
     pub model_metrics: Option<ModelPackageModelMetrics>,
     /// A description of the model package.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelPackageDescription"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageDescription")]
     pub model_package_description: Option<String>,
     /// The name or Amazon Resource Name (ARN) of the model package group that this
     /// model version belongs to.
-    ///
-    ///
+    /// 
+    /// 
     /// This parameter is required for versioned models, and does not apply to unversioned
     /// models.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelPackageGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageGroupName")]
     pub model_package_group_name: Option<String>,
     /// The name of the model package. The name must have 1 to 63 characters. Valid
     /// characters are a-z, A-Z, 0-9, and - (hyphen).
-    ///
-    ///
+    /// 
+    /// 
     /// This parameter is required for unversioned models. It is not applicable to
     /// versioned models.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelPackageName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageName")]
     pub model_package_name: Option<String>,
     /// The Amazon Simple Storage Service (Amazon S3) path where the sample payload
     /// is stored. This path must point to a single gzip compressed tar archive (.tar.gz
@@ -171,31 +113,19 @@ pub struct ModelPackageSpec {
     /// the load test. Each file in the archive must satisfy the size constraints
     /// of the InvokeEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html#API_runtime_InvokeEndpoint_RequestSyntax)
     /// call.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "samplePayloadURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "samplePayloadURL")]
     pub sample_payload_url: Option<String>,
     /// Indicates if you want to skip model validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipModelValidation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipModelValidation")]
     pub skip_model_validation: Option<String>,
     /// Details about the algorithm that was used to create the model package.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceAlgorithmSpecification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAlgorithmSpecification")]
     pub source_algorithm_specification: Option<ModelPackageSourceAlgorithmSpecification>,
     /// A list of key value pairs associated with the model. For more information,
     /// see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)
     /// in the Amazon Web Services General Reference Guide.
-    ///
-    ///
+    /// 
+    /// 
     /// If you supply ModelPackageGroupName, your model package belongs to the model
     /// group you specify and uses the tags associated with the model group. In this
     /// case, you cannot supply a tag argument.
@@ -206,18 +136,14 @@ pub struct ModelPackageSpec {
     /// tasks are supported by Inference Recommender: "IMAGE_CLASSIFICATION" | "OBJECT_DETECTION"
     /// | "TEXT_GENERATION" |"IMAGE_SEGMENTATION" | "FILL_MASK" | "CLASSIFICATION"
     /// | "REGRESSION" | "OTHER".
-    ///
-    ///
+    /// 
+    /// 
     /// Specify "OTHER" if none of the tasks listed fit your use case.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub task: Option<String>,
     /// Specifies configurations for one or more transform jobs that SageMaker runs
     /// to test the model package.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationSpecification"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationSpecification")]
     pub validation_specification: Option<ModelPackageValidationSpecification>,
 }
 
@@ -232,29 +158,13 @@ pub struct ModelPackageAdditionalInferenceSpecifications {
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportedContentTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedContentTypes")]
     pub supported_content_types: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportedRealtimeInferenceInstanceTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedRealtimeInferenceInstanceTypes")]
     pub supported_realtime_inference_instance_types: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportedResponseMIMETypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedResponseMIMETypes")]
     pub supported_response_mime_types: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportedTransformInstanceTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedTransformInstanceTypes")]
     pub supported_transform_instance_types: Option<Vec<String>>,
 }
 
@@ -263,55 +173,26 @@ pub struct ModelPackageAdditionalInferenceSpecifications {
 pub struct ModelPackageAdditionalInferenceSpecificationsContainers {
     /// A data source used for training or inference that is in addition to the input
     /// dataset or model data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalS3DataSource"
-    )]
-    pub additional_s3_data_source:
-        Option<ModelPackageAdditionalInferenceSpecificationsContainersAdditionalS3DataSource>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerHostname"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalS3DataSource")]
+    pub additional_s3_data_source: Option<ModelPackageAdditionalInferenceSpecificationsContainersAdditionalS3DataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerHostname")]
     pub container_hostname: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub framework: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "frameworkVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "frameworkVersion")]
     pub framework_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelDataURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataURL")]
     pub model_data_url: Option<String>,
     /// Input object for the model.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelInput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelInput")]
     pub model_input: Option<ModelPackageAdditionalInferenceSpecificationsContainersModelInput>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nearestModelName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nearestModelName")]
     pub nearest_model_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "productID")]
     pub product_id: Option<String>,
@@ -321,17 +202,9 @@ pub struct ModelPackageAdditionalInferenceSpecificationsContainers {
 /// dataset or model data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageAdditionalInferenceSpecificationsContainersAdditionalS3DataSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
     pub s3_data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -340,11 +213,7 @@ pub struct ModelPackageAdditionalInferenceSpecificationsContainersAdditionalS3Da
 /// Input object for the model.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageAdditionalInferenceSpecificationsContainersModelInput {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataInputConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataInputConfig")]
     pub data_input_config: Option<String>,
 }
 
@@ -364,19 +233,11 @@ pub struct ModelPackageDriftCheckBaselines {
     pub explainability: Option<ModelPackageDriftCheckBaselinesExplainability>,
     /// Represents the drift check data quality baselines that can be used when the
     /// model monitor is set using the model package.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelDataQuality"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataQuality")]
     pub model_data_quality: Option<ModelPackageDriftCheckBaselinesModelDataQuality>,
     /// Represents the drift check model quality baselines that can be used when
     /// the model monitor is set using the model package.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelQuality"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelQuality")]
     pub model_quality: Option<ModelPackageDriftCheckBaselinesModelQuality>,
 }
 
@@ -385,43 +246,22 @@ pub struct ModelPackageDriftCheckBaselines {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesBias {
     /// Contains details regarding the file source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFile")]
     pub config_file: Option<ModelPackageDriftCheckBaselinesBiasConfigFile>,
     /// Details about the metrics source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postTrainingConstraints"
-    )]
-    pub post_training_constraints:
-        Option<ModelPackageDriftCheckBaselinesBiasPostTrainingConstraints>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postTrainingConstraints")]
+    pub post_training_constraints: Option<ModelPackageDriftCheckBaselinesBiasPostTrainingConstraints>,
     /// Details about the metrics source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preTrainingConstraints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preTrainingConstraints")]
     pub pre_training_constraints: Option<ModelPackageDriftCheckBaselinesBiasPreTrainingConstraints>,
 }
 
 /// Contains details regarding the file source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesBiasConfigFile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -430,17 +270,9 @@ pub struct ModelPackageDriftCheckBaselinesBiasConfigFile {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesBiasPostTrainingConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -449,17 +281,9 @@ pub struct ModelPackageDriftCheckBaselinesBiasPostTrainingConstraints {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesBiasPreTrainingConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -470,11 +294,7 @@ pub struct ModelPackageDriftCheckBaselinesBiasPreTrainingConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesExplainability {
     /// Contains details regarding the file source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFile")]
     pub config_file: Option<ModelPackageDriftCheckBaselinesExplainabilityConfigFile>,
     /// Details about the metrics source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -484,17 +304,9 @@ pub struct ModelPackageDriftCheckBaselinesExplainability {
 /// Contains details regarding the file source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesExplainabilityConfigFile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -503,17 +315,9 @@ pub struct ModelPackageDriftCheckBaselinesExplainabilityConfigFile {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesExplainabilityConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -534,17 +338,9 @@ pub struct ModelPackageDriftCheckBaselinesModelDataQuality {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesModelDataQualityConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -553,17 +349,9 @@ pub struct ModelPackageDriftCheckBaselinesModelDataQualityConstraints {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesModelDataQualityStatistics {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -584,17 +372,9 @@ pub struct ModelPackageDriftCheckBaselinesModelQuality {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesModelQualityConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -603,17 +383,9 @@ pub struct ModelPackageDriftCheckBaselinesModelQualityConstraints {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageDriftCheckBaselinesModelQualityStatistics {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -621,45 +393,29 @@ pub struct ModelPackageDriftCheckBaselinesModelQualityStatistics {
 
 /// Specifies details about inference jobs that can be run with models based
 /// on this model package, including the following:
-///
-///
+/// 
+/// 
 ///    * The Amazon ECR paths of containers that contain the inference code and
 ///    model artifacts.
-///
-///
+/// 
+/// 
 ///    * The instance types that the model package supports for transform jobs
 ///    and real-time endpoints used for inference.
-///
-///
+/// 
+/// 
 ///    * The input and output content formats that the model package supports
 ///    for inference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageInferenceSpecification {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ModelPackageInferenceSpecificationContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportedContentTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedContentTypes")]
     pub supported_content_types: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportedRealtimeInferenceInstanceTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedRealtimeInferenceInstanceTypes")]
     pub supported_realtime_inference_instance_types: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportedResponseMIMETypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedResponseMIMETypes")]
     pub supported_response_mime_types: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supportedTransformInstanceTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportedTransformInstanceTypes")]
     pub supported_transform_instance_types: Option<Vec<String>>,
 }
 
@@ -668,55 +424,26 @@ pub struct ModelPackageInferenceSpecification {
 pub struct ModelPackageInferenceSpecificationContainers {
     /// A data source used for training or inference that is in addition to the input
     /// dataset or model data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalS3DataSource"
-    )]
-    pub additional_s3_data_source:
-        Option<ModelPackageInferenceSpecificationContainersAdditionalS3DataSource>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerHostname"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalS3DataSource")]
+    pub additional_s3_data_source: Option<ModelPackageInferenceSpecificationContainersAdditionalS3DataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerHostname")]
     pub container_hostname: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub framework: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "frameworkVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "frameworkVersion")]
     pub framework_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
     pub image_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelDataURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataURL")]
     pub model_data_url: Option<String>,
     /// Input object for the model.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelInput"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelInput")]
     pub model_input: Option<ModelPackageInferenceSpecificationContainersModelInput>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nearestModelName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nearestModelName")]
     pub nearest_model_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "productID")]
     pub product_id: Option<String>,
@@ -726,17 +453,9 @@ pub struct ModelPackageInferenceSpecificationContainers {
 /// dataset or model data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageInferenceSpecificationContainersAdditionalS3DataSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
     pub s3_data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -745,11 +464,7 @@ pub struct ModelPackageInferenceSpecificationContainersAdditionalS3DataSource {
 /// Input object for the model.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageInferenceSpecificationContainersModelInput {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataInputConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataInputConfig")]
     pub data_input_config: Option<String>,
 }
 
@@ -758,11 +473,7 @@ pub struct ModelPackageInferenceSpecificationContainersModelInput {
 pub struct ModelPackageMetadataProperties {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commitID")]
     pub commit_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generatedBy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatedBy")]
     pub generated_by: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
     pub project_id: Option<String>,
@@ -780,18 +491,10 @@ pub struct ModelPackageModelMetrics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub explainability: Option<ModelPackageModelMetricsExplainability>,
     /// Data quality constraints and statistics for a model.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelDataQuality"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataQuality")]
     pub model_data_quality: Option<ModelPackageModelMetricsModelDataQuality>,
     /// Model quality statistics and constraints.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelQuality"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelQuality")]
     pub model_quality: Option<ModelPackageModelMetricsModelQuality>,
 }
 
@@ -799,18 +502,10 @@ pub struct ModelPackageModelMetrics {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageModelMetricsBias {
     /// Details about the metrics source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postTrainingReport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postTrainingReport")]
     pub post_training_report: Option<ModelPackageModelMetricsBiasPostTrainingReport>,
     /// Details about the metrics source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preTrainingReport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preTrainingReport")]
     pub pre_training_report: Option<ModelPackageModelMetricsBiasPreTrainingReport>,
     /// Details about the metrics source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -820,17 +515,9 @@ pub struct ModelPackageModelMetricsBias {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageModelMetricsBiasPostTrainingReport {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -839,17 +526,9 @@ pub struct ModelPackageModelMetricsBiasPostTrainingReport {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageModelMetricsBiasPreTrainingReport {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -858,17 +537,9 @@ pub struct ModelPackageModelMetricsBiasPreTrainingReport {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageModelMetricsBiasReport {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -885,17 +556,9 @@ pub struct ModelPackageModelMetricsExplainability {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageModelMetricsExplainabilityReport {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -915,17 +578,9 @@ pub struct ModelPackageModelMetricsModelDataQuality {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageModelMetricsModelDataQualityConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -934,17 +589,9 @@ pub struct ModelPackageModelMetricsModelDataQualityConstraints {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageModelMetricsModelDataQualityStatistics {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -964,17 +611,9 @@ pub struct ModelPackageModelMetricsModelQuality {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageModelMetricsModelQualityConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -983,17 +622,9 @@ pub struct ModelPackageModelMetricsModelQualityConstraints {
 /// Details about the metrics source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageModelMetricsModelQualityStatistics {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentDigest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentDigest")]
     pub content_digest: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -1002,11 +633,7 @@ pub struct ModelPackageModelMetricsModelQualityStatistics {
 /// Details about the algorithm that was used to create the model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageSourceAlgorithmSpecification {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceAlgorithms"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAlgorithms")]
     pub source_algorithms: Option<Vec<ModelPackageSourceAlgorithmSpecificationSourceAlgorithms>>,
 }
 
@@ -1015,30 +642,22 @@ pub struct ModelPackageSourceAlgorithmSpecification {
 /// in Amazon Web Services Marketplace that you are subscribed to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageSourceAlgorithmSpecificationSourceAlgorithms {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "algorithmName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmName")]
     pub algorithm_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelDataURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelDataURL")]
     pub model_data_url: Option<String>,
 }
 
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
-///
-///
+/// 
+/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-///
-///
+/// 
+/// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
 /// For advice on best practices for managing Amazon Web Services resources with
@@ -1056,43 +675,26 @@ pub struct ModelPackageTags {
 /// to test the model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageValidationSpecification {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationProfiles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationProfiles")]
     pub validation_profiles: Option<Vec<ModelPackageValidationSpecificationValidationProfiles>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationRole")]
     pub validation_role: Option<String>,
 }
 
 /// Contains data, such as the inputs and targeted instance types that are used
 /// in the process of validating the model package.
-///
-///
+/// 
+/// 
 /// The data provided in the validation profile is made available to your buyers
 /// on Amazon Web Services Marketplace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageValidationSpecificationValidationProfiles {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "profileName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "profileName")]
     pub profile_name: Option<String>,
     /// Defines the input needed to run a transform job using the inference specification
     /// specified in the algorithm.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transformJobDefinition"
-    )]
-    pub transform_job_definition:
-        Option<ModelPackageValidationSpecificationValidationProfilesTransformJobDefinition>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformJobDefinition")]
+    pub transform_job_definition: Option<ModelPackageValidationSpecificationValidationProfilesTransformJobDefinition>,
 }
 
 /// Defines the input needed to run a transform job using the inference specification
@@ -1145,13 +747,8 @@ pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefi
 
 /// Describes the S3 data source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformInputDataSourceS3DataSource
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataType"
-    )]
+pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformInputDataSourceS3DataSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
     pub s3_data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -1159,48 +756,26 @@ pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefi
 
 /// Describes the results of a transform job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformOutput
-{
+pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformOutput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub accept: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "assembleWith"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assembleWith")]
     pub assemble_with: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
 
 /// Describes the resources, including ML instance types and ML instance count,
 /// to use for transform job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformResources
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceCount"
-    )]
+pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefinitionTransformResources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
     pub instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeKMSKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
     pub volume_kms_key_id: Option<String>,
 }
 
@@ -1210,11 +785,7 @@ pub struct ModelPackageStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ModelPackageStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -1223,32 +794,16 @@ pub struct ModelPackageStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// A timestamp specifying when the model package was created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     /// The last time that the model package was modified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastModifiedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
     /// The current status of the model package.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelPackageStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageStatus")]
     pub model_package_status: Option<String>,
     /// Details about the current status of the model package.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelPackageStatusDetails"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageStatusDetails")]
     pub model_package_status_details: Option<ModelPackageStatusModelPackageStatusDetails>,
 }
 
@@ -1278,30 +833,16 @@ pub struct ModelPackageStatusAckResourceMetadata {
 /// Details about the current status of the model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageStatusModelPackageStatusDetails {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageScanStatuses"
-    )]
-    pub image_scan_statuses:
-        Option<Vec<ModelPackageStatusModelPackageStatusDetailsImageScanStatuses>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationStatuses"
-    )]
-    pub validation_statuses:
-        Option<Vec<ModelPackageStatusModelPackageStatusDetailsValidationStatuses>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageScanStatuses")]
+    pub image_scan_statuses: Option<Vec<ModelPackageStatusModelPackageStatusDetailsImageScanStatuses>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationStatuses")]
+    pub validation_statuses: Option<Vec<ModelPackageStatusModelPackageStatusDetailsValidationStatuses>>,
 }
 
 /// Represents the overall status of a model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageStatusModelPackageStatusDetailsImageScanStatuses {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1312,14 +853,11 @@ pub struct ModelPackageStatusModelPackageStatusDetailsImageScanStatuses {
 /// Represents the overall status of a model package.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelPackageStatusModelPackageStatusDetailsValidationStatuses {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec is a human readable description for a BGP load balancer
 /// ip pool.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cilium.io",
-    version = "v2alpha1",
-    kind = "CiliumLoadBalancerIPPool",
-    plural = "ciliumloadbalancerippools"
-)]
+#[kube(group = "cilium.io", version = "v2alpha1", kind = "CiliumLoadBalancerIPPool", plural = "ciliumloadbalancerippools")]
 #[kube(status = "CiliumLoadBalancerIPPoolStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CiliumLoadBalancerIPPoolSpec {
     /// AllowFirstLastIPs, if set to `Yes` or undefined means that the first and last IPs of each CIDR will be allocatable.
     /// If `No`, these IPs will be reserved. This field is ignored for /{31,32} and /{127,128} CIDRs since
     /// reserving the first and last IPs would make the CIDRs unusable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowFirstLastIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowFirstLastIPs")]
     pub allow_first_last_i_ps: Option<CiliumLoadBalancerIPPoolAllowFirstLastIPs>,
     /// Blocks is a list of CIDRs comprising this IP Pool
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -42,11 +33,7 @@ pub struct CiliumLoadBalancerIPPoolSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
     /// ServiceSelector selects a set of services which are eligible to receive IPs from this
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceSelector")]
     pub service_selector: Option<CiliumLoadBalancerIPPoolServiceSelector>,
 }
 
@@ -73,20 +60,12 @@ pub struct CiliumLoadBalancerIPPoolBlocks {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumLoadBalancerIPPoolServiceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CiliumLoadBalancerIPPoolServiceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -118,7 +97,7 @@ pub enum CiliumLoadBalancerIPPoolServiceSelectorMatchExpressionsOperator {
 }
 
 /// Status is the status of the IP Pool.
-///
+/// 
 /// It might be possible for users to define overlapping IP Pools, we can't validate or enforce non-overlapping pools
 /// during object creation. The Cilium operator will do this validation and update the status to reflect the ability
 /// to allocate IPs from this pool.
@@ -128,3 +107,4 @@ pub struct CiliumLoadBalancerIPPoolStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

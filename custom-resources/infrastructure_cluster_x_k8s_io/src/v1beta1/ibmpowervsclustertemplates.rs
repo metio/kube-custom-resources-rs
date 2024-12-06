@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// IBMPowerVSClusterTemplateSpec defines the desired state of IBMPowerVSClusterTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "IBMPowerVSClusterTemplate",
-    plural = "ibmpowervsclustertemplates"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta1", kind = "IBMPowerVSClusterTemplate", plural = "ibmpowervsclustertemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IBMPowerVSClusterTemplateSpec {
     /// IBMPowerVSClusterTemplateResource describes the data needed to create an IBMPowerVSCluster from a template.
     pub template: IBMPowerVSClusterTemplateTemplate,
@@ -60,11 +55,7 @@ pub struct IBMPowerVSClusterTemplateTemplateMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterTemplateTemplateSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<IBMPowerVSClusterTemplateTemplateSpecControlPlaneEndpoint>,
     /// Network is the reference to the Network to use for this cluster.
     pub network: IBMPowerVSClusterTemplateTemplateSpecNetwork,
@@ -96,3 +87,4 @@ pub struct IBMPowerVSClusterTemplateTemplateSpecNetwork {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
 }
+

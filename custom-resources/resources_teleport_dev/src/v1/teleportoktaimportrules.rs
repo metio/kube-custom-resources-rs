@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// OktaImportRule resource definition v1 from Teleport
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "resources.teleport.dev",
-    version = "v1",
-    kind = "TeleportOktaImportRule",
-    plural = "teleportoktaimportrules"
-)]
+#[kube(group = "resources.teleport.dev", version = "v1", kind = "TeleportOktaImportRule", plural = "teleportoktaimportrules")]
 #[kube(namespaced)]
 #[kube(status = "TeleportOktaImportRuleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TeleportOktaImportRuleSpec {
     /// Mappings is a list of matches that will map match conditions to labels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -73,10 +68,7 @@ pub struct TeleportOktaImportRuleStatus {
     /// Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "teleportResourceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "teleportResourceID")]
     pub teleport_resource_id: Option<i64>,
 }
+

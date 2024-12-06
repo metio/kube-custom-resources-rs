@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "iot.eclipse.org",
-    version = "v1alpha1",
-    kind = "Hawkbit",
-    plural = "hawkbits"
-)]
+#[kube(group = "iot.eclipse.org", version = "v1alpha1", kind = "Hawkbit", plural = "hawkbits")]
 #[kube(namespaced)]
 #[kube(status = "HawkbitStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HawkbitSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<HawkbitDatabase>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageOverrides")]
     pub image_overrides: Option<BTreeMap<String, HawkbitImageOverrides>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rabbit: Option<HawkbitRabbit>,
@@ -48,7 +39,8 @@ pub struct HawkbitDatabase {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HawkbitDatabaseEmbedded {}
+pub struct HawkbitDatabaseEmbedded {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HawkbitDatabaseMysql {
@@ -56,11 +48,7 @@ pub struct HawkbitDatabaseMysql {
     pub database: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecret")]
     pub password_secret: Option<HawkbitDatabaseMysqlPasswordSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -84,11 +72,7 @@ pub struct HawkbitDatabasePostgres {
     pub database: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecret")]
     pub password_secret: Option<HawkbitDatabasePostgresPasswordSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -110,11 +94,7 @@ pub struct HawkbitDatabasePostgresPasswordSecret {
 pub struct HawkbitImageOverrides {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
 }
 
@@ -129,11 +109,7 @@ pub struct HawkbitRabbit {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HawkbitRabbitExternal {
     pub host: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecret")]
     pub password_secret: Option<HawkbitRabbitExternalPasswordSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
@@ -153,16 +129,13 @@ pub struct HawkbitRabbitExternalPasswordSecret {
 pub struct HawkbitRabbitManaged {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<HawkbitRabbitManagedResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageSize")]
     pub storage_size: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HawkbitRabbitManagedResources {}
+pub struct HawkbitRabbitManagedResources {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HawkbitSignOn {
@@ -172,18 +145,10 @@ pub struct HawkbitSignOn {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HawkbitSignOnKeycloak {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hawkbitUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hawkbitUrl")]
     pub hawkbit_url: Option<String>,
     /// Selector for looking up Keycloak Custom Resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceSelector")]
     pub instance_selector: Option<HawkbitSignOnKeycloakInstanceSelector>,
 }
 
@@ -191,18 +156,10 @@ pub struct HawkbitSignOnKeycloak {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HawkbitSignOnKeycloakInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<HawkbitSignOnKeycloakInstanceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -225,3 +182,4 @@ pub struct HawkbitStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

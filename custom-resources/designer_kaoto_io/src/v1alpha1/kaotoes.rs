@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// KaotoSpec defines the desired state of Kaoto.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "designer.kaoto.io",
-    version = "v1alpha1",
-    kind = "Kaoto",
-    plural = "kaotoes"
-)]
+#[kube(group = "designer.kaoto.io", version = "v1alpha1", kind = "Kaoto", plural = "kaotoes")]
 #[kube(namespaced)]
 #[kube(status = "KaotoStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KaotoSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -45,11 +40,8 @@ pub struct KaotoStatus {
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     pub phase: String,
 }
+

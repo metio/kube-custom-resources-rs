@@ -5,37 +5,24 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// BackupStorageLocationSpec defines the desired state of a Velero BackupStorageLocation
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "velero.io",
-    version = "v1",
-    kind = "BackupStorageLocation",
-    plural = "backupstoragelocations"
-)]
+#[kube(group = "velero.io", version = "v1", kind = "BackupStorageLocation", plural = "backupstoragelocations")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackupStorageLocationSpec {
     /// AccessMode defines the permissions for the backup storage location.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<BackupStorageLocationAccessMode>,
     /// BackupSyncPeriod defines how frequently to sync backup API objects from object storage. A value of 0 disables sync.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupSyncPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSyncPeriod")]
     pub backup_sync_period: Option<String>,
     /// Config is for provider-specific configuration fields.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -52,11 +39,7 @@ pub struct BackupStorageLocationSpec {
     /// Provider is the provider of the backup storage.
     pub provider: String,
     /// ValidationFrequency defines how frequently to validate the corresponding object storage. A value of 0 disables validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationFrequency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFrequency")]
     pub validation_frequency: Option<String>,
 }
 
@@ -103,43 +86,27 @@ pub struct BackupStorageLocationObjectStorage {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStorageLocationStatus {
     /// AccessMode is an unused field.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated: there is now an AccessMode field on the Spec and this field
     /// will be removed entirely as of v2.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<BackupStorageLocationStatusAccessMode>,
     /// LastSyncedRevision is the value of the `metadata/revision` file in the backup
     /// storage location the last time the BSL's contents were synced into the cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// Deprecated: this field is no longer updated or used for detecting changes to
     /// the location's contents and will be removed entirely in v2.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncedRevision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncedRevision")]
     pub last_synced_revision: Option<String>,
     /// LastSyncedTime is the last time the contents of the location were synced into
     /// the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncedTime")]
     pub last_synced_time: Option<String>,
     /// LastValidationTime is the last time the backup store location was validated
     /// the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastValidationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastValidationTime")]
     pub last_validation_time: Option<String>,
     /// Message is a message about the backup storage location's status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -162,3 +129,4 @@ pub enum BackupStorageLocationStatusPhase {
     Available,
     Unavailable,
 }
+

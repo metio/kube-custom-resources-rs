@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// TraefikServiceSpec defines the desired state of a TraefikService.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "traefik.io",
-    version = "v1alpha1",
-    kind = "TraefikService",
-    plural = "traefikservices"
-)]
+#[kube(group = "traefik.io", version = "v1alpha1", kind = "TraefikService", plural = "traefikservices")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TraefikServiceSpec {
     /// Mirroring defines the Mirroring service configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -36,11 +31,7 @@ pub struct TraefikServiceSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceMirroring {
     /// Healthcheck defines health checks for ExternalName services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<TraefikServiceMirroringHealthCheck>,
     /// Kind defines the kind of the Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -48,19 +39,11 @@ pub struct TraefikServiceMirroring {
     /// MaxBodySize defines the maximum size allowed for the body of the request.
     /// If the body is larger, the request is not mirrored.
     /// Default value is -1, which means unlimited size.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxBodySize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBodySize")]
     pub max_body_size: Option<i64>,
     /// MirrorBody defines whether the body of the request should be mirrored.
     /// Default value is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirrorBody"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirrorBody")]
     pub mirror_body: Option<bool>,
     /// Mirrors defines the list of mirrors where Traefik will duplicate the traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -81,30 +64,18 @@ pub struct TraefikServiceMirroring {
     /// whether the LB's children are directly the nodes internal IPs using the nodePort when the service type is NodePort.
     /// It allows services to be reachable when Traefik runs externally from the Kubernetes cluster but within the same network of the nodes.
     /// By default, NodePortLB is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePortLB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePortLB")]
     pub node_port_lb: Option<bool>,
     /// PassHostHeader defines whether the client Host header is forwarded to the upstream Kubernetes Service.
     /// By default, passHostHeader is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passHostHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passHostHeader")]
     pub pass_host_header: Option<bool>,
     /// Port defines the port of a Kubernetes Service.
     /// This can be a reference to a named port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<IntOrString>,
     /// ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseForwarding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseForwarding")]
     pub response_forwarding: Option<TraefikServiceMirroringResponseForwarding>,
     /// Scheme defines the scheme to use for the request to the upstream Kubernetes Service.
     /// It defaults to https when Kubernetes Service port is 443, http otherwise.
@@ -113,11 +84,7 @@ pub struct TraefikServiceMirroring {
     /// ServersTransport defines the name of ServersTransport resource to use.
     /// It allows to configure the transport between Traefik and your servers.
     /// Can only be used on a Kubernetes Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serversTransport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversTransport")]
     pub servers_transport: Option<String>,
     /// Sticky defines the sticky sessions configuration.
     /// More info: https://doc.traefik.io/traefik/v3.2/routing/services/#sticky-sessions
@@ -138,11 +105,7 @@ pub struct TraefikServiceMirroring {
 pub struct TraefikServiceMirroringHealthCheck {
     /// FollowRedirects defines whether redirects should be followed during the health check calls.
     /// Default: true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Headers defines custom headers to be sent to the health check endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -191,11 +154,7 @@ pub enum TraefikServiceMirroringKind {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceMirroringMirrors {
     /// Healthcheck defines health checks for ExternalName services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<TraefikServiceMirroringMirrorsHealthCheck>,
     /// Kind defines the kind of the Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -216,19 +175,11 @@ pub struct TraefikServiceMirroringMirrors {
     /// whether the LB's children are directly the nodes internal IPs using the nodePort when the service type is NodePort.
     /// It allows services to be reachable when Traefik runs externally from the Kubernetes cluster but within the same network of the nodes.
     /// By default, NodePortLB is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePortLB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePortLB")]
     pub node_port_lb: Option<bool>,
     /// PassHostHeader defines whether the client Host header is forwarded to the upstream Kubernetes Service.
     /// By default, passHostHeader is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passHostHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passHostHeader")]
     pub pass_host_header: Option<bool>,
     /// Percent defines the part of the traffic to mirror.
     /// Supported values: 0 to 100.
@@ -239,11 +190,7 @@ pub struct TraefikServiceMirroringMirrors {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<IntOrString>,
     /// ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseForwarding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseForwarding")]
     pub response_forwarding: Option<TraefikServiceMirroringMirrorsResponseForwarding>,
     /// Scheme defines the scheme to use for the request to the upstream Kubernetes Service.
     /// It defaults to https when Kubernetes Service port is 443, http otherwise.
@@ -252,11 +199,7 @@ pub struct TraefikServiceMirroringMirrors {
     /// ServersTransport defines the name of ServersTransport resource to use.
     /// It allows to configure the transport between Traefik and your servers.
     /// Can only be used on a Kubernetes Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serversTransport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversTransport")]
     pub servers_transport: Option<String>,
     /// Sticky defines the sticky sessions configuration.
     /// More info: https://doc.traefik.io/traefik/v3.2/routing/services/#sticky-sessions
@@ -277,11 +220,7 @@ pub struct TraefikServiceMirroringMirrors {
 pub struct TraefikServiceMirroringMirrorsHealthCheck {
     /// FollowRedirects defines whether redirects should be followed during the health check calls.
     /// Default: true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Headers defines custom headers to be sent to the health check endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -334,11 +273,7 @@ pub struct TraefikServiceMirroringMirrorsResponseForwarding {
     /// This configuration is ignored when ReverseProxy recognizes a response as a streaming response;
     /// for such responses, writes are flushed to the client immediately.
     /// Default: 100ms
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushInterval")]
     pub flush_interval: Option<String>,
 }
 
@@ -387,11 +322,7 @@ pub struct TraefikServiceMirroringResponseForwarding {
     /// This configuration is ignored when ReverseProxy recognizes a response as a streaming response;
     /// for such responses, writes are flushed to the client immediately.
     /// Default: 100ms
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushInterval")]
     pub flush_interval: Option<String>,
 }
 
@@ -448,11 +379,7 @@ pub struct TraefikServiceWeighted {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceWeightedServices {
     /// Healthcheck defines health checks for ExternalName services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<TraefikServiceWeightedServicesHealthCheck>,
     /// Kind defines the kind of the Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -473,30 +400,18 @@ pub struct TraefikServiceWeightedServices {
     /// whether the LB's children are directly the nodes internal IPs using the nodePort when the service type is NodePort.
     /// It allows services to be reachable when Traefik runs externally from the Kubernetes cluster but within the same network of the nodes.
     /// By default, NodePortLB is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePortLB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePortLB")]
     pub node_port_lb: Option<bool>,
     /// PassHostHeader defines whether the client Host header is forwarded to the upstream Kubernetes Service.
     /// By default, passHostHeader is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passHostHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passHostHeader")]
     pub pass_host_header: Option<bool>,
     /// Port defines the port of a Kubernetes Service.
     /// This can be a reference to a named port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<IntOrString>,
     /// ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseForwarding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseForwarding")]
     pub response_forwarding: Option<TraefikServiceWeightedServicesResponseForwarding>,
     /// Scheme defines the scheme to use for the request to the upstream Kubernetes Service.
     /// It defaults to https when Kubernetes Service port is 443, http otherwise.
@@ -505,11 +420,7 @@ pub struct TraefikServiceWeightedServices {
     /// ServersTransport defines the name of ServersTransport resource to use.
     /// It allows to configure the transport between Traefik and your servers.
     /// Can only be used on a Kubernetes Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serversTransport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversTransport")]
     pub servers_transport: Option<String>,
     /// Sticky defines the sticky sessions configuration.
     /// More info: https://doc.traefik.io/traefik/v3.2/routing/services/#sticky-sessions
@@ -530,11 +441,7 @@ pub struct TraefikServiceWeightedServices {
 pub struct TraefikServiceWeightedServicesHealthCheck {
     /// FollowRedirects defines whether redirects should be followed during the health check calls.
     /// Default: true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Headers defines custom headers to be sent to the health check endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -587,11 +494,7 @@ pub struct TraefikServiceWeightedServicesResponseForwarding {
     /// This configuration is ignored when ReverseProxy recognizes a response as a streaming response;
     /// for such responses, writes are flushed to the client immediately.
     /// Default: 100ms
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushInterval")]
     pub flush_interval: Option<String>,
 }
 
@@ -668,3 +571,4 @@ pub struct TraefikServiceWeightedStickyCookie {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
 }
+

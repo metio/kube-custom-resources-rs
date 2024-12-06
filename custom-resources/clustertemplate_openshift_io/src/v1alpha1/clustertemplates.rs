@@ -5,41 +5,28 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "clustertemplate.openshift.io",
-    version = "v1alpha1",
-    kind = "ClusterTemplate",
-    plural = "clustertemplates"
-)]
+#[kube(group = "clustertemplate.openshift.io", version = "v1alpha1", kind = "ClusterTemplate", plural = "clustertemplates")]
 #[kube(status = "ClusterTemplateStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterTemplateSpec {
     /// ArgoCD applicationset name which is used for installation of the cluster
     #[serde(rename = "clusterDefinition")]
     pub cluster_definition: String,
     /// Array of ArgoCD applicationset names which are used for post installation setup of the cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterSetup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSetup")]
     pub cluster_setup: Option<Vec<String>>,
     /// Cost of the cluster, used for quotas
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cost: Option<i64>,
     /// Skip the registration of the cluster to the hub cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipClusterRegistration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipClusterRegistration")]
     pub skip_cluster_registration: Option<bool>,
 }
 
@@ -47,18 +34,10 @@ pub struct ClusterTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTemplateStatus {
     /// Describes helm chart properties and their schema
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterDefinition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDefinition")]
     pub cluster_definition: Option<ClusterTemplateStatusClusterDefinition>,
     /// Describes helm chart properties and schema for every cluster setup step
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterSetup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSetup")]
     pub cluster_setup: Option<Vec<ClusterTemplateStatusClusterSetup>>,
 }
 
@@ -112,3 +91,4 @@ pub struct ClusterTemplateStatusClusterSetupParams {
     /// Value of a helm chart param
     pub value: String,
 }
+

@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VirtualRouterSpec defines the desired state of VirtualRouter refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_VirtualRouterSpec.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appmesh.k8s.aws",
-    version = "v1beta2",
-    kind = "VirtualRouter",
-    plural = "virtualrouters"
-)]
+#[kube(group = "appmesh.k8s.aws", version = "v1beta2", kind = "VirtualRouter", plural = "virtualrouters")]
 #[kube(namespaced)]
 #[kube(status = "VirtualRouterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VirtualRouterSpec {
     /// AWSName is the AppMesh VirtualRouter object's name. If unspecified or empty, it defaults to be "${name}_${namespace}" of k8s VirtualRouter
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsName")]
@@ -31,7 +26,7 @@ pub struct VirtualRouterSpec {
     /// The listeners that the virtual router is expected to receive inbound traffic from
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listeners: Option<Vec<VirtualRouterListeners>>,
-    /// A reference to k8s Mesh CR that this VirtualRouter belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+    /// A reference to k8s Mesh CR that this VirtualRouter belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
     ///  Populated by the system. Read-only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshRef")]
     pub mesh_ref: Option<VirtualRouterMeshRef>,
@@ -70,7 +65,7 @@ pub enum VirtualRouterListenersPortMappingProtocol {
     Tcp,
 }
 
-/// A reference to k8s Mesh CR that this VirtualRouter belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+/// A reference to k8s Mesh CR that this VirtualRouter belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
 ///  Populated by the system. Read-only.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualRouterMeshRef {
@@ -87,11 +82,7 @@ pub struct VirtualRouterRoutes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcRoute")]
     pub grpc_route: Option<VirtualRouterRoutesGrpcRoute>,
     /// An object that represents the specification of an HTTP/2 route.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http2Route"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http2Route")]
     pub http2_route: Option<VirtualRouterRoutesHttp2Route>,
     /// An object that represents the specification of an HTTP route.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRoute")]
@@ -115,11 +106,7 @@ pub struct VirtualRouterRoutesGrpcRoute {
     #[serde(rename = "match")]
     pub r#match: VirtualRouterRoutesGrpcRouteMatch,
     /// An object that represents a retry policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<VirtualRouterRoutesGrpcRouteRetryPolicy>,
     /// An object that represents a grpc timeout.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -141,18 +128,10 @@ pub struct VirtualRouterRoutesGrpcRouteActionWeightedTargets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// Amazon Resource Name to AppMesh VirtualNode object to associate with the weighted target. Exactly one of 'virtualNodeRef' or 'virtualNodeARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeARN")]
     pub virtual_node_arn: Option<String>,
     /// Reference to Kubernetes VirtualNode CR in cluster to associate with the weighted target. Exactly one of 'virtualNodeRef' or 'virtualNodeARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeRef")]
     pub virtual_node_ref: Option<VirtualRouterRoutesGrpcRouteActionWeightedTargetsVirtualNodeRef>,
     /// The relative weight of the weighted target.
     pub weight: i64,
@@ -175,21 +154,13 @@ pub struct VirtualRouterRoutesGrpcRouteMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Vec<VirtualRouterRoutesGrpcRouteMatchMetadata>>,
     /// The method name to match from the request. If you specify a name, you must also specify a serviceName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "methodName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "methodName")]
     pub method_name: Option<String>,
     /// Specifies the port to match requests with
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// The fully qualified domain name for the service to match from the request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -238,17 +209,9 @@ pub struct VirtualRouterRoutesGrpcRouteMatchMetadataMatchRange {
 /// An object that represents a retry policy.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VirtualRouterRoutesGrpcRouteRetryPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grpcRetryEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcRetryEvents")]
     pub grpc_retry_events: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpRetryEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetryEvents")]
     pub http_retry_events: Option<Vec<String>>,
     /// The maximum number of retry attempts.
     #[serde(rename = "maxRetries")]
@@ -256,11 +219,7 @@ pub struct VirtualRouterRoutesGrpcRouteRetryPolicy {
     /// An object that represents a duration of time.
     #[serde(rename = "perRetryTimeout")]
     pub per_retry_timeout: VirtualRouterRoutesGrpcRouteRetryPolicyPerRetryTimeout,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpRetryEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpRetryEvents")]
     pub tcp_retry_events: Option<Vec<String>>,
 }
 
@@ -289,11 +248,7 @@ pub struct VirtualRouterRoutesGrpcRouteTimeout {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idle: Option<VirtualRouterRoutesGrpcRouteTimeoutIdle>,
     /// An object that represents per request timeout duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perRequest")]
     pub per_request: Option<VirtualRouterRoutesGrpcRouteTimeoutPerRequest>,
 }
 
@@ -342,11 +297,7 @@ pub struct VirtualRouterRoutesHttp2Route {
     #[serde(rename = "match")]
     pub r#match: VirtualRouterRoutesHttp2RouteMatch,
     /// An object that represents a retry policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<VirtualRouterRoutesHttp2RouteRetryPolicy>,
     /// An object that represents a http timeout.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -368,18 +319,10 @@ pub struct VirtualRouterRoutesHttp2RouteActionWeightedTargets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// Amazon Resource Name to AppMesh VirtualNode object to associate with the weighted target. Exactly one of 'virtualNodeRef' or 'virtualNodeARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeARN")]
     pub virtual_node_arn: Option<String>,
     /// Reference to Kubernetes VirtualNode CR in cluster to associate with the weighted target. Exactly one of 'virtualNodeRef' or 'virtualNodeARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeRef")]
     pub virtual_node_ref: Option<VirtualRouterRoutesHttp2RouteActionWeightedTargetsVirtualNodeRef>,
     /// The relative weight of the weighted target.
     pub weight: i64,
@@ -414,11 +357,7 @@ pub struct VirtualRouterRoutesHttp2RouteMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The client specified queryParameters to match on
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameters")]
     pub query_parameters: Option<Vec<VirtualRouterRoutesHttp2RouteMatchQueryParameters>>,
     /// The client request scheme to match on
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -529,11 +468,7 @@ pub enum VirtualRouterRoutesHttp2RouteMatchScheme {
 /// An object that represents a retry policy.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VirtualRouterRoutesHttp2RouteRetryPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpRetryEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetryEvents")]
     pub http_retry_events: Option<Vec<String>>,
     /// The maximum number of retry attempts.
     #[serde(rename = "maxRetries")]
@@ -541,11 +476,7 @@ pub struct VirtualRouterRoutesHttp2RouteRetryPolicy {
     /// An object that represents a duration of time
     #[serde(rename = "perRetryTimeout")]
     pub per_retry_timeout: VirtualRouterRoutesHttp2RouteRetryPolicyPerRetryTimeout,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpRetryEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpRetryEvents")]
     pub tcp_retry_events: Option<Vec<String>>,
 }
 
@@ -574,11 +505,7 @@ pub struct VirtualRouterRoutesHttp2RouteTimeout {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idle: Option<VirtualRouterRoutesHttp2RouteTimeoutIdle>,
     /// An object that represents per request timeout duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perRequest")]
     pub per_request: Option<VirtualRouterRoutesHttp2RouteTimeoutPerRequest>,
 }
 
@@ -627,11 +554,7 @@ pub struct VirtualRouterRoutesHttpRoute {
     #[serde(rename = "match")]
     pub r#match: VirtualRouterRoutesHttpRouteMatch,
     /// An object that represents a retry policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
     pub retry_policy: Option<VirtualRouterRoutesHttpRouteRetryPolicy>,
     /// An object that represents a http timeout.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -653,18 +576,10 @@ pub struct VirtualRouterRoutesHttpRouteActionWeightedTargets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// Amazon Resource Name to AppMesh VirtualNode object to associate with the weighted target. Exactly one of 'virtualNodeRef' or 'virtualNodeARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeARN")]
     pub virtual_node_arn: Option<String>,
     /// Reference to Kubernetes VirtualNode CR in cluster to associate with the weighted target. Exactly one of 'virtualNodeRef' or 'virtualNodeARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeRef")]
     pub virtual_node_ref: Option<VirtualRouterRoutesHttpRouteActionWeightedTargetsVirtualNodeRef>,
     /// The relative weight of the weighted target.
     pub weight: i64,
@@ -699,11 +614,7 @@ pub struct VirtualRouterRoutesHttpRouteMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The client specified queryParameters to match on
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameters")]
     pub query_parameters: Option<Vec<VirtualRouterRoutesHttpRouteMatchQueryParameters>>,
     /// The client request scheme to match on
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -814,11 +725,7 @@ pub enum VirtualRouterRoutesHttpRouteMatchScheme {
 /// An object that represents a retry policy.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VirtualRouterRoutesHttpRouteRetryPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpRetryEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetryEvents")]
     pub http_retry_events: Option<Vec<String>>,
     /// The maximum number of retry attempts.
     #[serde(rename = "maxRetries")]
@@ -826,11 +733,7 @@ pub struct VirtualRouterRoutesHttpRouteRetryPolicy {
     /// An object that represents a duration of time
     #[serde(rename = "perRetryTimeout")]
     pub per_retry_timeout: VirtualRouterRoutesHttpRouteRetryPolicyPerRetryTimeout,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpRetryEvents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpRetryEvents")]
     pub tcp_retry_events: Option<Vec<String>>,
 }
 
@@ -859,11 +762,7 @@ pub struct VirtualRouterRoutesHttpRouteTimeout {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub idle: Option<VirtualRouterRoutesHttpRouteTimeoutIdle>,
     /// An object that represents per request timeout duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perRequest")]
     pub per_request: Option<VirtualRouterRoutesHttpRouteTimeoutPerRequest>,
 }
 
@@ -931,18 +830,10 @@ pub struct VirtualRouterRoutesTcpRouteActionWeightedTargets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// Amazon Resource Name to AppMesh VirtualNode object to associate with the weighted target. Exactly one of 'virtualNodeRef' or 'virtualNodeARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeARN")]
     pub virtual_node_arn: Option<String>,
     /// Reference to Kubernetes VirtualNode CR in cluster to associate with the weighted target. Exactly one of 'virtualNodeRef' or 'virtualNodeARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeRef")]
     pub virtual_node_ref: Option<VirtualRouterRoutesTcpRouteActionWeightedTargetsVirtualNodeRef>,
     /// The relative weight of the weighted target.
     pub weight: i64,
@@ -999,20 +890,13 @@ pub struct VirtualRouterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The generation observed by the VirtualRouter controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// RouteARNs is a map of AppMesh Route objects' Amazon Resource Names, indexed by route name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeARNs")]
     pub route_ar_ns: Option<BTreeMap<String, String>>,
     /// VirtualRouterARN is the AppMesh VirtualRouter object's Amazon Resource Name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualRouterARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualRouterARN")]
     pub virtual_router_arn: Option<String>,
 }
+

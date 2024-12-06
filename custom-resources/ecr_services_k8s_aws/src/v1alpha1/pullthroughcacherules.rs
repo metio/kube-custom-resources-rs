@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// PullThroughCacheRuleSpec defines the desired state of PullThroughCacheRule.
-///
+/// 
 /// The details of a pull through cache rule.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ecr.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "PullThroughCacheRule",
-    plural = "pullthroughcacherules"
-)]
+#[kube(group = "ecr.services.k8s.aws", version = "v1alpha1", kind = "PullThroughCacheRule", plural = "pullthroughcacherules")]
 #[kube(namespaced)]
 #[kube(status = "PullThroughCacheRuleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PullThroughCacheRuleSpec {
     /// The repository name prefix to use when caching images from the source registry.
     #[serde(rename = "ecrRepositoryPrefix")]
@@ -32,11 +27,7 @@ pub struct PullThroughCacheRuleSpec {
     /// The Amazon Web Services account ID associated with the registry to create
     /// the pull through cache rule for. If you do not specify a registry, the default
     /// registry is assumed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registryID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryID")]
     pub registry_id: Option<String>,
     /// The registry URL of the upstream public registry to use as the source for
     /// the pull through cache rule.
@@ -50,11 +41,7 @@ pub struct PullThroughCacheRuleStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<PullThroughCacheRuleStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -89,3 +76,4 @@ pub struct PullThroughCacheRuleStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

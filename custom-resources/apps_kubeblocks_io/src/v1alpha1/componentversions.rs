@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ComponentVersionSpec defines the desired state of ComponentVersion
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.kubeblocks.io",
-    version = "v1alpha1",
-    kind = "ComponentVersion",
-    plural = "componentversions"
-)]
+#[kube(group = "apps.kubeblocks.io", version = "v1alpha1", kind = "ComponentVersion", plural = "componentversions")]
 #[kube(status = "ComponentVersionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ComponentVersionSpec {
     /// CompatibilityRules defines compatibility rules between sets of component definitions and releases.
     #[serde(rename = "compatibilityRules")]
@@ -35,11 +30,11 @@ pub struct ComponentVersionSpec {
 pub struct ComponentVersionCompatibilityRules {
     /// CompDefs specifies names for the component definitions associated with this ComponentVersion.
     /// Each name in the list can represent an exact name, a name prefix, or a regular expression pattern.
-    ///
-    ///
+    /// 
+    /// 
     /// For example:
-    ///
-    ///
+    /// 
+    /// 
     /// - "mysql-8.0.30-v1alpha1": Matches the exact name "mysql-8.0.30-v1alpha1"
     /// - "mysql-8.0.30": Matches all names starting with "mysql-8.0.30"
     /// - "^mysql-8.0.\d{1,2}$": Matches all names starting with "mysql-8.0." followed by one or two digits.
@@ -75,22 +70,14 @@ pub struct ComponentVersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// ObservedGeneration is the most recent generation observed for this ComponentVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Phase valid values are ``, `Available`, 'Unavailable`.
     /// Available is ComponentVersion become available, and can be used for co-related objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ComponentVersionStatusPhase>,
     /// ServiceVersions represent the supported service versions of this ComponentVersion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersions")]
     pub service_versions: Option<String>,
 }
 
@@ -100,3 +87,4 @@ pub enum ComponentVersionStatusPhase {
     Available,
     Unavailable,
 }
+

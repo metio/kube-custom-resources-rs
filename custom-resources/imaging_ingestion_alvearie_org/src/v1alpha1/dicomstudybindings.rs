@@ -5,62 +5,37 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DicomStudyBindingSpec defines the desired state of DicomStudyBinding
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "imaging-ingestion.alvearie.org",
-    version = "v1alpha1",
-    kind = "DicomStudyBinding",
-    plural = "dicomstudybindings"
-)]
+#[kube(group = "imaging-ingestion.alvearie.org", version = "v1alpha1", kind = "DicomStudyBinding", plural = "dicomstudybindings")]
 #[kube(namespaced)]
 #[kube(status = "DicomStudyBindingStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DicomStudyBindingSpec {
     /// Binding Config Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bindingConfigName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindingConfigName")]
     pub binding_config_name: Option<String>,
     /// Binding Secret Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bindingSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindingSecretName")]
     pub binding_secret_name: Option<String>,
     /// DICOM Event Driven Ingestion Name
     #[serde(rename = "dicomEventDrivenIngestionName")]
     pub dicom_event_driven_ingestion_name: String,
     /// Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Image Pull Secrets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<DicomStudyBindingImagePullSecrets>>,
     /// Study Binding Spec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "studyBinding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "studyBinding")]
     pub study_binding: Option<DicomStudyBindingStudyBinding>,
 }
 
@@ -82,18 +57,10 @@ pub struct DicomStudyBindingStudyBinding {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Max Replicas
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicas")]
     pub max_replicas: Option<i32>,
     /// Min Replicas
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
 }
 
@@ -107,10 +74,7 @@ pub struct DicomStudyBindingStatus {
     /// True if all resources are in a ready state and all work is done
     pub ready: bool,
     /// A map of all the secondary resources types and names created for this CR. e.g "Deployment": [ "DeploymentName1", "DeploymentName2" ]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondaryResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryResources")]
     pub secondary_resources: Option<BTreeMap<String, String>>,
 }
+

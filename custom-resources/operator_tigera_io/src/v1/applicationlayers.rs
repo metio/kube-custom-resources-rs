@@ -4,70 +4,45 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ApplicationLayerSpec defines the desired state of ApplicationLayer
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "ApplicationLayer",
-    plural = "applicationlayers"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "ApplicationLayer", plural = "applicationlayers")]
 #[kube(status = "ApplicationLayerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ApplicationLayerSpec {
     /// Application Layer Policy controls whether or not ALP enforcement is enabled for the cluster.
     /// When enabled, NetworkPolicies with HTTP Match rules may be defined to opt-in workloads for traffic enforcement on the application layer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationLayerPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationLayerPolicy")]
     pub application_layer_policy: Option<ApplicationLayerApplicationLayerPolicy>,
     /// User-configurable settings for the Envoy proxy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub envoy: Option<ApplicationLayerEnvoy>,
     /// L7LogCollectorDaemonSet configures the L7LogCollector DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "l7LogCollectorDaemonSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "l7LogCollectorDaemonSet")]
     pub l7_log_collector_daemon_set: Option<ApplicationLayerL7LogCollectorDaemonSet>,
     /// Specification for application layer (L7) log collection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logCollection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logCollection")]
     pub log_collection: Option<ApplicationLayerLogCollection>,
     /// SidecarInjection controls whether or not sidecar injection is enabled for the cluster.
     /// When enabled, pods with the label
     /// "applicationlayer.projectcalico.org/sidecar"="true" will have their L7 functionality
     /// such as WAF and ALP implemented using an injected sidecar instead of a per-host proxy.
     /// The per-host proxy will continue to be used for pods without this label.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sidecarInjection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarInjection")]
     pub sidecar_injection: Option<ApplicationLayerSidecarInjection>,
     /// WebApplicationFirewall controls whether or not ModSecurity enforcement is enabled for the cluster.
     /// When enabled, Services may opt-in to having ingress traffic examed by ModSecurity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webApplicationFirewall"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webApplicationFirewall")]
     pub web_application_firewall: Option<ApplicationLayerWebApplicationFirewall>,
 }
 
@@ -84,20 +59,12 @@ pub struct ApplicationLayerEnvoy {
     /// If set to true, the Envoy connection manager will use the real remote address
     /// of the client connection when determining internal versus external origin and
     /// manipulating various headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useRemoteAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useRemoteAddress")]
     pub use_remote_address: Option<bool>,
     /// The number of additional ingress proxy hops from the right side of the
     /// x-forwarded-for HTTP header to trust when determining the origin client’s
     /// IP address. 0 is permitted, but >=1 is the typical setting.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "xffNumTrustedHops"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "xffNumTrustedHops")]
     pub xff_num_trusted_hops: Option<i32>,
 }
 
@@ -136,13 +103,8 @@ pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpec {
     /// InitContainers is a list of L7LogCollector DaemonSet init containers.
     /// If specified, this overrides the specified L7LogCollector DaemonSet init containers.
     /// If omitted, the L7LogCollector DaemonSet will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainers>>,
 }
 
 /// L7LogCollectorDaemonSetContainer is a L7LogCollector DaemonSet container.
@@ -155,8 +117,7 @@ pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainers {
     /// If specified, this overrides the named L7LogCollector DaemonSet container's resources.
     /// If omitted, the L7LogCollector DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersResources>,
+    pub resources: Option<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersResources>,
 }
 
 /// L7LogCollectorDaemonSetContainer is a L7LogCollector DaemonSet container.
@@ -181,9 +142,7 @@ pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersReso
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -214,8 +173,7 @@ pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainers
     /// If specified, this overrides the named L7LogCollector DaemonSet init container's resources.
     /// If omitted, the L7LogCollector DaemonSet will use its default value for this init container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainersResources>,
+    pub resources: Option<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainersResources>,
 }
 
 /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
@@ -229,9 +187,7 @@ pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainers
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -258,29 +214,17 @@ pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainers
 pub struct ApplicationLayerLogCollection {
     /// This setting enables or disable log collection.
     /// Allowed values are Enabled or Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collectLogs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectLogs")]
     pub collect_logs: Option<ApplicationLayerLogCollectionCollectLogs>,
     /// Interval in seconds for sending L7 log information for processing.
     /// Default: 5 sec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logIntervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logIntervalSeconds")]
     pub log_interval_seconds: Option<i64>,
     /// Maximum number of unique L7 logs that are sent LogIntervalSeconds.
     /// Adjust this to limit the number of L7 logs sent per LogIntervalSeconds
     /// to felix for further processing, use negative number to ignore limits.
     /// Default: -1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logRequestsPerInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logRequestsPerInterval")]
     pub log_requests_per_interval: Option<i64>,
 }
 
@@ -313,11 +257,7 @@ pub struct ApplicationLayerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// SidecarWebhook provides the state of sidecar injection mutatinwebhookconfiguration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sidecarWebhook"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarWebhook")]
     pub sidecar_webhook: Option<ApplicationLayerStatusSidecarWebhook>,
     /// State provides user-readable status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -330,3 +270,4 @@ pub enum ApplicationLayerStatusSidecarWebhook {
     Enabled,
     Disabled,
 }
+

@@ -4,31 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ShipwrightBuildSpec defines the configuration of a Shipwright Build deployment.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.shipwright.io",
-    version = "v1alpha1",
-    kind = "ShipwrightBuild",
-    plural = "shipwrightbuilds"
-)]
+#[kube(group = "operator.shipwright.io", version = "v1alpha1", kind = "ShipwrightBuild", plural = "shipwrightbuilds")]
 #[kube(status = "ShipwrightBuildStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ShipwrightBuildSpec {
     /// TargetNamespace is the target namespace where Shipwright's build controller will be deployed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNamespace")]
     pub target_namespace: Option<String>,
 }
 
@@ -39,3 +30,4 @@ pub struct ShipwrightBuildStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

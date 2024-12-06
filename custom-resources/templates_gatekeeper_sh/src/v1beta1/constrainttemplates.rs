@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ConstraintTemplateSpec defines the desired state of ConstraintTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "templates.gatekeeper.sh",
-    version = "v1beta1",
-    kind = "ConstraintTemplate",
-    plural = "constrainttemplates"
-)]
+#[kube(group = "templates.gatekeeper.sh", version = "v1beta1", kind = "ConstraintTemplate", plural = "constrainttemplates")]
 #[kube(status = "ConstraintTemplateStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ConstraintTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub crd: Option<ConstraintTemplateCrd>,
@@ -47,27 +42,15 @@ pub struct ConstraintTemplateCrdSpec {
 pub struct ConstraintTemplateCrdSpecNames {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shortNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shortNames")]
     pub short_names: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConstraintTemplateCrdSpecValidation {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "legacySchema"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "legacySchema")]
     pub legacy_schema: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openAPIV3Schema"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openAPIV3Schema")]
     pub open_apiv3_schema: Option<BTreeMap<String, serde_json::Value>>,
 }
 
@@ -111,11 +94,7 @@ pub struct ConstraintTemplateStatusByPod {
     /// a unique identifier for the pod that wrote the status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
 
@@ -127,3 +106,4 @@ pub struct ConstraintTemplateStatusByPodErrors {
     pub location: Option<String>,
     pub message: String,
 }
+

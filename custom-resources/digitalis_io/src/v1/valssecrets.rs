@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ValsSecretSpec defines the desired state of ValsSecret
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "digitalis.io",
-    version = "v1",
-    kind = "ValsSecret",
-    plural = "valssecrets"
-)]
+#[kube(group = "digitalis.io", version = "v1", kind = "ValsSecret", plural = "valssecrets")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ValsSecretSpec {
     pub data: BTreeMap<String, ValsSecretData>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -54,11 +49,7 @@ pub struct ValsSecretDatabases {
     /// List of hosts to connect to, they'll be tried in sequence until one succeeds
     pub hosts: Vec<String>,
     /// Credentials to access the database
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loginCredentials"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loginCredentials")]
     pub login_credentials: Option<ValsSecretDatabasesLoginCredentials>,
     /// Key in the secret containing the database username
     #[serde(rename = "passwordKey")]
@@ -70,11 +61,7 @@ pub struct ValsSecretDatabases {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userHost")]
     pub user_host: Option<String>,
     /// Key in the secret containing the database username
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
@@ -91,14 +78,12 @@ pub struct ValsSecretDatabasesLoginCredentials {
     #[serde(rename = "secretName")]
     pub secret_name: String,
     /// Key in the secret containing the database username
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usernameKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
 }
 
 /// ValsSecretStatus defines the observed state of ValsSecret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValsSecretStatus {}
+pub struct ValsSecretStatus {
+}
+
