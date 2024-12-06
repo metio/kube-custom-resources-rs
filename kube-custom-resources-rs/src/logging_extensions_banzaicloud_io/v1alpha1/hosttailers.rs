@@ -26,8 +26,8 @@ pub struct HostTailerSpec {
     pub image: Option<HostTailerImage>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemdTailers")]
     pub systemd_tailers: Option<Vec<HostTailerSystemdTailers>>,
-    #[serde(rename = "workloadMetaOverrides")]
-    pub workload_meta_overrides: HostTailerWorkloadMetaOverrides,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadMetaOverrides")]
+    pub workload_meta_overrides: Option<HostTailerWorkloadMetaOverrides>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadOverrides")]
     pub workload_overrides: Option<HostTailerWorkloadOverrides>,
 }

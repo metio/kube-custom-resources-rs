@@ -390,6 +390,12 @@ pub struct ComponentDefinitionSpec {
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemAccounts")]
     pub system_accounts: Option<Vec<ComponentDefinitionSystemAccounts>>,
+    /// Specifies the TLS configuration for the Component.
+    /// 
+    /// 
+    /// This field is immutable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<ComponentDefinitionTls>,
     /// Specifies the concurrency strategy for updating multiple instances of the Component.
     /// Available strategies:
     /// 
@@ -5441,6 +5447,12 @@ pub struct ComponentDefinitionLifecycleActions {
     /// that only the necessary data is exported for import into the new replica.
     /// 
     /// 
+    /// The container executing this action has access to following environment variables:
+    /// 
+    /// 
+    /// - KB_TARGET_POD_NAME: The name of the replica pod into which the data will be loaded.
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataDump")]
     pub data_dump: Option<ComponentDefinitionLifecycleActionsDataDump>,
@@ -6233,6 +6245,12 @@ pub struct ComponentDefinitionLifecycleActionsAvailableProbeRetryPolicy {
 /// 
 /// The output should be a valid data dump streamed to stdout. It must exclude any irrelevant information to ensure
 /// that only the necessary data is exported for import into the new replica.
+/// 
+/// 
+/// The container executing this action has access to following environment variables:
+/// 
+/// 
+/// - KB_TARGET_POD_NAME: The name of the replica pod into which the data will be loaded.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -16462,6 +16480,52 @@ pub struct ComponentDefinitionSystemAccountsSecretRef {
     pub namespace: String,
 }
 
+/// Specifies the TLS configuration for the Component.
+/// 
+/// 
+/// This field is immutable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionTls {
+    /// The CA file of the TLS.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
+    pub ca_file: Option<String>,
+    /// The certificate file of the TLS.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// The default permissions for the mounted path.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// The key file of the TLS.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
+    pub key_file: Option<String>,
+    /// Specifies the mount path for the TLS secret to be mounted.
+    /// Similar to the volume, the controller will mount the created volume to the specified path within containers when the TLS is enabled.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// Specifies the volume name for the TLS secret.
+    /// The controller will create a volume object with the specified name and add it to the pod when the TLS is enabled.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ComponentDefinitionUpdateStrategy {
     Serial,
@@ -16540,6 +16604,9 @@ pub struct ComponentDefinitionVarsValueFrom {
     /// Selects a defined var of a Service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVarRef")]
     pub service_var_ref: Option<ComponentDefinitionVarsValueFromServiceVarRef>,
+    /// Selects a defined var of the TLS.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsVarRef")]
+    pub tls_var_ref: Option<ComponentDefinitionVarsValueFromTlsVarRef>,
 }
 
 /// Selects a defined var of a Cluster.
@@ -17238,6 +17305,88 @@ pub enum ComponentDefinitionVarsValueFromServiceVarRefPortOption {
 pub enum ComponentDefinitionVarsValueFromServiceVarRefServiceType {
     Required,
     Optional,
+}
+
+/// Selects a defined var of the TLS.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromTlsVarRef {
+    /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
+    /// custom resource (CR) used by the component that the referent object resident in.
+    /// 
+    /// 
+    /// If not specified, the component itself will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
+    pub comp_def: Option<String>,
+    /// VarOption defines whether a variable is required or optional.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<ComponentDefinitionVarsValueFromTlsVarRefEnabled>,
+    /// This option defines the behavior when multiple component objects match the specified @CompDef.
+    /// If not provided, an error will be raised when handling multiple matches.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
+    pub multiple_cluster_object_option: Option<ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOption>,
+    /// Name of the referent object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the object must be defined.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a defined var of the TLS.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromTlsVarRefEnabled {
+    Required,
+    Optional,
+}
+
+/// This option defines the behavior when multiple component objects match the specified @CompDef.
+/// If not provided, an error will be raised when handling multiple matches.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOption {
+    /// Define the options for handling combined variables.
+    /// Valid only when the strategy is set to "combined".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
+    pub combined_option: Option<ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// Define the strategy for handling multiple cluster objects.
+    pub strategy: ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionStrategy,
+}
+
+/// Define the options for handling combined variables.
+/// Valid only when the strategy is set to "combined".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionCombinedOption {
+    /// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flattenFormat")]
+    pub flatten_format: Option<ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat>,
+    /// If set, the existing variable will be kept, and a new variable will be defined with the specified suffix
+    /// in pattern: $(var.name)_$(suffix).
+    /// The new variable will be auto-created and placed behind the existing one.
+    /// If not set, the existing variable will be reused with the value format defined below.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "newVarSuffix")]
+    pub new_var_suffix: Option<String>,
+    /// The format of the value that the operator will use to compose values from multiple components.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFormat")]
+    pub value_format: Option<String>,
+}
+
+/// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat {
+    /// Pair delimiter.
+    pub delimiter: String,
+    /// Key-value delimiter.
+    #[serde(rename = "keyValueDelimiter")]
+    pub key_value_delimiter: String,
+}
+
+/// This option defines the behavior when multiple component objects match the specified @CompDef.
+/// If not provided, an error will be raised when handling multiple matches.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionStrategy {
+    #[serde(rename = "individual")]
+    Individual,
+    #[serde(rename = "combined")]
+    Combined,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

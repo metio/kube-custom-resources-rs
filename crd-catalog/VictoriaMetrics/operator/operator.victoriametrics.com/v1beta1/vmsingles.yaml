@@ -25,9 +25,12 @@ spec:
   versions:
     - additionalPrinterColumns:
         - description: "Current status of single node update process"
-          jsonPath: ".status.singleStatus"
+          jsonPath: ".status.updateStatus"
           name: "Status"
           type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
       name: "v1beta1"
       schema:
         openAPIV3Schema:
@@ -413,7 +416,7 @@ spec:
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 storage:
-                  description: "Storage is the definition of how storage will be used by the VMSingle\nby default it`s empty dir"
+                  description: "Storage is the definition of how storage will be used by the VMSingle\nby default it`s empty dir\nthis option is ignored if storageDataPath is set"
                   properties:
                     accessModes:
                       description: "accessModes contains the desired access modes the volume should have.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1"
@@ -526,7 +529,7 @@ spec:
                       type: "string"
                   type: "object"
                 storageDataPath:
-                  description: "StorageDataPath disables spec.storage option and overrides arg for victoria-metrics binary --storageDataPath,\nits users responsibility to mount proper device into given path."
+                  description: "StorageDataPath disables spec.storage option and overrides arg for victoria-metrics binary --storageDataPath,\nits users responsibility to mount proper device into given path.\nIt requires to provide spec.volumes and spec.volumeMounts with at least 1 value"
                   type: "string"
                 storageMetadata:
                   description: "StorageMeta defines annotations and labels attached to PVC for given vmsingle CR"
@@ -1091,20 +1094,24 @@ spec:
                   description: "AvailableReplicas Total number of available pods (ready for at least minReadySeconds) targeted by this VMSingle."
                   format: "int32"
                   type: "integer"
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
+                  type: "integer"
                 reason:
-                  description: "Reason defines a reason in case of update failure"
+                  description: "Reason defines fail reason for reconcile process"
                   type: "string"
                 replicas:
                   description: "ReplicaCount Total number of non-terminated pods targeted by this VMSingle."
                   format: "int32"
                   type: "integer"
-                singleStatus:
-                  description: "UpdateStatus defines a status of single node rollout"
-                  type: "string"
                 unavailableReplicas:
                   description: "UnavailableReplicas Total number of unavailable pods targeted by this VMSingle."
                   format: "int32"
                   type: "integer"
+                updateStatus:
+                  description: "UpdateStatus defines a status for update rollout"
+                  type: "string"
                 updatedReplicas:
                   description: "UpdatedReplicas Total number of non-terminated pods targeted by this VMSingle."
                   format: "int32"

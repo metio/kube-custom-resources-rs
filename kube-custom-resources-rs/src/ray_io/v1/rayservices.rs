@@ -30,6 +30,8 @@ pub struct RayServiceSpec {
     pub serve_service: Option<RayServiceServeService>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceUnhealthySecondThreshold")]
     pub service_unhealthy_second_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeStrategy")]
+    pub upgrade_strategy: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3406,6 +3408,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesVsphereVolu
 pub struct RayServiceRayClusterConfigWorkerGroupSpecs {
     #[serde(rename = "groupName")]
     pub group_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeoutSeconds")]
+    pub idle_timeout_seconds: Option<i32>,
     #[serde(rename = "maxReplicas")]
     pub max_replicas: i32,
     #[serde(rename = "minReplicas")]

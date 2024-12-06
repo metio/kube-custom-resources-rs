@@ -35,8 +35,10 @@ pub struct ThanosRulerSpec {
     /// If specified, the pod's scheduling constraints.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ThanosRulerAffinity>,
-    /// AlertDropLabels configure the label names which should be dropped in ThanosRuler alerts.
-    /// The replica label `thanos_ruler_replica` will always be dropped in alerts.
+    /// Configures the label names which should be dropped in Thanos Ruler
+    /// alerts.
+    /// 
+    /// The replica label `thanos_ruler_replica` will always be dropped from the alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertDropLabels")]
     pub alert_drop_labels: Option<Vec<String>>,
     /// The external Query URL the Thanos Ruler will set in the 'Source' field
@@ -44,24 +46,44 @@ pub struct ThanosRulerSpec {
     /// Maps to the '--alert.query-url' CLI arg.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertQueryUrl")]
     pub alert_query_url: Option<String>,
-    /// AlertRelabelConfigFile specifies the path of the alert relabeling configuration file.
-    /// When used alongside with AlertRelabelConfigs, alertRelabelConfigFile takes precedence.
+    /// Configures the path to the alert relabeling configuration file.
+    /// 
+    /// Alert relabel configuration must have the form as specified in the
+    /// official Prometheus documentation:
+    /// https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs
+    /// 
+    /// The operator performs no validation of the configuration file.
+    /// 
+    /// This field takes precedence over `alertRelabelConfig`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertRelabelConfigFile")]
     pub alert_relabel_config_file: Option<String>,
-    /// AlertRelabelConfigs configures alert relabeling in ThanosRuler.
-    /// Alert relabel configurations must have the form as specified in the official Prometheus documentation:
+    /// Configures alert relabeling in Thanos Ruler.
+    /// 
+    /// Alert relabel configuration must have the form as specified in the
+    /// official Prometheus documentation:
     /// https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs
-    /// Alternative to AlertRelabelConfigFile, and lower order priority.
+    /// 
+    /// The operator performs no validation of the configuration.
+    /// 
+    /// `alertRelabelConfigFile` takes precedence over this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertRelabelConfigs")]
     pub alert_relabel_configs: Option<ThanosRulerAlertRelabelConfigs>,
-    /// Define configuration for connecting to alertmanager.  Only available with thanos v0.10.0
-    /// and higher.  Maps to the `alertmanagers.config` arg.
+    /// Configures the list of Alertmanager endpoints to send alerts to.
+    /// 
+    /// The configuration format is defined at https://thanos.io/tip/components/rule.md/#alertmanager.
+    /// 
+    /// It requires Thanos >= v0.10.0.
+    /// 
+    /// The operator performs no validation of the configuration.
+    /// 
+    /// This field takes precedence over `alertmanagersUrl`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertmanagersConfig")]
     pub alertmanagers_config: Option<ThanosRulerAlertmanagersConfig>,
-    /// Define URLs to send alerts to Alertmanager.  For Thanos v0.10.0 and higher,
-    /// AlertManagersConfig should be used instead.  Note: this field will be ignored
-    /// if AlertManagersConfig is specified.
-    /// Maps to the `alertmanagers.url` arg.
+    /// Configures the list of Alertmanager endpoints to send alerts to.
+    /// 
+    /// For Thanos >= v0.10.0, it is recommended to use `alertmanagersConfig` instead.
+    /// 
+    /// `alertmanagersConfig` takes precedence over this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertmanagersUrl")]
     pub alertmanagers_url: Option<Vec<String>>,
     /// Containers allows injecting additional containers or modifying operator generated
@@ -127,8 +149,10 @@ pub struct ThanosRulerSpec {
     /// at any time without notice.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<ThanosRulerInitContainers>>,
-    /// Labels configure the external label pairs to ThanosRuler. A default replica label
-    /// `thanos_ruler_replica` will be always added  as a label with the value of the pod's name and it will be dropped in the alerts.
+    /// Configures the external label pairs of the ThanosRuler resource.
+    /// 
+    /// A default replica label `thanos_ruler_replica` will be always added as a
+    /// label with the value of the pod's name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// ListenLocal makes the Thanos ruler listen on loopback, so that it
@@ -150,12 +174,22 @@ pub struct ThanosRulerSpec {
     /// Define which Nodes the Pods are scheduled on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// ObjectStorageConfig configures object storage in Thanos.
-    /// Alternative to ObjectStorageConfigFile, and lower order priority.
+    /// Configures object storage.
+    /// 
+    /// The configuration format is defined at https://thanos.io/tip/thanos/storage.md/#configuring-access-to-object-storage
+    /// 
+    /// The operator performs no validation of the configuration.
+    /// 
+    /// `objectStorageConfigFile` takes precedence over this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectStorageConfig")]
     pub object_storage_config: Option<ThanosRulerObjectStorageConfig>,
-    /// ObjectStorageConfigFile specifies the path of the object storage configuration file.
-    /// When used alongside with ObjectStorageConfig, ObjectStorageConfigFile takes precedence.
+    /// Configures the path of the object storage configuration file.
+    /// 
+    /// The configuration format is defined at https://thanos.io/tip/thanos/storage.md/#configuring-access-to-object-storage
+    /// 
+    /// The operator performs no validation of the configuration file.
+    /// 
+    /// This field takes precedence over `objectStorageConfig`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectStorageConfigFile")]
     pub object_storage_config_file: Option<String>,
     /// When a ThanosRuler deployment is paused, no actions except for deletion
@@ -185,14 +219,22 @@ pub struct ThanosRulerSpec {
     /// Deprecated: use excludedFromEnforcement instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusRulesExcludedFromEnforce")]
     pub prometheus_rules_excluded_from_enforce: Option<Vec<ThanosRulerPrometheusRulesExcludedFromEnforce>>,
-    /// Define configuration for connecting to thanos query instances.
-    /// If this is defined, the QueryEndpoints field will be ignored.
-    /// Maps to the `query.config` CLI argument.
-    /// Only available with thanos v0.11.0 and higher.
+    /// Configures the list of Thanos Query endpoints from which to query metrics.
+    /// 
+    /// The configuration format is defined at https://thanos.io/tip/components/rule.md/#query-api
+    /// 
+    /// It requires Thanos >= v0.11.0.
+    /// 
+    /// The operator performs no validation of the configuration.
+    /// 
+    /// This field takes precedence over `queryEndpoints`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryConfig")]
     pub query_config: Option<ThanosRulerQueryConfig>,
-    /// QueryEndpoints defines Thanos querier endpoints from which to query metrics.
-    /// Maps to the --query flag of thanos ruler.
+    /// Configures the list of Thanos Query endpoints from which to query metrics.
+    /// 
+    /// For Thanos >= v0.11.0, it is recommended to use `queryConfig` instead.
+    /// 
+    /// `queryConfig` takes precedence over this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryEndpoints")]
     pub query_endpoints: Option<Vec<String>>,
     /// Number of thanos ruler instances to deploy.
@@ -213,8 +255,9 @@ pub struct ThanosRulerSpec {
     /// the same namespace as the ThanosRuler object is in is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleNamespaceSelector")]
     pub rule_namespace_selector: Option<ThanosRulerRuleNamespaceSelector>,
-    /// A label selector to select which PrometheusRules to mount for alerting and
-    /// recording.
+    /// PrometheusRule objects to be selected for rule evaluation. An empty
+    /// label selector matches all objects. A null label selector matches no
+    /// objects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleSelector")]
     pub rule_selector: Option<ThanosRulerRuleSelector>,
     /// SecurityContext holds pod-level security attributes and common container settings.
@@ -234,20 +277,28 @@ pub struct ThanosRulerSpec {
     /// If specified, the pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<ThanosRulerTopologySpreadConstraints>>,
-    /// TracingConfig configures tracing in Thanos.
+    /// Configures tracing.
+    /// 
+    /// The configuration format is defined at https://thanos.io/tip/thanos/tracing.md/#configuration
+    /// 
+    /// This is an *experimental feature*, it may change in any upcoming release
+    /// in a breaking way.
+    /// 
+    /// The operator performs no validation of the configuration.
     /// 
     /// `tracingConfigFile` takes precedence over this field.
-    /// 
-    /// This is an *experimental feature*, it may change in any upcoming release
-    /// in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfig")]
     pub tracing_config: Option<ThanosRulerTracingConfig>,
-    /// TracingConfig specifies the path of the tracing configuration file.
+    /// Configures the path of the tracing configuration file.
     /// 
-    /// This field takes precedence over `tracingConfig`.
+    /// The configuration format is defined at https://thanos.io/tip/thanos/tracing.md/#configuration
     /// 
     /// This is an *experimental feature*, it may change in any upcoming release
     /// in a breaking way.
+    /// 
+    /// The operator performs no validation of the configuration file.
+    /// 
+    /// This field takes precedence over `tracingConfig`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfigFile")]
     pub tracing_config_file: Option<String>,
     /// Version of Thanos to be deployed.
@@ -978,10 +1029,15 @@ pub struct ThanosRulerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuri
     pub values: Option<Vec<String>>,
 }
 
-/// AlertRelabelConfigs configures alert relabeling in ThanosRuler.
-/// Alert relabel configurations must have the form as specified in the official Prometheus documentation:
+/// Configures alert relabeling in Thanos Ruler.
+/// 
+/// Alert relabel configuration must have the form as specified in the
+/// official Prometheus documentation:
 /// https://prometheus.io/docs/prometheus/latest/configuration/configuration/#alert_relabel_configs
-/// Alternative to AlertRelabelConfigFile, and lower order priority.
+/// 
+/// The operator performs no validation of the configuration.
+/// 
+/// `alertRelabelConfigFile` takes precedence over this field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerAlertRelabelConfigs {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -998,8 +1054,15 @@ pub struct ThanosRulerAlertRelabelConfigs {
     pub optional: Option<bool>,
 }
 
-/// Define configuration for connecting to alertmanager.  Only available with thanos v0.10.0
-/// and higher.  Maps to the `alertmanagers.config` arg.
+/// Configures the list of Alertmanager endpoints to send alerts to.
+/// 
+/// The configuration format is defined at https://thanos.io/tip/components/rule.md/#alertmanager.
+/// 
+/// It requires Thanos >= v0.10.0.
+/// 
+/// The operator performs no validation of the configuration.
+/// 
+/// This field takes precedence over `alertmanagersUrl`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerAlertmanagersConfig {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3770,8 +3833,13 @@ pub enum ThanosRulerLogLevel {
     Error,
 }
 
-/// ObjectStorageConfig configures object storage in Thanos.
-/// Alternative to ObjectStorageConfigFile, and lower order priority.
+/// Configures object storage.
+/// 
+/// The configuration format is defined at https://thanos.io/tip/thanos/storage.md/#configuring-access-to-object-storage
+/// 
+/// The operator performs no validation of the configuration.
+/// 
+/// `objectStorageConfigFile` takes precedence over this field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerObjectStorageConfig {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3833,10 +3901,15 @@ pub struct ThanosRulerPrometheusRulesExcludedFromEnforce {
     pub rule_namespace: String,
 }
 
-/// Define configuration for connecting to thanos query instances.
-/// If this is defined, the QueryEndpoints field will be ignored.
-/// Maps to the `query.config` CLI argument.
-/// Only available with thanos v0.11.0 and higher.
+/// Configures the list of Thanos Query endpoints from which to query metrics.
+/// 
+/// The configuration format is defined at https://thanos.io/tip/components/rule.md/#query-api
+/// 
+/// It requires Thanos >= v0.11.0.
+/// 
+/// The operator performs no validation of the configuration.
+/// 
+/// This field takes precedence over `queryEndpoints`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerQueryConfig {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -3923,8 +3996,9 @@ pub struct ThanosRulerRuleNamespaceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// A label selector to select which PrometheusRules to mount for alerting and
-/// recording.
+/// PrometheusRule objects to be selected for rule evaluation. An empty
+/// label selector matches all objects. A null label selector matches no
+/// objects.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerRuleSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -4991,12 +5065,16 @@ pub struct ThanosRulerTopologySpreadConstraintsLabelSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// TracingConfig configures tracing in Thanos.
+/// Configures tracing.
 /// 
-/// `tracingConfigFile` takes precedence over this field.
+/// The configuration format is defined at https://thanos.io/tip/thanos/tracing.md/#configuration
 /// 
 /// This is an *experimental feature*, it may change in any upcoming release
 /// in a breaking way.
+/// 
+/// The operator performs no validation of the configuration.
+/// 
+/// `tracingConfigFile` takes precedence over this field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerTracingConfig {
     /// The key of the secret to select from.  Must be a valid secret key.

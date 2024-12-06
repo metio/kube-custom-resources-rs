@@ -12,6 +12,8 @@ spec:
     kind: "ZoneIngress"
     listKind: "ZoneIngressList"
     plural: "zoneingresses"
+    shortNames:
+      - "zi"
     singular: "zoneingress"
   scope: "Namespaced"
   versions:

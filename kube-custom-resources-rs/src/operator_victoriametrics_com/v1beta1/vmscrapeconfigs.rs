@@ -3075,6 +3075,10 @@ pub enum VMScrapeConfigScheme {
     Http,
     #[serde(rename = "https")]
     Https,
+    #[serde(rename = "HTTPS")]
+    HttpsX,
+    #[serde(rename = "HTTP")]
+    HttpX,
 }
 
 /// StaticConfig defines a static configuration.
@@ -3487,6 +3491,10 @@ pub struct VMScrapeConfigStatus {
     /// LastSyncError contains error message for unsuccessful config generation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
     pub last_sync_error: Option<String>,
+    /// ObservedGeneration defines current generation picked by operator for the
+    /// reconcile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
     /// Status defines update status of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,

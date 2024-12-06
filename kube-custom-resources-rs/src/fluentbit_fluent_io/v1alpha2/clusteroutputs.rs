@@ -3031,6 +3031,9 @@ pub struct ClusterOutputOpentelemetry {
     /// Log the response payload within the Fluent Bit log.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logResponsePayload")]
     pub log_response_payload: Option<bool>,
+    /// The log body key to look up in the log events body/message. Sets the Body field of the opentelemtry logs data model.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logsBodyKey")]
+    pub logs_body_key: Option<String>,
     /// If true, remaining unmatched keys are added as attributes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logsBodyKeyAttributes")]
     pub logs_body_key_attributes: Option<bool>,

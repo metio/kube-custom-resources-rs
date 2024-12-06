@@ -484,7 +484,6 @@ pub struct DatadogAgentFeaturesApm {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesApmHostPortConfig {
     /// Enabled enables host port configuration
-    /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Port takes a port number (0 < x < 65536) to expose on the host. (Most containers do not need this.)
@@ -824,7 +823,6 @@ pub struct DatadogAgentFeaturesDogstatsd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesDogstatsdHostPortConfig {
     /// Enabled enables host port configuration
-    /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Port takes a port number (0 < x < 65536) to expose on the host. (Most containers do not need this.)
@@ -1295,7 +1293,7 @@ pub struct DatadogAgentFeaturesOtlpReceiverProtocols {
 /// GRPC contains configuration for the OTLP ingest OTLP/gRPC receiver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesOtlpReceiverProtocolsGrpc {
-    /// Enable the OTLP/gRPC endpoint.
+    /// Enable the OTLP/gRPC endpoint. Host port is enabled by default and can be disabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Endpoint for OTLP/gRPC.
@@ -1304,18 +1302,52 @@ pub struct DatadogAgentFeaturesOtlpReceiverProtocolsGrpc {
     /// Default: `0.0.0.0:4317`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
+    /// Enable hostPort for OTLP/gRPC
+    /// Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPortConfig")]
+    pub host_port_config: Option<DatadogAgentFeaturesOtlpReceiverProtocolsGrpcHostPortConfig>,
+}
+
+/// Enable hostPort for OTLP/gRPC
+/// Default: true
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesOtlpReceiverProtocolsGrpcHostPortConfig {
+    /// Enabled enables host port configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Port takes a port number (0 < x < 65536) to expose on the host. (Most containers do not need this.)
+    /// If HostNetwork is enabled, this value must match the ContainerPort.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
 }
 
 /// HTTP contains configuration for the OTLP ingest OTLP/HTTP receiver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesOtlpReceiverProtocolsHttp {
-    /// Enable the OTLP/HTTP endpoint.
+    /// Enable the OTLP/HTTP endpoint. Host port is enabled by default and can be disabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Endpoint for OTLP/HTTP.
     /// Default: '0.0.0.0:4318'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
+    /// Enable hostPorts for OTLP/HTTP
+    /// Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPortConfig")]
+    pub host_port_config: Option<DatadogAgentFeaturesOtlpReceiverProtocolsHttpHostPortConfig>,
+}
+
+/// Enable hostPorts for OTLP/HTTP
+/// Default: true
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesOtlpReceiverProtocolsHttpHostPortConfig {
+    /// Enabled enables host port configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Port takes a port number (0 < x < 65536) to expose on the host. (Most containers do not need this.)
+    /// If HostNetwork is enabled, this value must match the ContainerPort.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
 }
 
 /// ProcessDiscovery configuration.
@@ -1455,12 +1487,27 @@ pub struct DatadogAgentGlobal {
     /// Overrides the site setting defined in `Site`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<DatadogAgentGlobalEndpoint>,
+    /// Env contains a list of environment variables that are set for all Agents.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<DatadogAgentGlobalEnv>>,
     /// FIPS contains configuration used to customize the FIPS proxy sidecar.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fips: Option<DatadogAgentGlobalFips>,
     /// Kubelet contains the kubelet configuration parameters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubelet: Option<DatadogAgentGlobalKubelet>,
+    /// Provide a mapping of Kubernetes Resource Groups to annotations mapping to Datadog Tags.
+    /// <KUBERNETES_RESOURCE_GROUP>:
+    /// 		<KUBERNETES_ANNOTATION>: <DATADOG_TAG_KEY>
+    /// KUBERNETES_RESOURCE_GROUP should be in the form `{resource}.{group}` or `{resource}` (example: deployments.apps, pods)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesResourcesAnnotationsAsTags")]
+    pub kubernetes_resources_annotations_as_tags: Option<BTreeMap<String, DatadogAgentGlobalKubernetesResourcesAnnotationsAsTags>>,
+    /// Provide a mapping of Kubernetes Resource Groups to labels mapping to Datadog Tags.
+    /// <KUBERNETES_RESOURCE_GROUP>:
+    /// 		<KUBERNETES_LABEL>: <DATADOG_TAG_KEY>
+    /// KUBERNETES_RESOURCE_GROUP should be in the form `{resource}.{group}` or `{resource}` (example: deployments.apps, pods)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesResourcesLabelsAsTags")]
+    pub kubernetes_resources_labels_as_tags: Option<BTreeMap<String, DatadogAgentGlobalKubernetesResourcesLabelsAsTags>>,
     /// LocalService contains configuration to customize the internal traffic policy service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localService")]
     pub local_service: Option<DatadogAgentGlobalLocalService>,
@@ -1497,10 +1544,18 @@ pub struct DatadogAgentGlobal {
     pub pod_labels_as_tags: Option<BTreeMap<String, String>>,
     /// Registry is the image registry to use for all Agent images.
     /// Use 'public.ecr.aws/datadog' for AWS ECR.
+    /// Use 'datadoghq.azurecr.io' for Azure Container Registry.
+    /// Use 'gcr.io/datadoghq' for Google Container Registry.
+    /// Use 'eu.gcr.io/datadoghq' for Google Container Registry in the EU region.
+    /// Use 'asia.gcr.io/datadoghq' for Google Container Registry in the Asia region.
     /// Use 'docker.io/datadog' for DockerHub.
     /// Default: 'gcr.io/datadoghq'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<String>,
+    /// Configure the secret backend feature https://docs.datadoghq.com/agent/guide/secrets-management
+    /// See also: https://github.com/DataDog/datadog-operator/blob/main/docs/secret_management.md
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretBackend")]
+    pub secret_backend: Option<DatadogAgentGlobalSecretBackend>,
     /// Site is the Datadog intake site Agent data are sent to.
     /// Set to 'datadoghq.com' to send data to the US1 site (default).
     /// Set to 'datadoghq.eu' to send data to the EU site.
@@ -1631,6 +1686,102 @@ pub struct DatadogAgentGlobalEndpointCredentialsAppSecret {
     /// SecretName is the name of the secret.
     #[serde(rename = "secretName")]
     pub secret_name: String,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<DatadogAgentGlobalEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<DatadogAgentGlobalEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<DatadogAgentGlobalEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<DatadogAgentGlobalEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<DatadogAgentGlobalEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// FIPS contains configuration used to customize the FIPS proxy sidecar.
@@ -1956,6 +2107,44 @@ pub struct DatadogAgentGlobalOriginDetectionUnified {
     pub enabled: Option<bool>,
 }
 
+/// Configure the secret backend feature https://docs.datadoghq.com/agent/guide/secrets-management
+/// See also: https://github.com/DataDog/datadog-operator/blob/main/docs/secret_management.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalSecretBackend {
+    /// List of arguments to pass to the command (space-separated strings).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<String>,
+    /// The secret backend command to use. Datadog provides a pre-defined binary `/readsecret_multiple_providers.sh`.
+    /// Read more about `/readsecret_multiple_providers.sh` at https://docs.datadoghq.com/agent/configuration/secrets-management/?tab=linux#script-for-reading-from-multiple-secret-providers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<String>,
+    /// Whether to create a global permission allowing Datadog agents to read all Kubernetes secrets.
+    /// Default: `false`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableGlobalPermissions")]
+    pub enable_global_permissions: Option<bool>,
+    /// Roles for Datadog to read the specified secrets, replacing `enableGlobalPermissions`.
+    /// They are defined as a list of namespace/secrets.
+    /// Each defined namespace needs to be present in the DatadogAgent controller using `WATCH_NAMESPACE` or `DD_AGENT_WATCH_NAMESPACE`.
+    /// See also: https://github.com/DataDog/datadog-operator/blob/main/docs/secret_management.md#how-to-deploy-the-agent-components-using-the-secret-backend-feature-with-datadogagent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub roles: Option<Vec<DatadogAgentGlobalSecretBackendRoles>>,
+    /// The command timeout in seconds.
+    /// Default: `30`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<i32>,
+}
+
+/// SecretBackendRolesConfig provides configuration of the secrets Datadog agents can read for the SecretBackend feature
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentGlobalSecretBackendRoles {
+    /// Namespace defines the namespace in which the secrets reside.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Secrets defines the list of secrets for which a role should be created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secrets: Option<Vec<String>>,
+}
+
 /// Override the default configurations of the agents
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentOverride {
@@ -2000,6 +2189,10 @@ pub struct DatadogAgentOverride {
     /// See also: https://docs.datadoghq.com/agent/kubernetes/?tab=helm#environment-variables
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<DatadogAgentOverrideEnv>>,
+    /// EnvFrom specifies the ConfigMaps and Secrets to expose as environment variables.
+    /// Priority is env > envFrom.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
+    pub env_from: Option<Vec<DatadogAgentOverrideEnvFrom>>,
     /// Checksd configuration allowing to specify custom checks placed under /etc/datadog-agent/checks.d/
     /// See https://docs.datadoghq.com/agent/guide/agent-configuration-files/?tab=agentv6 for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraChecksd")]
@@ -2041,6 +2234,9 @@ pub struct DatadogAgentOverride {
     /// Pod-level SecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<DatadogAgentOverrideSecurityContext>,
+    /// Sets the ServiceAccountAnnotations used by this component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountAnnotations")]
+    pub service_account_annotations: Option<BTreeMap<String, String>>,
     /// Sets the ServiceAccount used by this component.
     /// Ignored if the field CreateRbac is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
@@ -3511,6 +3707,46 @@ pub struct DatadogAgentOverrideEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// EnvFromSource represents the source of a set of ConfigMaps
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentOverrideEnvFrom {
+    /// The ConfigMap to select from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<DatadogAgentOverrideEnvFromConfigMapRef>,
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// The Secret to select from
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<DatadogAgentOverrideEnvFromSecretRef>,
+}
+
+/// The ConfigMap to select from
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentOverrideEnvFromConfigMapRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The Secret to select from
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentOverrideEnvFromSecretRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
@@ -5992,7 +6228,6 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesApm {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesApmHostPortConfig {
     /// Enabled enables host port configuration
-    /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Port takes a port number (0 < x < 65536) to expose on the host. (Most containers do not need this.)
@@ -6332,7 +6567,6 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesDogstatsdHostPortConfig {
     /// Enabled enables host port configuration
-    /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Port takes a port number (0 < x < 65536) to expose on the host. (Most containers do not need this.)
@@ -6803,7 +7037,7 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtoc
 /// GRPC contains configuration for the OTLP ingest OTLP/gRPC receiver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocolsGrpc {
-    /// Enable the OTLP/gRPC endpoint.
+    /// Enable the OTLP/gRPC endpoint. Host port is enabled by default and can be disabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Endpoint for OTLP/gRPC.
@@ -6812,18 +7046,52 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtoc
     /// Default: `0.0.0.0:4317`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
+    /// Enable hostPort for OTLP/gRPC
+    /// Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPortConfig")]
+    pub host_port_config: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocolsGrpcHostPortConfig>,
+}
+
+/// Enable hostPort for OTLP/gRPC
+/// Default: true
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocolsGrpcHostPortConfig {
+    /// Enabled enables host port configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Port takes a port number (0 < x < 65536) to expose on the host. (Most containers do not need this.)
+    /// If HostNetwork is enabled, this value must match the ContainerPort.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
 }
 
 /// HTTP contains configuration for the OTLP ingest OTLP/HTTP receiver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocolsHttp {
-    /// Enable the OTLP/HTTP endpoint.
+    /// Enable the OTLP/HTTP endpoint. Host port is enabled by default and can be disabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Endpoint for OTLP/HTTP.
     /// Default: '0.0.0.0:4318'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
+    /// Enable hostPorts for OTLP/HTTP
+    /// Default: true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPortConfig")]
+    pub host_port_config: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocolsHttpHostPortConfig>,
+}
+
+/// Enable hostPorts for OTLP/HTTP
+/// Default: true
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesOtlpReceiverProtocolsHttpHostPortConfig {
+    /// Enabled enables host port configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Port takes a port number (0 < x < 65536) to expose on the host. (Most containers do not need this.)
+    /// If HostNetwork is enabled, this value must match the ContainerPort.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
+    pub host_port: Option<i32>,
 }
 
 /// ProcessDiscovery configuration.

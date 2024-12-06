@@ -2294,6 +2294,9 @@ spec:
                           description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
+                    respectRBAC:
+                      description: "RespectRBAC restricts controller from discovering/syncing specific resources, Defaults is empty if not configured. Valid options are strict and normal."
+                      type: "string"
                     sharding:
                       description: "Sharding contains the options for the Application Controller sharding configuration."
                       properties:

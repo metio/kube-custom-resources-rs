@@ -68,12 +68,16 @@ pub struct PerconaXtraDBClusterSpec {
     pub update_strategy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeOptions")]
     pub upgrade_options: Option<PerconaXtraDBClusterUpgradeOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub users: Option<Vec<PerconaXtraDBClusterUsers>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultSecretName")]
     pub vault_secret_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaXtraDBClusterBackup {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
+    pub active_deadline_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowParallel")]
     pub allow_parallel: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8465,6 +8469,30 @@ pub struct PerconaXtraDBClusterUpgradeOptions {
     pub schedule: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionServiceEndpoint")]
     pub version_service_endpoint: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterUsers {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dbs: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grants: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hosts: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretRef")]
+    pub password_secret_ref: Option<PerconaXtraDBClusterUsersPasswordSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withGrantOption")]
+    pub with_grant_option: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterUsersPasswordSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

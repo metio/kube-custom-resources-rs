@@ -747,7 +747,12 @@ spec:
                               type: "object"
                             type: "array"
                           apiVersion:
-                            description: "Version of the Alertmanager API that Prometheus uses to send alerts.\nIt can be \"v1\" or \"v2\"."
+                            description: "Version of the Alertmanager API that Prometheus uses to send alerts.\nIt can be \"V1\" or \"V2\".\nThe field has no effect for Prometheus >= v3.0.0 because only the v2 API is supported."
+                            enum:
+                              - "v1"
+                              - "V1"
+                              - "v2"
+                              - "V2"
                             type: "string"
                           authorization:
                             description: "Authorization section for Alertmanager.\n\nCannot be set at the same time as `basicAuth`, `bearerTokenFile` or `sigv4`."
@@ -2204,7 +2209,7 @@ spec:
                     type: "object"
                   type: "array"
                 disableCompaction:
-                  description: "When true, the Prometheus compaction is disabled."
+                  description: "When true, the Prometheus compaction is disabled.\nWhen `spec.thanos.objectStorageConfig` or `spec.objectStorageConfigFile` are defined, the operator automatically\ndisables block compaction to avoid race conditions during block uploads (as the Thanos documentation recommends)."
                   type: "boolean"
                 dnsConfig:
                   description: "Defines the DNS configuration for the pods."
@@ -2261,6 +2266,9 @@ spec:
                     type: "string"
                   type: "array"
                   x-kubernetes-list-type: "set"
+                enableOTLPReceiver:
+                  description: "Enable Prometheus to be used as a receiver for the OTLP Metrics protocol.\n\nNote that the OTLP receiver endpoint is automatically enabled if `.spec.otlpConfig` is defined.\n\nIt requires Prometheus >= v2.47.0."
+                  type: "boolean"
                 enableRemoteWriteReceiver:
                   description: "Enable Prometheus to be used as a receiver for the Prometheus remote\nwrite protocol.\n\nWARNING: This is not considered an efficient way of ingesting samples.\nUse it with caution for specific low-volume use cases.\nIt is not suitable for replacing the ingestion via scraping and turning\nPrometheus into a push-based metrics collection system.\nFor more information see https://prometheus.io/docs/prometheus/latest/querying/api/#remote-write-receiver\n\nIt requires Prometheus >= v2.33.0."
                   type: "boolean"
@@ -3332,6 +3340,12 @@ spec:
                   description: "Minimum number of seconds for which a newly created Pod should be ready\nwithout any of its container crashing for it to be considered available.\nDefaults to 0 (pod will be considered available as soon as it is ready)\n\nThis is an alpha field from kubernetes 1.22 until 1.24 which requires\nenabling the StatefulSetMinReadySeconds feature gate."
                   format: "int32"
                   type: "integer"
+                nameValidationScheme:
+                  description: "Specifies the validation scheme for metric and label names."
+                  enum:
+                    - "UTF8"
+                    - "Legacy"
+                  type: "string"
                 nodeSelector:
                   additionalProperties:
                     type: "string"
@@ -3348,6 +3362,12 @@ spec:
                       minItems: 1
                       type: "array"
                       x-kubernetes-list-type: "set"
+                    translationStrategy:
+                      description: "Configures how the OTLP receiver endpoint translates the incoming metrics.\nIf unset, Prometheus uses its default value.\n\nIt requires Prometheus >= v3.0.0."
+                      enum:
+                        - "NoUTF8EscapingWithSuffixes"
+                        - "UnderscoreEscapingWithSuffixes"
+                      type: "string"
                   type: "object"
                 overrideHonorLabels:
                   description: "When true, Prometheus resolves label conflicts by renaming the labels in the scraped data\n to “exported_” for all targets created from ServiceMonitor, PodMonitor and\nScrapeConfig objects. Otherwise the HonorLabels field of the service or pod monitor applies.\nIn practice,`overrideHonorLaels:true` enforces `honorLabels:false`\nfor all ServiceMonitor, PodMonitor and ScrapeConfig objects."
@@ -5296,20 +5316,30 @@ spec:
                       type: "object"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
+                scrapeFallbackProtocol:
+                  description: "The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.\n\nIt requires Prometheus >= v3.0.0."
+                  enum:
+                    - "PrometheusProto"
+                    - "OpenMetricsText0.0.1"
+                    - "OpenMetricsText1.0.0"
+                    - "PrometheusText0.0.4"
+                    - "PrometheusText1.0.0"
+                  type: "string"
                 scrapeInterval:
                   default: "30s"
                   description: "Interval between consecutive scrapes.\n\nDefault: \"30s\""
                   pattern: "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"
                   type: "string"
                 scrapeProtocols:
-                  description: "The protocols to negotiate during a scrape. It tells clients the\nprotocols supported by Prometheus in order of preference (from most to least preferred).\n\nIf unset, Prometheus uses its default value.\n\nIt requires Prometheus >= v2.49.0."
+                  description: "The protocols to negotiate during a scrape. It tells clients the\nprotocols supported by Prometheus in order of preference (from most to least preferred).\n\nIf unset, Prometheus uses its default value.\n\nIt requires Prometheus >= v2.49.0.\n\n`PrometheusText1.0.0` requires Prometheus >= v3.0.0."
                   items:
-                    description: "ScrapeProtocol represents a protocol used by Prometheus for scraping metrics.\nSupported values are:\n* `OpenMetricsText0.0.1`\n* `OpenMetricsText1.0.0`\n* `PrometheusProto`\n* `PrometheusText0.0.4`"
+                    description: "ScrapeProtocol represents a protocol used by Prometheus for scraping metrics.\nSupported values are:\n* `OpenMetricsText0.0.1`\n* `OpenMetricsText1.0.0`\n* `PrometheusProto`\n* `PrometheusText0.0.4`\n* `PrometheusText1.0.0`"
                     enum:
                       - "PrometheusProto"
                       - "OpenMetricsText0.0.1"
                       - "OpenMetricsText1.0.0"
                       - "PrometheusText0.0.4"
+                      - "PrometheusText1.0.0"
                     type: "string"
                   type: "array"
                   x-kubernetes-list-type: "set"
@@ -5507,7 +5537,7 @@ spec:
                   description: "Deprecated: use 'spec.image' instead. The image's digest can be specified as part of the image name."
                   type: "string"
                 shards:
-                  description: "Number of shards to distribute targets onto. `spec.replicas`\nmultiplied by `spec.shards` is the total number of Pods created.\n\nNote that scaling down shards will not reshard data onto remaining\ninstances, it must be manually moved. Increasing shards will not reshard\ndata either but it will continue to be available from the same\ninstances. To query globally, use Thanos sidecar and Thanos querier or\nremote write data to a central location.\n\nSharding is performed on the content of the `__address__` target meta-label\nfor PodMonitors and ServiceMonitors and `__param_target__` for Probes.\n\nDefault: 1"
+                  description: "Number of shards to distribute scraped targets onto.\n\n`spec.replicas` multiplied by `spec.shards` is the total number of Pods\nbeing created.\n\nWhen not defined, the operator assumes only one shard.\n\nNote that scaling down shards will not reshard data onto the remaining\ninstances, it must be manually moved. Increasing shards will not reshard\ndata either but it will continue to be available from the same\ninstances. To query globally, use Thanos sidecar and Thanos querier or\nremote write data to a central location.\nAlerting and recording rules\n\nBy default, the sharding is performed on:\n* The `__address__` target's metadata label for PodMonitor,\nServiceMonitor and ScrapeConfig resources.\n* The `__param_target__` label for Probe resources.\n\nUsers can define their own sharding implementation by setting the\n`__tmp_hash` label during the target discovery with relabeling\nconfiguration (either in the monitoring resources or via scrape class)."
                   format: "int32"
                   type: "integer"
                 storage:

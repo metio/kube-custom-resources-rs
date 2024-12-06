@@ -2825,7 +2825,7 @@ spec:
                   maxLength: 32
                   type: "string"
                 services:
-                  description: "Overrides Services defined in referenced ComponentDefinition and exposes endpoints that can be accessed by clients."
+                  description: "Overrides Services defined in referenced ComponentDefinition."
                   items:
                     description: "ComponentService defines a service that would be exposed as an inter-component service within a Cluster.\nA Service defined in the ComponentService is expected to be accessed by other Components within the same Cluster.\n\n\nWhen a Component needs to use a ComponentService provided by another Component within the same Cluster,\nit can declare a variable in the `componentDefinition.spec.vars` section and bind it to the specific exposed address\nof the ComponentService using the `serviceVarRef` field."
                     properties:
@@ -2974,6 +2974,25 @@ spec:
                         type: "object"
                     required:
                       - "name"
+                    type: "object"
+                  type: "array"
+                sidecars:
+                  description: "Specifies the sidecars to be injected into the Component."
+                  items:
+                    properties:
+                      name:
+                        description: "Name specifies the unique name of the sidecar.\n\n\nThe name will be used as the name of the sidecar container in the Pod."
+                        type: "string"
+                      owner:
+                        description: "Specifies the exact component definition that the sidecar belongs to.\n\n\nA sidecar will be updated when the owner component definition is updated only."
+                        type: "string"
+                      sidecarDef:
+                        description: "Specifies the sidecar definition CR to be used to create the sidecar."
+                        type: "string"
+                    required:
+                      - "name"
+                      - "owner"
+                      - "sidecarDef"
                     type: "object"
                   type: "array"
                 stop:
@@ -4201,12 +4220,13 @@ spec:
                   format: "int64"
                   type: "integer"
                 phase:
-                  description: "Indicates the current phase of the Component, with each phase indicating specific conditions:\n\n\n- Creating: The initial phase for new Components, transitioning from 'empty'(\"\").\n- Running: All Pods are up-to-date and in a Running state.\n- Updating: The Component is currently being updated, with no failed Pods present.\n- Failed: A significant number of Pods have failed.\n- Stopping: All Pods are being terminated, with current replica count at zero.\n- Stopped: All associated Pods have been successfully deleted.\n- Deleting: The Component is being deleted."
+                  description: "Indicates the current phase of the Component, with each phase indicating specific conditions:\n\n\n- Creating: The initial phase for new Components, transitioning from 'empty'(\"\").\n- Running: All Pods are up-to-date and in a Running state.\n- Updating: The Component is currently being updated, with no failed Pods present.\n- Failed: A significant number of Pods have failed.\n- Stopping: All Pods are being terminated, with current replica count at zero.\n- Stopped: All associated Pods have been successfully deleted.\n- Starting: Pods are being started.\n- Deleting: The Component is being deleted."
                   enum:
                     - "Creating"
                     - "Deleting"
                     - "Updating"
                     - "Stopping"
+                    - "Starting"
                     - "Running"
                     - "Stopped"
                     - "Failed"

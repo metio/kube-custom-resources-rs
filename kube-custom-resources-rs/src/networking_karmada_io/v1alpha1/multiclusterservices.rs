@@ -63,8 +63,7 @@ pub struct MultiClusterServiceSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MultiClusterServiceConsumerClusters {
     /// Name is the name of the cluster to be selected.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// ExposurePort describes which port will be exposed.
@@ -82,8 +81,7 @@ pub struct MultiClusterServicePorts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MultiClusterServiceProviderClusters {
     /// Name is the name of the cluster to be selected.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// Range specifies the ranges where the referencing service should
@@ -156,10 +154,7 @@ pub struct MultiClusterServiceStatusLoadBalancerIngressPorts {
     ///   CamelCase names
     /// - cloud provider specific error values must have names that comply with the
     ///   format foo.example.com/CamelCase.
-    /// ---
-    /// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error: Option<String>,
+    pub error: String,
     /// Port is the port number of the service port of which status is recorded here
     pub port: i32,
     /// Protocol is the protocol of the service port of which status is recorded here

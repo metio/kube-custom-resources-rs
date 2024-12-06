@@ -91,7 +91,7 @@ pub struct VMRuleGroups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
     /// Type defines datasource type for enterprise version of vmalert
-    /// possible values - prometheus,graphite
+    /// possible values - prometheus,graphite,vlogs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }

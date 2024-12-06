@@ -35,6 +35,9 @@ pub struct SriovNetworkPoolConfigSpec {
     /// OvsHardwareOffloadConfig describes the OVS HWOL configuration for selected Nodes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ovsHardwareOffloadConfig")]
     pub ovs_hardware_offload_config: Option<SriovNetworkPoolConfigOvsHardwareOffloadConfig>,
+    /// RDMA subsystem. Allowed value "shared", "exclusive".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rdmaMode")]
+    pub rdma_mode: Option<SriovNetworkPoolConfigRdmaMode>,
 }
 
 /// nodeSelector specifies a label selector for Nodes
@@ -77,6 +80,15 @@ pub struct SriovNetworkPoolConfigOvsHardwareOffloadConfig {
     /// Name is the name of MachineConfigPool to be enabled with OVS hardware offload
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// SriovNetworkPoolConfigSpec defines the desired state of SriovNetworkPoolConfig
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SriovNetworkPoolConfigRdmaMode {
+    #[serde(rename = "shared")]
+    Shared,
+    #[serde(rename = "exclusive")]
+    Exclusive,
 }
 
 /// SriovNetworkPoolConfigStatus defines the observed state of SriovNetworkPoolConfig

@@ -12,6 +12,8 @@ spec:
     kind: "MeshHTTPRoute"
     listKind: "MeshHTTPRouteList"
     plural: "meshhttproutes"
+    shortNames:
+      - "mhttpr"
     singular: "meshhttproute"
   scope: "Namespaced"
   versions:

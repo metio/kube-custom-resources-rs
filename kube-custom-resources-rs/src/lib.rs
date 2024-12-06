@@ -1357,6 +1357,11 @@ apiVersion `groupsnapshot.storage.k8s.io/v1alpha1`:
 - `VolumeGroupSnapshotContent`
 - `VolumeGroupSnapshot`
 
+apiVersion `groupsnapshot.storage.k8s.io/v1beta1`:
+- `VolumeGroupSnapshotClass`
+- `VolumeGroupSnapshotContent`
+- `VolumeGroupSnapshot`
+
 ## hazelcast_com
 
 apiVersion `hazelcast.com/v1alpha1`:
@@ -1798,6 +1803,10 @@ apiVersion `kms.services.k8s.aws/v1alpha1`:
 - `Key`
 
 ## kuadrant_io
+
+apiVersion `kuadrant.io/v1`:
+- `AuthPolicy`
+- `RateLimitPolicy`
 
 apiVersion `kuadrant.io/v1alpha1`:
 - `DNSRecord`

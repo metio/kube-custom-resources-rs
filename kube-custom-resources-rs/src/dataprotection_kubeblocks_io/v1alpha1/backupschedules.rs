@@ -42,6 +42,14 @@ pub struct BackupScheduleSchedules {
     /// Specifies whether the backup schedule is enabled or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// Specifies the name of the schedule. Names cannot be duplicated.
+    /// If the name is empty, it will be considered the same as the value of the backupMethod below.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specifies a list of name-value pairs representing parameters and their corresponding values.
+    /// Parameters match the schema specified in the `actionset.spec.parametersSchema`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<Vec<BackupScheduleSchedulesParameters>>,
     /// Determines the duration for which the backup should be kept.
     /// KubeBlocks will remove all backups that are older than the RetentionPeriod.
     /// For example, RetentionPeriod of `30d` will keep only the backups of last 30 days.
@@ -58,6 +66,14 @@ pub struct BackupScheduleSchedules {
     /// You can also combine the above durations. For example: 30d12h30m
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupScheduleSchedulesParameters {
+    /// Represents the name of the parameter.
+    pub name: String,
+    /// Represents the parameter values.
+    pub value: String,
 }
 
 /// BackupScheduleStatus defines the observed state of BackupSchedule.
