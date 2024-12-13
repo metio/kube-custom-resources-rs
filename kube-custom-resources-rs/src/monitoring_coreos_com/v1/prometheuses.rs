@@ -151,6 +151,8 @@ pub struct PrometheusSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<PrometheusContainers>>,
     /// When true, the Prometheus compaction is disabled.
+    /// When `spec.thanos.objectStorageConfig` or `spec.objectStorageConfigFile` are defined, the operator automatically
+    /// disables block compaction to avoid race conditions during block uploads (as the Thanos documentation recommends).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableCompaction")]
     pub disable_compaction: Option<bool>,
     /// Defines the DNS configuration for the pods.
@@ -179,6 +181,13 @@ pub struct PrometheusSpec {
     /// For more information see https://prometheus.io/docs/prometheus/latest/feature_flags/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFeatures")]
     pub enable_features: Option<Vec<String>>,
+    /// Enable Prometheus to be used as a receiver for the OTLP Metrics protocol.
+    /// 
+    /// Note that the OTLP receiver endpoint is automatically enabled if `.spec.otlpConfig` is defined.
+    /// 
+    /// It requires Prometheus >= v2.47.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableOTLPReceiver")]
+    pub enable_otlp_receiver: Option<bool>,
     /// Enable Prometheus to be used as a receiver for the Prometheus remote
     /// write protocol.
     /// 
@@ -441,6 +450,9 @@ pub struct PrometheusSpec {
     /// enabling the StatefulSetMinReadySeconds feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
+    /// Specifies the validation scheme for metric and label names.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameValidationScheme")]
+    pub name_validation_scheme: Option<PrometheusNameValidationScheme>,
     /// Defines on which Nodes the Pods are scheduled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
@@ -664,6 +676,11 @@ pub struct PrometheusSpec {
     /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigSelector")]
     pub scrape_config_selector: Option<PrometheusScrapeConfigSelector>,
+    /// The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeFallbackProtocol")]
+    pub scrape_fallback_protocol: Option<PrometheusScrapeFallbackProtocol>,
     /// Interval between consecutive scrapes.
     /// 
     /// Default: "30s"
@@ -675,6 +692,8 @@ pub struct PrometheusSpec {
     /// If unset, Prometheus uses its default value.
     /// 
     /// It requires Prometheus >= v2.49.0.
+    /// 
+    /// `PrometheusText1.0.0` requires Prometheus >= v3.0.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
     pub scrape_protocols: Option<Vec<String>>,
     /// Number of seconds to wait until a scrape request times out.
@@ -722,19 +741,28 @@ pub struct PrometheusSpec {
     /// Deprecated: use 'spec.image' instead. The image's digest can be specified as part of the image name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha: Option<String>,
-    /// Number of shards to distribute targets onto. `spec.replicas`
-    /// multiplied by `spec.shards` is the total number of Pods created.
+    /// Number of shards to distribute scraped targets onto.
     /// 
-    /// Note that scaling down shards will not reshard data onto remaining
+    /// `spec.replicas` multiplied by `spec.shards` is the total number of Pods
+    /// being created.
+    /// 
+    /// When not defined, the operator assumes only one shard.
+    /// 
+    /// Note that scaling down shards will not reshard data onto the remaining
     /// instances, it must be manually moved. Increasing shards will not reshard
     /// data either but it will continue to be available from the same
     /// instances. To query globally, use Thanos sidecar and Thanos querier or
     /// remote write data to a central location.
+    /// Alerting and recording rules
     /// 
-    /// Sharding is performed on the content of the `__address__` target meta-label
-    /// for PodMonitors and ServiceMonitors and `__param_target__` for Probes.
+    /// By default, the sharding is performed on:
+    /// * The `__address__` target's metadata label for PodMonitor,
+    /// ServiceMonitor and ScrapeConfig resources.
+    /// * The `__param_target__` label for Probe resources.
     /// 
-    /// Default: 1
+    /// Users can define their own sharding implementation by setting the
+    /// `__tmp_hash` label during the target discovery with relabeling
+    /// configuration (either in the monitoring resources or via scrape class).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shards: Option<i32>,
     /// Storage defines the storage used by Prometheus.
@@ -1614,9 +1642,10 @@ pub struct PrometheusAlertingAlertmanagers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertRelabelings")]
     pub alert_relabelings: Option<Vec<PrometheusAlertingAlertmanagersAlertRelabelings>>,
     /// Version of the Alertmanager API that Prometheus uses to send alerts.
-    /// It can be "v1" or "v2".
+    /// It can be "V1" or "V2".
+    /// The field has no effect for Prometheus >= v3.0.0 because only the v2 API is supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
+    pub api_version: Option<PrometheusAlertingAlertmanagersApiVersion>,
     /// Authorization section for Alertmanager.
     /// 
     /// Cannot be set at the same time as `basicAuth`, `bearerTokenFile` or `sigv4`.
@@ -1761,6 +1790,20 @@ pub enum PrometheusAlertingAlertmanagersAlertRelabelingsAction {
     #[serde(rename = "dropequal")]
     Dropequal,
     DropEqual,
+}
+
+/// AlertmanagerEndpoints defines a selection of a single Endpoints object
+/// containing Alertmanager IPs to fire alerts against.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAlertingAlertmanagersApiVersion {
+    #[serde(rename = "v1")]
+    V1,
+    #[serde(rename = "V1")]
+    V1X,
+    #[serde(rename = "v2")]
+    V2,
+    #[serde(rename = "V2")]
+    V2X,
 }
 
 /// Authorization section for Alertmanager.
@@ -2832,23 +2875,23 @@ pub struct PrometheusContainersLifecycle {
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PrometheusContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PrometheusContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<PrometheusContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PrometheusContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2860,7 +2903,7 @@ pub struct PrometheusContainersLifecyclePostStartExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2893,7 +2936,7 @@ pub struct PrometheusContainersLifecyclePostStartHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -2901,8 +2944,8 @@ pub struct PrometheusContainersLifecyclePostStartSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -2925,23 +2968,23 @@ pub struct PrometheusContainersLifecyclePostStartTcpSocket {
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PrometheusContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PrometheusContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<PrometheusContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PrometheusContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2953,7 +2996,7 @@ pub struct PrometheusContainersLifecyclePreStopExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2986,7 +3029,7 @@ pub struct PrometheusContainersLifecyclePreStopHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -2994,8 +3037,8 @@ pub struct PrometheusContainersLifecyclePreStopSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3013,17 +3056,17 @@ pub struct PrometheusContainersLifecyclePreStopTcpSocket {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PrometheusContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PrometheusContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PrometheusContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3038,7 +3081,7 @@ pub struct PrometheusContainersLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PrometheusContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3060,7 +3103,7 @@ pub struct PrometheusContainersLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3072,7 +3115,7 @@ pub struct PrometheusContainersLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3085,7 +3128,7 @@ pub struct PrometheusContainersLivenessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3118,7 +3161,7 @@ pub struct PrometheusContainersLivenessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3163,17 +3206,17 @@ pub struct PrometheusContainersPorts {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PrometheusContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PrometheusContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PrometheusContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3188,7 +3231,7 @@ pub struct PrometheusContainersReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PrometheusContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3210,7 +3253,7 @@ pub struct PrometheusContainersReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3222,7 +3265,7 @@ pub struct PrometheusContainersReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3235,7 +3278,7 @@ pub struct PrometheusContainersReadinessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3268,7 +3311,7 @@ pub struct PrometheusContainersReadinessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3531,17 +3574,17 @@ pub struct PrometheusContainersSecurityContextWindowsOptions {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PrometheusContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PrometheusContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PrometheusContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3556,7 +3599,7 @@ pub struct PrometheusContainersStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PrometheusContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3578,7 +3621,7 @@ pub struct PrometheusContainersStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3590,7 +3633,7 @@ pub struct PrometheusContainersStartupProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3603,7 +3646,7 @@ pub struct PrometheusContainersStartupProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3636,7 +3679,7 @@ pub struct PrometheusContainersStartupProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4175,23 +4218,23 @@ pub struct PrometheusInitContainersLifecycle {
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PrometheusInitContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PrometheusInitContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<PrometheusInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PrometheusInitContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4203,7 +4246,7 @@ pub struct PrometheusInitContainersLifecyclePostStartExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4236,7 +4279,7 @@ pub struct PrometheusInitContainersLifecyclePostStartHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -4244,8 +4287,8 @@ pub struct PrometheusInitContainersLifecyclePostStartSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4268,23 +4311,23 @@ pub struct PrometheusInitContainersLifecyclePostStartTcpSocket {
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PrometheusInitContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PrometheusInitContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<PrometheusInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PrometheusInitContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4296,7 +4339,7 @@ pub struct PrometheusInitContainersLifecyclePreStopExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4329,7 +4372,7 @@ pub struct PrometheusInitContainersLifecyclePreStopHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -4337,8 +4380,8 @@ pub struct PrometheusInitContainersLifecyclePreStopSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4356,17 +4399,17 @@ pub struct PrometheusInitContainersLifecyclePreStopTcpSocket {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PrometheusInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PrometheusInitContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PrometheusInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4381,7 +4424,7 @@ pub struct PrometheusInitContainersLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PrometheusInitContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4403,7 +4446,7 @@ pub struct PrometheusInitContainersLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4415,7 +4458,7 @@ pub struct PrometheusInitContainersLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4428,7 +4471,7 @@ pub struct PrometheusInitContainersLivenessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4461,7 +4504,7 @@ pub struct PrometheusInitContainersLivenessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4506,17 +4549,17 @@ pub struct PrometheusInitContainersPorts {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PrometheusInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PrometheusInitContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PrometheusInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4531,7 +4574,7 @@ pub struct PrometheusInitContainersReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PrometheusInitContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4553,7 +4596,7 @@ pub struct PrometheusInitContainersReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4565,7 +4608,7 @@ pub struct PrometheusInitContainersReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4578,7 +4621,7 @@ pub struct PrometheusInitContainersReadinessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4611,7 +4654,7 @@ pub struct PrometheusInitContainersReadinessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4874,17 +4917,17 @@ pub struct PrometheusInitContainersSecurityContextWindowsOptions {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<PrometheusInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<PrometheusInitContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<PrometheusInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4899,7 +4942,7 @@ pub struct PrometheusInitContainersStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<PrometheusInitContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4921,7 +4964,7 @@ pub struct PrometheusInitContainersStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4933,7 +4976,7 @@ pub struct PrometheusInitContainersStartupProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4946,7 +4989,7 @@ pub struct PrometheusInitContainersStartupProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4979,7 +5022,7 @@ pub struct PrometheusInitContainersStartupProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -5080,6 +5123,15 @@ pub enum PrometheusLogLevel {
     Error,
 }
 
+/// Specification of the desired behavior of the Prometheus cluster. More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusNameValidationScheme {
+    #[serde(rename = "UTF8")]
+    Utf8,
+    Legacy,
+}
+
 /// Settings related to the OTLP receiver feature.
 /// It requires Prometheus >= v2.55.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5087,6 +5139,21 @@ pub struct PrometheusOtlp {
     /// List of OpenTelemetry Attributes that should be promoted to metric labels, defaults to none.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteResourceAttributes")]
     pub promote_resource_attributes: Option<Vec<String>>,
+    /// Configures how the OTLP receiver endpoint translates the incoming metrics.
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "translationStrategy")]
+    pub translation_strategy: Option<PrometheusOtlpTranslationStrategy>,
+}
+
+/// Settings related to the OTLP receiver feature.
+/// It requires Prometheus >= v2.55.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusOtlpTranslationStrategy {
+    #[serde(rename = "NoUTF8EscapingWithSuffixes")]
+    NoUtf8EscapingWithSuffixes,
+    UnderscoreEscapingWithSuffixes,
 }
 
 /// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.
@@ -7176,6 +7243,10 @@ pub struct PrometheusScrapeClasses {
     /// precedence over the scrape class configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
     pub attach_metadata: Option<PrometheusScrapeClassesAttachMetadata>,
+    /// Authorization section for the ScrapeClass.
+    /// It will only apply if the scrape resource doesn't specify any Authorization.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization: Option<PrometheusScrapeClassesAuthorization>,
     /// Default indicates that the scrape applies to all scrape objects that
     /// don't configure an explicit scrape class name.
     /// 
@@ -7224,6 +7295,42 @@ pub struct PrometheusScrapeClassesAttachMetadata {
     /// permissions on the `Nodes` objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
+}
+
+/// Authorization section for the ScrapeClass.
+/// It will only apply if the scrape resource doesn't specify any Authorization.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusScrapeClassesAuthorization {
+    /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<PrometheusScrapeClassesAuthorizationCredentials>,
+    /// File to read a secret from, mutually exclusive with `credentials`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
+    pub credentials_file: Option<String>,
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// Default: "Bearer"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusScrapeClassesAuthorizationCredentials {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
@@ -7670,6 +7777,21 @@ pub struct PrometheusScrapeConfigSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
+/// Specification of the desired behavior of the Prometheus cluster. More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusScrapeFallbackProtocol {
+    PrometheusProto,
+    #[serde(rename = "OpenMetricsText0.0.1")]
+    OpenMetricsText001,
+    #[serde(rename = "OpenMetricsText1.0.0")]
+    OpenMetricsText100,
+    #[serde(rename = "PrometheusText0.0.4")]
+    PrometheusText004,
+    #[serde(rename = "PrometheusText1.0.0")]
+    PrometheusText100,
+}
+
 /// SecurityContext holds pod-level security attributes and common container settings.
 /// This defaults to the default PodSecurityContext.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7723,6 +7845,31 @@ pub struct PrometheusSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    /// seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.
+    /// It has no effect on nodes that do not support SELinux or to volumes does not support SELinux.
+    /// Valid values are "MountOption" and "Recursive".
+    /// 
+    /// "Recursive" means relabeling of all files on all Pod volumes by the container runtime.
+    /// This may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.
+    /// 
+    /// "MountOption" mounts all eligible Pod volumes with `-o context` mount option.
+    /// This requires all Pods that share the same volume to use the same SELinux label.
+    /// It is not possible to share the same volume among privileged and unprivileged Pods.
+    /// Eligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes
+    /// whose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their
+    /// CSIDriver instance. Other volumes are always re-labelled recursively.
+    /// "MountOption" value is allowed only when SELinuxMount feature gate is enabled.
+    /// 
+    /// If not specified and SELinuxMount feature gate is enabled, "MountOption" is used.
+    /// If not specified and SELinuxMount feature gate is disabled, "MountOption" is used for ReadWriteOncePod volumes
+    /// and "Recursive" for all other volumes.
+    /// 
+    /// This field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.
+    /// 
+    /// All Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     /// The SELinux context to be applied to all containers.
     /// If unspecified, the container runtime will allocate a random SELinux context for each
     /// container.  May also be set in SecurityContext.  If set in
@@ -9578,26 +9725,35 @@ pub struct PrometheusVolumeMounts {
 pub struct PrometheusVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+    /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<PrometheusVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+    /// are redirected to the disk.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<PrometheusVolumesAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+    /// are redirected to the file.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
     pub azure_file: Option<PrometheusVolumesAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+    /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<PrometheusVolumesCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+    /// are redirected to the cinder.csi.openstack.org CSI driver.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<PrometheusVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PrometheusVolumesConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<PrometheusVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
@@ -9638,23 +9794,28 @@ pub struct PrometheusVolumes {
     pub fc: Option<PrometheusVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
+    /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<PrometheusVolumesFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+    /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<PrometheusVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+    /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<PrometheusVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<PrometheusVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
     /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<PrometheusVolumesGlusterfs>,
@@ -9699,23 +9860,30 @@ pub struct PrometheusVolumes {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<PrometheusVolumesPersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+    /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<PrometheusVolumesPhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+    /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+    /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+    /// is on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<PrometheusVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<PrometheusVolumesProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+    /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<PrometheusVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<PrometheusVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<PrometheusVolumesScaleIo>,
     /// secret represents a secret that should populate this volume.
@@ -9723,15 +9891,20 @@ pub struct PrometheusVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PrometheusVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<PrometheusVolumesStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+    /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+    /// are redirected to the csi.vsphere.vmware.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<PrometheusVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+/// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesAwsElasticBlockStore {
@@ -9758,6 +9931,8 @@ pub struct PrometheusVolumesAwsElasticBlockStore {
 }
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+/// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+/// are redirected to the disk.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
@@ -9784,6 +9959,8 @@ pub struct PrometheusVolumesAzureDisk {
 }
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+/// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+/// are redirected to the file.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
@@ -9798,7 +9975,8 @@ pub struct PrometheusVolumesAzureFile {
     pub share_name: String,
 }
 
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+/// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
@@ -9840,6 +10018,8 @@ pub struct PrometheusVolumesCephfsSecretRef {
 }
 
 /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+/// are redirected to the cinder.csi.openstack.org CSI driver.
 /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesCinder {
@@ -9930,7 +10110,7 @@ pub struct PrometheusVolumesConfigMapItems {
     pub path: String,
 }
 
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesCsi {
     /// driver is the name of the CSI driver that handles this volume.
@@ -10371,6 +10551,7 @@ pub struct PrometheusVolumesFc {
 
 /// flexVolume represents a generic volume resource that is
 /// provisioned/attached using an exec based plugin.
+/// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
@@ -10412,7 +10593,8 @@ pub struct PrometheusVolumesFlexVolumeSecretRef {
     pub name: Option<String>,
 }
 
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+/// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
@@ -10426,6 +10608,8 @@ pub struct PrometheusVolumesFlocker {
 
 /// gcePersistentDisk represents a GCE Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+/// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesGcePersistentDisk {
@@ -10454,7 +10638,7 @@ pub struct PrometheusVolumesGcePersistentDisk {
 }
 
 /// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10473,6 +10657,7 @@ pub struct PrometheusVolumesGitRepo {
 }
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
 /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesGlusterfs {
@@ -10631,7 +10816,8 @@ pub struct PrometheusVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+/// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesPhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
@@ -10644,7 +10830,10 @@ pub struct PrometheusVolumesPhotonPersistentDisk {
     pub pd_id: String,
 }
 
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+/// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+/// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+/// is on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount
@@ -10950,7 +11139,8 @@ pub struct PrometheusVolumesProjectedSourcesServiceAccountToken {
     pub path: String,
 }
 
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+/// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesQuobyte {
     /// group to map volume access to
@@ -10978,6 +11168,7 @@ pub struct PrometheusVolumesQuobyte {
 }
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
 /// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesRbd {
@@ -11037,6 +11228,7 @@ pub struct PrometheusVolumesRbdSecretRef {
 }
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+/// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesScaleIo {
     /// fsType is the filesystem type to mount.
@@ -11141,6 +11333,7 @@ pub struct PrometheusVolumesSecretItems {
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+/// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesStorageos {
     /// fsType is the filesystem type to mount.
@@ -11183,7 +11376,9 @@ pub struct PrometheusVolumesStorageosSecretRef {
     pub name: Option<String>,
 }
 
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+/// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+/// are redirected to the csi.vsphere.vmware.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesVsphereVolume {
     /// fsType is filesystem type to mount.

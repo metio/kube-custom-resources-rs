@@ -98,6 +98,11 @@ pub struct ServiceMonitorSpec {
     /// It requires Prometheus >= v2.45.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
     pub scrape_classic_histograms: Option<bool>,
+    /// The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeFallbackProtocol")]
+    pub scrape_fallback_protocol: Option<ServiceMonitorScrapeFallbackProtocol>,
     /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
     /// 
@@ -108,6 +113,14 @@ pub struct ServiceMonitorSpec {
     pub scrape_protocols: Option<Vec<String>>,
     /// Label selector to select the Kubernetes `Endpoints` objects to scrape metrics from.
     pub selector: ServiceMonitorSelector,
+    /// Mechanism used to select the endpoints to scrape.
+    /// By default, the selection process relies on relabel configurations to filter the discovered targets.
+    /// Alternatively, you can opt in for role selectors, which may offer better efficiency in large clusters.
+    /// Which strategy is best for your use case needs to be carefully evaluated.
+    /// 
+    /// It requires Prometheus >= v2.17.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectorMechanism")]
+    pub selector_mechanism: Option<ServiceMonitorSelectorMechanism>,
     /// `targetLabels` defines the labels which are transferred from the
     /// associated Kubernetes `Service` object onto the ingested metrics.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabels")]
@@ -1043,6 +1056,21 @@ pub struct ServiceMonitorNamespaceSelector {
     pub match_names: Option<Vec<String>>,
 }
 
+/// Specification of desired Service selection for target discovery by
+/// Prometheus.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ServiceMonitorScrapeFallbackProtocol {
+    PrometheusProto,
+    #[serde(rename = "OpenMetricsText0.0.1")]
+    OpenMetricsText001,
+    #[serde(rename = "OpenMetricsText1.0.0")]
+    OpenMetricsText100,
+    #[serde(rename = "PrometheusText0.0.4")]
+    PrometheusText004,
+    #[serde(rename = "PrometheusText1.0.0")]
+    PrometheusText100,
+}
+
 /// Label selector to select the Kubernetes `Endpoints` objects to scrape metrics from.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorSelector {
@@ -1071,5 +1099,13 @@ pub struct ServiceMonitorSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Specification of desired Service selection for target discovery by
+/// Prometheus.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ServiceMonitorSelectorMechanism {
+    RelabelConfig,
+    RoleSelector,
 }
 

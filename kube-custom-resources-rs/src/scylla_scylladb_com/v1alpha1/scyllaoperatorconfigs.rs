@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -17,6 +18,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ScyllaOperatorConfigSpec {
+    /// configuredClusterDomain allows users to set the configured Kubernetes cluster domain explicitly, instead of letting Scylla Operator automatically discover it.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configuredClusterDomain")]
+    pub configured_cluster_domain: Option<String>,
     /// scyllaUtilsImage is a ScyllaDB image used for running ScyllaDB utilities.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scyllaUtilsImage")]
     pub scylla_utils_image: Option<String>,
@@ -37,6 +41,12 @@ pub struct ScyllaOperatorConfigStatus {
     /// bashToolsImage is a generic Bash image with extra tools used by the operator for auxiliary purposes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bashToolsImage")]
     pub bash_tools_image: Option<String>,
+    /// clusterDomain is the Kubernetes cluster domain used by the Scylla Operator.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDomain")]
+    pub cluster_domain: Option<String>,
+    /// conditions hold conditions describing ScyllaOperatorConfig state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// grafanaImage is the image used by the operator to create a Grafana instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grafanaImage")]
     pub grafana_image: Option<String>,

@@ -28,6 +28,8 @@ pub struct RayClusterSpec {
     pub head_group_spec: RayClusterHeadGroupSpec,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "headServiceAnnotations")]
     pub head_service_annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedBy")]
+    pub managed_by: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayVersion")]
     pub ray_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3392,6 +3394,8 @@ pub struct RayClusterHeadGroupSpecTemplateSpecVolumesVsphereVolume {
 pub struct RayClusterWorkerGroupSpecs {
     #[serde(rename = "groupName")]
     pub group_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeoutSeconds")]
+    pub idle_timeout_seconds: Option<i32>,
     #[serde(rename = "maxReplicas")]
     pub max_replicas: i32,
     #[serde(rename = "minReplicas")]

@@ -21,5 +21,7 @@ pub struct BlockAffinitySpec {
     pub deleted: String,
     pub node: String,
     pub state: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 

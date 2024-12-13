@@ -80,7 +80,8 @@ pub struct SubmarinerSpec {
     /// The gateway connection health check.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionHealthCheck")]
     pub connection_health_check: Option<SubmarinerConnectionHealthCheck>,
-    /// Name of the custom CoreDNS configmap to configure forwarding to Lighthouse. It should be in <namespace>/<name> format where <namespace> is optional and defaults to kube-system.
+    /// Name of the custom CoreDNS configmap to configure forwarding to Lighthouse.
+    /// It should be in <namespace>/<name> format where <namespace> is optional and defaults to kube-system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreDNSCustomConfig")]
     pub core_dns_custom_config: Option<SubmarinerCoreDnsCustomConfig>,
     /// List of domains to use for multi-cluster service discovery.
@@ -137,7 +138,8 @@ pub struct SubmarinerConnectionHealthCheck {
     pub max_packet_loss_count: Option<i64>,
 }
 
-/// Name of the custom CoreDNS configmap to configure forwarding to Lighthouse. It should be in <namespace>/<name> format where <namespace> is optional and defaults to kube-system.
+/// Name of the custom CoreDNS configmap to configure forwarding to Lighthouse.
+/// It should be in <namespace>/<name> format where <namespace> is optional and defaults to kube-system.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerCoreDnsCustomConfig {
     /// Name of the custom CoreDNS configmap.
@@ -148,22 +150,32 @@ pub struct SubmarinerCoreDnsCustomConfig {
     pub namespace: Option<String>,
 }
 
-/// The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -246,7 +258,9 @@ pub struct SubmarinerStatusGatewayDaemonSetStatus {
     pub status: Option<SubmarinerStatusGatewayDaemonSetStatusStatus>,
 }
 
-/// ContainerState holds a possible state of container. Only one of its members may be specified. If none of them is specified, the default one is ContainerStateWaiting.
+/// ContainerState holds a possible state of container.
+/// Only one of its members may be specified.
+/// If none of them is specified, the default one is ContainerStateWaiting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGatewayDaemonSetStatusNonReadyContainerStates {
     /// Details about a running container
@@ -308,28 +322,41 @@ pub struct SubmarinerStatusGatewayDaemonSetStatusNonReadyContainerStatesWaiting 
 /// DaemonSetStatus represents the current status of a daemon set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGatewayDaemonSetStatusStatus {
-    /// Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
+    /// Count of hash collisions for the DaemonSet. The DaemonSet controller
+    /// uses this field as a collision avoidance mechanism when it needs to
+    /// create the name for the newest ControllerRevision.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
     pub collision_count: Option<i32>,
     /// Represents the latest available observations of a DaemonSet's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// The number of nodes that are running at least 1 daemon pod and are supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+    /// The number of nodes that are running at least 1
+    /// daemon pod and are supposed to run the daemon pod.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "currentNumberScheduled")]
     pub current_number_scheduled: i32,
-    /// The total number of nodes that should be running the daemon pod (including nodes correctly running the daemon pod). More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+    /// The total number of nodes that should be running the daemon
+    /// pod (including nodes correctly running the daemon pod).
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "desiredNumberScheduled")]
     pub desired_number_scheduled: i32,
-    /// The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)
+    /// The number of nodes that should be running the
+    /// daemon pod and have one or more of the daemon pod running and
+    /// available (ready for at least spec.minReadySeconds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberAvailable")]
     pub number_available: Option<i32>,
-    /// The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+    /// The number of nodes that are running the daemon pod, but are
+    /// not supposed to run the daemon pod.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "numberMisscheduled")]
     pub number_misscheduled: i32,
-    /// numberReady is the number of nodes that should be running the daemon pod and have one or more of the daemon pod running with a Ready Condition.
+    /// numberReady is the number of nodes that should be running the daemon pod and have one
+    /// or more of the daemon pod running with a Ready Condition.
     #[serde(rename = "numberReady")]
     pub number_ready: i32,
-    /// The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)
+    /// The number of nodes that should be running the
+    /// daemon pod and have none of the daemon pod running and available
+    /// (ready for at least spec.minReadySeconds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberUnavailable")]
     pub number_unavailable: Option<i32>,
     /// The most recent generation observed by the daemon set controller.
@@ -355,7 +382,8 @@ pub struct SubmarinerStatusGateways {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGatewaysConnections {
     pub endpoint: SubmarinerStatusGatewaysConnectionsEndpoint,
-    /// LatencySpec describes the round trip time information for a packet between the gateway pods of two clusters.
+    /// LatencySpec describes the round trip time information for a packet
+    /// between the gateway pods of two clusters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latencyRTT")]
     pub latency_rtt: Option<SubmarinerStatusGatewaysConnectionsLatencyRtt>,
     pub status: String,
@@ -383,7 +411,8 @@ pub struct SubmarinerStatusGatewaysConnectionsEndpoint {
     pub subnets: Vec<String>,
 }
 
-/// LatencySpec describes the round trip time information for a packet between the gateway pods of two clusters.
+/// LatencySpec describes the round trip time information for a packet
+/// between the gateway pods of two clusters.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGatewaysConnectionsLatencyRtt {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -428,7 +457,9 @@ pub struct SubmarinerStatusGlobalnetDaemonSetStatus {
     pub status: Option<SubmarinerStatusGlobalnetDaemonSetStatusStatus>,
 }
 
-/// ContainerState holds a possible state of container. Only one of its members may be specified. If none of them is specified, the default one is ContainerStateWaiting.
+/// ContainerState holds a possible state of container.
+/// Only one of its members may be specified.
+/// If none of them is specified, the default one is ContainerStateWaiting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStates {
     /// Details about a running container
@@ -490,28 +521,41 @@ pub struct SubmarinerStatusGlobalnetDaemonSetStatusNonReadyContainerStatesWaitin
 /// DaemonSetStatus represents the current status of a daemon set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusGlobalnetDaemonSetStatusStatus {
-    /// Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
+    /// Count of hash collisions for the DaemonSet. The DaemonSet controller
+    /// uses this field as a collision avoidance mechanism when it needs to
+    /// create the name for the newest ControllerRevision.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
     pub collision_count: Option<i32>,
     /// Represents the latest available observations of a DaemonSet's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// The number of nodes that are running at least 1 daemon pod and are supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+    /// The number of nodes that are running at least 1
+    /// daemon pod and are supposed to run the daemon pod.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "currentNumberScheduled")]
     pub current_number_scheduled: i32,
-    /// The total number of nodes that should be running the daemon pod (including nodes correctly running the daemon pod). More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+    /// The total number of nodes that should be running the daemon
+    /// pod (including nodes correctly running the daemon pod).
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "desiredNumberScheduled")]
     pub desired_number_scheduled: i32,
-    /// The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)
+    /// The number of nodes that should be running the
+    /// daemon pod and have one or more of the daemon pod running and
+    /// available (ready for at least spec.minReadySeconds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberAvailable")]
     pub number_available: Option<i32>,
-    /// The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+    /// The number of nodes that are running the daemon pod, but are
+    /// not supposed to run the daemon pod.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "numberMisscheduled")]
     pub number_misscheduled: i32,
-    /// numberReady is the number of nodes that should be running the daemon pod and have one or more of the daemon pod running with a Ready Condition.
+    /// numberReady is the number of nodes that should be running the daemon pod and have one
+    /// or more of the daemon pod running with a Ready Condition.
     #[serde(rename = "numberReady")]
     pub number_ready: i32,
-    /// The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)
+    /// The number of nodes that should be running the
+    /// daemon pod and have none of the daemon pod running and available
+    /// (ready for at least spec.minReadySeconds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberUnavailable")]
     pub number_unavailable: Option<i32>,
     /// The most recent generation observed by the daemon set controller.
@@ -533,33 +577,51 @@ pub struct SubmarinerStatusLoadBalancerStatus {
 /// LoadBalancerStatus represents the status of a load-balancer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusLoadBalancerStatusStatus {
-    /// Ingress is a list containing ingress points for the load-balancer. Traffic intended for the service should be sent to these ingress points.
+    /// Ingress is a list containing ingress points for the load-balancer.
+    /// Traffic intended for the service should be sent to these ingress points.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<Vec<SubmarinerStatusLoadBalancerStatusStatusIngress>>,
 }
 
-/// LoadBalancerIngress represents the status of a load-balancer ingress point: traffic intended for the service should be sent to an ingress point.
+/// LoadBalancerIngress represents the status of a load-balancer ingress point:
+/// traffic intended for the service should be sent to an ingress point.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusLoadBalancerStatusStatusIngress {
-    /// Hostname is set for load-balancer ingress points that are DNS based (typically AWS load-balancers)
+    /// Hostname is set for load-balancer ingress points that are DNS based
+    /// (typically AWS load-balancers)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// IP is set for load-balancer ingress points that are IP based (typically GCE or OpenStack load-balancers)
+    /// IP is set for load-balancer ingress points that are IP based
+    /// (typically GCE or OpenStack load-balancers)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
-    /// Ports is a list of records of service ports If used, every port defined in the service should have an entry in it
+    /// IPMode specifies how the load-balancer IP behaves, and may only be specified when the ip field is specified.
+    /// Setting this to "VIP" indicates that traffic is delivered to the node with
+    /// the destination set to the load-balancer's IP and port.
+    /// Setting this to "Proxy" indicates that traffic is delivered to the node or pod with
+    /// the destination set to the node's IP and node port or the pod's IP and port.
+    /// Service implementations may use this information to adjust traffic routing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipMode")]
+    pub ip_mode: Option<String>,
+    /// Ports is a list of records of service ports
+    /// If used, every port defined in the service should have an entry in it
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<SubmarinerStatusLoadBalancerStatusStatusIngressPorts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusLoadBalancerStatusStatusIngressPorts {
-    /// Error is to record the problem with the service port The format of the error shall comply with the following rules: - built-in error values shall be specified in this file and those shall use CamelCase names - cloud provider specific error values must have names that comply with the format foo.example.com/CamelCase. --- The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error: Option<String>,
+    /// Error is to record the problem with the service port
+    /// The format of the error shall comply with the following rules:
+    /// - built-in error values shall be specified in this file and those shall use
+    ///   CamelCase names
+    /// - cloud provider specific error values must have names that comply with the
+    ///   format foo.example.com/CamelCase.
+    pub error: String,
     /// Port is the port number of the service port of which status is recorded here
     pub port: i32,
-    /// Protocol is the protocol of the service port of which status is recorded here The supported values are: "TCP", "UDP", "SCTP"
+    /// Protocol is the protocol of the service port of which status is recorded here
+    /// The supported values are: "TCP", "UDP", "SCTP"
     pub protocol: String,
 }
 
@@ -577,7 +639,9 @@ pub struct SubmarinerStatusRouteAgentDaemonSetStatus {
     pub status: Option<SubmarinerStatusRouteAgentDaemonSetStatusStatus>,
 }
 
-/// ContainerState holds a possible state of container. Only one of its members may be specified. If none of them is specified, the default one is ContainerStateWaiting.
+/// ContainerState holds a possible state of container.
+/// Only one of its members may be specified.
+/// If none of them is specified, the default one is ContainerStateWaiting.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStates {
     /// Details about a running container
@@ -639,28 +703,41 @@ pub struct SubmarinerStatusRouteAgentDaemonSetStatusNonReadyContainerStatesWaiti
 /// DaemonSetStatus represents the current status of a daemon set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubmarinerStatusRouteAgentDaemonSetStatusStatus {
-    /// Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision.
+    /// Count of hash collisions for the DaemonSet. The DaemonSet controller
+    /// uses this field as a collision avoidance mechanism when it needs to
+    /// create the name for the newest ControllerRevision.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
     pub collision_count: Option<i32>,
     /// Represents the latest available observations of a DaemonSet's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// The number of nodes that are running at least 1 daemon pod and are supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+    /// The number of nodes that are running at least 1
+    /// daemon pod and are supposed to run the daemon pod.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "currentNumberScheduled")]
     pub current_number_scheduled: i32,
-    /// The total number of nodes that should be running the daemon pod (including nodes correctly running the daemon pod). More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+    /// The total number of nodes that should be running the daemon
+    /// pod (including nodes correctly running the daemon pod).
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "desiredNumberScheduled")]
     pub desired_number_scheduled: i32,
-    /// The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)
+    /// The number of nodes that should be running the
+    /// daemon pod and have one or more of the daemon pod running and
+    /// available (ready for at least spec.minReadySeconds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberAvailable")]
     pub number_available: Option<i32>,
-    /// The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+    /// The number of nodes that are running the daemon pod, but are
+    /// not supposed to run the daemon pod.
+    /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
     #[serde(rename = "numberMisscheduled")]
     pub number_misscheduled: i32,
-    /// numberReady is the number of nodes that should be running the daemon pod and have one or more of the daemon pod running with a Ready Condition.
+    /// numberReady is the number of nodes that should be running the daemon pod and have one
+    /// or more of the daemon pod running with a Ready Condition.
     #[serde(rename = "numberReady")]
     pub number_ready: i32,
-    /// The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)
+    /// The number of nodes that should be running the
+    /// daemon pod and have none of the daemon pod running and available
+    /// (ready for at least spec.minReadySeconds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberUnavailable")]
     pub number_unavailable: Option<i32>,
     /// The most recent generation observed by the daemon set controller.

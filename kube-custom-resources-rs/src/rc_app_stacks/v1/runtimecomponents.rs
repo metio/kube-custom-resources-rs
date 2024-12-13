@@ -6827,6 +6827,9 @@ pub struct RuntimeComponentStatus {
     /// The generation identifier of this RuntimeComponent instance completely reconciled by the Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    /// The reconciliation interval in seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcileInterval")]
+    pub reconcile_interval: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub references: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

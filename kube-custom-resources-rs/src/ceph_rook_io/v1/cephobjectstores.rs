@@ -1469,6 +1469,12 @@ pub struct CephObjectStoreMetadataPoolStatusCheckMirror {
 /// The protocol specification
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreProtocols {
+    /// Represents RGW 'rgw_enable_apis' config option. See: https://docs.ceph.com/en/reef/radosgw/config-ref/#confval-rgw_enable_apis
+    /// If no value provided then all APIs will be enabled: s3, s3website, swift, swift_auth, admin, sts, iam, notifications
+    /// If enabled APIs are set, all remaining APIs will be disabled.
+    /// This option overrides S3.Enabled value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableAPIs")]
+    pub enable_ap_is: Option<Vec<String>>,
     /// The spec for S3
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<CephObjectStoreProtocolsS3>,
@@ -1483,6 +1489,7 @@ pub struct CephObjectStoreProtocolsS3 {
     /// Whether to use Keystone for authentication. This option maps directly to the rgw_s3_auth_use_keystone option. Enabling it allows generating S3 credentials via an OpenStack API call, see the docs. If not given, the defaults of the corresponding RGW option apply.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authUseKeystone")]
     pub auth_use_keystone: Option<bool>,
+    /// Deprecated: use protocol.enableAPIs instead.
     /// Whether to enable S3. This defaults to true (even if protocols.s3 is not present in the CRD). This maintains backwards compatibility – by default S3 is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,

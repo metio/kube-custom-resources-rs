@@ -921,54 +921,55 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingTolerations {
 /// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfFlowFilter {
-    /// `action` defines the action to perform on the flows that match the filter.
+    /// `action` defines the action to perform on the flows that match the filter. The available options are `Accept`, which is the default, and `Reject`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<FlowCollectorAgentEbpfFlowFilterAction>,
     /// `cidr` defines the IP CIDR to filter flows by.
     /// Examples: `10.10.10.0/24` or `100:100:100:100::/64`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
-    /// `destPorts` defines the destination ports to filter flows by.
+    /// `destPorts` optionally defines the destination ports to filter flows by.
     /// To filter a single port, set a single port as an integer value. For example, `destPorts: 80`.
     /// To filter a range of ports, use a "start-end" range in string format. For example, `destPorts: "80-100"`.
     /// To filter two ports, use a "port1,port2" in string format. For example, `ports: "80,100"`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destPorts")]
     pub dest_ports: Option<IntOrString>,
-    /// `direction` defines the direction to filter flows by.
+    /// `direction` optionally defines a direction to filter flows by. The available options are `Ingress` and `Egress`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub direction: Option<FlowCollectorAgentEbpfFlowFilterDirection>,
     /// Set `enable` to `true` to enable the eBPF flow filtering feature.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// `icmpCode`, for Internet Control Message Protocol (ICMP) traffic, defines the ICMP code to filter flows by.
+    /// `icmpCode`, for Internet Control Message Protocol (ICMP) traffic, optionally defines the ICMP code to filter flows by.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "icmpCode")]
     pub icmp_code: Option<i64>,
-    /// `icmpType`, for ICMP traffic, defines the ICMP type to filter flows by.
+    /// `icmpType`, for ICMP traffic, optionally defines the ICMP type to filter flows by.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "icmpType")]
     pub icmp_type: Option<i64>,
-    /// `peerIP` defines the IP address to filter flows by.
+    /// `peerIP` optionally defines the remote IP address to filter flows by.
     /// Example: `10.10.10.10`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerIP")]
     pub peer_ip: Option<String>,
-    /// `pktDrops` filters flows with packet drops
+    /// `pktDrops` optionally filters only flows containing packet drops.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pktDrops")]
     pub pkt_drops: Option<bool>,
-    /// `ports` defines the ports to filter flows by. It is used both for source and destination ports.
+    /// `ports` optionally defines the ports to filter flows by. It is used both for source and destination ports.
     /// To filter a single port, set a single port as an integer value. For example, `ports: 80`.
     /// To filter a range of ports, use a "start-end" range in string format. For example, `ports: "80-100"`.
     /// To filter two ports, use a "port1,port2" in string format. For example, `ports: "80,100"`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<IntOrString>,
-    /// `protocol` defines the protocol to filter flows by.
+    /// `protocol` optionally defines a protocol to filter flows by. The available options are `TCP`, `UDP`, `ICMP`, `ICMPv6`, and `SCTP`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<FlowCollectorAgentEbpfFlowFilterProtocol>,
-    /// `sourcePorts` defines the source ports to filter flows by.
+    /// `sourcePorts` optionally defines the source ports to filter flows by.
     /// To filter a single port, set a single port as an integer value. For example, `sourcePorts: 80`.
     /// To filter a range of ports, use a "start-end" range in string format. For example, `sourcePorts: "80-100"`.
     /// To filter two ports, use a "port1,port2" in string format. For example, `ports: "80,100"`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourcePorts")]
     pub source_ports: Option<IntOrString>,
-    /// `tcpFlags` defines the TCP flags to filter flows by.
+    /// `tcpFlags` optionally defines TCP flags to filter flows by.
+    /// In addition to the standard flags (RFC-9293), you can also filter by one of the three following combinations: `SYN-ACK`, `FIN-ACK`, and `RST-ACK`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpFlags")]
     pub tcp_flags: Option<FlowCollectorAgentEbpfFlowFilterTcpFlags>,
 }
@@ -1147,7 +1148,7 @@ pub struct FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFile {
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret".
+    /// Type for the file reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorAgentEbpfMetricsServerTlsProvidedCaFileType>,
 }
@@ -2416,7 +2417,7 @@ pub struct FlowCollectorExporters {
     /// OpenTelemetry configuration, such as the IP address and port to send enriched logs or metrics to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
     pub open_telemetry: Option<FlowCollectorExportersOpenTelemetry>,
-    /// `type` selects the type of exporters. The available options are `Kafka` and `IPFIX`.
+    /// `type` selects the type of exporters. The available options are `Kafka`, `IPFIX`, and `OpenTelemetry`.
     #[serde(rename = "type")]
     pub r#type: FlowCollectorExportersType,
 }
@@ -2486,7 +2487,7 @@ pub struct FlowCollectorExportersKafkaSaslClientIdReference {
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret".
+    /// Type for the file reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorExportersKafkaSaslClientIdReferenceType>,
 }
@@ -2513,7 +2514,7 @@ pub struct FlowCollectorExportersKafkaSaslClientSecretReference {
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret".
+    /// Type for the file reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorExportersKafkaSaslClientSecretReferenceType>,
 }
@@ -2812,7 +2813,7 @@ pub struct FlowCollectorKafkaSaslClientIdReference {
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret".
+    /// Type for the file reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorKafkaSaslClientIdReferenceType>,
 }
@@ -2839,7 +2840,7 @@ pub struct FlowCollectorKafkaSaslClientSecretReference {
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret".
+    /// Type for the file reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorKafkaSaslClientSecretReferenceType>,
 }
@@ -3440,7 +3441,7 @@ pub struct FlowCollectorNetworkPolicy {
     pub additional_namespaces: Option<Vec<String>>,
     /// Set `enable` to `true` to deploy network policies on the namespaces used by NetObserv (main and privileged). It is disabled by default.
     /// These network policies better isolate the NetObserv components to prevent undesired connections to them.
-    /// We recommend you either enable it, or create your own network policy for NetObserv.
+    /// To increase the security of connections, enable this option or create your own network policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
 }
@@ -3461,6 +3462,14 @@ pub struct FlowCollectorProcessor {
     /// `clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
+    /// `deduper` allows to sample or drop flows identified as duplicates, in order to save on resource usage.
+    /// IMPORTANT: This feature is available as a Developer Preview.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deduper: Option<FlowCollectorProcessorDeduper>,
+    /// `filters` let you define custom filters to limit the amount of generated flows.
+    /// IMPORTANT: This feature is available as a Developer Preview.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filters: Option<Vec<FlowCollectorProcessorFilters>>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorProcessorImagePullPolicy>,
@@ -4313,6 +4322,79 @@ pub struct FlowCollectorProcessorAdvancedSecondaryNetworks {
     pub name: String,
 }
 
+/// `deduper` allows to sample or drop flows identified as duplicates, in order to save on resource usage.
+/// IMPORTANT: This feature is available as a Developer Preview.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorProcessorDeduper {
+    /// Set the Processor de-duplication mode. It comes in addition to the Agent-based deduplication because the Agent cannot de-duplicate same flows reported from different nodes.<br>
+    /// - Use `Drop` to drop every flow considered as duplicates, allowing saving more on resource usage but potentially loosing some information such as the network interfaces used from peer, or network events.<br>
+    /// - Use `Sample` to randomly keep only 1 flow on 50 (by default) among the ones considered as duplicates. This is a compromise between dropping every duplicates or keeping every duplicates. This sampling action comes in addition to the Agent-based sampling. If both Agent and Processor sampling are 50, the combined sampling is 1:2500.<br>
+    /// - Use `Disabled` to turn off Processor-based de-duplication.<br>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<FlowCollectorProcessorDeduperMode>,
+    /// `sampling` is the sampling rate when deduper `mode` is `Sample`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sampling: Option<i32>,
+}
+
+/// `deduper` allows to sample or drop flows identified as duplicates, in order to save on resource usage.
+/// IMPORTANT: This feature is available as a Developer Preview.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorProcessorDeduperMode {
+    Disabled,
+    Drop,
+    Sample,
+}
+
+/// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorProcessorFilters {
+    /// `filters` is a list of matches that must be all satisfied in order to remove a flow.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allOf")]
+    pub all_of: Option<Vec<FlowCollectorProcessorFiltersAllOf>>,
+    /// If specified, this filters only target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputTarget")]
+    pub output_target: Option<FlowCollectorProcessorFiltersOutputTarget>,
+    /// `sampling` is an optional sampling rate to apply to this filter.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sampling: Option<i32>,
+}
+
+/// `FLPSingleFilter` defines the desired configuration for a single FLP-based filter
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorProcessorFiltersAllOf {
+    /// Name of the field to filter on
+    /// Refer to the documentation for the list of available fields: https://docs.openshift.com/container-platform/latest/observability/network_observability/json-flows-format-reference.html.
+    pub field: String,
+    /// Type of matching to apply
+    #[serde(rename = "matchType")]
+    pub match_type: FlowCollectorProcessorFiltersAllOfMatchType,
+    /// Value to filter on. When `matchType` is `Equal` or `NotEqual`, you can use field injection with `$(SomeField)` to refer to any other field of the flow.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// `FLPSingleFilter` defines the desired configuration for a single FLP-based filter
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorProcessorFiltersAllOfMatchType {
+    Equal,
+    NotEqual,
+    Presence,
+    Absence,
+    MatchRegex,
+    NotMatchRegex,
+}
+
+/// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorProcessorFiltersOutputTarget {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Loki,
+    Metrics,
+    Exporters,
+}
+
 /// `processor` defines the settings of the component that receives the flows from the agent,
 /// enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -4586,7 +4668,8 @@ pub struct FlowCollectorProcessorMetrics {
     /// Metrics enabled by default are:
     /// `namespace_flows_total`, `node_ingress_bytes_total`, `node_egress_bytes_total`, `workload_ingress_bytes_total`,
     /// `workload_egress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled),
-    /// `namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled).
+    /// `namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled),
+    /// `namespace_network_policy_events_total` (when `NetworkEvents` feature is enabled).
     /// More information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeList")]
     pub include_list: Option<Vec<String>>,
@@ -4670,7 +4753,7 @@ pub struct FlowCollectorProcessorMetricsServerTlsProvidedCaFile {
     /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Type for the file reference: "configmap" or "secret".
+    /// Type for the file reference: `configmap` or `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FlowCollectorProcessorMetricsServerTlsProvidedCaFileType>,
 }

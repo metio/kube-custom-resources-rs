@@ -41,6 +41,10 @@ pub struct BackupSpec {
     ///   The current implementation only prevent accidental deletion of backup data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
     pub deletion_policy: Option<String>,
+    /// Specifies a list of name-value pairs representing parameters and their corresponding values.
+    /// Parameters match the schema specified in the `actionset.spec.parametersSchema`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<Vec<BackupParameters>>,
     /// Determines the parent backup name for incremental or differential backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentBackupName")]
     pub parent_backup_name: Option<String>,
@@ -61,6 +65,14 @@ pub struct BackupSpec {
     /// You can also combine the above durations. For example: 30d12h30m.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupParameters {
+    /// Represents the name of the parameter.
+    pub name: String,
+    /// Represents the parameter values.
+    pub value: String,
 }
 
 /// BackupStatus defines the observed state of Backup.

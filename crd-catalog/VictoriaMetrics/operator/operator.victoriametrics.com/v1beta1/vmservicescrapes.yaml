@@ -373,6 +373,8 @@ spec:
                         enum:
                           - "http"
                           - "https"
+                          - "HTTPS"
+                          - "HTTP"
                         type: "string"
                       scrapeTimeout:
                         description: "Timeout after which the scrape is ended"
@@ -778,6 +780,10 @@ spec:
                 lastSyncError:
                   description: "LastSyncError contains error message for unsuccessful config generation"
                   type: "string"
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
+                  type: "integer"
                 status:
                   description: "Status defines update status of resource"
                   type: "string"

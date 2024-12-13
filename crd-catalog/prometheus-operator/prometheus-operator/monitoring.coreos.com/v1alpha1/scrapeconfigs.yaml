@@ -160,7 +160,7 @@ spec:
                         description: "Allow stale Consul results (see https://www.consul.io/api/features/consistency.html). Will reduce load on Consul.\nIf unset, Prometheus uses its default value."
                         type: "boolean"
                       authorization:
-                        description: "Authorization header configuration to authenticate against the Consul Server."
+                        description: "Optional Authorization header configuration to authenticate against the Consul Server.\nCannot be set at the same time as `basicAuth`, or `oauth2`."
                         properties:
                           credentials:
                             description: "Selects a key of a Secret in the namespace that contains the credentials for authentication."
@@ -184,7 +184,7 @@ spec:
                             type: "string"
                         type: "object"
                       basicAuth:
-                        description: "BasicAuth information to authenticate against the Consul Server.\nMore info: https://prometheus.io/docs/operating/configuration/#endpoints"
+                        description: "Optional BasicAuth information to authenticate against the Consul Server.\nMore info: https://prometheus.io/docs/operating/configuration/#endpoints\nCannot be set at the same time as `authorization`, or `oauth2`."
                         properties:
                           password:
                             description: "`password` specifies a key of a Secret containing the password for\nauthentication."
@@ -223,15 +223,21 @@ spec:
                         type: "object"
                       datacenter:
                         description: "Consul Datacenter name, if not provided it will use the local Consul Agent Datacenter."
+                        minLength: 1
                         type: "string"
                       enableHTTP2:
                         description: "Whether to enable HTTP2.\nIf unset, Prometheus uses its default value."
                         type: "boolean"
+                      filter:
+                        description: "Filter expression used to filter the catalog results.\nSee https://www.consul.io/api-docs/catalog#list-services\nIt requires Prometheus >= 3.0.0."
+                        minLength: 1
+                        type: "string"
                       followRedirects:
                         description: "Configure whether HTTP requests follow HTTP 3xx redirects.\nIf unset, Prometheus uses its default value."
                         type: "boolean"
                       namespace:
-                        description: "Namespaces are only supported in Consul Enterprise."
+                        description: "Namespaces are only supported in Consul Enterprise.\n\nIt requires Prometheus >= 2.28.0."
+                        minLength: 1
                         type: "string"
                       noProxy:
                         description: "`noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names\nthat should be excluded from proxying. IP and domain names can\ncontain port numbers.\n\nIt requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0."
@@ -239,11 +245,11 @@ spec:
                       nodeMeta:
                         additionalProperties:
                           type: "string"
-                        description: "Node metadata key/value pairs to filter nodes for a given service."
+                        description: "Node metadata key/value pairs to filter nodes for a given service.\nStarting with Consul 1.14, it is recommended to use `filter` with the `NodeMeta` selector instead."
                         type: "object"
                         x-kubernetes-map-type: "atomic"
                       oauth2:
-                        description: "Optional OAuth 2.0 configuration."
+                        description: "Optional OAuth2.0 configuration.\nCannot be set at the same time as `basicAuth`, or `authorization`."
                         properties:
                           clientId:
                             description: "`clientId` specifies a key of a Secret or ConfigMap containing the\nOAuth2 client's ID."
@@ -473,6 +479,11 @@ spec:
                         type: "object"
                       partition:
                         description: "Admin Partitions are only supported in Consul Enterprise."
+                        minLength: 1
+                        type: "string"
+                      pathPrefix:
+                        description: "Prefix for URIs for when consul is behind an API gateway (reverse proxy).\n\nIt requires Prometheus >= 2.45.0."
+                        minLength: 1
                         type: "string"
                       proxyConnectHeader:
                         additionalProperties:
@@ -515,7 +526,7 @@ spec:
                           - "HTTPS"
                         type: "string"
                       server:
-                        description: "A valid string consisting of a hostname or IP followed by an optional port number."
+                        description: "Consul server address. A valid string consisting of a hostname or IP followed by an optional port number."
                         minLength: 1
                         type: "string"
                       services:
@@ -523,18 +534,19 @@ spec:
                         items:
                           type: "string"
                         type: "array"
-                        x-kubernetes-list-type: "atomic"
+                        x-kubernetes-list-type: "set"
                       tagSeparator:
                         description: "The string by which Consul tags are joined into the tag label.\nIf unset, Prometheus uses its default value."
+                        minLength: 1
                         type: "string"
                       tags:
-                        description: "An optional list of tags used to filter nodes for a given service. Services must contain all tags in the list."
+                        description: "An optional list of tags used to filter nodes for a given service. Services must contain all tags in the list.\nStarting with Consul 1.14, it is recommended to use `filter` with the `ServiceTags` selector instead."
                         items:
                           type: "string"
                         type: "array"
-                        x-kubernetes-list-type: "atomic"
+                        x-kubernetes-list-type: "set"
                       tlsConfig:
-                        description: "TLS Config"
+                        description: "TLS configuration to connect to the Consul API."
                         properties:
                           ca:
                             description: "Certificate authority used when verifying server certificates."
@@ -942,6 +954,9 @@ spec:
                         type: "object"
                       port:
                         description: "The port to scrape metrics from."
+                        format: "int32"
+                        maximum: 65535.0
+                        minimum: 0.0
                         type: "integer"
                       proxyConnectHeader:
                         additionalProperties:
@@ -2379,6 +2394,9 @@ spec:
                   type: "array"
                 enableCompression:
                   description: "When false, Prometheus will request uncompressed response from the scraped target.\n\nIt requires Prometheus >= v2.49.0.\n\nIf unset, Prometheus uses true by default."
+                  type: "boolean"
+                enableHTTP2:
+                  description: "Whether to enable HTTP2."
                   type: "boolean"
                 eurekaSDConfigs:
                   description: "EurekaSDConfigs defines a list of Eureka service discovery configurations."
@@ -7907,6 +7925,15 @@ spec:
                 scrapeClassicHistograms:
                   description: "Whether to scrape a classic histogram that is also exposed as a native histogram.\nIt requires Prometheus >= v2.45.0."
                   type: "boolean"
+                scrapeFallbackProtocol:
+                  description: "The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.\n\nIt requires Prometheus >= v3.0.0."
+                  enum:
+                    - "PrometheusProto"
+                    - "OpenMetricsText0.0.1"
+                    - "OpenMetricsText1.0.0"
+                    - "PrometheusText0.0.4"
+                    - "PrometheusText1.0.0"
+                  type: "string"
                 scrapeInterval:
                   description: "ScrapeInterval is the interval between consecutive scrapes."
                   pattern: "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"
@@ -7914,12 +7941,13 @@ spec:
                 scrapeProtocols:
                   description: "The protocols to negotiate during a scrape. It tells clients the\nprotocols supported by Prometheus in order of preference (from most to least preferred).\n\nIf unset, Prometheus uses its default value.\n\nIt requires Prometheus >= v2.49.0."
                   items:
-                    description: "ScrapeProtocol represents a protocol used by Prometheus for scraping metrics.\nSupported values are:\n* `OpenMetricsText0.0.1`\n* `OpenMetricsText1.0.0`\n* `PrometheusProto`\n* `PrometheusText0.0.4`"
+                    description: "ScrapeProtocol represents a protocol used by Prometheus for scraping metrics.\nSupported values are:\n* `OpenMetricsText0.0.1`\n* `OpenMetricsText1.0.0`\n* `PrometheusProto`\n* `PrometheusText0.0.4`\n* `PrometheusText1.0.0`"
                     enum:
                       - "PrometheusProto"
                       - "OpenMetricsText0.0.1"
                       - "OpenMetricsText1.0.0"
                       - "PrometheusText0.0.4"
+                      - "PrometheusText1.0.0"
                     type: "string"
                   minItems: 1
                   type: "array"

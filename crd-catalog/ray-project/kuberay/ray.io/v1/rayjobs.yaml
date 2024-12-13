@@ -67,6 +67,13 @@ spec:
                   type: "string"
                 jobId:
                   type: "string"
+                managedBy:
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "the managedBy field is immutable"
+                      rule: "self == oldSelf"
+                    - message: "the managedBy field value must be either 'ray.io/kuberay-operator' or 'kueue.x-k8s.io/multikueue'"
+                      rule: "self in ['ray.io/kuberay-operator', 'kueue.x-k8s.io/multikueue']"
                 metadata:
                   additionalProperties:
                     type: "string"
@@ -4118,6 +4125,13 @@ spec:
                       additionalProperties:
                         type: "string"
                       type: "object"
+                    managedBy:
+                      type: "string"
+                      x-kubernetes-validations:
+                        - message: "the managedBy field is immutable"
+                          rule: "self == oldSelf"
+                        - message: "the managedBy field value must be either 'ray.io/kuberay-operator' or 'kueue.x-k8s.io/multikueue'"
+                          rule: "self in ['ray.io/kuberay-operator', 'kueue.x-k8s.io/multikueue']"
                     rayVersion:
                       type: "string"
                     suspend:
@@ -4127,6 +4141,9 @@ spec:
                         properties:
                           groupName:
                             type: "string"
+                          idleTimeoutSeconds:
+                            format: "int32"
+                            type: "integer"
                           maxReplicas:
                             default: 2147483647
                             format: "int32"

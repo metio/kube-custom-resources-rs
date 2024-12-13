@@ -1999,29 +1999,6 @@ spec:
                           type: "string"
                         type: "array"
                         x-kubernetes-list-type: "set"
-                      legacyRenderedConfigSpec:
-                        description: "Specifies the secondary rendered config spec for pod-specific customization.\n\n\nThe template is rendered inside the pod (by the \"config-manager\" sidecar container) and merged with the main\ntemplate's render result to generate the final configuration file.\n\n\nThis field is intended to handle scenarios where different pods within the same Component have\nvarying configurations. It allows for pod-specific customization of the configuration.\n\n\nNote: This field will be deprecated in future versions, and the functionality will be moved to\n`cluster.spec.componentSpecs[*].instances[*]`."
-                        properties:
-                          namespace:
-                            default: "default"
-                            description: "Specifies the namespace of the referenced configuration template ConfigMap object.\nAn empty namespace is equivalent to the \"default\" namespace."
-                            pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$"
-                            type: "string"
-                          policy:
-                            default: "none"
-                            description: "Defines the strategy for merging externally imported templates into component templates."
-                            enum:
-                              - "patch"
-                              - "replace"
-                              - "none"
-                            type: "string"
-                          templateRef:
-                            description: "Specifies the name of the referenced configuration template ConfigMap object."
-                            pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                            type: "string"
-                        required:
-                          - "templateRef"
-                        type: "object"
                       name:
                         description: "Specifies the name of the configuration template."
                         maxLength: 63
@@ -2411,7 +2388,7 @@ spec:
                           type: "integer"
                       type: "object"
                     dataDump:
-                      description: "Defines the procedure for exporting the data from a replica.\n\n\nUse Case:\nThis action is intended for initializing a newly created replica with data. It involves exporting data\nfrom an existing replica and importing it into the new, empty replica. This is essential for synchronizing\nthe state of replicas across the system.\n\n\nApplicability:\nSome database engines or associated sidecar applications (e.g., Patroni) may already provide this functionality.\nIn such cases, this action may not be required.\n\n\nThe output should be a valid data dump streamed to stdout. It must exclude any irrelevant information to ensure\nthat only the necessary data is exported for import into the new replica.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Defines the procedure for exporting the data from a replica.\n\n\nUse Case:\nThis action is intended for initializing a newly created replica with data. It involves exporting data\nfrom an existing replica and importing it into the new, empty replica. This is essential for synchronizing\nthe state of replicas across the system.\n\n\nApplicability:\nSome database engines or associated sidecar applications (e.g., Patroni) may already provide this functionality.\nIn such cases, this action may not be required.\n\n\nThe output should be a valid data dump streamed to stdout. It must exclude any irrelevant information to ensure\nthat only the necessary data is exported for import into the new replica.\n\n\nThe container executing this action has access to following environment variables:\n\n\n- KB_TARGET_POD_NAME: The name of the replica pod into which the data will be loaded.\n\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
                           description: "Defines the command to run.\n\n\nThis field cannot be updated."
@@ -8812,6 +8789,32 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                tls:
+                  description: "Specifies the TLS configuration for the Component.\n\n\nThis field is immutable."
+                  properties:
+                    caFile:
+                      description: "The CA file of the TLS.\n\n\nThis field is immutable once set."
+                      type: "string"
+                    certFile:
+                      description: "The certificate file of the TLS.\n\n\nThis field is immutable once set."
+                      type: "string"
+                    defaultMode:
+                      description: "The permissions for the mounted path. Defaults to 0600.\n\n\nThis field is immutable once set."
+                      format: "int32"
+                      type: "integer"
+                    keyFile:
+                      description: "The key file of the TLS.\n\n\nThis field is immutable once set."
+                      type: "string"
+                    mountPath:
+                      description: "Specifies the mount path for the TLS secret to be mounted.\nSimilar to the volume, the controller will mount the created volume to the specified path within containers when the TLS is enabled.\n\n\nThis field is immutable once set."
+                      type: "string"
+                    volumeName:
+                      description: "Specifies the volume name for the TLS secret.\nThe controller will create a volume object with the specified name and add it to the pod when the TLS is enabled.\n\n\nThis field is immutable once set."
+                      type: "string"
+                  required:
+                    - "mountPath"
+                    - "volumeName"
+                  type: "object"
                 updateStrategy:
                   default: "Serial"
                   description: "Specifies the concurrency strategy for updating multiple instances of the Component.\nAvailable strategies:\n\n\n- `Serial`: Updates replicas one at a time, ensuring minimal downtime by waiting for each replica to become ready\n  before updating the next.\n- `Parallel`: Updates all replicas simultaneously, optimizing for speed but potentially reducing availability\n  during the update.\n- `BestEffortParallel`: Updates replicas concurrently with a limit on simultaneous updates to ensure a minimum\n  number of operational replicas for maintaining quorum.\n\t For example, in a 5-replica component, updating a maximum of 2 replicas simultaneously keeps\n\t at least 3 operational for quorum.\n\n\nThis field is immutable and defaults to 'Serial'."
@@ -9298,6 +9301,63 @@ spec:
                                   - "Required"
                                   - "Optional"
                                 type: "string"
+                            type: "object"
+                          tlsVarRef:
+                            description: "Selects a defined var of the TLS."
+                            properties:
+                              compDef:
+                                description: "Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition\ncustom resource (CR) used by the component that the referent object resident in.\n\n\nIf not specified, the component itself will be used."
+                                type: "string"
+                              enabled:
+                                description: "VarOption defines whether a variable is required or optional."
+                                enum:
+                                  - "Required"
+                                  - "Optional"
+                                type: "string"
+                              multipleClusterObjectOption:
+                                description: "This option defines the behavior when multiple component objects match the specified @CompDef.\nIf not provided, an error will be raised when handling multiple matches."
+                                properties:
+                                  combinedOption:
+                                    description: "Define the options for handling combined variables.\nValid only when the strategy is set to \"combined\"."
+                                    properties:
+                                      flattenFormat:
+                                        description: "The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value."
+                                        properties:
+                                          delimiter:
+                                            default: ","
+                                            description: "Pair delimiter."
+                                            type: "string"
+                                          keyValueDelimiter:
+                                            default: ":"
+                                            description: "Key-value delimiter."
+                                            type: "string"
+                                        required:
+                                          - "delimiter"
+                                          - "keyValueDelimiter"
+                                        type: "object"
+                                      newVarSuffix:
+                                        description: "If set, the existing variable will be kept, and a new variable will be defined with the specified suffix\nin pattern: $(var.name)_$(suffix).\nThe new variable will be auto-created and placed behind the existing one.\nIf not set, the existing variable will be reused with the value format defined below."
+                                        type: "string"
+                                      valueFormat:
+                                        default: "Flatten"
+                                        description: "The format of the value that the operator will use to compose values from multiple components."
+                                        type: "string"
+                                    type: "object"
+                                  strategy:
+                                    description: "Define the strategy for handling multiple cluster objects."
+                                    enum:
+                                      - "individual"
+                                      - "combined"
+                                    type: "string"
+                                required:
+                                  - "strategy"
+                                type: "object"
+                              name:
+                                description: "Name of the referent object."
+                                type: "string"
+                              optional:
+                                description: "Specify whether the object must be defined."
+                                type: "boolean"
                             type: "object"
                         type: "object"
                     required:

@@ -67,12 +67,20 @@ pub struct TinkerbellMachineSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TinkerbellMachineBootOptions {
     /// BootMode is the type of booting that will be done.
+    /// Must be one of "none", "netboot", or "iso".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootMode")]
     pub boot_mode: Option<TinkerbellMachineBootOptionsBootMode>,
     /// ISOURL is the URL of the ISO that will be one-time booted.
     /// When this field is set, the controller will create a job.bmc.tinkerbell.org object
     /// for getting the associated hardware into a CDROM booting state.
     /// A HardwareRef that contains a spec.BmcRef must be provided.
+    /// 
+    /// The format of the ISOURL must be http://$IP:$Port/iso/:macAddress/hook.iso
+    /// The name of the ISO file must have the .iso extension, but the name can be anything.
+    /// The $IP and $Port should generally point to the IP and Port of the Smee server
+    /// as this is where the ISO patching endpoint lives.
+    /// The ":macAddress" is a placeholder for the MAC address of the hardware and
+    /// should be provided exactly as is: ":macAddress".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isoURL")]
     pub iso_url: Option<String>,
 }

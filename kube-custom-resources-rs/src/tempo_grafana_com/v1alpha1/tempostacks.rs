@@ -2289,7 +2289,6 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryMonitorTab {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusEndpoint")]
     pub prometheus_endpoint: Option<String>,
     /// REDMetricsNamespace defines the a prefix used retrieve span rate, error, and duration (RED) metrics.
-    /// By default it is set to `traces.span.metrics` following the default namespace of the OpenTelemetry Collector since Version 0.109.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redMetricsNamespace")]
     pub red_metrics_namespace: Option<String>,
 }

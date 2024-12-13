@@ -19,6 +19,9 @@ pub struct IPPoolSpec {
     /// AllowedUse controls what the IP pool will be used for.  If not specified or empty, defaults to ["Tunnel", "Workload"] for back-compatibility
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedUses")]
     pub allowed_uses: Option<Vec<String>>,
+    /// Determines the mode how IP addresses should be assigned from this pool
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignmentMode")]
+    pub assignment_mode: Option<IPPoolAssignmentMode>,
     /// The block size to use for IP address assignments from this pool. Defaults to 26 for IPv4 and 122 for IPv6.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockSize")]
     pub block_size: Option<i64>,
@@ -48,6 +51,13 @@ pub struct IPPoolSpec {
     /// Contains configuration for VXLAN tunneling for this pool. If not specified, then this is defaulted to "Never" (i.e. VXLAN tunneling is disabled).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vxlanMode")]
     pub vxlan_mode: Option<String>,
+}
+
+/// IPPoolSpec contains the specification for an IPPool resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IPPoolAssignmentMode {
+    Automatic,
+    Manual,
 }
 
 /// Deprecated: this field is only used for APIv1 backwards compatibility. Setting this field is not allowed, this field is for internal use only.

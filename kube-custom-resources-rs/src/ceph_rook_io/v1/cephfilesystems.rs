@@ -36,6 +36,9 @@ pub struct CephFilesystemSpec {
     /// Preserve the fs in the cluster on CephFilesystem CR deletion. Setting this to true automatically implies PreservePoolsOnDelete is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveFilesystemOnDelete")]
     pub preserve_filesystem_on_delete: Option<bool>,
+    /// Preserve pool names as specified
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservePoolNames")]
+    pub preserve_pool_names: Option<bool>,
     /// Preserve pools on filesystem deletion
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservePoolsOnDelete")]
     pub preserve_pools_on_delete: Option<bool>,
@@ -264,6 +267,9 @@ pub struct CephFilesystemMetadataPool {
     /// The mirroring settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mirroring: Option<CephFilesystemMetadataPoolMirroring>,
+    /// Name of the pool
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Parameters is a list of properties to enable on a given pool
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,

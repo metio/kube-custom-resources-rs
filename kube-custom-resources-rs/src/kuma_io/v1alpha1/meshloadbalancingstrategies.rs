@@ -243,6 +243,7 @@ pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesQuery
 pub enum MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesType {
     Header,
     Cookie,
+    Connection,
     #[serde(rename = "SourceIP")]
     SourceIp,
     QueryParameter,
@@ -361,6 +362,7 @@ pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesQue
 pub enum MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesType {
     Header,
     Cookie,
+    Connection,
     #[serde(rename = "SourceIP")]
     SourceIp,
     QueryParameter,

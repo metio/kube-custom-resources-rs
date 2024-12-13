@@ -30,6 +30,12 @@ spec:
                 controllers:
                   description: "Controllers enables and configures individual Kubernetes controllers"
                   properties:
+                    loadBalancer:
+                      description: "LoadBalancer enables and configures the LoadBalancer controller. Enabled by default, set to nil to disable."
+                      properties:
+                        assignIPs:
+                          type: "string"
+                      type: "object"
                     namespace:
                       description: "Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable."
                       properties:
@@ -112,6 +118,12 @@ spec:
                     controllers:
                       description: "Controllers enables and configures individual Kubernetes controllers"
                       properties:
+                        loadBalancer:
+                          description: "LoadBalancer enables and configures the LoadBalancer controller. Enabled by default, set to nil to disable."
+                          properties:
+                            assignIPs:
+                              type: "string"
+                          type: "object"
                         namespace:
                           description: "Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable."
                           properties:

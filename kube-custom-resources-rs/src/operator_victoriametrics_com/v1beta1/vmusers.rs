@@ -86,7 +86,7 @@ pub struct VMUserSpec {
     /// TargetRefs - reference to endpoints, which user may access.
     #[serde(rename = "targetRefs")]
     pub target_refs: Vec<VMUserTargetRefs>,
-    /// TLSConfig specifies TLSConfig configuration parameters.
+    /// TLSConfig defines tls configuration for the backend connection
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VMUserTlsConfig>,
     /// TokenRef allows fetching token from user-created secrets by its name and key.
@@ -310,7 +310,7 @@ pub struct VMUserTargetRefsTargetRefBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// TLSConfig specifies TLSConfig configuration parameters.
+/// TLSConfig defines tls configuration for the backend connection
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserTlsConfig {
     /// Stuct containing the CA cert to use for the targets.

@@ -2917,7 +2917,7 @@ spec:
                         maxLength: 32
                         type: "string"
                       services:
-                        description: "Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients."
+                        description: "Overrides services defined in referenced ComponentDefinition."
                         items:
                           properties:
                             annotations:
@@ -7703,7 +7703,7 @@ spec:
                             maxLength: 32
                             type: "string"
                           services:
-                            description: "Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients."
+                            description: "Overrides services defined in referenced ComponentDefinition."
                             items:
                               properties:
                                 annotations:
@@ -8898,6 +8898,7 @@ spec:
                           - "Deleting"
                           - "Updating"
                           - "Stopping"
+                          - "Starting"
                           - "Running"
                           - "Stopped"
                           - "Failed"
@@ -8984,6 +8985,7 @@ spec:
                           - "Deleting"
                           - "Updating"
                           - "Stopping"
+                          - "Starting"
                           - "Running"
                           - "Stopped"
                           - "Failed"
