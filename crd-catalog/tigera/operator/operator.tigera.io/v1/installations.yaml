@@ -29,6 +29,17 @@ spec:
             spec:
               description: "Specification of the desired state for the Calico or Calico Enterprise installation."
               properties:
+                azure:
+                  description: "Azure is used to configure azure provider specific options."
+                  properties:
+                    policyMode:
+                      default: "Default"
+                      description: "PolicyMode determines whether the \"control-plane\" label is applied to namespaces. It offers two options: Default and Manual.\nThe Default option adds the \"control-plane\" label to the required namespaces.\nThe Manual option does not apply the \"control-plane\" label to any namespace.\nDefault: Default"
+                      enum:
+                        - "Default"
+                        - "Manual"
+                      type: "string"
+                  type: "object"
                 calicoKubeControllersDeployment:
                   description: "CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in\nconjunction with the deprecated ComponentResources, then these overrides take precedence."
                   properties:
@@ -743,6 +754,9 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                          assignmentMode:
+                            description: "AssignmentMode determines if IP addresses from this pool should be  assigned automatically or on request only"
+                            type: "string"
                           blockSize:
                             description: "BlockSize specifies the CIDR prefex length to use when allocating per-node IP blocks from\nthe main IP pool CIDR.\nDefault: 26 (IPv4), 122 (IPv6)"
                             format: "int32"
@@ -3980,6 +3994,19 @@ spec:
                 nonPrivileged:
                   description: "NonPrivileged configures Calico to be run in non-privileged containers as non-root users where possible."
                   type: "string"
+                proxy:
+                  description: "Proxy is used to configure the HTTP(S) proxy settings that will be applied to Tigera containers that connect\nto destinations outside the cluster. It is expected that NO_PROXY is configured such that destinations within\nthe cluster (including the API server) are exempt from proxying."
+                  properties:
+                    httpProxy:
+                      description: "HTTPProxy defines the value of the HTTP_PROXY environment variable that will be set on Tigera containers that connect to\ndestinations outside the cluster."
+                      type: "string"
+                    httpsProxy:
+                      description: "HTTPSProxy defines the value of the HTTPS_PROXY environment variable that will be set on Tigera containers that connect to\ndestinations outside the cluster."
+                      type: "string"
+                    noProxy:
+                      description: "NoProxy defines the value of the NO_PROXY environment variable that will be set on Tigera containers that connect to\ndestinations outside the cluster. This value must be set such that destinations within the scope of the cluster, including\nthe Kubernetes API server, are exempt from being proxied."
+                      type: "string"
+                  type: "object"
                 registry:
                   description: "Registry is the default Docker registry used for component Docker images.\nIf specified then the given value must end with a slash character (`/`) and all images will be pulled from this registry.\nIf not specified then the default registries will be used. A special case value, UseDefault, is\nsupported to explicitly specify the default registries will be used.\nImage format:\n   `<registry><imagePath>/<imagePrefix><imageName>:<image-tag>`\nThis option allows configuring the `<registry>` portion of the above format."
                   type: "string"
@@ -4991,6 +5018,17 @@ spec:
                 computed:
                   description: "Computed is the final installation including overlaid resources."
                   properties:
+                    azure:
+                      description: "Azure is used to configure azure provider specific options."
+                      properties:
+                        policyMode:
+                          default: "Default"
+                          description: "PolicyMode determines whether the \"control-plane\" label is applied to namespaces. It offers two options: Default and Manual.\nThe Default option adds the \"control-plane\" label to the required namespaces.\nThe Manual option does not apply the \"control-plane\" label to any namespace.\nDefault: Default"
+                          enum:
+                            - "Default"
+                            - "Manual"
+                          type: "string"
+                      type: "object"
                     calicoKubeControllersDeployment:
                       description: "CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in\nconjunction with the deprecated ComponentResources, then these overrides take precedence."
                       properties:
@@ -5705,6 +5743,9 @@ spec:
                                 items:
                                   type: "string"
                                 type: "array"
+                              assignmentMode:
+                                description: "AssignmentMode determines if IP addresses from this pool should be  assigned automatically or on request only"
+                                type: "string"
                               blockSize:
                                 description: "BlockSize specifies the CIDR prefex length to use when allocating per-node IP blocks from\nthe main IP pool CIDR.\nDefault: 26 (IPv4), 122 (IPv6)"
                                 format: "int32"
@@ -8942,6 +8983,19 @@ spec:
                     nonPrivileged:
                       description: "NonPrivileged configures Calico to be run in non-privileged containers as non-root users where possible."
                       type: "string"
+                    proxy:
+                      description: "Proxy is used to configure the HTTP(S) proxy settings that will be applied to Tigera containers that connect\nto destinations outside the cluster. It is expected that NO_PROXY is configured such that destinations within\nthe cluster (including the API server) are exempt from proxying."
+                      properties:
+                        httpProxy:
+                          description: "HTTPProxy defines the value of the HTTP_PROXY environment variable that will be set on Tigera containers that connect to\ndestinations outside the cluster."
+                          type: "string"
+                        httpsProxy:
+                          description: "HTTPSProxy defines the value of the HTTPS_PROXY environment variable that will be set on Tigera containers that connect to\ndestinations outside the cluster."
+                          type: "string"
+                        noProxy:
+                          description: "NoProxy defines the value of the NO_PROXY environment variable that will be set on Tigera containers that connect to\ndestinations outside the cluster. This value must be set such that destinations within the scope of the cluster, including\nthe Kubernetes API server, are exempt from being proxied."
+                          type: "string"
+                      type: "object"
                     registry:
                       description: "Registry is the default Docker registry used for component Docker images.\nIf specified then the given value must end with a slash character (`/`) and all images will be pulled from this registry.\nIf not specified then the default registries will be used. A special case value, UseDefault, is\nsupported to explicitly specify the default registries will be used.\nImage format:\n   `<registry><imagePath>/<imagePrefix><imageName>:<image-tag>`\nThis option allows configuring the `<registry>` portion of the above format."
                       type: "string"

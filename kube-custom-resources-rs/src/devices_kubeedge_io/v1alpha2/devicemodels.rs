@@ -9,7 +9,8 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// DeviceModelSpec defines the model / template for a device.It is a blueprint which describes the device capabilities and access mechanism via property visitors.
+/// DeviceModelSpec defines the model / template for a device.It is a blueprint which describes the device
+/// capabilities and access mechanism via property visitors.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "devices.kubeedge.io", version = "v1alpha2", kind = "DeviceModel", plural = "devicemodels")]
 #[kube(namespaced)]

@@ -53,7 +53,7 @@ pub struct CiliumEndpointSliceEndpointsNamedPorts {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// Layer 4 protocol
-    /// Enum: [TCP UDP SCTP ICMP ICMPV6 ANY]
+    /// Enum: ["TCP","UDP","SCTP","ICMP","ICMPV6","ANY"]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }

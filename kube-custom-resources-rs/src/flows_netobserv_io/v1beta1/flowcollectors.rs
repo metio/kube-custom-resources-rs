@@ -1535,12 +1535,18 @@ pub struct FlowCollectorProcessor {
     /// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<FlowCollectorProcessorDebug>,
+    /// `deduper` allows to sample or drop flows identified as duplicates, in order to save on resource usage.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deduper: Option<FlowCollectorProcessorDeduper>,
     /// `dropUnusedFields` [deprecated (*)] this setting is not used anymore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dropUnusedFields")]
     pub drop_unused_fields: Option<bool>,
     /// `enableKubeProbes` is a flag to enable or disable Kubernetes liveness and readiness probes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableKubeProbes")]
     pub enable_kube_probes: Option<bool>,
+    /// `filters` let you define custom filters to limit the amount of generated flows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filters: Option<Vec<FlowCollectorProcessorFilters>>,
     /// `healthPort` is a collector HTTP port in the Pod that exposes the health check API
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthPort")]
     pub health_port: Option<i32>,
@@ -1606,6 +1612,77 @@ pub struct FlowCollectorProcessorDebug {
     /// in edge debug or support scenarios.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
+}
+
+/// `deduper` allows to sample or drop flows identified as duplicates, in order to save on resource usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorProcessorDeduper {
+    /// Set the Processor deduper mode (de-duplication). It comes in addition to the Agent deduper because the Agent cannot de-duplicate same flows reported from different nodes.<br>
+    /// - Use `Drop` to drop every flow considered as duplicates, allowing saving more on resource usage but potentially loosing some information such as the network interfaces used from peer.<br>
+    /// - Use `Sample` to randomly keep only 1 flow on 50 (by default) among the ones considered as duplicates. This is a compromise between dropping every duplicates or keeping every duplicates. This sampling action comes in addition to the Agent-based sampling. If both Agent and Processor sampling are 50, the combined sampling is 1:2500.<br>
+    /// - Use `Disabled` to turn off Processor-based de-duplication.<br>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<FlowCollectorProcessorDeduperMode>,
+    /// `sampling` is the sampling rate when deduper `mode` is `Sample`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sampling: Option<i32>,
+}
+
+/// `deduper` allows to sample or drop flows identified as duplicates, in order to save on resource usage.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorProcessorDeduperMode {
+    Disabled,
+    Drop,
+    Sample,
+}
+
+/// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorProcessorFilters {
+    /// `filters` is a list of matches that must be all satisfied in order to remove a flow.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allOf")]
+    pub all_of: Option<Vec<FlowCollectorProcessorFiltersAllOf>>,
+    /// If specified, this filters only target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputTarget")]
+    pub output_target: Option<FlowCollectorProcessorFiltersOutputTarget>,
+    /// `sampling` is an optional sampling rate to apply to this filter.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sampling: Option<i32>,
+}
+
+/// `FLPSingleFilter` defines the desired configuration for a single FLP-based filter
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct FlowCollectorProcessorFiltersAllOf {
+    /// Name of the field to filter on
+    /// Refer to the documentation for the list of available fields: https://docs.openshift.com/container-platform/latest/observability/network_observability/json-flows-format-reference.html.
+    pub field: String,
+    /// Type of matching to apply
+    #[serde(rename = "matchType")]
+    pub match_type: FlowCollectorProcessorFiltersAllOfMatchType,
+    /// Value to filter on. When `matchType` is `Equal` or `NotEqual`, you can use field injection with `$(SomeField)` to refer to any other field of the flow.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// `FLPSingleFilter` defines the desired configuration for a single FLP-based filter
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorProcessorFiltersAllOfMatchType {
+    Equal,
+    NotEqual,
+    Presence,
+    Absence,
+    MatchRegex,
+    NotMatchRegex,
+}
+
+/// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorProcessorFiltersOutputTarget {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Loki,
+    Metrics,
+    Exporters,
 }
 
 /// `processor` defines the settings of the component that receives the flows from the agent,

@@ -129,7 +129,11 @@ pub struct MachinePoolTemplateSpec {
     /// Another example are external controllers, e.g. responsible to install special software/hardware on the Machines;
     /// they can include the status of those components with a new condition and add this condition to ReadinessGates.
     /// 
-    /// NOTE: this field is considered only for computing v1beta2 conditions.
+    /// NOTE: This field is considered only for computing v1beta2 conditions.
+    /// NOTE: In case readinessGates conditions start with the APIServer, ControllerManager, Scheduler prefix, and all those
+    /// readiness gates condition are reporting the same message, when computing the Machine's Ready condition those
+    /// readinessGates will be replaced by a single entry reporting "Control plane components: " + message.
+    /// This helps to improve readability of conditions bubbling up to the Machine's owner resource / to the Cluster).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<MachinePoolTemplateSpecReadinessGates>>,
     /// version defines the desired Kubernetes version.
@@ -290,6 +294,8 @@ pub struct MachinePoolStatus {
     /// the machine pool to have 100% available capacity. They may either
     /// be machine instances that are running but not yet available or machine instances
     /// that still have not been created.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
     /// v1beta2 groups all the fields that will be added or modified in MachinePool's status with the V1Beta2 version.

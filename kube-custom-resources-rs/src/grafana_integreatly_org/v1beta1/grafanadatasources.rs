@@ -19,19 +19,22 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GrafanaDatasourceSpec {
-    /// allow to import this resources from an operator in a different namespace
+    /// Allow the Operator to match this resource with Grafanas outside the current namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossNamespaceImport")]
     pub allow_cross_namespace_import: Option<bool>,
     pub datasource: GrafanaDatasourceDatasource,
-    /// selects Grafana instances for import
+    /// Selects Grafana instances for import
     #[serde(rename = "instanceSelector")]
     pub instance_selector: GrafanaDatasourceInstanceSelector,
     /// plugins
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugins: Option<Vec<GrafanaDatasourcePlugins>>,
-    /// how often the datasource is refreshed, defaults to 5m if not set
+    /// How often the resource is synced, defaults to 10m0s if not set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
+    /// The UID, for the datasource, fallback to the deprecated spec.datasource.uid and metadata.uid
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
     /// environments variables from secrets or config maps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesFrom")]
     pub values_from: Option<Vec<GrafanaDatasourceValuesFrom>>,
@@ -47,7 +50,7 @@ pub struct GrafanaDatasourceDatasource {
     pub basic_auth_user: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<String>,
-    /// Deprecated field, it has no effect
+    /// Whether to enable/disable editing of the datasource in Grafana UI
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub editable: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDefault")]
@@ -63,6 +66,7 @@ pub struct GrafanaDatasourceDatasource {
     pub secure_json_data: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+    /// Deprecated field, use spec.uid instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -71,7 +75,7 @@ pub struct GrafanaDatasourceDatasource {
     pub user: Option<String>,
 }
 
-/// selects Grafana instances for import
+/// Selects Grafana instances for import
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDatasourceInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

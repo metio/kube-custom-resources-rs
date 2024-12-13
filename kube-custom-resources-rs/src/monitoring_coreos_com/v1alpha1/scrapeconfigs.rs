@@ -53,6 +53,9 @@ pub struct ScrapeConfigSpec {
     /// If unset, Prometheus uses true by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCompression")]
     pub enable_compression: Option<bool>,
+    /// Whether to enable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
+    pub enable_http2: Option<bool>,
     /// EurekaSDConfigs defines a list of Eureka service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eurekaSDConfigs")]
     pub eureka_sd_configs: Option<Vec<ScrapeConfigEurekaSdConfigs>>,
@@ -192,6 +195,11 @@ pub struct ScrapeConfigSpec {
     /// It requires Prometheus >= v2.45.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
     pub scrape_classic_histograms: Option<bool>,
+    /// The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeFallbackProtocol")]
+    pub scrape_fallback_protocol: Option<ScrapeConfigScrapeFallbackProtocol>,
     /// ScrapeInterval is the interval between consecutive scrapes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
@@ -376,11 +384,13 @@ pub struct ScrapeConfigConsulSdConfigs {
     /// If unset, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStale")]
     pub allow_stale: Option<bool>,
-    /// Authorization header configuration to authenticate against the Consul Server.
+    /// Optional Authorization header configuration to authenticate against the Consul Server.
+    /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigConsulSdConfigsAuthorization>,
-    /// BasicAuth information to authenticate against the Consul Server.
+    /// Optional BasicAuth information to authenticate against the Consul Server.
     /// More info: https://prometheus.io/docs/operating/configuration/#endpoints
+    /// Cannot be set at the same time as `authorization`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigConsulSdConfigsBasicAuth>,
     /// Consul Datacenter name, if not provided it will use the local Consul Agent Datacenter.
@@ -390,11 +400,18 @@ pub struct ScrapeConfigConsulSdConfigs {
     /// If unset, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
+    /// Filter expression used to filter the catalog results.
+    /// See https://www.consul.io/api-docs/catalog#list-services
+    /// It requires Prometheus >= 3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     /// If unset, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Namespaces are only supported in Consul Enterprise.
+    /// 
+    /// It requires Prometheus >= 2.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
@@ -405,14 +422,21 @@ pub struct ScrapeConfigConsulSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Node metadata key/value pairs to filter nodes for a given service.
+    /// Starting with Consul 1.14, it is recommended to use `filter` with the `NodeMeta` selector instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMeta")]
     pub node_meta: Option<BTreeMap<String, String>>,
-    /// Optional OAuth 2.0 configuration.
+    /// Optional OAuth2.0 configuration.
+    /// Cannot be set at the same time as `basicAuth`, or `authorization`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ScrapeConfigConsulSdConfigsOauth2>,
     /// Admin Partitions are only supported in Consul Enterprise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<String>,
+    /// Prefix for URIs for when consul is behind an API gateway (reverse proxy).
+    /// 
+    /// It requires Prometheus >= 2.45.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathPrefix")]
+    pub path_prefix: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
@@ -435,7 +459,7 @@ pub struct ScrapeConfigConsulSdConfigs {
     /// HTTP Scheme default "http"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<ScrapeConfigConsulSdConfigsScheme>,
-    /// A valid string consisting of a hostname or IP followed by an optional port number.
+    /// Consul server address. A valid string consisting of a hostname or IP followed by an optional port number.
     pub server: String,
     /// A list of services for which targets are retrieved. If omitted, all services are scraped.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -445,9 +469,10 @@ pub struct ScrapeConfigConsulSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
     /// An optional list of tags used to filter nodes for a given service. Services must contain all tags in the list.
+    /// Starting with Consul 1.14, it is recommended to use `filter` with the `ServiceTags` selector instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<String>>,
-    /// TLS Config
+    /// TLS configuration to connect to the Consul API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<ScrapeConfigConsulSdConfigsTlsConfig>,
     /// Consul ACL TokenRef, if not provided it will use the ACL from the local Consul Agent.
@@ -455,7 +480,8 @@ pub struct ScrapeConfigConsulSdConfigs {
     pub token_ref: Option<ScrapeConfigConsulSdConfigsTokenRef>,
 }
 
-/// Authorization header configuration to authenticate against the Consul Server.
+/// Optional Authorization header configuration to authenticate against the Consul Server.
+/// Cannot be set at the same time as `basicAuth`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsAuthorization {
     /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
@@ -487,8 +513,9 @@ pub struct ScrapeConfigConsulSdConfigsAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// BasicAuth information to authenticate against the Consul Server.
+/// Optional BasicAuth information to authenticate against the Consul Server.
 /// More info: https://prometheus.io/docs/operating/configuration/#endpoints
+/// Cannot be set at the same time as `authorization`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsBasicAuth {
     /// `password` specifies a key of a Secret containing the password for
@@ -537,7 +564,8 @@ pub struct ScrapeConfigConsulSdConfigsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// Optional OAuth 2.0 configuration.
+/// Optional OAuth2.0 configuration.
+/// Cannot be set at the same time as `basicAuth`, or `authorization`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsOauth2 {
     /// `clientId` specifies a key of a Secret or ConfigMap containing the
@@ -859,7 +887,7 @@ pub enum ScrapeConfigConsulSdConfigsScheme {
     Https,
 }
 
-/// TLS Config
+/// TLS configuration to connect to the Consul API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigConsulSdConfigsTlsConfig {
     /// Certificate authority used when verifying server certificates.
@@ -996,7 +1024,7 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// TLS Config
+/// TLS configuration to connect to the Consul API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigConsulSdConfigsTlsConfigMaxVersion {
     #[serde(rename = "TLS10")]
@@ -1009,7 +1037,7 @@ pub enum ScrapeConfigConsulSdConfigsTlsConfigMaxVersion {
     Tls13,
 }
 
-/// TLS Config
+/// TLS configuration to connect to the Consul API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigConsulSdConfigsTlsConfigMinVersion {
     #[serde(rename = "TLS10")]
@@ -1067,7 +1095,7 @@ pub struct ScrapeConfigDigitalOceanSdConfigs {
     pub oauth2: Option<ScrapeConfigDigitalOceanSdConfigsOauth2>,
     /// The port to scrape metrics from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub port: Option<i64>,
+    pub port: Option<i32>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
@@ -10278,6 +10306,20 @@ pub enum ScrapeConfigScheme {
     Http,
     #[serde(rename = "HTTPS")]
     Https,
+}
+
+/// ScrapeConfigSpec is a specification of the desired configuration for a scrape configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigScrapeFallbackProtocol {
+    PrometheusProto,
+    #[serde(rename = "OpenMetricsText0.0.1")]
+    OpenMetricsText001,
+    #[serde(rename = "OpenMetricsText1.0.0")]
+    OpenMetricsText100,
+    #[serde(rename = "PrometheusText0.0.4")]
+    PrometheusText004,
+    #[serde(rename = "PrometheusText1.0.0")]
+    PrometheusText100,
 }
 
 /// StaticConfig defines a Prometheus static configuration.

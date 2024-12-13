@@ -269,7 +269,7 @@ spec:
                     type: "object"
                   type: "array"
                 tlsConfig:
-                  description: "TLSConfig specifies TLSConfig configuration parameters."
+                  description: "TLSConfig defines tls configuration for the backend connection"
                   properties:
                     ca:
                       description: "Stuct containing the CA cert to use for the targets."

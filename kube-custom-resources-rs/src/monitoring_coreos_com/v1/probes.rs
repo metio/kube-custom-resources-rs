@@ -91,6 +91,11 @@ pub struct ProbeSpec {
     /// It requires Prometheus >= v2.45.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
     pub scrape_classic_histograms: Option<bool>,
+    /// The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeFallbackProtocol")]
+    pub scrape_fallback_protocol: Option<ProbeScrapeFallbackProtocol>,
     /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
     /// 
@@ -630,6 +635,20 @@ pub enum ProbeProberScheme {
     Http,
     #[serde(rename = "https")]
     Https,
+}
+
+/// Specification of desired Ingress selection for target discovery by Prometheus.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ProbeScrapeFallbackProtocol {
+    PrometheusProto,
+    #[serde(rename = "OpenMetricsText0.0.1")]
+    OpenMetricsText001,
+    #[serde(rename = "OpenMetricsText1.0.0")]
+    OpenMetricsText100,
+    #[serde(rename = "PrometheusText0.0.4")]
+    PrometheusText004,
+    #[serde(rename = "PrometheusText1.0.0")]
+    PrometheusText100,
 }
 
 /// Targets defines a set of static or dynamically discovered targets to probe.

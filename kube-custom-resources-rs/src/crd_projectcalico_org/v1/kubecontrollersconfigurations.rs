@@ -39,6 +39,9 @@ pub struct KubeControllersConfigurationSpec {
 /// Controllers enables and configures individual Kubernetes controllers
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationControllers {
+    /// LoadBalancer enables and configures the LoadBalancer controller. Enabled by default, set to nil to disable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<KubeControllersConfigurationControllersLoadBalancer>,
     /// Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<KubeControllersConfigurationControllersNamespace>,
@@ -54,6 +57,13 @@ pub struct KubeControllersConfigurationControllers {
     /// WorkloadEndpoint enables and configures the workload endpoint controller. Enabled by default, set to nil to disable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadEndpoint")]
     pub workload_endpoint: Option<KubeControllersConfigurationControllersWorkloadEndpoint>,
+}
+
+/// LoadBalancer enables and configures the LoadBalancer controller. Enabled by default, set to nil to disable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubeControllersConfigurationControllersLoadBalancer {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignIPs")]
+    pub assign_i_ps: Option<String>,
 }
 
 /// Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable.
@@ -149,6 +159,9 @@ pub struct KubeControllersConfigurationStatusRunningConfig {
 /// Controllers enables and configures individual Kubernetes controllers
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatusRunningConfigControllers {
+    /// LoadBalancer enables and configures the LoadBalancer controller. Enabled by default, set to nil to disable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<KubeControllersConfigurationStatusRunningConfigControllersLoadBalancer>,
     /// Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<KubeControllersConfigurationStatusRunningConfigControllersNamespace>,
@@ -164,6 +177,13 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllers {
     /// WorkloadEndpoint enables and configures the workload endpoint controller. Enabled by default, set to nil to disable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadEndpoint")]
     pub workload_endpoint: Option<KubeControllersConfigurationStatusRunningConfigControllersWorkloadEndpoint>,
+}
+
+/// LoadBalancer enables and configures the LoadBalancer controller. Enabled by default, set to nil to disable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubeControllersConfigurationStatusRunningConfigControllersLoadBalancer {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignIPs")]
+    pub assign_i_ps: Option<String>,
 }
 
 /// Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable.

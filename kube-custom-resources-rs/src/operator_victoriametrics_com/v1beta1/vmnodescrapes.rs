@@ -404,6 +404,10 @@ pub enum VMNodeScrapeScheme {
     Http,
     #[serde(rename = "https")]
     Https,
+    #[serde(rename = "HTTPS")]
+    HttpsX,
+    #[serde(rename = "HTTP")]
+    HttpX,
 }
 
 /// Selector to select kubernetes Nodes.
@@ -834,6 +838,10 @@ pub struct VMNodeScrapeStatus {
     /// LastSyncError contains error message for unsuccessful config generation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
     pub last_sync_error: Option<String>,
+    /// ObservedGeneration defines current generation picked by operator for the
+    /// reconcile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
     /// Status defines update status of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,

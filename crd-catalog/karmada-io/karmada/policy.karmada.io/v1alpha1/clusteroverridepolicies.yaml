@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "clusteroverridepolicies.policy.karmada.io"
 spec:
   group: "policy.karmada.io"
@@ -60,6 +60,7 @@ spec:
                                   type: "object"
                               required:
                                 - "operator"
+                                - "value"
                               type: "object"
                             type: "array"
                           argsOverrider:
@@ -188,7 +189,7 @@ spec:
                                     - "replace"
                                   type: "string"
                                 predicate:
-                                  description: "Predicate filters images before applying the rule.\n\n\nDefaults to nil, in that case, the system will automatically detect image fields if the resource type is\nPod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:\n  - Pod: /spec/containers/<N>/image\n  - ReplicaSet: /spec/template/spec/containers/<N>/image\n  - Deployment: /spec/template/spec/containers/<N>/image\n  - DaemonSet: /spec/template/spec/containers/<N>/image\n  - StatefulSet: /spec/template/spec/containers/<N>/image\n  - Job: /spec/template/spec/containers/<N>/image\nIn addition, all images will be processed if the resource object has more than one container.\n\n\nIf not nil, only images matches the filters will be processed."
+                                  description: "Predicate filters images before applying the rule.\n\nDefaults to nil, in that case, the system will automatically detect image fields if the resource type is\nPod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:\n  - Pod: /spec/containers/<N>/image\n  - ReplicaSet: /spec/template/spec/containers/<N>/image\n  - Deployment: /spec/template/spec/containers/<N>/image\n  - DaemonSet: /spec/template/spec/containers/<N>/image\n  - StatefulSet: /spec/template/spec/containers/<N>/image\n  - Job: /spec/template/spec/containers/<N>/image\nIn addition, all images will be processed if the resource object has more than one container.\n\nIf not nil, only images matches the filters will be processed."
                                   properties:
                                     path:
                                       description: "Path indicates the path of target field"
@@ -223,6 +224,7 @@ spec:
                                   type: "object"
                               required:
                                 - "operator"
+                                - "value"
                               type: "object"
                             type: "array"
                           plaintext:
@@ -327,7 +329,7 @@ spec:
                     type: "object"
                   type: "array"
                 overriders:
-                  description: "Overriders represents the override rules that would apply on resources\n\n\nDeprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead."
+                  description: "Overriders represents the override rules that would apply on resources\n\nDeprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead."
                   properties:
                     annotationsOverrider:
                       description: "AnnotationsOverrider represents the rules dedicated to handling workload annotations"
@@ -348,6 +350,7 @@ spec:
                             type: "object"
                         required:
                           - "operator"
+                          - "value"
                         type: "object"
                       type: "array"
                     argsOverrider:
@@ -476,7 +479,7 @@ spec:
                               - "replace"
                             type: "string"
                           predicate:
-                            description: "Predicate filters images before applying the rule.\n\n\nDefaults to nil, in that case, the system will automatically detect image fields if the resource type is\nPod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:\n  - Pod: /spec/containers/<N>/image\n  - ReplicaSet: /spec/template/spec/containers/<N>/image\n  - Deployment: /spec/template/spec/containers/<N>/image\n  - DaemonSet: /spec/template/spec/containers/<N>/image\n  - StatefulSet: /spec/template/spec/containers/<N>/image\n  - Job: /spec/template/spec/containers/<N>/image\nIn addition, all images will be processed if the resource object has more than one container.\n\n\nIf not nil, only images matches the filters will be processed."
+                            description: "Predicate filters images before applying the rule.\n\nDefaults to nil, in that case, the system will automatically detect image fields if the resource type is\nPod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:\n  - Pod: /spec/containers/<N>/image\n  - ReplicaSet: /spec/template/spec/containers/<N>/image\n  - Deployment: /spec/template/spec/containers/<N>/image\n  - DaemonSet: /spec/template/spec/containers/<N>/image\n  - StatefulSet: /spec/template/spec/containers/<N>/image\n  - Job: /spec/template/spec/containers/<N>/image\nIn addition, all images will be processed if the resource object has more than one container.\n\nIf not nil, only images matches the filters will be processed."
                             properties:
                               path:
                                 description: "Path indicates the path of target field"
@@ -511,6 +514,7 @@ spec:
                             type: "object"
                         required:
                           - "operator"
+                          - "value"
                         type: "object"
                       type: "array"
                     plaintext:
@@ -593,7 +597,7 @@ spec:
                     type: "object"
                   type: "array"
                 targetCluster:
-                  description: "TargetCluster defines restrictions on this override policy\nthat only applies to resources propagated to the matching clusters.\nnil means matching all clusters.\n\n\nDeprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead."
+                  description: "TargetCluster defines restrictions on this override policy\nthat only applies to resources propagated to the matching clusters.\nnil means matching all clusters.\n\nDeprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead."
                   properties:
                     clusterNames:
                       description: "ClusterNames is the list of clusters to be selected."

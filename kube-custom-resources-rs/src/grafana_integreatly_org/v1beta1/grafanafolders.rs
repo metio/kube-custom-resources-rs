@@ -20,10 +20,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GrafanaFolderSpec {
-    /// Enable matching Grafana instances outside the current namespace
+    /// Allow the Operator to match this resource with Grafanas outside the current namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossNamespaceImport")]
     pub allow_cross_namespace_import: Option<bool>,
-    /// Selects Grafanas for import
+    /// Selects Grafana instances for import
     #[serde(rename = "instanceSelector")]
     pub instance_selector: GrafanaFolderInstanceSelector,
     /// Reference to an existing GrafanaFolder CR in the same namespace
@@ -35,7 +35,7 @@ pub struct GrafanaFolderSpec {
     /// Raw json with folder permissions, potentially exported from Grafana
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<String>,
-    /// How often the folder is synced, defaults to 5m if not set
+    /// How often the resource is synced, defaults to 10m0s if not set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
     /// Display name of the folder in Grafana
@@ -46,7 +46,7 @@ pub struct GrafanaFolderSpec {
     pub uid: Option<String>,
 }
 
-/// Selects Grafanas for import
+/// Selects Grafana instances for import
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaFolderInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

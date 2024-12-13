@@ -49,6 +49,10 @@ pub struct IngressRouteRoutes {
     /// More info: https://doc.traefik.io/traefik/v3.2/routing/providers/kubernetes-crd/#kind-middleware
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub middlewares: Option<Vec<IngressRouteRoutesMiddlewares>>,
+    /// Observability defines the observability configuration for a router.
+    /// More info: https://doc.traefik.io/traefik/v3.2/routing/routers/#observability
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub observability: Option<IngressRouteRoutesObservability>,
     /// Priority defines the router's priority.
     /// More info: https://doc.traefik.io/traefik/v3.2/routing/routers/#priority
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -77,6 +81,18 @@ pub struct IngressRouteRoutesMiddlewares {
     /// Namespace defines the namespace of the referenced Middleware resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Observability defines the observability configuration for a router.
+/// More info: https://doc.traefik.io/traefik/v3.2/routing/routers/#observability
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IngressRouteRoutesObservability {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogs")]
+    pub access_logs: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tracing: Option<bool>,
 }
 
 /// Service defines an upstream HTTP service to proxy traffic to.

@@ -2087,6 +2087,9 @@ pub struct ArgoCDController {
     /// Resources defines the Compute Resources required by the container for the Application Controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCDControllerResources>,
+    /// RespectRBAC restricts controller from discovering/syncing specific resources, Defaults is empty if not configured. Valid options are strict and normal.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "respectRBAC")]
+    pub respect_rbac: Option<String>,
     /// Sharding contains the options for the Application Controller sharding configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sharding: Option<ArgoCDControllerSharding>,
@@ -6893,7 +6896,9 @@ pub struct ArgoCDRepo {
     /// ServiceAccount defines the ServiceAccount user that you would like the Repo server to use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub serviceaccount: Option<String>,
-    /// SidecarContainers defines the list of sidecar containers for the repo server deployment
+    /// SidecarContainers defines the list of sidecar containers for the repo
+    /// server deployment. If the image field is omitted from a SidecarContainer,
+    /// the image for the repo server will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarContainers")]
     pub sidecar_containers: Option<Vec<ArgoCDRepoSidecarContainers>>,
     /// VerifyTLS defines whether repo server API should be accessed using strict TLS validation

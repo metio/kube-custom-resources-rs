@@ -125,9 +125,6 @@ pub struct InstanceSetSpec {
     /// Defaults to 1 if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Provides method to probe role.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleProbe")]
-    pub role_probe: Option<InstanceSetRoleProbe>,
     /// A list of roles defined in the system.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<InstanceSetRoles>>,
@@ -3618,59 +3615,6 @@ pub struct InstanceSetMembershipReconfigurationSwitchoverAction {
     /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-}
-
-/// Provides method to probe role.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetRoleProbe {
-    /// Defines a custom method for role probing.
-    /// Actions defined here are executed in series.
-    /// Upon completion of all actions, the final output should be a single string representing the role name defined in spec.Roles.
-    /// The latest [BusyBox](https://busybox.net/) image will be used if Image is not configured.
-    /// Environment variables can be used in Command:
-    /// - v_KB_ITS_LAST_STDOUT: stdout from the last action, watch for 'v_' prefix
-    /// - KB_ITS_USERNAME: username part of the credential
-    /// - KB_ITS_PASSWORD: password part of the credential
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<Vec<InstanceSetRoleProbeCustomHandler>>,
-    /// Specifies the minimum number of consecutive failures for the probe to be considered failed after having succeeded.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// Specifies the number of seconds to wait after the container has started before initiating role probing.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// Specifies the frequency (in seconds) of probe execution.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Specifies the method for updating the pod role label.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleUpdateMechanism")]
-    pub role_update_mechanism: Option<InstanceSetRoleProbeRoleUpdateMechanism>,
-    /// Specifies the minimum number of consecutive successes for the probe to be considered successful after having failed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// Specifies the number of seconds after which the probe times out.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetRoleProbeCustomHandler {
-    /// Additional parameters used to perform specific statements. This field is optional.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub args: Option<Vec<String>>,
-    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
-    pub command: Vec<String>,
-    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
-}
-
-/// Provides method to probe role.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum InstanceSetRoleProbeRoleUpdateMechanism {
-    ReadinessProbeEventUpdate,
-    #[serde(rename = "DirectAPIServerEventUpdate")]
-    DirectApiServerEventUpdate,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

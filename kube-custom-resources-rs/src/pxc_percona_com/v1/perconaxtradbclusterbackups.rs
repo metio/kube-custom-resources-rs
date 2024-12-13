@@ -19,6 +19,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PerconaXtraDBClusterBackupSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
+    pub active_deadline_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerOptions")]
     pub container_options: Option<PerconaXtraDBClusterBackupContainerOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pxcCluster")]

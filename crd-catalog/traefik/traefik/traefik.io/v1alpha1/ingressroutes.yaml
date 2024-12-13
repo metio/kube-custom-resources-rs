@@ -62,6 +62,16 @@ spec:
                             - "name"
                           type: "object"
                         type: "array"
+                      observability:
+                        description: "Observability defines the observability configuration for a router.\nMore info: https://doc.traefik.io/traefik/v3.2/routing/routers/#observability"
+                        properties:
+                          accessLogs:
+                            type: "boolean"
+                          metrics:
+                            type: "boolean"
+                          tracing:
+                            type: "boolean"
+                        type: "object"
                       priority:
                         description: "Priority defines the router's priority.\nMore info: https://doc.traefik.io/traefik/v3.2/routing/routers/#priority"
                         type: "integer"

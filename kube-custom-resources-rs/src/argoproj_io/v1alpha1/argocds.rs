@@ -1544,7 +1544,9 @@ pub struct ArgoCDRepo {
     /// ServiceAccount defines the ServiceAccount user that you would like the Repo server to use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub serviceaccount: Option<String>,
-    /// SidecarContainers defines the list of sidecar containers for the repo server deployment
+    /// SidecarContainers defines the list of sidecar containers for the repo
+    /// server deployment. If the image field is omitted from a SidecarContainer,
+    /// the image for the repo server will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarContainers")]
     pub sidecar_containers: Option<Vec<ArgoCDRepoSidecarContainers>>,
     /// VerifyTLS defines whether repo server API should be accessed using strict TLS validation

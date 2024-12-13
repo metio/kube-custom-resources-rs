@@ -236,7 +236,7 @@ pub struct FluentBitConfigService {
     pub emitter_storage_type: Option<String>,
     /// Interval to flush output
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushSeconds")]
-    pub flush_seconds: Option<i64>,
+    pub flush_seconds: Option<f64>,
     /// Wait time on exit
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "graceSeconds")]
     pub grace_seconds: Option<i64>,

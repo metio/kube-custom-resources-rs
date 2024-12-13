@@ -243,9 +243,14 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfig>,
@@ -1134,9 +1139,14 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfig>,
@@ -1840,9 +1850,14 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigTlsConfig>,
@@ -2563,9 +2578,14 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigTlsConfig>,
@@ -3301,9 +3321,14 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigTlsConfig>,
@@ -4067,9 +4092,14 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigTlsConfig>,
@@ -4726,9 +4756,14 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfig>,
@@ -5461,9 +5496,14 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigTlsConfig>,
@@ -6148,9 +6188,14 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfig>,
@@ -6790,9 +6835,14 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfig>,
@@ -7435,9 +7485,14 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigTlsConfig>,
@@ -8114,9 +8169,14 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfig {
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
+    /// Optional proxy URL.
+    /// 
+    /// If defined, this field takes precedence over `proxyUrl`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
+    pub proxy_url: Option<String>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
+    pub proxy_url_x: Option<String>,
     /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfig>,

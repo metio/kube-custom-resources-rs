@@ -22,6 +22,8 @@ use self::prelude::*;
 pub struct RayServiceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentUnhealthySecondThreshold")]
     pub deployment_unhealthy_second_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeHeadPodFromServeSvc")]
+    pub exclude_head_pod_from_serve_svc: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterConfig")]
     pub ray_cluster_config: Option<RayServiceRayClusterConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serveConfigV2")]
@@ -30,6 +32,8 @@ pub struct RayServiceSpec {
     pub serve_service: Option<RayServiceServeService>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceUnhealthySecondThreshold")]
     pub service_unhealthy_second_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeStrategy")]
+    pub upgrade_strategy: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -42,6 +46,8 @@ pub struct RayServiceRayClusterConfig {
     pub head_group_spec: RayServiceRayClusterConfigHeadGroupSpec,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "headServiceAnnotations")]
     pub head_service_annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedBy")]
+    pub managed_by: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayVersion")]
     pub ray_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3406,6 +3412,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesVsphereVolu
 pub struct RayServiceRayClusterConfigWorkerGroupSpecs {
     #[serde(rename = "groupName")]
     pub group_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeoutSeconds")]
+    pub idle_timeout_seconds: Option<i32>,
     #[serde(rename = "maxReplicas")]
     pub max_replicas: i32,
     #[serde(rename = "minReplicas")]
