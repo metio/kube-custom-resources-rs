@@ -20,6 +20,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `HelmRepository`
 - `OCIRepository`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;
+#[cfg(feature = "v1beta2")]
 pub mod v1beta2;

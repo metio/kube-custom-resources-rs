@@ -3,7 +3,7 @@
 
 [package]
 name = "kcr_lerentis_uploadfilter24_eu"
-version = "9999.99.99"
+version = "0.0.0"
 edition.workspace = true
 authors.workspace = true
 description.workspace = true
@@ -26,3 +26,11 @@ k8s-openapi = { workspace = true, features = ["v1_31"] }
 
 [package.metadata.docs.rs]
 features = ["k8s-openapi/v1_31"]
+
+[features]
+default = ["v1beta4", "v1beta5", "v1beta6", "v1beta7", "v1beta8"]
+v1beta4 = []
+v1beta5 = []
+v1beta6 = []
+v1beta7 = []
+v1beta8 = []

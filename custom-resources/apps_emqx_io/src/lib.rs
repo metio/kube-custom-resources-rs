@@ -18,7 +18,11 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `EMQX`
 - `Rebalance`
 */
+#[cfg(feature = "v1beta3")]
 pub mod v1beta3;
+#[cfg(feature = "v1beta4")]
 pub mod v1beta4;
+#[cfg(feature = "v2alpha1")]
 pub mod v2alpha1;
+#[cfg(feature = "v2beta1")]
 pub mod v2beta1;

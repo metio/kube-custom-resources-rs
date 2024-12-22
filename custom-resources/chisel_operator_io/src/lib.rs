@@ -9,5 +9,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## chisel-operator.io/v2
 - `ExitNode`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v2")]
 pub mod v2;

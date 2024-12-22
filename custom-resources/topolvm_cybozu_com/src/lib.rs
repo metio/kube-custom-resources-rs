@@ -8,5 +8,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## topolvm.cybozu.com/v2
 - `TopolvmCluster`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v2")]
 pub mod v2;

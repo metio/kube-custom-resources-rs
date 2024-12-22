@@ -12,5 +12,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `KafkaServerConfig`
 - `ProtectedService`
 */
+#[cfg(feature = "v1alpha2")]
 pub mod v1alpha2;
+#[cfg(feature = "v1alpha3")]
 pub mod v1alpha3;

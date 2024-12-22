@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## beegfs.csi.netapp.com/v1
 - `BeegfsDriver`
 */
+#[cfg(feature = "v1")]
 pub mod v1;

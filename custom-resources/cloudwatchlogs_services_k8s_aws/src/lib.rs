@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## cloudwatchlogs.services.k8s.aws/v1alpha1
 - `LogGroup`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

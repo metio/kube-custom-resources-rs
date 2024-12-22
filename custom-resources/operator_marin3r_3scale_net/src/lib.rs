@@ -8,4 +8,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `DiscoveryService`
 - `EnvoyDeployment`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

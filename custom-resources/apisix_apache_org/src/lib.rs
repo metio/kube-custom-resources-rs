@@ -12,4 +12,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ApisixTls`
 - `ApisixUpstream`
 */
+#[cfg(feature = "v2")]
 pub mod v2;

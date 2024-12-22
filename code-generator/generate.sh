@@ -41,6 +41,12 @@ if ! cargo run --package code-generator --bin cargo_toml_generator; then
   exit 1
 fi
 
+# generate workspace Cargo.toml file
+if ! cargo run --package code-generator --bin workspace_toml_generator; then
+  echo 'could not generate workspace Cargo.toml file'
+  exit 1
+fi
+
 # generate project README.md
 if ! cargo run --package code-generator --bin project_readme_generator; then
   echo 'could not generate project README.md file'

@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## networking.k8s.aws/v1alpha1
 - `PolicyEndpoint`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

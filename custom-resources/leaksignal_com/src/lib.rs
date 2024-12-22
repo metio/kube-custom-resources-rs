@@ -7,4 +7,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ClusterLeaksignalIstio`
 - `LeaksignalIstio`
 */
+#[cfg(feature = "v1")]
 pub mod v1;

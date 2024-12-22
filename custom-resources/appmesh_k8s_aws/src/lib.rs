@@ -12,4 +12,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `VirtualRouter`
 - `VirtualService`
 */
+#[cfg(feature = "v1beta2")]
 pub mod v1beta2;

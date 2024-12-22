@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## externaldns.k8s.io/v1alpha1
 - `DNSEndpoint`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

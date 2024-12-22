@@ -11,5 +11,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## datadoghq.com/v2alpha1
 - `DatadogAgent`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
+#[cfg(feature = "v2alpha1")]
 pub mod v2alpha1;

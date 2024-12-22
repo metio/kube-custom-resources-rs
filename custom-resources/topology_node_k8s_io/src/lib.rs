@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## topology.node.k8s.io/v1alpha1
 - `NodeResourceTopology`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

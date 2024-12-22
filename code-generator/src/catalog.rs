@@ -1490,6 +1490,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "giantswarm/silence-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/giantswarm/silence-operator/blob/master/config/crd/monitoring.giantswarm.io_silences.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "gitlab-org/cloud-native/gitlab-operator",
         license: APACHE_V2,
         urls: &[
@@ -1875,8 +1883,8 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "knative/operator",
         license: APACHE_V2,
         urls: &[
-            "https://raw.githubusercontent.com/knative/operator/main/config/crd/bases/operator.knative.dev_knativeeventings.yaml",
-            "https://raw.githubusercontent.com/knative/operator/main/config/crd/bases/operator.knative.dev_knativeservings.yaml",
+            "https://github.com/knative/operator/blob/main/config/crd/bases/operator.knative.dev_knativeeventings.yaml",
+            "https://github.com/knative/operator/blob/main/config/crd/bases/operator.knative.dev_knativeservings.yaml",
         ],
         ignores: &[],
     },
@@ -2630,6 +2638,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "metal3-io/ip-address-manager",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/metal3-io/ip-address-manager/blob/main/config/crd/bases/ipam.metal3.io_ipaddresses.yaml",
+            "https://github.com/metal3-io/ip-address-manager/blob/main/config/crd/bases/ipam.metal3.io_ipclaims.yaml",
+            "https://github.com/metal3-io/ip-address-manager/blob/main/config/crd/bases/ipam.metal3.io_ippools.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "microcks/microcks-ansible-operator",
         license: APACHE_V2,
         urls: &[
@@ -2761,6 +2779,22 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/open-telemetry/opentelemetry-operator/blob/main/config/crd/bases/opentelemetry.io_instrumentations.yaml",
             "https://github.com/open-telemetry/opentelemetry-operator/blob/main/config/crd/bases/opentelemetry.io_opampbridges.yaml",
             "https://github.com/open-telemetry/opentelemetry-operator/blob/main/config/crd/bases/opentelemetry.io_opentelemetrycollectors.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "opensearch-project/opensearch-k8s-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/charts/opensearch-operator/files/opensearch.opster.io_opensearchactiongroups.yaml",
+            "https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/charts/opensearch-operator/files/opensearch.opster.io_opensearchclusters.yaml",
+            "https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/charts/opensearch-operator/files/opensearch.opster.io_opensearchcomponenttemplates.yaml",
+            "https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/charts/opensearch-operator/files/opensearch.opster.io_opensearchindextemplates.yaml",
+            "https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/charts/opensearch-operator/files/opensearch.opster.io_opensearchismpolicies.yaml",
+            "https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/charts/opensearch-operator/files/opensearch.opster.io_opensearchroles.yaml",
+            "https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/charts/opensearch-operator/files/opensearch.opster.io_opensearchtenants.yaml",
+            "https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/charts/opensearch-operator/files/opensearch.opster.io_opensearchuserrolebindings.yaml",
+            "https://github.com/opensearch-project/opensearch-k8s-operator/blob/main/charts/opensearch-operator/files/opensearch.opster.io_opensearchusers.yaml",
         ],
         ignores: &[],
     },
@@ -2901,6 +2935,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/percona/percona-xtradb-cluster-operator/blob/main/config/crd/bases/pxc.percona.com_perconaxtradbclusterbackups.yaml",
             "https://github.com/percona/percona-xtradb-cluster-operator/blob/main/config/crd/bases/pxc.percona.com_perconaxtradbclusterrestores.yaml",
             "https://github.com/percona/percona-xtradb-cluster-operator/blob/main/config/crd/bases/pxc.percona.com_perconaxtradbclusters.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "perses/perses-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/perses/perses-operator/blob/main/config/crd/bases/perses.dev_perses.yaml",
+            "https://github.com/perses/perses-operator/blob/main/config/crd/bases/perses.dev_persesdashboards.yaml",
+            "https://github.com/perses/perses-operator/blob/main/config/crd/bases/perses.dev_persesdatasources.yaml",
         ],
         ignores: &[],
     },

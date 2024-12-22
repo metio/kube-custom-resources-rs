@@ -1,0 +1,9 @@
+pub mod opensearchactiongroups;
+pub mod opensearchclusters;
+pub mod opensearchcomponenttemplates;
+pub mod opensearchindextemplates;
+pub mod opensearchismpolicies;
+pub mod opensearchroles;
+pub mod opensearchtenants;
+pub mod opensearchuserrolebindings;
+pub mod opensearchusers;

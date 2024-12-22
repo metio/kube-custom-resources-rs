@@ -9,4 +9,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ClusterIssuer`
 - `Issuer`
 */
+#[cfg(feature = "v1")]
 pub mod v1;

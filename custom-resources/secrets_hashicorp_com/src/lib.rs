@@ -12,4 +12,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `VaultPKISecret`
 - `VaultStaticSecret`
 */
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;
