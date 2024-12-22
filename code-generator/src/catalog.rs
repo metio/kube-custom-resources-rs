@@ -2957,6 +2957,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "project-akri/akri",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/project-akri/akri/blob/main/deployment/helm/crds/akri-configuration-crd.yaml",
+            "https://github.com/project-akri/akri/blob/main/deployment/helm/crds/akri-instance-crd.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "project-codeflare/codeflare-operator",
         license: APACHE_V2,
         urls: &[
