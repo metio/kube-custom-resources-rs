@@ -51,6 +51,7 @@ The following groups are available:
 - [actions.summerwind.dev](https://crates.io/crates/kcr_actions_summerwind_dev)
 - [addons.cluster.x-k8s.io](https://crates.io/crates/kcr_addons_cluster_x_k8s_io)
 - [agent.k8s.elastic.co](https://crates.io/crates/kcr_agent_k8s_elastic_co)
+- [akri.sh](https://crates.io/crates/kcr_akri_sh)
 - [anywhere.eks.amazonaws.com](https://crates.io/crates/kcr_anywhere_eks_amazonaws_com)
 - [apacheweb.arsenal.dev](https://crates.io/crates/kcr_apacheweb_arsenal_dev)
 - [api.clever-cloud.com](https://crates.io/crates/kcr_api_clever_cloud_com)

@@ -3,7 +3,7 @@
 
 [package]
 name = "kcr_about_k8s_io"
-version = "1.2.3"
+version = "0.0.0"
 edition.workspace = true
 authors.workspace = true
 description.workspace = true

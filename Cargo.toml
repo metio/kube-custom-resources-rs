@@ -11,6 +11,7 @@ members = [
     "custom-resources/actions_summerwind_dev",
     "custom-resources/addons_cluster_x_k8s_io",
     "custom-resources/agent_k8s_elastic_co",
+    "custom-resources/akri_sh",
     "custom-resources/anywhere_eks_amazonaws_com",
     "custom-resources/apacheweb_arsenal_dev",
     "custom-resources/api_clever_cloud_com",

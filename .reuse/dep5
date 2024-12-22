@@ -1055,6 +1055,10 @@ Files: crd-catalog/pravega/zookeeper-operator/*
 Copyright: The pravega/zookeeper-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/project-akri/akri/*
+Copyright: The project-akri/akri Authors
+License: Apache-2.0
+
 Files: crd-catalog/project-codeflare/codeflare-operator/*
 Copyright: The project-codeflare/codeflare-operator Authors
 License: Apache-2.0

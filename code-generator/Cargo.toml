@@ -17,3 +17,6 @@ reqwest = { version = "0.12.9", default-features = false, features = ["blocking"
 serde = { version = "1.0.214", features = ["derive"] }
 serde_json = { version = "1.0.132" }
 serde_yml = { version = "0.0.12" }
+
+[package.metadata.workspaces]
+independent = true
