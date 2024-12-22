@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## nodeinfo.volcano.sh/v1alpha1
 - `Numatopology`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

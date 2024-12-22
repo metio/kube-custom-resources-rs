@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## designer.kaoto.io/v1alpha1
 - `Kaoto`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

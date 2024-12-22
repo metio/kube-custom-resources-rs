@@ -8,4 +8,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Pooler`
 - `ScheduledBackup`
 */
+#[cfg(feature = "v1")]
 pub mod v1;

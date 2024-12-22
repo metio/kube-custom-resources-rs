@@ -531,6 +531,10 @@ Files: crd-catalog/furiko-io/furiko/*
 Copyright: The furiko-io/furiko Authors
 License: Apache-2.0
 
+Files: crd-catalog/giantswarm/silence-operator/*
+Copyright: The giantswarm/silence-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/gitlab-org/cloud-native/gitlab-operator/*
 Copyright: The gitlab-org/cloud-native/gitlab-operator Authors
 License: Apache-2.0
@@ -935,6 +939,10 @@ Files: crd-catalog/metal3-io/baremetal-operator/*
 Copyright: The metal3-io/baremetal-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/metal3-io/ip-address-manager/*
+Copyright: The metal3-io/ip-address-manager Authors
+License: Apache-2.0
+
 Files: crd-catalog/microcks/microcks-ansible-operator/*
 Copyright: The microcks/microcks-ansible-operator Authors
 License: Apache-2.0
@@ -987,6 +995,10 @@ Files: crd-catalog/open-telemetry/opentelemetry-operator/*
 Copyright: The open-telemetry/opentelemetry-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/opensearch-project/opensearch-k8s-operator/*
+Copyright: The opensearch-project/opensearch-k8s-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/openshift/certman-operator/*
 Copyright: The openshift/certman-operator Authors
 License: Apache-2.0
@@ -1033,6 +1045,10 @@ License: Apache-2.0
 
 Files: crd-catalog/percona/percona-xtradb-cluster-operator/*
 Copyright: The percona/percona-xtradb-cluster-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/perses/perses-operator/*
+Copyright: The perses/perses-operator Authors
 License: Apache-2.0
 
 Files: crd-catalog/pravega/zookeeper-operator/*

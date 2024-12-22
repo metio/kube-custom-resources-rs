@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## quota.codeflare.dev/v1alpha1
 - `QuotaSubtree`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

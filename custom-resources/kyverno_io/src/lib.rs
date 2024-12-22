@@ -34,9 +34,15 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Policy`
 - `PolicyException`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v1alpha2")]
 pub mod v1alpha2;
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;
+#[cfg(feature = "v2")]
 pub mod v2;
+#[cfg(feature = "v2alpha1")]
 pub mod v2alpha1;
+#[cfg(feature = "v2beta1")]
 pub mod v2beta1;

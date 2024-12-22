@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## logging-extensions.banzaicloud.io/v1alpha1
 - `HostTailer`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

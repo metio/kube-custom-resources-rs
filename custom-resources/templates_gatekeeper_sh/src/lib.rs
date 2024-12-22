@@ -10,6 +10,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## templates.gatekeeper.sh/v1beta1
 - `ConstraintTemplate`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;

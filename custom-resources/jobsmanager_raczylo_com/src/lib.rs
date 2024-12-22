@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## jobsmanager.raczylo.com/v1beta1
 - `ManagedJob`
 */
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;

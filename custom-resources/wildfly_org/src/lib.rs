@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## wildfly.org/v1alpha1
 - `WildFlyServer`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

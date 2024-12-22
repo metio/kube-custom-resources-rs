@@ -8,5 +8,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## infra.contrib.fluxcd.io/v1alpha2
 - `Terraform`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
+#[cfg(feature = "v1alpha2")]
 pub mod v1alpha2;

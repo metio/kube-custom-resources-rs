@@ -27,6 +27,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Machine`
 - `MachineSet`
 */
+#[cfg(feature = "v1alpha3")]
 pub mod v1alpha3;
+#[cfg(feature = "v1alpha4")]
 pub mod v1alpha4;
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;

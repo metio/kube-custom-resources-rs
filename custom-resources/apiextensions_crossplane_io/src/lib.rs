@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## apiextensions.crossplane.io/v1
 - `CompositeResourceDefinition`
 */
+#[cfg(feature = "v1")]
 pub mod v1;

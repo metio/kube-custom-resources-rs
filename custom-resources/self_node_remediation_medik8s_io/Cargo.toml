@@ -3,7 +3,7 @@
 
 [package]
 name = "kcr_self_node_remediation_medik8s_io"
-version = "9999.99.99"
+version = "0.0.0"
 edition.workspace = true
 authors.workspace = true
 description.workspace = true
@@ -26,3 +26,7 @@ k8s-openapi = { workspace = true, features = ["v1_31"] }
 
 [package.metadata.docs.rs]
 features = ["k8s-openapi/v1_31"]
+
+[features]
+default = ["v1alpha1"]
+v1alpha1 = []

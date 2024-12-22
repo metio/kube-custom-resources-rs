@@ -30,6 +30,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `WorkloadEntry`
 - `WorkloadGroup`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v1alpha3")]
 pub mod v1alpha3;
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;

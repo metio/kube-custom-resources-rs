@@ -43,5 +43,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `VolumeAttachment`
 - `Volume`
 */
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;
+#[cfg(feature = "v1beta2")]
 pub mod v1beta2;

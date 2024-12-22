@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## agent.k8s.elastic.co/v1alpha1
 - `Agent`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

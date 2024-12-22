@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## config.grafana.com/v1
 - `ProjectConfig`
 */
+#[cfg(feature = "v1")]
 pub mod v1;

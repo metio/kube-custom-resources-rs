@@ -23,9 +23,13 @@ jobs:
       - name: Set up Rust
         if: steps.commits.outputs.count > 0
         uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-workspaces
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-edit
       - name: Cargo Version
         if: steps.commits.outputs.count > 0
-        run: sed -i -e '0,/edition/s/^version = .*/version = "${{ steps.release.outputs.version }}"/' custom-resources/efs_services_k8s_aws/Cargo.toml
+        run: cargo set-version --package kcr_efs_services_k8s_aws ${{ steps.release.outputs.version }}
       - name: Publish to crates.io
         if: steps.commits.outputs.count > 0
         run: >

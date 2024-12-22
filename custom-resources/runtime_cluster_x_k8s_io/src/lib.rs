@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## runtime.cluster.x-k8s.io/v1alpha1
 - `ExtensionConfig`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
