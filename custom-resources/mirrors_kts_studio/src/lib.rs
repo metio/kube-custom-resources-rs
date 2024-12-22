@@ -8,5 +8,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## mirrors.kts.studio/v1alpha2
 - `SecretMirror`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
+#[cfg(feature = "v1alpha2")]
 pub mod v1alpha2;

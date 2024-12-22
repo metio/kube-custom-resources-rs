@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## authentication.stackable.tech/v1alpha1
 - `AuthenticationClass`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

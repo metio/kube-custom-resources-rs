@@ -3,7 +3,7 @@
 
 [package]
 name = "kcr_{{group_name_snake_case}}"
-version = "9999.99.99"
+version = "0.0.0"
 edition.workspace = true
 authors.workspace = true
 description.workspace = true
@@ -26,3 +26,9 @@ k8s-openapi = { workspace = true, features = ["{{k8s_openapi_kubernetes_version}
 
 [package.metadata.docs.rs]
 features = ["k8s-openapi/{{k8s_openapi_kubernetes_version}}"]
+
+[features]
+default = [{{#each versions as |version| }}"{{version}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{#each versions as |version| }}
+{{version}} = []
+{{/each}}

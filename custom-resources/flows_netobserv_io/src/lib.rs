@@ -10,6 +10,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## flows.netobserv.io/v1beta2
 - `FlowCollector`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;
+#[cfg(feature = "v1beta2")]
 pub mod v1beta2;

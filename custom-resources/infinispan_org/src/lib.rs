@@ -11,5 +11,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Cache`
 - `Restore`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v2alpha1")]
 pub mod v2alpha1;

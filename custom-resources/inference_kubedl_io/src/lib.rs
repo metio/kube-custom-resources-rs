@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## inference.kubedl.io/v1alpha1
 - `ElasticBatchJob`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

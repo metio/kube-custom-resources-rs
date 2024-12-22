@@ -19,6 +19,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Test`
 - `TestSuite`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v2")]
 pub mod v2;
+#[cfg(feature = "v3")]
 pub mod v3;

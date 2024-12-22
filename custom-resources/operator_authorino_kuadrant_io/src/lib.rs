@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## operator.authorino.kuadrant.io/v1beta1
 - `Authorino`
 */
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;

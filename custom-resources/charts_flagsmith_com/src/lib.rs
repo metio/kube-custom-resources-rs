@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## charts.flagsmith.com/v1alpha1
 - `Flagsmith`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

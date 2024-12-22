@@ -13,5 +13,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `GatewayConfig`
 - `StaticService`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

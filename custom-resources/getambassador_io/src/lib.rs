@@ -18,4 +18,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `TLSContext`
 - `TracingService`
 */
+#[cfg(feature = "v3alpha1")]
 pub mod v3alpha1;

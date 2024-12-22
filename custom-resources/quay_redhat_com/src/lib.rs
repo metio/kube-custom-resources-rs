@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## quay.redhat.com/v1
 - `QuayRegistry`
 */
+#[cfg(feature = "v1")]
 pub mod v1;

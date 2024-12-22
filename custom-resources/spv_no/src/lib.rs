@@ -14,7 +14,11 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## spv.no/v2beta1
 - `AzureKeyVaultSecret`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
+#[cfg(feature = "v2alpha1")]
 pub mod v2alpha1;
+#[cfg(feature = "v2beta1")]
 pub mod v2beta1;

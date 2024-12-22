@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## serving.kubedl.io/v1alpha1
 - `Inference`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

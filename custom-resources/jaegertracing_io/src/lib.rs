@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## jaegertracing.io/v1
 - `Jaeger`
 */
+#[cfg(feature = "v1")]
 pub mod v1;

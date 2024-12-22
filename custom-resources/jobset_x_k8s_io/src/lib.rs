@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## jobset.x-k8s.io/v1alpha2
 - `JobSet`
 */
+#[cfg(feature = "v1alpha2")]
 pub mod v1alpha2;

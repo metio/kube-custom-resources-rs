@@ -10,5 +10,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ClusterWorkloadResourceMapping`
 - `ServiceBinding`
 */
+#[cfg(feature = "v1alpha3")]
 pub mod v1alpha3;
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;

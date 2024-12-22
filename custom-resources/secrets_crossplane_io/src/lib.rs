@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## secrets.crossplane.io/v1alpha1
 - `StoreConfig`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

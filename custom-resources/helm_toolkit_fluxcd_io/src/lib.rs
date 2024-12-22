@@ -10,6 +10,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## helm.toolkit.fluxcd.io/v2beta2
 - `HelmRelease`
 */
+#[cfg(feature = "v2")]
 pub mod v2;
+#[cfg(feature = "v2beta1")]
 pub mod v2beta1;
+#[cfg(feature = "v2beta2")]
 pub mod v2beta2;

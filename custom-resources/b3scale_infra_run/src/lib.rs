@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## b3scale.infra.run/v1
 - `BBBFrontend`
 */
+#[cfg(feature = "v1")]
 pub mod v1;

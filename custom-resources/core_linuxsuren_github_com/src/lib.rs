@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## core.linuxsuren.github.com/v1alpha1
 - `ATest`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

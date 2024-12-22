@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## charts.amd.com/v1alpha1
 - `AMDGPU`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

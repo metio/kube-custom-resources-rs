@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## minio.min.io/v2
 - `Tenant`
 */
+#[cfg(feature = "v2")]
 pub mod v2;

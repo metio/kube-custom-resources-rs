@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## config.gatekeeper.sh/v1alpha1
 - `Config`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

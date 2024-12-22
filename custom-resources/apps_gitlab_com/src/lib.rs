@@ -8,5 +8,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## apps.gitlab.com/v1beta2
 - `Runner`
 */
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;
+#[cfg(feature = "v1beta2")]
 pub mod v1beta2;

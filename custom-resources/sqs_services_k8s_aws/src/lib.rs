@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## sqs.services.k8s.aws/v1alpha1
 - `Queue`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

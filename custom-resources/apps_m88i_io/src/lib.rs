@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## apps.m88i.io/v1alpha1
 - `Nexus`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

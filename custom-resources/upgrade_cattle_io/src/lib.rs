@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## upgrade.cattle.io/v1
 - `Plan`
 */
+#[cfg(feature = "v1")]
 pub mod v1;

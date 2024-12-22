@@ -12,4 +12,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `DBSubnetGroup`
 - `GlobalCluster`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

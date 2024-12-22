@@ -18,5 +18,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `DataDownload`
 - `DataUpload`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v2alpha1")]
 pub mod v2alpha1;

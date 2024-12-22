@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## charts.helm.k8s.io/v1alpha1
 - `SnykMonitor`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

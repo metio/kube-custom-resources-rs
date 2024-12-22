@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## control.k8ssandra.io/v1alpha1
 - `CassandraTask`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

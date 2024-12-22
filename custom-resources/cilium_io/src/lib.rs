@@ -21,5 +21,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `CiliumNodeConfig`
 - `CiliumPodIPPool`
 */
+#[cfg(feature = "v2")]
 pub mod v2;
+#[cfg(feature = "v2alpha1")]
 pub mod v2alpha1;

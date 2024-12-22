@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 // SPDX-License-Identifier: 0BSD
 
+use code_generator::last_path_segment;
 use handlebars::{to_json, Handlebars};
 use serde_json::Map;
 use std::fs;
 use std::fs::OpenOptions;
 use std::io::Result;
-use code_generator::last_path_segment;
 
 fn main() -> Result<()> {
     let root = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
@@ -29,12 +29,24 @@ fn main() -> Result<()> {
         let lib_rs_file = group_path.join("src/lib.rs");
 
         if lib_rs_file.exists() {
+            let mut versions = vec![];
+            for version in fs::read_dir(group_path.join("src"))? {
+                let entry = version?;
+                let version_path = entry.path();
+                if entry.metadata()?.is_dir() && version_path.join("mod.rs").exists() {
+                    versions.push(last_path_segment(&version_path))
+                }
+            }
+
+            versions.sort();
+
             let mut data = Map::new();
             data.insert("group_name_snake_case".to_string(), to_json(group_name));
             data.insert(
                 "k8s_openapi_kubernetes_version".to_string(),
                 to_json("v1_31"),
             );
+            data.insert("versions".to_string(), to_json(&versions));
 
             let file = OpenOptions::new()
                 .create(true)

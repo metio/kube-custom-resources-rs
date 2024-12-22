@@ -11,5 +11,6 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 {{/each}}
 */
 {{#each versions }}
+#[cfg(feature = "{{@key}}")]
 pub mod {{@key}};
 {{/each}}

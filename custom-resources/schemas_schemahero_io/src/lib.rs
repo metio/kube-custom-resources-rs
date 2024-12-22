@@ -8,4 +8,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Migration`
 - `Table`
 */
+#[cfg(feature = "v1alpha4")]
 pub mod v1alpha4;

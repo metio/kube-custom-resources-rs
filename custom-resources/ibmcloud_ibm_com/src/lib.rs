@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## ibmcloud.ibm.com/v1alpha1
 - `Composable`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

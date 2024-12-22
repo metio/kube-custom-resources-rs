@@ -21,4 +21,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `CouchbaseScope`
 - `CouchbaseUser`
 */
+#[cfg(feature = "v2")]
 pub mod v2;

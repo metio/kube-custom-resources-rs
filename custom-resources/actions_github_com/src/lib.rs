@@ -8,4 +8,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `AutoscalingRunnerSet`
 - `EphemeralRunnerSet`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

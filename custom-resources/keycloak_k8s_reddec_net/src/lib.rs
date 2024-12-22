@@ -6,4 +6,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## keycloak.k8s.reddec.net/v1alpha1
 - `KeycloakClient`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

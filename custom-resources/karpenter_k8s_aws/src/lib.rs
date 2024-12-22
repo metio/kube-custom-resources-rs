@@ -8,5 +8,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## karpenter.k8s.aws/v1beta1
 - `EC2NodeClass`
 */
+#[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v1beta1")]
 pub mod v1beta1;

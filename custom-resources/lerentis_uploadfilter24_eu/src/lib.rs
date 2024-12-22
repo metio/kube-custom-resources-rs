@@ -24,8 +24,13 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `BitwardenTemplate`
 - `RegistryCredential`
 */
+#[cfg(feature = "v1beta4")]
 pub mod v1beta4;
+#[cfg(feature = "v1beta5")]
 pub mod v1beta5;
+#[cfg(feature = "v1beta6")]
 pub mod v1beta6;
+#[cfg(feature = "v1beta7")]
 pub mod v1beta7;
+#[cfg(feature = "v1beta8")]
 pub mod v1beta8;

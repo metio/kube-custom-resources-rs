@@ -7,4 +7,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `JobRun`
 - `VirtualCluster`
 */
+#[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
