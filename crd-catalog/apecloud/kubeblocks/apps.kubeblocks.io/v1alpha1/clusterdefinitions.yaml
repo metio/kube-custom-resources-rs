@@ -5298,6 +5298,9 @@ spec:
                           roleProbe:
                             description: "Defines the method used to probe a role."
                             properties:
+                              builtinHandlerName:
+                                description: "Specifies the builtin handler name to use to probe the role of the main container.\nAvailable handlers include: mysql, postgres, mongodb, redis, etcd, kafka.\nUse CustomHandler to define a custom role probe function if none of the built-in handlers meet the requirement."
+                                type: "string"
                               customHandler:
                                 description: "Defines a custom method for role probing.\nActions defined here are executed in series.\nUpon completion of all actions, the final output should be a single string representing the role name defined in spec.Roles.\nThe latest [BusyBox](https://busybox.net/) image will be used if Image is not configured.\nEnvironment variables can be used in Command:\n- v_KB_ITS_LAST_STDOUT: stdout from the last action, watch for 'v_' prefix\n- KB_ITS_USERNAME: username part of the credential\n- KB_ITS_PASSWORD: password part of the credential"
                                 items:

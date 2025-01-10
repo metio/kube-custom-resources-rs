@@ -63,6 +63,13 @@ pub struct DataDownloadTargetVolume {
 /// DataDownloadStatus is the current status of a DataDownload.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataDownloadStatus {
+    /// Node is name of the node where the DataUpload is prepared.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptedByNode")]
+    pub accepted_by_node: Option<String>,
+    /// AcceptedTimestamp records the time the DataUpload is to be prepared.
+    /// The server's time is used for AcceptedTimestamp
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptedTimestamp")]
+    pub accepted_timestamp: Option<String>,
     /// CompletionTimestamp records the time a restore was completed.
     /// Completion time is recorded even on failed restores.
     /// The server's time is used for CompletionTimestamps

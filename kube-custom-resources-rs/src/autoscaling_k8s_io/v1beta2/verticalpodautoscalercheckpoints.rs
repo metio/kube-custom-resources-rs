@@ -10,7 +10,8 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// Specification of the checkpoint. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.
+/// Specification of the checkpoint.
+/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "autoscaling.k8s.io", version = "v1beta2", kind = "VerticalPodAutoscalerCheckpoint", plural = "verticalpodautoscalercheckpoints")]
 #[kube(namespaced)]

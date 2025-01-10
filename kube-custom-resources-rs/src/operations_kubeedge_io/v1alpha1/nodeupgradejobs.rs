@@ -18,38 +18,57 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct NodeUpgradeJobSpec {
-    /// CheckItems specifies the items need to be checked before the task is executed. The default CheckItems value is nil.
+    /// CheckItems specifies the items need to be checked before the task is executed.
+    /// The default CheckItems value is nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkItems")]
     pub check_items: Option<Vec<String>>,
-    /// Concurrency specifies the max number of edge nodes that can be upgraded at the same time. The default Concurrency value is 1.
+    /// Concurrency specifies the max number of edge nodes that can be upgraded at the same time.
+    /// The default Concurrency value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub concurrency: Option<i32>,
-    /// FailureTolerate specifies the task tolerance failure ratio. The default FailureTolerate value is 0.1.
+    /// FailureTolerate specifies the task tolerance failure ratio.
+    /// The default FailureTolerate value is 0.1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureTolerate")]
     pub failure_tolerate: Option<String>,
-    /// Image specifies a container image name, the image contains: keadm and edgecore. keadm is used as upgradetool, to install the new version of edgecore. The image name consists of registry hostname and repository name, if it includes the tag or digest, the tag or digest will be overwritten by Version field above. If the registry hostname is empty, docker.io will be used as default. The default image name is: kubeedge/installation-package.
+    /// Image specifies a container image name, the image contains: keadm and edgecore.
+    /// keadm is used as upgradetool, to install the new version of edgecore.
+    /// The image name consists of registry hostname and repository name,
+    /// if it includes the tag or digest, the tag or digest will be overwritten by Version field above.
+    /// If the registry hostname is empty, docker.io will be used as default.
+    /// The default image name is: kubeedge/installation-package.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// ImageDigestGatter define registry v2 interface access configuration. As a transition, it is not required at first, and the image digest is checked when this field is set.
+    /// ImageDigestGatter define registry v2 interface access configuration.
+    /// As a transition, it is not required at first, and the image digest is checked when this field is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigestGatter")]
     pub image_digest_gatter: Option<NodeUpgradeJobImageDigestGatter>,
-    /// LabelSelector is a filter to select member clusters by labels. It must match a node's labels for the NodeUpgradeJob to be operated on that node. Please note that sets of NodeNames and LabelSelector are ORed. Users must set one and can only set one.
+    /// LabelSelector is a filter to select member clusters by labels.
+    /// It must match a node's labels for the NodeUpgradeJob to be operated on that node.
+    /// Please note that sets of NodeNames and LabelSelector are ORed.
+    /// Users must set one and can only set one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<NodeUpgradeJobLabelSelector>,
-    /// NodeNames is a request to select some specific nodes. If it is non-empty, the upgrade job simply select these edge nodes to do upgrade operation. Please note that sets of NodeNames and LabelSelector are ORed. Users must set one and can only set one.
+    /// NodeNames is a request to select some specific nodes. If it is non-empty,
+    /// the upgrade job simply select these edge nodes to do upgrade operation.
+    /// Please note that sets of NodeNames and LabelSelector are ORed.
+    /// Users must set one and can only set one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeNames")]
     pub node_names: Option<Vec<String>>,
-    /// RequireConfirmation specifies whether you need to confirm the upgrade. The default RequireConfirmation value is false.
+    /// RequireConfirmation specifies whether you need to confirm the upgrade.
+    /// The default RequireConfirmation value is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireConfirmation")]
     pub require_confirmation: Option<bool>,
-    /// TimeoutSeconds limits the duration of the node upgrade job. Default to 300. If set to 0, we'll use the default value 300.
+    /// TimeoutSeconds limits the duration of the node upgrade job.
+    /// Default to 300.
+    /// If set to 0, we'll use the default value 300.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// ImageDigestGatter define registry v2 interface access configuration. As a transition, it is not required at first, and the image digest is checked when this field is set.
+/// ImageDigestGatter define registry v2 interface access configuration.
+/// As a transition, it is not required at first, and the image digest is checked when this field is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeUpgradeJobImageDigestGatter {
     /// RegistryAPI define registry v2 interface access configuration
@@ -67,25 +86,35 @@ pub struct NodeUpgradeJobImageDigestGatterRegistryApi {
     pub token: String,
 }
 
-/// LabelSelector is a filter to select member clusters by labels. It must match a node's labels for the NodeUpgradeJob to be operated on that node. Please note that sets of NodeNames and LabelSelector are ORed. Users must set one and can only set one.
+/// LabelSelector is a filter to select member clusters by labels.
+/// It must match a node's labels for the NodeUpgradeJob to be operated on that node.
+/// Please note that sets of NodeNames and LabelSelector are ORed.
+/// Users must set one and can only set one.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeUpgradeJobLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<NodeUpgradeJobLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeUpgradeJobLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -93,13 +122,15 @@ pub struct NodeUpgradeJobLabelSelectorMatchExpressions {
 /// Most recently observed status of the NodeUpgradeJob.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeUpgradeJobStatus {
-    /// Action represents for the action of the ImagePrePullJob. There are two possible action values: Success, Failure.
+    /// Action represents for the action of the ImagePrePullJob.
+    /// There are two possible action values: Success, Failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<String>,
     /// CurrentVersion represents for the current status of the EdgeCore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVersion")]
     pub current_version: Option<String>,
-    /// Event represents for the event of the ImagePrePullJob. There are six possible event values: Init, Check, BackUp, Upgrade, TimeOut, Rollback.
+    /// Event represents for the event of the ImagePrePullJob.
+    /// There are six possible event values: Init, Check, BackUp, Upgrade, TimeOut, Rollback.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub event: Option<String>,
     /// HistoricVersion represents for the historic status of the EdgeCore.
@@ -111,7 +142,8 @@ pub struct NodeUpgradeJobStatus {
     /// Reason represents for the reason of the ImagePrePullJob.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    /// State represents for the state phase of the NodeUpgradeJob. There are several possible state values: "", Upgrading, BackingUp, RollingBack and Checking.
+    /// State represents for the state phase of the NodeUpgradeJob.
+    /// There are several possible state values: "", Upgrading, BackingUp, RollingBack and Checking.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
     /// Time represents for the running time of the ImagePrePullJob.
@@ -122,10 +154,12 @@ pub struct NodeUpgradeJobStatus {
 /// TaskStatus stores the status of Upgrade for each edge node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeUpgradeJobStatusNodeStatus {
-    /// Action represents for the action of the ImagePrePullJob. There are three possible action values: Success, Failure, TimeOut.
+    /// Action represents for the action of the ImagePrePullJob.
+    /// There are three possible action values: Success, Failure, TimeOut.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<String>,
-    /// Event represents for the event of the ImagePrePullJob. There are three possible event values: Init, Check, Pull.
+    /// Event represents for the event of the ImagePrePullJob.
+    /// There are three possible event values: Init, Check, Pull.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub event: Option<String>,
     /// NodeName is the name of edge node.
@@ -134,7 +168,8 @@ pub struct NodeUpgradeJobStatusNodeStatus {
     /// Reason represents for the reason of the ImagePrePullJob.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    /// State represents for the upgrade state phase of the edge node. There are several possible state values: "", Upgrading, BackingUp, RollingBack and Checking.
+    /// State represents for the upgrade state phase of the edge node.
+    /// There are several possible state values: "", Upgrading, BackingUp, RollingBack and Checking.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
     /// Time represents for the running time of the ImagePrePullJob.

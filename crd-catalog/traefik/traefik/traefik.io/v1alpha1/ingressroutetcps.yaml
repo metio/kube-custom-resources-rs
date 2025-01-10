@@ -30,7 +30,7 @@ spec:
               description: "IngressRouteTCPSpec defines the desired state of IngressRouteTCP."
               properties:
                 entryPoints:
-                  description: "EntryPoints defines the list of entry point names to bind to.\nEntry points have to be configured in the static configuration.\nMore info: https://doc.traefik.io/traefik/v3.2/routing/entrypoints/\nDefault: all."
+                  description: "EntryPoints defines the list of entry point names to bind to.\nEntry points have to be configured in the static configuration.\nMore info: https://doc.traefik.io/traefik/v3.3/routing/entrypoints/\nDefault: all."
                   items:
                     type: "string"
                   type: "array"
@@ -40,7 +40,7 @@ spec:
                     description: "RouteTCP holds the TCP route configuration."
                     properties:
                       match:
-                        description: "Match defines the router's rule.\nMore info: https://doc.traefik.io/traefik/v3.2/routing/routers/#rule_1"
+                        description: "Match defines the router's rule.\nMore info: https://doc.traefik.io/traefik/v3.3/routing/routers/#rule_1"
                         type: "string"
                       middlewares:
                         description: "Middlewares defines the list of references to MiddlewareTCP resources."
@@ -58,7 +58,7 @@ spec:
                           type: "object"
                         type: "array"
                       priority:
-                        description: "Priority defines the router's priority.\nMore info: https://doc.traefik.io/traefik/v3.2/routing/routers/#priority_1"
+                        description: "Priority defines the router's priority.\nMore info: https://doc.traefik.io/traefik/v3.3/routing/routers/#priority_1"
                         type: "integer"
                       services:
                         description: "Services defines the list of TCP services."
@@ -84,7 +84,7 @@ spec:
                               description: "Port defines the port of a Kubernetes Service.\nThis can be a reference to a named port."
                               x-kubernetes-int-or-string: true
                             proxyProtocol:
-                              description: "ProxyProtocol defines the PROXY protocol configuration.\nMore info: https://doc.traefik.io/traefik/v3.2/routing/services/#proxy-protocol"
+                              description: "ProxyProtocol defines the PROXY protocol configuration.\nMore info: https://doc.traefik.io/traefik/v3.3/routing/services/#proxy-protocol"
                               properties:
                                 version:
                                   description: "Version defines the PROXY Protocol version to use."
@@ -108,20 +108,20 @@ spec:
                           type: "object"
                         type: "array"
                       syntax:
-                        description: "Syntax defines the router's rule syntax.\nMore info: https://doc.traefik.io/traefik/v3.2/routing/routers/#rulesyntax_1"
+                        description: "Syntax defines the router's rule syntax.\nMore info: https://doc.traefik.io/traefik/v3.3/routing/routers/#rulesyntax_1"
                         type: "string"
                     required:
                       - "match"
                     type: "object"
                   type: "array"
                 tls:
-                  description: "TLS defines the TLS configuration on a layer 4 / TCP Route.\nMore info: https://doc.traefik.io/traefik/v3.2/routing/routers/#tls_1"
+                  description: "TLS defines the TLS configuration on a layer 4 / TCP Route.\nMore info: https://doc.traefik.io/traefik/v3.3/routing/routers/#tls_1"
                   properties:
                     certResolver:
-                      description: "CertResolver defines the name of the certificate resolver to use.\nCert resolvers have to be configured in the static configuration.\nMore info: https://doc.traefik.io/traefik/v3.2/https/acme/#certificate-resolvers"
+                      description: "CertResolver defines the name of the certificate resolver to use.\nCert resolvers have to be configured in the static configuration.\nMore info: https://doc.traefik.io/traefik/v3.3/https/acme/#certificate-resolvers"
                       type: "string"
                     domains:
-                      description: "Domains defines the list of domains that will be used to issue certificates.\nMore info: https://doc.traefik.io/traefik/v3.2/routing/routers/#domains"
+                      description: "Domains defines the list of domains that will be used to issue certificates.\nMore info: https://doc.traefik.io/traefik/v3.3/routing/routers/#domains"
                       items:
                         description: "Domain holds a domain name with SANs."
                         properties:
@@ -136,7 +136,7 @@ spec:
                         type: "object"
                       type: "array"
                     options:
-                      description: "Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection.\nIf not defined, the `default` TLSOption is used.\nMore info: https://doc.traefik.io/traefik/v3.2/https/tls/#tls-options"
+                      description: "Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection.\nIf not defined, the `default` TLSOption is used.\nMore info: https://doc.traefik.io/traefik/v3.3/https/tls/#tls-options"
                       properties:
                         name:
                           description: "Name defines the name of the referenced Traefik resource."
