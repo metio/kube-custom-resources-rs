@@ -332,7 +332,7 @@ pub struct ClusterComponentSpecs {
     /// If no version is specified, the latest available version will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
-    /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
+    /// Overrides services defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterComponentSpecsServices>>,
     /// Stop the Component.
@@ -543,6 +543,16 @@ pub struct ClusterComponentSpecsInstances {
     /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
     /// The specified name overrides any default naming conventions or patterns.
     pub name: String,
+    /// Specifies the desired Ordinals of this InstanceTemplate.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+    /// 
+    /// 
+    /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+    /// then the instance names generated under this InstanceTemplate would be
+    /// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+    /// $(cluster.name)-$(component.name)-$(template.name)-7
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<ClusterComponentSpecsInstancesOrdinals>,
     /// Specifies the number of instances (Pods) to create from this InstanceTemplate.
     /// This field allows setting how many replicated instances of the Component,
     /// with the specific overrides in the InstanceTemplate, are created.
@@ -664,6 +674,30 @@ pub struct ClusterComponentSpecsInstancesEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Specifies the desired Ordinals of this InstanceTemplate.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+/// 
+/// 
+/// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+/// then the instance names generated under this InstanceTemplate would be
+/// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+/// $(cluster.name)-$(component.name)-$(template.name)-7
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<ClusterComponentSpecsInstancesOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 /// Specifies an override for the resource requirements of the first container in the Pod.
@@ -1667,6 +1701,12 @@ pub struct ClusterComponentSpecsInstancesVolumeClaimTemplatesSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// 
+    /// 
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -4589,6 +4629,12 @@ pub struct ClusterComponentSpecsVolumeClaimTemplatesSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// 
+    /// 
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -7724,7 +7770,7 @@ pub struct ClusterShardingsTemplate {
     /// If no version is specified, the latest available version will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
-    /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
+    /// Overrides services defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterShardingsTemplateServices>>,
     /// Stop the Component.
@@ -7935,6 +7981,16 @@ pub struct ClusterShardingsTemplateInstances {
     /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
     /// The specified name overrides any default naming conventions or patterns.
     pub name: String,
+    /// Specifies the desired Ordinals of this InstanceTemplate.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+    /// 
+    /// 
+    /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+    /// then the instance names generated under this InstanceTemplate would be
+    /// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+    /// $(cluster.name)-$(component.name)-$(template.name)-7
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<ClusterShardingsTemplateInstancesOrdinals>,
     /// Specifies the number of instances (Pods) to create from this InstanceTemplate.
     /// This field allows setting how many replicated instances of the Component,
     /// with the specific overrides in the InstanceTemplate, are created.
@@ -8056,6 +8112,30 @@ pub struct ClusterShardingsTemplateInstancesEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Specifies the desired Ordinals of this InstanceTemplate.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+/// 
+/// 
+/// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+/// then the instance names generated under this InstanceTemplate would be
+/// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+/// $(cluster.name)-$(component.name)-$(template.name)-7
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<ClusterShardingsTemplateInstancesOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 /// Specifies an override for the resource requirements of the first container in the Pod.
@@ -9059,6 +9139,12 @@ pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// 
+    /// 
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -11991,6 +12077,12 @@ pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// 
+    /// 
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -13668,6 +13760,7 @@ pub enum ClusterStatusComponentsPhase {
     Deleting,
     Updating,
     Stopping,
+    Starting,
     Running,
     Stopped,
     Failed,
@@ -13705,6 +13798,7 @@ pub enum ClusterStatusShardingsPhase {
     Deleting,
     Updating,
     Stopping,
+    Starting,
     Running,
     Stopped,
     Failed,

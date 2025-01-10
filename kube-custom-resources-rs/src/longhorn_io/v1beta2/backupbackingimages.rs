@@ -19,6 +19,12 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BackupBackingImageSpec {
+    /// The backing image name..
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
+    pub backing_image: Option<String>,
+    /// The backup target name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupTargetName")]
+    pub backup_target_name: Option<String>,
     /// The labels of backing image backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,

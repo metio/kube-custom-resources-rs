@@ -801,7 +801,6 @@ pub struct TempoMonolithicIngestionOtlpGrpc {
     pub enabled: bool,
     /// TLS defines the TLS configuration for OTLP/gRPC ingestion.
     /// 
-    /// 
     /// On OpenShift when operator config `servingCertsService`  and TLS is enabled  but no `certName` and `caName`
     /// are provided it will use OpenShift serving certificate service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -809,7 +808,6 @@ pub struct TempoMonolithicIngestionOtlpGrpc {
 }
 
 /// TLS defines the TLS configuration for OTLP/gRPC ingestion.
-/// 
 /// 
 /// On OpenShift when operator config `servingCertsService`  and TLS is enabled  but no `certName` and `caName`
 /// are provided it will use OpenShift serving certificate service.
@@ -839,7 +837,6 @@ pub struct TempoMonolithicIngestionOtlpHttp {
     pub enabled: bool,
     /// TLS defines the TLS configuration for OTLP/HTTP ingestion.
     /// 
-    /// 
     /// On OpenShift when operator config `servingCertsService`  and TLS is enabled  but no `certName` and `caName`
     /// are provided it will use OpenShift serving certificate service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -847,7 +844,6 @@ pub struct TempoMonolithicIngestionOtlpHttp {
 }
 
 /// TLS defines the TLS configuration for OTLP/HTTP ingestion.
-/// 
 /// 
 /// On OpenShift when operator config `servingCertsService`  and TLS is enabled  but no `certName` and `caName`
 /// are provided it will use OpenShift serving certificate service.
@@ -924,10 +920,8 @@ pub struct TempoMonolithicJaegeruiAuthenticationResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -976,10 +970,8 @@ pub struct TempoMonolithicJaegeruiResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1166,10 +1158,8 @@ pub struct TempoMonolithicMultitenancyResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1285,10 +1275,8 @@ pub struct TempoMonolithicResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]

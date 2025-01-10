@@ -80,6 +80,13 @@ spec:
                   required:
                     - "provider"
                   type: "object"
+                deletionPolicy:
+                  description: "DeletionPolicy can be used to control garbage collection when this\nKustomization is deleted. Valid values are ('MirrorPrune', 'Delete',\n'Orphan'). 'MirrorPrune' mirrors the Prune field (orphan if false,\ndelete if true). Defaults to 'MirrorPrune'."
+                  enum:
+                    - "MirrorPrune"
+                    - "Delete"
+                    - "Orphan"
+                  type: "string"
                 dependsOn:
                   description: "DependsOn may contain a meta.NamespacedObjectReference slice\nwith references to Kustomization resources that must be ready before this\nKustomization can be reconciled."
                   items:

@@ -28,7 +28,6 @@ pub struct BaselineAdminNetworkPolicySpec {
     /// would take the highest precedence.
     /// BANPs with no egress rules do not affect egress traffic.
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub egress: Option<Vec<BaselineAdminNetworkPolicyEgress>>,
@@ -41,13 +40,11 @@ pub struct BaselineAdminNetworkPolicySpec {
     /// would take the highest precedence.
     /// BANPs with no ingress rules do not affect ingress traffic.
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<Vec<BaselineAdminNetworkPolicyIngress>>,
     /// Subject defines the pods to which this BaselineAdminNetworkPolicy applies.
     /// Note that host-networked pods are not included in subject selection.
-    /// 
     /// 
     /// Support: Core
     pub subject: BaselineAdminNetworkPolicySubject,
@@ -64,14 +61,12 @@ pub struct BaselineAdminNetworkPolicyEgress {
     /// Allow: allows the selected traffic
     /// Deny: denies the selected traffic
     /// 
-    /// 
     /// Support: Core
     pub action: BaselineAdminNetworkPolicyEgressAction,
     /// Name is an identifier for this rule, that may be no more than 100 characters
     /// in length. This field should be used by the implementation to help
     /// improve observability, readability and error-reporting for any applied
     /// BaselineAdminNetworkPolicies.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -85,7 +80,6 @@ pub struct BaselineAdminNetworkPolicyEgress {
     /// If any BaselineAdminNetworkPolicyEgressPeer matches the destination of outgoing
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
-    /// 
     /// 
     /// Support: Core
     pub to: Vec<BaselineAdminNetworkPolicyEgressTo>,
@@ -107,13 +101,11 @@ pub enum BaselineAdminNetworkPolicyEgressAction {
 pub struct BaselineAdminNetworkPolicyEgressPorts {
     /// Port selects a port on a pod(s) based on number.
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNumber")]
     pub port_number: Option<BaselineAdminNetworkPolicyEgressPortsPortNumber>,
     /// PortRange selects a port range on a pod(s) based on provided start and end
     /// values.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portRange")]
@@ -122,18 +114,15 @@ pub struct BaselineAdminNetworkPolicyEgressPorts {
 
 /// Port selects a port on a pod(s) based on number.
 /// 
-/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BaselineAdminNetworkPolicyEgressPortsPortNumber {
     /// Number defines a network port value.
     /// 
-    /// 
     /// Support: Core
     pub port: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    /// 
     /// 
     /// Support: Core
     pub protocol: String,
@@ -142,26 +131,22 @@ pub struct BaselineAdminNetworkPolicyEgressPortsPortNumber {
 /// PortRange selects a port range on a pod(s) based on provided start and end
 /// values.
 /// 
-/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BaselineAdminNetworkPolicyEgressPortsPortRange {
     /// End defines a network port that is the end of a port range, the End value
     /// must be greater than Start.
     /// 
-    /// 
     /// Support: Core
     pub end: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
     /// Start defines a network port that is the start of a port range, the Start
     /// value must be less than End.
-    /// 
     /// 
     /// Support: Core
     pub start: i32,
@@ -176,14 +161,12 @@ pub struct BaselineAdminNetworkPolicyEgressTo {
     /// Namespaces defines a way to select all pods within a set of Namespaces.
     /// Note that host-networked pods are not included in this type of peer.
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<BaselineAdminNetworkPolicyEgressToNamespaces>,
     /// Pods defines a way to select a set of pods in
     /// a set of namespaces. Note that host-networked pods
     /// are not included in this type of peer.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -192,7 +175,6 @@ pub struct BaselineAdminNetworkPolicyEgressTo {
 
 /// Namespaces defines a way to select all pods within a set of Namespaces.
 /// Note that host-networked pods are not included in this type of peer.
-/// 
 /// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -227,7 +209,6 @@ pub struct BaselineAdminNetworkPolicyEgressToNamespacesMatchExpressions {
 /// Pods defines a way to select a set of pods in
 /// a set of namespaces. Note that host-networked pods
 /// are not included in this type of peer.
-/// 
 /// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -314,7 +295,6 @@ pub struct BaselineAdminNetworkPolicyIngress {
     /// Allow: allows the selected traffic
     /// Deny: denies the selected traffic
     /// 
-    /// 
     /// Support: Core
     pub action: BaselineAdminNetworkPolicyIngressAction,
     /// From is the list of sources whose traffic this rule applies to.
@@ -322,14 +302,12 @@ pub struct BaselineAdminNetworkPolicyIngress {
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
     /// 
-    /// 
     /// Support: Core
     pub from: Vec<BaselineAdminNetworkPolicyIngressFrom>,
     /// Name is an identifier for this rule, that may be no more than 100 characters
     /// in length. This field should be used by the implementation to help
     /// improve observability, readability and error-reporting for any applied
     /// BaselineAdminNetworkPolicies.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -339,7 +317,6 @@ pub struct BaselineAdminNetworkPolicyIngress {
     /// the pods selected for this policy i.e the subject of the policy.
     /// So it matches on the destination port for the ingress traffic.
     /// If Ports is not set then the rule does not filter traffic via port.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -364,14 +341,12 @@ pub struct BaselineAdminNetworkPolicyIngressFrom {
     /// Namespaces defines a way to select all pods within a set of Namespaces.
     /// Note that host-networked pods are not included in this type of peer.
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<BaselineAdminNetworkPolicyIngressFromNamespaces>,
     /// Pods defines a way to select a set of pods in
     /// a set of namespaces. Note that host-networked pods
     /// are not included in this type of peer.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -380,7 +355,6 @@ pub struct BaselineAdminNetworkPolicyIngressFrom {
 
 /// Namespaces defines a way to select all pods within a set of Namespaces.
 /// Note that host-networked pods are not included in this type of peer.
-/// 
 /// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -415,7 +389,6 @@ pub struct BaselineAdminNetworkPolicyIngressFromNamespacesMatchExpressions {
 /// Pods defines a way to select a set of pods in
 /// a set of namespaces. Note that host-networked pods
 /// are not included in this type of peer.
-/// 
 /// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -498,13 +471,11 @@ pub struct BaselineAdminNetworkPolicyIngressFromPodsPodSelectorMatchExpressions 
 pub struct BaselineAdminNetworkPolicyIngressPorts {
     /// Port selects a port on a pod(s) based on number.
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNumber")]
     pub port_number: Option<BaselineAdminNetworkPolicyIngressPortsPortNumber>,
     /// PortRange selects a port range on a pod(s) based on provided start and end
     /// values.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portRange")]
@@ -513,18 +484,15 @@ pub struct BaselineAdminNetworkPolicyIngressPorts {
 
 /// Port selects a port on a pod(s) based on number.
 /// 
-/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BaselineAdminNetworkPolicyIngressPortsPortNumber {
     /// Number defines a network port value.
     /// 
-    /// 
     /// Support: Core
     pub port: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    /// 
     /// 
     /// Support: Core
     pub protocol: String,
@@ -533,19 +501,16 @@ pub struct BaselineAdminNetworkPolicyIngressPortsPortNumber {
 /// PortRange selects a port range on a pod(s) based on provided start and end
 /// values.
 /// 
-/// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BaselineAdminNetworkPolicyIngressPortsPortRange {
     /// End defines a network port that is the end of a port range, the End value
     /// must be greater than Start.
     /// 
-    /// 
     /// Support: Core
     pub end: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -553,14 +518,12 @@ pub struct BaselineAdminNetworkPolicyIngressPortsPortRange {
     /// Start defines a network port that is the start of a port range, the Start
     /// value must be less than End.
     /// 
-    /// 
     /// Support: Core
     pub start: i32,
 }
 
 /// Subject defines the pods to which this BaselineAdminNetworkPolicy applies.
 /// Note that host-networked pods are not included in subject selection.
-/// 
 /// 
 /// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

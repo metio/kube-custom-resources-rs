@@ -32,8 +32,8 @@ pub struct AuthenticationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ldap: Option<AuthenticationLdap>,
     /// ManagerDomain is the domain name of the Manager
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managerDomain")]
-    pub manager_domain: Option<String>,
+    #[serde(rename = "managerDomain")]
+    pub manager_domain: String,
     /// OIDC contains the configuration needed to setup OIDC authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oidc: Option<AuthenticationOidc>,

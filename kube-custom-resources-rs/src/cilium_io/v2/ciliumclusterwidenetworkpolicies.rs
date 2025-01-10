@@ -284,6 +284,10 @@ pub struct CiliumClusterwideNetworkPolicyEgressToCidrSet {
     /// connections from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
+    /// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+    /// rather than by name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupSelector")]
+    pub cidr_group_selector: Option<CiliumClusterwideNetworkPolicyEgressToCidrSetCidrGroupSelector>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
     /// contained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not
@@ -292,6 +296,47 @@ pub struct CiliumClusterwideNetworkPolicyEgressToCidrSet {
     /// apply to any other CIDR prefixes in any other CIDRRules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
+}
+
+/// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+/// rather than by name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyEgressToCidrSetCidrGroupSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEgressToCidrSetCidrGroupSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyEgressToCidrSetCidrGroupSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicyEgressToCidrSetCidrGroupSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicyEgressToCidrSetCidrGroupSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.
@@ -1139,6 +1184,10 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToCidrSet {
     /// connections from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
+    /// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+    /// rather than by name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupSelector")]
+    pub cidr_group_selector: Option<CiliumClusterwideNetworkPolicyEgressDenyToCidrSetCidrGroupSelector>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
     /// contained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not
@@ -1147,6 +1196,47 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToCidrSet {
     /// apply to any other CIDR prefixes in any other CIDRRules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
+}
+
+/// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+/// rather than by name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyEgressDenyToCidrSetCidrGroupSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToCidrSetCidrGroupSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyEgressDenyToCidrSetCidrGroupSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicyEgressDenyToCidrSetCidrGroupSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicyEgressDenyToCidrSetCidrGroupSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.
@@ -1611,6 +1701,10 @@ pub struct CiliumClusterwideNetworkPolicyIngressFromCidrSet {
     /// connections from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
+    /// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+    /// rather than by name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupSelector")]
+    pub cidr_group_selector: Option<CiliumClusterwideNetworkPolicyIngressFromCidrSetCidrGroupSelector>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
     /// contained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not
@@ -1619,6 +1713,47 @@ pub struct CiliumClusterwideNetworkPolicyIngressFromCidrSet {
     /// apply to any other CIDR prefixes in any other CIDRRules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
+}
+
+/// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+/// rather than by name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyIngressFromCidrSetCidrGroupSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromCidrSetCidrGroupSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyIngressFromCidrSetCidrGroupSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicyIngressFromCidrSetCidrGroupSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicyIngressFromCidrSetCidrGroupSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.
@@ -2361,6 +2496,10 @@ pub struct CiliumClusterwideNetworkPolicyIngressDenyFromCidrSet {
     /// connections from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
+    /// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+    /// rather than by name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupSelector")]
+    pub cidr_group_selector: Option<CiliumClusterwideNetworkPolicyIngressDenyFromCidrSetCidrGroupSelector>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
     /// contained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not
@@ -2369,6 +2508,47 @@ pub struct CiliumClusterwideNetworkPolicyIngressDenyFromCidrSet {
     /// apply to any other CIDR prefixes in any other CIDRRules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
+}
+
+/// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+/// rather than by name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyIngressDenyFromCidrSetCidrGroupSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromCidrSetCidrGroupSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyIngressDenyFromCidrSetCidrGroupSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicyIngressDenyFromCidrSetCidrGroupSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicyIngressDenyFromCidrSetCidrGroupSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.
@@ -2927,6 +3107,10 @@ pub struct CiliumClusterwideNetworkPolicysEgressToCidrSet {
     /// connections from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
+    /// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+    /// rather than by name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupSelector")]
+    pub cidr_group_selector: Option<CiliumClusterwideNetworkPolicysEgressToCidrSetCidrGroupSelector>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
     /// contained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not
@@ -2935,6 +3119,47 @@ pub struct CiliumClusterwideNetworkPolicysEgressToCidrSet {
     /// apply to any other CIDR prefixes in any other CIDRRules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
+}
+
+/// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+/// rather than by name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysEgressToCidrSetCidrGroupSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEgressToCidrSetCidrGroupSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysEgressToCidrSetCidrGroupSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicysEgressToCidrSetCidrGroupSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicysEgressToCidrSetCidrGroupSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.
@@ -3782,6 +4007,10 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToCidrSet {
     /// connections from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
+    /// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+    /// rather than by name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupSelector")]
+    pub cidr_group_selector: Option<CiliumClusterwideNetworkPolicysEgressDenyToCidrSetCidrGroupSelector>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
     /// contained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not
@@ -3790,6 +4019,47 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToCidrSet {
     /// apply to any other CIDR prefixes in any other CIDRRules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
+}
+
+/// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+/// rather than by name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysEgressDenyToCidrSetCidrGroupSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToCidrSetCidrGroupSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysEgressDenyToCidrSetCidrGroupSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicysEgressDenyToCidrSetCidrGroupSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicysEgressDenyToCidrSetCidrGroupSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.
@@ -4254,6 +4524,10 @@ pub struct CiliumClusterwideNetworkPolicysIngressFromCidrSet {
     /// connections from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
+    /// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+    /// rather than by name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupSelector")]
+    pub cidr_group_selector: Option<CiliumClusterwideNetworkPolicysIngressFromCidrSetCidrGroupSelector>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
     /// contained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not
@@ -4262,6 +4536,47 @@ pub struct CiliumClusterwideNetworkPolicysIngressFromCidrSet {
     /// apply to any other CIDR prefixes in any other CIDRRules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
+}
+
+/// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+/// rather than by name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysIngressFromCidrSetCidrGroupSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromCidrSetCidrGroupSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysIngressFromCidrSetCidrGroupSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicysIngressFromCidrSetCidrGroupSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicysIngressFromCidrSetCidrGroupSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.
@@ -5004,6 +5319,10 @@ pub struct CiliumClusterwideNetworkPolicysIngressDenyFromCidrSet {
     /// connections from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
+    /// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+    /// rather than by name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupSelector")]
+    pub cidr_group_selector: Option<CiliumClusterwideNetworkPolicysIngressDenyFromCidrSetCidrGroupSelector>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
     /// contained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not
@@ -5012,6 +5331,47 @@ pub struct CiliumClusterwideNetworkPolicysIngressDenyFromCidrSet {
     /// apply to any other CIDR prefixes in any other CIDRRules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
+}
+
+/// CIDRGroupSelector selects CiliumCIDRGroups by their labels,
+/// rather than by name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysIngressDenyFromCidrSetCidrGroupSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromCidrSetCidrGroupSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysIngressDenyFromCidrSetCidrGroupSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumClusterwideNetworkPolicysIngressDenyFromCidrSetCidrGroupSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumClusterwideNetworkPolicysIngressDenyFromCidrSetCidrGroupSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
 /// EndpointSelector is a wrapper for k8s LabelSelector.

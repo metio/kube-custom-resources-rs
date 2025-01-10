@@ -121,6 +121,9 @@ pub struct SecretClassBackendExperimentalCertManager {
     pub default_certificate_lifetime: Option<String>,
     /// A reference to the cert-manager issuer that the certificates should be requested from.
     pub issuer: SecretClassBackendExperimentalCertManagerIssuer,
+    /// The algorithm used to generate a key pair and required configuration settings. Currently only RSA and a key length of 2048, 3072 or 4096 bits can be configured.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyGeneration")]
+    pub key_generation: Option<SecretClassBackendExperimentalCertManagerKeyGeneration>,
 }
 
 /// A reference to the cert-manager issuer that the certificates should be requested from.
@@ -139,6 +142,29 @@ pub struct SecretClassBackendExperimentalCertManagerIssuer {
 pub enum SecretClassBackendExperimentalCertManagerIssuerKind {
     Issuer,
     ClusterIssuer,
+}
+
+/// The algorithm used to generate a key pair and required configuration settings. Currently only RSA and a key length of 2048, 3072 or 4096 bits can be configured.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretClassBackendExperimentalCertManagerKeyGeneration {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rsa: Option<SecretClassBackendExperimentalCertManagerKeyGenerationRsa>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretClassBackendExperimentalCertManagerKeyGenerationRsa {
+    /// The amount of bits used for generating the RSA keypair. Currently, `2048`, `3072` and `4096` are supported. Defaults to `2048` bits.
+    pub length: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SecretClassBackendExperimentalCertManagerKeyGenerationRsaLength {
+    #[serde(rename = "2048")]
+    r#_2048,
+    #[serde(rename = "3072")]
+    r#_3072,
+    #[serde(rename = "4096")]
+    r#_4096,
 }
 
 /// The [`k8sSearch` backend](https://docs.stackable.tech/home/nightly/secret-operator/secretclass#backend-k8ssearch) can be used to mount Secrets across namespaces into Pods.

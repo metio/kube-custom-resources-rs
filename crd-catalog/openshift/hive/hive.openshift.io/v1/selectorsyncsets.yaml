@@ -72,6 +72,9 @@ spec:
                       type: "object"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
+                enablePatchTemplates:
+                  description: "EnablePatchTemplates, if True, causes hive to honor golang text/templates in Patches[].Patch\nstrings. While the standard syntax is supported, it won't do you a whole lot of good as the\nparser does not pass a data object (i.e. there is no \"dot\" for you to use). This currently\nexists to expose a single function: {{ fromCDLabel \"some.label/key\" }} will be substituted\nwith the string value of ClusterDeployment.Labels[\"some.label/key\"]. The empty string is\ninterpolated if there are no labels, or if the indicated key does not exist. Note that the\npatch string must be valid JSON after interpolation. This may make for odd-looking quoting\nin the uninterpolated string."
+                  type: "boolean"
                 enableResourceTemplates:
                   description: "EnableResourceTemplates, if True, causes hive to honor golang text/templates in Resources.\nWhile the standard syntax is supported, it won't do you a whole lot of good as the parser\ndoes not pass a data object (i.e. there is no \"dot\" for you to use). This currently exists\nto expose a single function: {{ fromCDLabel \"some.label/key\" }} will\nbe substituted with the string value of ClusterDeployment.Labels[\"some.label/key\"]. The\nempty string is interpolated if there are no labels, or if the indicated key does not exist.\nNote that this only works in values (not e.g. map keys) that are of type string."
                   type: "boolean"

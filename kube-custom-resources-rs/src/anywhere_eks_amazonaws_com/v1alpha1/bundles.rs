@@ -48,6 +48,8 @@ pub struct BundlesVersionsBundles {
     #[serde(rename = "eksD")]
     pub eks_d: BundlesVersionsBundlesEksD,
     pub eksa: BundlesVersionsBundlesEksa,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endOfStandardSupport")]
+    pub end_of_standard_support: Option<String>,
     #[serde(rename = "etcdadmBootstrap")]
     pub etcdadm_bootstrap: BundlesVersionsBundlesEtcdadmBootstrap,
     #[serde(rename = "etcdadmController")]

@@ -7586,6 +7586,9 @@ pub struct AerospikeClusterStatus {
     /// SeedsFinderServices describes services which are used for seeding Aerospike nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seedsFinderServices")]
     pub seeds_finder_services: Option<AerospikeClusterStatusSeedsFinderServices>,
+    /// Selector specifies the label selector for the Aerospike pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<String>,
     /// Aerospike cluster size
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i32>,

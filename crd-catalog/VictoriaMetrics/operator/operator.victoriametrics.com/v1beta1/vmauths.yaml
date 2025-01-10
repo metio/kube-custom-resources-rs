@@ -2,19 +2,9 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.4"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "vmauths.operator.victoriametrics.com"
 spec:
-  conversion:
-    strategy: "Webhook"
-    webhook:
-      clientConfig:
-        service:
-          name: "webhook-service"
-          namespace: "system"
-          path: "/convert"
-      conversionReviewVersions:
-        - "v1"
   group: "operator.victoriametrics.com"
   names:
     kind: "VMAuth"
@@ -28,6 +18,13 @@ spec:
           jsonPath: ".status.updateStatus"
           name: "Status"
           type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+        - description: "The desired replicas number of Alertmanagers"
+          jsonPath: ".spec.replicaCount"
+          name: "ReplicaCount"
+          type: "integer"
       name: "v1beta1"
       schema:
         openAPIV3Schema:
@@ -72,6 +69,9 @@ spec:
                           name:
                             description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
                             type: "string"
+                          request:
+                            description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
+                            type: "string"
                         required:
                           - "name"
                         type: "object"
@@ -110,16 +110,8 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
-                default_url:
-                  description: "DefaultURLs backend url for non-matching paths filter\nusually used for default backend with error message"
-                  items:
-                    type: "string"
-                  type: "array"
                 disableSelfServiceScrape:
                   description: "DisableSelfServiceScrape controls creation of VMServiceScrape by operator\nfor the application.\nHas priority over `VM_DISABLESELFSERVICESCRAPECREATION` operator env variable"
-                  type: "boolean"
-                discover_backend_ips:
-                  description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
                   type: "boolean"
                 dnsConfig:
                   description: "Specifies the DNS parameters of a pod.\nParameters specified here will be merged to the generated DNS\nconfiguration based on DNSPolicy."
@@ -155,9 +147,6 @@ spec:
                 dnsPolicy:
                   description: "DNSPolicy sets DNS policy for the pod"
                   type: "string"
-                drop_src_path_prefix_parts:
-                  description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
-                  type: "integer"
                 externalConfig:
                   description: "ExternalConfig defines a source of external VMAuth configuration.\nIf it's defined, configuration for vmauth becomes unmanaged and operator'll not create any related secrets/config-reloaders"
                   properties:
@@ -202,11 +191,6 @@ spec:
                       - "name"
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
-                  type: "array"
-                headers:
-                  description: "Headers represent additional http headers, that vmauth uses\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.68.0 version of vmauth"
-                  items:
-                    type: "string"
                   type: "array"
                 hostAliases:
                   description: "HostAliases provides mapping for ip and hostname,\nthat would be propagated to pod,\ncannot be used with HostNetwork."
@@ -336,6 +320,7 @@ spec:
                                                   format: "int32"
                                                   type: "integer"
                                               type: "object"
+                                              x-kubernetes-map-type: "atomic"
                                           required:
                                             - "name"
                                           type: "object"
@@ -402,21 +387,12 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
-                ip_filters:
-                  description: "IPFilters defines per target src ip filters\nsupported only with enterprise version of [vmauth](https://docs.victoriametrics.com/vmauth/#ip-filters)"
-                  properties:
-                    allow_list:
-                      items:
-                        type: "string"
-                      type: "array"
-                    deny_list:
-                      items:
-                        type: "string"
-                      type: "array"
-                  type: "object"
                 license:
                   description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/enterprise)"
                   properties:
+                    forceOffline:
+                      description: "Enforce offline verification of the license key."
+                      type: "boolean"
                     key:
                       description: "Enterprise license key. This flag is available only in [VictoriaMetrics enterprise](https://docs.victoriametrics.com/enterprise).\nTo request a trial license, [go to](https://victoriametrics.com/products/enterprise/trial)"
                       type: "string"
@@ -437,17 +413,14 @@ spec:
                         - "key"
                       type: "object"
                       x-kubernetes-map-type: "atomic"
+                    reloadInterval:
+                      description: "Interval to be used for checking for license key changes. Note that this is only applicable when using KeyRef."
+                      type: "string"
                   type: "object"
                 livenessProbe:
                   description: "LivenessProbe that will be added CRD pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
-                load_balancing_policy:
-                  description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
-                  enum:
-                    - "least_loaded"
-                    - "first_available"
-                  type: "string"
                 logFormat:
                   description: "LogFormat for VMAuth to be configured with."
                   enum:
@@ -463,11 +436,22 @@ spec:
                     - "FATAL"
                     - "PANIC"
                   type: "string"
-                max_concurrent_requests:
-                  description: "MaxConcurrentRequests defines max concurrent requests per user\n300 is default value for vmauth"
-                  type: "integer"
+                managedMetadata:
+                  description: "ManagedMetadata defines metadata that will be added to the all objects\ncreated by operator for the given CustomResource"
+                  properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations"
+                      type: "object"
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels Map of string keys and values that can be used to organize and categorize\n(scope and select) objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+                      type: "object"
+                  type: "object"
                 minReadySeconds:
-                  description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state\nHas no effect for VLogs and VMSingle"
+                  description: "MinReadySeconds defines a minimum number of seconds to wait before starting update next pod\nif previous in healthy state\nHas no effect for VLogs and VMSingle"
                   format: "int32"
                   type: "integer"
                 nodeSelector:
@@ -553,6 +537,9 @@ spec:
                           name:
                             description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
                             type: "string"
+                          request:
+                            description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
+                            type: "string"
                         required:
                           - "name"
                         type: "object"
@@ -579,16 +566,6 @@ spec:
                       description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                       type: "object"
                   type: "object"
-                response_headers:
-                  description: "ResponseHeaders represent additional http headers, that vmauth adds for request response\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.93.0 version of vmauth"
-                  items:
-                    type: "string"
-                  type: "array"
-                retry_status_codes:
-                  description: "RetryStatusCodes defines http status codes in numeric format for request retries\ne.g. [429,503]"
-                  items:
-                    type: "integer"
-                  type: "array"
                 revisionHistoryLimitCount:
                   description: "The number of old ReplicaSets to retain to allow rollback in deployment or\nmaximum number of revisions that will be maintained in the Deployment revision history.\nHas no effect at StatefulSets\nDefaults to 10."
                   format: "int32"
@@ -658,118 +635,6 @@ spec:
                   description: "TerminationGracePeriodSeconds period for container graceful termination"
                   format: "int64"
                   type: "integer"
-                tlsConfig:
-                  description: "TLSConfig specifies TLSConfig configuration parameters."
-                  properties:
-                    ca:
-                      description: "Stuct containing the CA cert to use for the targets."
-                      properties:
-                        configMap:
-                          description: "ConfigMap containing data to use for the targets."
-                          properties:
-                            key:
-                              description: "The key to select."
-                              type: "string"
-                            name:
-                              default: ""
-                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the ConfigMap or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
-                        secret:
-                          description: "Secret containing data to use for the targets."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              default: ""
-                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
-                      type: "object"
-                    caFile:
-                      description: "Path to the CA cert in the container to use for the targets."
-                      type: "string"
-                    cert:
-                      description: "Struct containing the client cert file for the targets."
-                      properties:
-                        configMap:
-                          description: "ConfigMap containing data to use for the targets."
-                          properties:
-                            key:
-                              description: "The key to select."
-                              type: "string"
-                            name:
-                              default: ""
-                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the ConfigMap or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
-                        secret:
-                          description: "Secret containing data to use for the targets."
-                          properties:
-                            key:
-                              description: "The key of the secret to select from.  Must be a valid secret key."
-                              type: "string"
-                            name:
-                              default: ""
-                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                              type: "string"
-                            optional:
-                              description: "Specify whether the Secret or its key must be defined"
-                              type: "boolean"
-                          required:
-                            - "key"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
-                      type: "object"
-                    certFile:
-                      description: "Path to the client cert file in the container for the targets."
-                      type: "string"
-                    insecureSkipVerify:
-                      description: "Disable target certificate validation."
-                      type: "boolean"
-                    keyFile:
-                      description: "Path to the client key file in the container for the targets."
-                      type: "string"
-                    keySecret:
-                      description: "Secret containing the client key file for the targets."
-                      properties:
-                        key:
-                          description: "The key of the secret to select from.  Must be a valid secret key."
-                          type: "string"
-                        name:
-                          default: ""
-                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                          type: "string"
-                        optional:
-                          description: "Specify whether the Secret or its key must be defined"
-                          type: "boolean"
-                      required:
-                        - "key"
-                      type: "object"
-                      x-kubernetes-map-type: "atomic"
-                    serverName:
-                      description: "Used to verify the hostname for the targets."
-                      type: "string"
-                  type: "object"
                 tolerations:
                   description: "Tolerations If specified, the pod's tolerations."
                   items:
@@ -805,63 +670,238 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
                 unauthorizedAccessConfig:
-                  description: "UnauthorizedAccessConfig configures access for un authorized users"
-                  items:
-                    properties:
-                      discover_backend_ips:
-                        description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
-                        type: "boolean"
-                      drop_src_path_prefix_parts:
-                        description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
-                        type: "integer"
-                      headers:
-                        description: "RequestHeaders represent additional http headers, that vmauth uses\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.68.0 version of vmauth"
-                        items:
-                          type: "string"
-                        type: "array"
-                      load_balancing_policy:
-                        description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
-                        enum:
-                          - "least_loaded"
-                          - "first_available"
+                  description: "UnauthorizedAccessConfig configures access for un authorized users\n\nDeprecated, use unauthorizedUserAccessSpec instead\nwill be removed at v1.0 release"
+                  x-kubernetes-preserve-unknown-fields: true
+                unauthorizedUserAccessSpec:
+                  description: "UnauthorizedUserAccessSpec defines unauthorized_user config section of vmauth config"
+                  properties:
+                    default_url:
+                      description: "DefaultURLs backend url for non-matching paths filter\nusually used for default backend with error message"
+                      items:
                         type: "string"
-                      response_headers:
-                        description: "ResponseHeaders represent additional http headers, that vmauth adds for request response\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.93.0 version of vmauth"
-                        items:
+                      type: "array"
+                    discover_backend_ips:
+                      description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
+                      type: "boolean"
+                    drop_src_path_prefix_parts:
+                      description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
+                      type: "integer"
+                    dump_request_on_errors:
+                      description: "DumpRequestOnErrors instructs vmauth to return detailed request params to the client\nif routing rules don't allow to forward request to the backends.\nUseful for debugging `src_hosts` and `src_headers` based routing rules\n\navailable since v1.107.0 vmauth version"
+                      type: "boolean"
+                    headers:
+                      description: "Headers represent additional http headers, that vmauth uses\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.68.0 version of vmauth"
+                      items:
+                        type: "string"
+                      type: "array"
+                    ip_filters:
+                      description: "IPFilters defines per target src ip filters\nsupported only with enterprise version of [vmauth](https://docs.victoriametrics.com/vmauth/#ip-filters)"
+                      properties:
+                        allow_list:
+                          items:
+                            type: "string"
+                          type: "array"
+                        deny_list:
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
+                    load_balancing_policy:
+                      description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
+                      enum:
+                        - "least_loaded"
+                        - "first_available"
+                      type: "string"
+                    max_concurrent_requests:
+                      description: "MaxConcurrentRequests defines max concurrent requests per user\n300 is default value for vmauth"
+                      type: "integer"
+                    metric_labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "MetricLabels - additional labels for metrics exported by vmauth for given user."
+                      type: "object"
+                    response_headers:
+                      description: "ResponseHeaders represent additional http headers, that vmauth adds for request response\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.93.0 version of vmauth"
+                      items:
+                        type: "string"
+                      type: "array"
+                    retry_status_codes:
+                      description: "RetryStatusCodes defines http status codes in numeric format for request retries\ne.g. [429,503]"
+                      items:
+                        type: "integer"
+                      type: "array"
+                    tlsConfig:
+                      description: "TLSConfig defines tls configuration for the backend connection"
+                      properties:
+                        ca:
+                          description: "Stuct containing the CA cert to use for the targets."
+                          properties:
+                            configMap:
+                              description: "ConfigMap containing data to use for the targets."
+                              properties:
+                                key:
+                                  description: "The key to select."
+                                  type: "string"
+                                name:
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                optional:
+                                  description: "Specify whether the ConfigMap or its key must be defined"
+                                  type: "boolean"
+                              required:
+                                - "key"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                            secret:
+                              description: "Secret containing data to use for the targets."
+                              properties:
+                                key:
+                                  description: "The key of the secret to select from.  Must be a valid secret key."
+                                  type: "string"
+                                name:
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                optional:
+                                  description: "Specify whether the Secret or its key must be defined"
+                                  type: "boolean"
+                              required:
+                                - "key"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                          type: "object"
+                        caFile:
+                          description: "Path to the CA cert in the container to use for the targets."
                           type: "string"
-                        type: "array"
-                      retry_status_codes:
-                        description: "RetryStatusCodes defines http status codes in numeric format for request retries\nCan be defined per target or at VMUser.spec level\ne.g. [429,503]"
-                        items:
-                          type: "integer"
-                        type: "array"
-                      src_headers:
-                        description: "SrcHeaders is an optional list of headers, which must match request headers."
-                        items:
+                        cert:
+                          description: "Struct containing the client cert file for the targets."
+                          properties:
+                            configMap:
+                              description: "ConfigMap containing data to use for the targets."
+                              properties:
+                                key:
+                                  description: "The key to select."
+                                  type: "string"
+                                name:
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                optional:
+                                  description: "Specify whether the ConfigMap or its key must be defined"
+                                  type: "boolean"
+                              required:
+                                - "key"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                            secret:
+                              description: "Secret containing data to use for the targets."
+                              properties:
+                                key:
+                                  description: "The key of the secret to select from.  Must be a valid secret key."
+                                  type: "string"
+                                name:
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                optional:
+                                  description: "Specify whether the Secret or its key must be defined"
+                                  type: "boolean"
+                              required:
+                                - "key"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                          type: "object"
+                        certFile:
+                          description: "Path to the client cert file in the container for the targets."
                           type: "string"
-                        type: "array"
-                      src_hosts:
-                        description: "SrcHosts is an optional list of regular expressions, which must match the request hostname."
-                        items:
+                        insecureSkipVerify:
+                          description: "Disable target certificate validation."
+                          type: "boolean"
+                        keyFile:
+                          description: "Path to the client key file in the container for the targets."
                           type: "string"
-                        type: "array"
-                      src_paths:
-                        description: "SrcPaths is an optional list of regular expressions, which must match the request path."
-                        items:
+                        keySecret:
+                          description: "Secret containing the client key file for the targets."
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        serverName:
+                          description: "Used to verify the hostname for the targets."
                           type: "string"
-                        type: "array"
-                      src_query_args:
-                        description: "SrcQueryArgs is an optional list of query args, which must match request URL query args."
-                        items:
-                          type: "string"
-                        type: "array"
-                      url_prefix:
-                        description: "UrlPrefix contains backend url prefixes for the proxied request url."
-                        items:
-                          type: "string"
-                        type: "array"
-                    type: "object"
-                  type: "array"
+                      type: "object"
+                    url_map:
+                      items:
+                        description: "UnauthorizedAccessConfigURLMap defines element of url_map routing configuration\nFor UnauthorizedAccessConfig and VMAuthUnauthorizedUserAccessSpec.URLMap"
+                        properties:
+                          discover_backend_ips:
+                            description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
+                            type: "boolean"
+                          drop_src_path_prefix_parts:
+                            description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
+                            type: "integer"
+                          headers:
+                            description: "RequestHeaders represent additional http headers, that vmauth uses\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.68.0 version of vmauth"
+                            items:
+                              type: "string"
+                            type: "array"
+                          load_balancing_policy:
+                            description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
+                            enum:
+                              - "least_loaded"
+                              - "first_available"
+                            type: "string"
+                          response_headers:
+                            description: "ResponseHeaders represent additional http headers, that vmauth adds for request response\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.93.0 version of vmauth"
+                            items:
+                              type: "string"
+                            type: "array"
+                          retry_status_codes:
+                            description: "RetryStatusCodes defines http status codes in numeric format for request retries\nCan be defined per target or at VMUser.spec level\ne.g. [429,503]"
+                            items:
+                              type: "integer"
+                            type: "array"
+                          src_headers:
+                            description: "SrcHeaders is an optional list of headers, which must match request headers."
+                            items:
+                              type: "string"
+                            type: "array"
+                          src_hosts:
+                            description: "SrcHosts is an optional list of regular expressions, which must match the request hostname."
+                            items:
+                              type: "string"
+                            type: "array"
+                          src_paths:
+                            description: "SrcPaths is an optional list of regular expressions, which must match the request path."
+                            items:
+                              type: "string"
+                            type: "array"
+                          src_query_args:
+                            description: "SrcQueryArgs is an optional list of query args, which must match request URL query args."
+                            items:
+                              type: "string"
+                            type: "array"
+                          url_prefix:
+                            description: "UrlPrefix contains backend url prefixes for the proxied request url.\nURLPrefix defines prefix prefix for destination"
+                            x-kubernetes-preserve-unknown-fields: true
+                        type: "object"
+                      type: "array"
+                    url_prefix:
+                      description: "URLPrefix defines prefix prefix for destination"
+                      x-kubernetes-preserve-unknown-fields: true
+                  type: "object"
                 useDefaultResources:
                   description: "UseDefaultResources controls resource settings\nBy default, operator sets built-in resource requirements"
                   type: "boolean"
@@ -978,14 +1018,68 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
               type: "object"
+              x-kubernetes-preserve-unknown-fields: true
             status:
               description: "VMAuthStatus defines the observed state of VMAuth"
               properties:
+                conditions:
+                  description: "Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\""
+                  items:
+                    description: "Condition defines status condition of the resource"
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another."
+                        format: "date-time"
+                        type: "string"
+                      lastUpdateTime:
+                        description: "LastUpdateTime is the last time of given type update.\nThis value is used for status TTL update and removal"
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "Type of condition in CamelCase or in name.namespace.resource.victoriametrics.com/CamelCase."
+                        maxLength: 316
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "lastUpdateTime"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "type"
+                  x-kubernetes-list-type: "map"
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
+                  type: "integer"
                 reason:
-                  description: "Reason defines fail reason for update process, effective only for statefulMode"
+                  description: "Reason defines human readable error reason"
                   type: "string"
                 updateStatus:
-                  description: "UpdateStatus defines a status for update rollout, effective only for statefulMode"
+                  description: "UpdateStatus defines a status for update rollout"
                   type: "string"
               type: "object"
           type: "object"

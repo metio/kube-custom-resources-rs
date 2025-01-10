@@ -25,7 +25,8 @@ pub struct ClusterInformationSpec {
     /// ClusterType describes the type of the cluster
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterType")]
     pub cluster_type: Option<String>,
-    /// DatastoreReady is used during significant datastore migrations to signal to components such as Felix that it should wait before accessing the datastore.
+    /// DatastoreReady is used during significant datastore migrations to signal to components
+    /// such as Felix that it should wait before accessing the datastore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datastoreReady")]
     pub datastore_ready: Option<bool>,
     /// Variant declares which variant of Calico should be active.

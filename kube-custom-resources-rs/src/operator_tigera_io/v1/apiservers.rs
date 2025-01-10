@@ -126,6 +126,9 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpec {
     /// WARNING: Please note that this field will modify the default API server Deployment nodeSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// PriorityClassName allows to specify a PriorityClass resource to be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
     /// Tolerations is the API server pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the API server Deployment.
     /// If omitted, the API server Deployment will use its default value for tolerations.
@@ -846,6 +849,8 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRe
 /// APIServerDeploymentContainer is an API server Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct APIServerApiServerDeploymentSpecTemplateSpecContainers {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
+    pub log_level: Option<APIServerApiServerDeploymentSpecTemplateSpecContainersLogLevel>,
     /// Name is an enum which identifies the API server Deployment container by name.
     /// Supported values are: calico-apiserver, tigera-queryserver
     pub name: APIServerApiServerDeploymentSpecTemplateSpecContainersName,
@@ -855,6 +860,17 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecContainers {
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<APIServerApiServerDeploymentSpecTemplateSpecContainersResources>,
+}
+
+/// APIServerDeploymentContainer is an API server Deployment container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum APIServerApiServerDeploymentSpecTemplateSpecContainersLogLevel {
+    Fatal,
+    Error,
+    Warn,
+    Info,
+    Debug,
+    Trace,
 }
 
 /// APIServerDeploymentContainer is an API server Deployment container.

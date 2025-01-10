@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -91,7 +92,7 @@ pub struct VMRuleGroups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
     /// Type defines datasource type for enterprise version of vmalert
-    /// possible values - prometheus,graphite
+    /// possible values - prometheus,graphite,vlogs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -136,11 +137,18 @@ pub struct VMRuleGroupsRules {
 /// VMRuleStatus defines the observed state of VMRule
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMRuleStatus {
-    /// LastSyncError contains error message for unsuccessful config generation
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
-    pub last_sync_error: Option<String>,
-    /// Status defines CRD processing status
+    /// Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub conditions: Option<Vec<Condition>>,
+    /// ObservedGeneration defines current generation picked by operator for the
+    /// reconcile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    /// Reason defines human readable error reason
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
+    /// UpdateStatus defines a status for update rollout
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStatus")]
+    pub update_status: Option<String>,
 }
 

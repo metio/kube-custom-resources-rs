@@ -30,6 +30,9 @@ pub struct VolumeSpec {
     pub backing_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupCompressionMethod")]
     pub backup_compression_method: Option<VolumeBackupCompressionMethod>,
+    /// The backup target name that the volume will be backed up to or is synced.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupTargetName")]
+    pub backup_target_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
     pub data_engine: Option<VolumeDataEngine>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataLocality")]

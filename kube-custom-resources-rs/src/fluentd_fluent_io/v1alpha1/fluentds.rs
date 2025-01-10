@@ -57,6 +57,9 @@ pub struct FluentdSpec {
     /// Fluentd global inputs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalInputs")]
     pub global_inputs: Option<Vec<FluentdGlobalInputs>>,
+    /// HostAliases is an optional list of IPs and hostnames that will be injected into the pod's hosts file if specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
+    pub host_aliases: Option<Vec<FluentdHostAliases>>,
     /// Fluentd image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -2487,6 +2490,17 @@ pub enum FluentdGlobalInputsTailParseType {
     Grok,
     #[serde(rename = "multiline_grok")]
     MultilineGrok,
+}
+
+/// HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the
+/// pod's hosts file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentdHostAliases {
+    /// Hostnames for the above IP address.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hostnames: Option<Vec<String>>,
+    /// IP address of the host file entry.
+    pub ip: String,
 }
 
 /// LocalObjectReference contains enough information to let you locate the
