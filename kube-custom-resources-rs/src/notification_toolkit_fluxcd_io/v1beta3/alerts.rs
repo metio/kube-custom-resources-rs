@@ -45,6 +45,7 @@ pub struct AlertSpec {
     #[serde(rename = "providerRef")]
     pub provider_ref: AlertProviderRef,
     /// Summary holds a short description of the impact and affected cluster.
+    /// Deprecated: Use EventMetadata instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub summary: Option<String>,
     /// Suspend tells the controller to suspend subsequent

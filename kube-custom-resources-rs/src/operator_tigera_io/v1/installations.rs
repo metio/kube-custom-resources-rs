@@ -20,6 +20,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct InstallationSpec {
+    /// Azure is used to configure azure provider specific options.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub azure: Option<InstallationAzure>,
     /// CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in
     /// conjunction with the deprecated ComponentResources, then these overrides take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoKubeControllersDeployment")]
@@ -126,6 +129,11 @@ pub struct InstallationSpec {
     /// NonPrivileged configures Calico to be run in non-privileged containers as non-root users where possible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonPrivileged")]
     pub non_privileged: Option<String>,
+    /// Proxy is used to configure the HTTP(S) proxy settings that will be applied to Tigera containers that connect
+    /// to destinations outside the cluster. It is expected that NO_PROXY is configured such that destinations within
+    /// the cluster (including the API server) are exempt from proxying.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub proxy: Option<InstallationProxy>,
     /// Registry is the default Docker registry used for component Docker images.
     /// If specified then the given value must end with a slash character (`/`) and all images will be pulled from this registry.
     /// If not specified then the default registries will be used. A special case value, UseDefault, is
@@ -156,6 +164,24 @@ pub struct InstallationSpec {
     /// Windows Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsNodes")]
     pub windows_nodes: Option<InstallationWindowsNodes>,
+}
+
+/// Azure is used to configure azure provider specific options.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationAzure {
+    /// PolicyMode determines whether the "control-plane" label is applied to namespaces. It offers two options: Default and Manual.
+    /// The Default option adds the "control-plane" label to the required namespaces.
+    /// The Manual option does not apply the "control-plane" label to any namespace.
+    /// Default: Default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyMode")]
+    pub policy_mode: Option<InstallationAzurePolicyMode>,
+}
+
+/// Azure is used to configure azure provider specific options.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstallationAzurePolicyMode {
+    Default,
+    Manual,
 }
 
 /// CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in
@@ -1140,6 +1166,9 @@ pub struct InstallationCalicoNetworkIpPools {
     /// ["Tunnel", "Workload"] for back-compatibility
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedUses")]
     pub allowed_uses: Option<Vec<String>>,
+    /// AssignmentMode determines if IP addresses from this pool should be  assigned automatically or on request only
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignmentMode")]
+    pub assignment_mode: Option<String>,
     /// BlockSize specifies the CIDR prefex length to use when allocating per-node IP blocks from
     /// the main IP pool CIDR.
     /// Default: 26 (IPv4), 122 (IPv6)
@@ -5216,9 +5245,7 @@ pub struct InstallationImagePullSecrets {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5281,10 +5308,6 @@ pub enum InstallationLoggingCniLogSeverity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationNodeUpdateStrategy {
     /// Rolling update config params. Present only if type = "RollingUpdate".
-    /// ---
-    /// TODO: Update this to follow our convention for oneOf, whatever we decide it
-    /// to be. Same as Deployment `strategy.rollingUpdate`.
-    /// See https://github.com/kubernetes/kubernetes/issues/35345
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<InstallationNodeUpdateStrategyRollingUpdate>,
     /// Type of daemon set update. Can be "RollingUpdate" or "OnDelete". Default is RollingUpdate.
@@ -5293,10 +5316,6 @@ pub struct InstallationNodeUpdateStrategy {
 }
 
 /// Rolling update config params. Present only if type = "RollingUpdate".
-/// ---
-/// TODO: Update this to follow our convention for oneOf, whatever we decide it
-/// to be. Same as Deployment `strategy.rollingUpdate`.
-/// See https://github.com/kubernetes/kubernetes/issues/35345
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationNodeUpdateStrategyRollingUpdate {
     /// The maximum number of nodes with an existing available DaemonSet pod that
@@ -5335,6 +5354,26 @@ pub struct InstallationNodeUpdateStrategyRollingUpdate {
     /// the update.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
+}
+
+/// Proxy is used to configure the HTTP(S) proxy settings that will be applied to Tigera containers that connect
+/// to destinations outside the cluster. It is expected that NO_PROXY is configured such that destinations within
+/// the cluster (including the API server) are exempt from proxying.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationProxy {
+    /// HTTPProxy defines the value of the HTTP_PROXY environment variable that will be set on Tigera containers that connect to
+    /// destinations outside the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
+    pub http_proxy: Option<String>,
+    /// HTTPSProxy defines the value of the HTTPS_PROXY environment variable that will be set on Tigera containers that connect to
+    /// destinations outside the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsProxy")]
+    pub https_proxy: Option<String>,
+    /// NoProxy defines the value of the NO_PROXY environment variable that will be set on Tigera containers that connect to
+    /// destinations outside the cluster. This value must be set such that destinations within the scope of the cluster, including
+    /// the Kubernetes API server, are exempt from being proxied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
 }
 
 /// Deprecated. Please use Installation.Spec.TyphaDeployment instead.
@@ -6711,6 +6750,9 @@ pub struct InstallationStatus {
 /// Computed is the final installation including overlaid resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputed {
+    /// Azure is used to configure azure provider specific options.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub azure: Option<InstallationStatusComputedAzure>,
     /// CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in
     /// conjunction with the deprecated ComponentResources, then these overrides take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoKubeControllersDeployment")]
@@ -6817,6 +6859,11 @@ pub struct InstallationStatusComputed {
     /// NonPrivileged configures Calico to be run in non-privileged containers as non-root users where possible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonPrivileged")]
     pub non_privileged: Option<String>,
+    /// Proxy is used to configure the HTTP(S) proxy settings that will be applied to Tigera containers that connect
+    /// to destinations outside the cluster. It is expected that NO_PROXY is configured such that destinations within
+    /// the cluster (including the API server) are exempt from proxying.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub proxy: Option<InstallationStatusComputedProxy>,
     /// Registry is the default Docker registry used for component Docker images.
     /// If specified then the given value must end with a slash character (`/`) and all images will be pulled from this registry.
     /// If not specified then the default registries will be used. A special case value, UseDefault, is
@@ -6847,6 +6894,24 @@ pub struct InstallationStatusComputed {
     /// Windows Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsNodes")]
     pub windows_nodes: Option<InstallationStatusComputedWindowsNodes>,
+}
+
+/// Azure is used to configure azure provider specific options.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationStatusComputedAzure {
+    /// PolicyMode determines whether the "control-plane" label is applied to namespaces. It offers two options: Default and Manual.
+    /// The Default option adds the "control-plane" label to the required namespaces.
+    /// The Manual option does not apply the "control-plane" label to any namespace.
+    /// Default: Default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyMode")]
+    pub policy_mode: Option<InstallationStatusComputedAzurePolicyMode>,
+}
+
+/// Azure is used to configure azure provider specific options.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstallationStatusComputedAzurePolicyMode {
+    Default,
+    Manual,
 }
 
 /// CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in
@@ -7831,6 +7896,9 @@ pub struct InstallationStatusComputedCalicoNetworkIpPools {
     /// ["Tunnel", "Workload"] for back-compatibility
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedUses")]
     pub allowed_uses: Option<Vec<String>>,
+    /// AssignmentMode determines if IP addresses from this pool should be  assigned automatically or on request only
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignmentMode")]
+    pub assignment_mode: Option<String>,
     /// BlockSize specifies the CIDR prefex length to use when allocating per-node IP blocks from
     /// the main IP pool CIDR.
     /// Default: 26 (IPv4), 122 (IPv6)
@@ -11907,9 +11975,7 @@ pub struct InstallationStatusComputedImagePullSecrets {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -11972,10 +12038,6 @@ pub enum InstallationStatusComputedLoggingCniLogSeverity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedNodeUpdateStrategy {
     /// Rolling update config params. Present only if type = "RollingUpdate".
-    /// ---
-    /// TODO: Update this to follow our convention for oneOf, whatever we decide it
-    /// to be. Same as Deployment `strategy.rollingUpdate`.
-    /// See https://github.com/kubernetes/kubernetes/issues/35345
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<InstallationStatusComputedNodeUpdateStrategyRollingUpdate>,
     /// Type of daemon set update. Can be "RollingUpdate" or "OnDelete". Default is RollingUpdate.
@@ -11984,10 +12046,6 @@ pub struct InstallationStatusComputedNodeUpdateStrategy {
 }
 
 /// Rolling update config params. Present only if type = "RollingUpdate".
-/// ---
-/// TODO: Update this to follow our convention for oneOf, whatever we decide it
-/// to be. Same as Deployment `strategy.rollingUpdate`.
-/// See https://github.com/kubernetes/kubernetes/issues/35345
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedNodeUpdateStrategyRollingUpdate {
     /// The maximum number of nodes with an existing available DaemonSet pod that
@@ -12026,6 +12084,26 @@ pub struct InstallationStatusComputedNodeUpdateStrategyRollingUpdate {
     /// the update.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
+}
+
+/// Proxy is used to configure the HTTP(S) proxy settings that will be applied to Tigera containers that connect
+/// to destinations outside the cluster. It is expected that NO_PROXY is configured such that destinations within
+/// the cluster (including the API server) are exempt from proxying.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationStatusComputedProxy {
+    /// HTTPProxy defines the value of the HTTP_PROXY environment variable that will be set on Tigera containers that connect to
+    /// destinations outside the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
+    pub http_proxy: Option<String>,
+    /// HTTPSProxy defines the value of the HTTPS_PROXY environment variable that will be set on Tigera containers that connect to
+    /// destinations outside the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsProxy")]
+    pub https_proxy: Option<String>,
+    /// NoProxy defines the value of the NO_PROXY environment variable that will be set on Tigera containers that connect to
+    /// destinations outside the cluster. This value must be set such that destinations within the scope of the cluster, including
+    /// the Kubernetes API server, are exempt from being proxied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
 }
 
 /// Deprecated. Please use Installation.Spec.TyphaDeployment instead.

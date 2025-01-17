@@ -43,7 +43,9 @@ pub struct DeveloperUserSpec {
 /// DeveloperAccountRef is the reference to the parent developer account
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeveloperUserDeveloperAccountRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -62,7 +64,9 @@ pub struct DeveloperUserPasswordCredentialsRef {
 /// ProviderAccountRef references account provider credentials
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeveloperUserProviderAccountRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -81,7 +85,8 @@ pub enum DeveloperUserRole {
 pub struct DeveloperUserStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accoundID")]
     pub accound_id: Option<i64>,
-    /// Current state of the 3scale backend. Conditions represent the latest available observations of an object's state
+    /// Current state of the 3scale backend.
+    /// Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "developerUserID")]

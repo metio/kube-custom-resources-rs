@@ -44,6 +44,8 @@ pub struct ClusterSpec {
     pub identity_provider_refs: Option<Vec<ClusterIdentityProviderRefs>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesVersion")]
     pub kubernetes_version: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "licenseToken")]
+    pub license_token: Option<String>,
     /// MachineHealthCheck allows to configure timeouts for machine health checks. Machine Health Checks are responsible for remediating unhealthy Machines. Configuring these values will decide how long to wait to remediate unhealthy machine or determine health of nodes' machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterMachineHealthCheck>,

@@ -6890,6 +6890,13 @@ pub struct WorkloadPodSetsTemplateSpecVolumesVsphereVolume {
 /// topologyRequest defines the topology request for the PodSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadPodSetsTopologyRequest {
+    /// PodIndexLabel indicates the name of the label indexing the pods.
+    /// For example, in the context of
+    /// - kubernetes job this is: kubernetes.io/job-completion-index
+    /// - JobSet: kubernetes.io/job-completion-index (inherited from Job)
+    /// - Kubeflow: training.kubeflow.org/replica-index
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndexLabel")]
+    pub pod_index_label: Option<String>,
     /// preferred indicates the topology level preferred by the PodSet, as
     /// indicated by the `kueue.x-k8s.io/podset-preferred-topology` PodSet
     /// annotation.
@@ -6900,6 +6907,14 @@ pub struct WorkloadPodSetsTopologyRequest {
     /// annotation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub required: Option<String>,
+    /// SubGroupIndexLabel indicates the count of replicated Jobs (groups) within a PodSet.
+    /// For example, in the context of JobSet this value is read from jobset.sigs.k8s.io/replicatedjob-replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i32>,
+    /// SubGroupIndexLabel indicates the name of the label indexing the instances of replicated Jobs (groups)
+    /// within a PodSet. For example, in the context of JobSet this is jobset.sigs.k8s.io/job-index.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupIndexLabel")]
+    pub sub_group_index_label: Option<String>,
 }
 
 /// WorkloadSpec defines the desired state of Workload
@@ -6994,7 +7009,9 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
     /// domain and specifies the node selectors for each topology domain, in the
     /// following way: the node selector keys are specified by the levels field
     /// (same for all domains), and the corresponding node selector value is
-    /// specified by the domains.values subfield.
+    /// specified by the domains.values subfield. If the TopologySpec.Levels field contains
+    /// "kubernetes.io/hostname" label, topologyAssignment will contain data only for
+    /// this label, and omit higher levels in the topology
     /// 
     /// Example:
     /// 
@@ -7015,6 +7032,21 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
     /// - 2 Pods are to be scheduled on nodes matching the node selector:
     ///   cloud.provider.com/topology-block: block-1
     ///   cloud.provider.com/topology-rack: rack-2
+    /// 
+    /// Example:
+    /// Below there is an equivalent of the above example assuming, Topology
+    /// object defines kubernetes.io/hostname as the lowest level in topology.
+    /// Hence we omit higher level of topologies, since the hostname label
+    /// is sufficient to explicitly identify a proper node.
+    /// 
+    /// topologyAssignment:
+    ///   levels:
+    ///   - kubernetes.io/hostname
+    ///   domains:
+    ///   - values: [hostname-1]
+    ///     count: 4
+    ///   - values: [hostname-2]
+    ///     count: 2
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyAssignment")]
     pub topology_assignment: Option<WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignment>,
 }
@@ -7025,7 +7057,9 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
 /// domain and specifies the node selectors for each topology domain, in the
 /// following way: the node selector keys are specified by the levels field
 /// (same for all domains), and the corresponding node selector value is
-/// specified by the domains.values subfield.
+/// specified by the domains.values subfield. If the TopologySpec.Levels field contains
+/// "kubernetes.io/hostname" label, topologyAssignment will contain data only for
+/// this label, and omit higher levels in the topology
 /// 
 /// Example:
 /// 
@@ -7046,6 +7080,21 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
 /// - 2 Pods are to be scheduled on nodes matching the node selector:
 ///   cloud.provider.com/topology-block: block-1
 ///   cloud.provider.com/topology-rack: rack-2
+/// 
+/// Example:
+/// Below there is an equivalent of the above example assuming, Topology
+/// object defines kubernetes.io/hostname as the lowest level in topology.
+/// Hence we omit higher level of topologies, since the hostname label
+/// is sufficient to explicitly identify a proper node.
+/// 
+/// topologyAssignment:
+///   levels:
+///   - kubernetes.io/hostname
+///   domains:
+///   - values: [hostname-1]
+///     count: 4
+///   - values: [hostname-2]
+///     count: 2
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignment {
     /// domains is a list of topology assignments split by topology domains at

@@ -33,6 +33,10 @@ spec:
           jsonPath: ".status.snapshotCreatedAt"
           name: "SnapshotCreatedAt"
           type: "string"
+        - description: "The backup target name"
+          jsonPath: ".status.backupTargetName"
+          name: "BackupTarget"
+          type: "string"
         - description: "The backup state"
           jsonPath: ".status.state"
           name: "State"
@@ -83,6 +87,9 @@ spec:
               properties:
                 backupCreatedAt:
                   description: "The snapshot backup upload finished time."
+                  type: "string"
+                backupTargetName:
+                  description: "The backup target name."
                   type: "string"
                 compressionMethod:
                   description: "Compression method"

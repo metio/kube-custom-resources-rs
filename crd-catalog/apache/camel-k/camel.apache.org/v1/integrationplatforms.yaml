@@ -135,7 +135,8 @@ spec:
                                 description: "The key of the secret to select from.  Must be a valid secret key."
                                 type: "string"
                               name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                 type: "string"
                               optional:
                                 description: "Specify whether the Secret or its key must be defined"
@@ -190,7 +191,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -206,7 +208,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -232,7 +235,8 @@ spec:
                                   description: "The key to select."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the ConfigMap or its key must be defined"
@@ -248,7 +252,8 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -268,7 +273,8 @@ spec:
                                   description: "The key to select."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the ConfigMap or its key must be defined"
@@ -284,7 +290,8 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -535,8 +542,14 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        runtimeProvider:
+                          description: "The runtime provider to use for the integration. (Default, Camel K Runtime)."
+                          enum:
+                            - "quarkus"
+                            - "plain-quarkus"
+                          type: "string"
                         runtimeVersion:
-                          description: "The camel-k-runtime version to use for the integration. It overrides the default version set in the Integration Platform.\nYou can use a fixed version (for example \"3.2.3\") or a semantic version (for example \"3.x\") which will try to resolve\nto the best matching Catalog existing on the cluster."
+                          description: "The runtime version to use for the integration. It overrides the default version set in the Integration Platform.\nYou can use a fixed version (for example \"3.2.3\") or a semantic version (for example \"3.x\") which will try to resolve\nto the best matching Catalog existing on the cluster (Default, the one provided by the operator version)."
                           type: "string"
                       type: "object"
                     container:
@@ -591,6 +604,7 @@ spec:
                           type: "string"
                         port:
                           description: "To configure a different port exposed by the container (default `8080`)."
+                          format: "int32"
                           type: "integer"
                         portName:
                           description: "To configure a different port name for the port exposed by the container. It defaults to `http` only when the `expose` parameter is true."
@@ -616,6 +630,7 @@ spec:
                           type: "string"
                         servicePort:
                           description: "To configure under which service port the container port is to be exposed (default `80`)."
+                          format: "int32"
                           type: "integer"
                         servicePortName:
                           description: "To configure under which service port name the container port is to be exposed (default `http`)."
@@ -775,7 +790,7 @@ spec:
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         discoveryCache:
-                          description: "Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).\nDeprecated: to be removed from trait configuration."
+                          description: "Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).\nDeprecated: no longer in use."
                           enum:
                             - "disabled"
                             - "disk"
@@ -908,7 +923,7 @@ spec:
                           description: "The Ingress class name as defined by the Ingress spec\nSee https://kubernetes.io/docs/concepts/services-networking/ingress/"
                           type: "string"
                         path:
-                          description: "To configure the path exposed by the ingress (default `/`)."
+                          description: "To configure the path exposed by the ingress (default `/`).\nDeprecated: In favor of `paths` - left for backward compatibility."
                           type: "string"
                         pathType:
                           description: "To configure the path type exposed by the ingress.\nOne of `Exact`, `Prefix`, `ImplementationSpecific` (default to `Prefix`)."
@@ -917,6 +932,11 @@ spec:
                             - "Prefix"
                             - "ImplementationSpecific"
                           type: "string"
+                        paths:
+                          description: "To configure the paths exposed by the ingress (default `['/']`)."
+                          items:
+                            type: "string"
+                          type: "array"
                         tlsHosts:
                           description: "To configure tls hosts"
                           items:
@@ -980,6 +1000,7 @@ spec:
                           type: "string"
                         port:
                           description: "The Jolokia endpoint port (default `8778`)."
+                          format: "int32"
                           type: "integer"
                         protocol:
                           description: "The protocol to use, either `http` or `https` (default `https` for OpenShift)"
@@ -1201,14 +1222,33 @@ spec:
                           type: "string"
                       type: "object"
                     master:
-                      description: "Deprecated: for backward compatibility."
+                      description: "The configuration of Master trait"
                       properties:
+                        auto:
+                          description: "Enables automatic configuration of the trait."
+                          type: "boolean"
                         configuration:
-                          description: "TraitConfiguration parameters configuration"
+                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
-                      required:
-                        - "configuration"
+                        enabled:
+                          description: "Can be used to enable or disable a trait. All traits share this common property."
+                          type: "boolean"
+                        includeDelegateDependencies:
+                          description: "When this flag is active, the operator analyzes the source code to add dependencies required by delegate endpoints.\nE.g. when using `master:lockname:timer`, then `camel:timer` is automatically added to the set of dependencies.\nIt's enabled by default."
+                          type: "boolean"
+                        labelKey:
+                          description: "Label that will be used to identify all pods contending the lock. Defaults to \"camel.apache.org/integration\"."
+                          type: "string"
+                        labelValue:
+                          description: "Label value that will be used to identify all pods contending the lock. Defaults to the integration name."
+                          type: "string"
+                        resourceName:
+                          description: "Name of the configmap that will be used to store the lock. Defaults to \"<integration-name>-lock\".\nName of the configmap/lease resource that will be used to store the lock. Defaults to \"<integration-name>-lock\"."
+                          type: "string"
+                        resourceType:
+                          description: "Type of Kubernetes resource to use for locking (\"ConfigMap\" or \"Lease\"). Defaults to \"Lease\"."
+                          type: "string"
                       type: "object"
                     mount:
                       description: "The configuration of Mount trait"
@@ -1694,7 +1734,8 @@ spec:
                                 description: "The key of the secret to select from.  Must be a valid secret key."
                                 type: "string"
                               name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                 type: "string"
                               optional:
                                 description: "Specify whether the Secret or its key must be defined"
@@ -1749,7 +1790,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -1765,7 +1807,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -1791,7 +1834,8 @@ spec:
                                   description: "The key to select."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the ConfigMap or its key must be defined"
@@ -1807,7 +1851,8 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1827,7 +1872,8 @@ spec:
                                   description: "The key to select."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the ConfigMap or its key must be defined"
@@ -1843,7 +1889,8 @@ spec:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                   type: "string"
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2136,8 +2183,14 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        runtimeProvider:
+                          description: "The runtime provider to use for the integration. (Default, Camel K Runtime)."
+                          enum:
+                            - "quarkus"
+                            - "plain-quarkus"
+                          type: "string"
                         runtimeVersion:
-                          description: "The camel-k-runtime version to use for the integration. It overrides the default version set in the Integration Platform.\nYou can use a fixed version (for example \"3.2.3\") or a semantic version (for example \"3.x\") which will try to resolve\nto the best matching Catalog existing on the cluster."
+                          description: "The runtime version to use for the integration. It overrides the default version set in the Integration Platform.\nYou can use a fixed version (for example \"3.2.3\") or a semantic version (for example \"3.x\") which will try to resolve\nto the best matching Catalog existing on the cluster (Default, the one provided by the operator version)."
                           type: "string"
                       type: "object"
                     container:
@@ -2192,6 +2245,7 @@ spec:
                           type: "string"
                         port:
                           description: "To configure a different port exposed by the container (default `8080`)."
+                          format: "int32"
                           type: "integer"
                         portName:
                           description: "To configure a different port name for the port exposed by the container. It defaults to `http` only when the `expose` parameter is true."
@@ -2217,6 +2271,7 @@ spec:
                           type: "string"
                         servicePort:
                           description: "To configure under which service port the container port is to be exposed (default `80`)."
+                          format: "int32"
                           type: "integer"
                         servicePortName:
                           description: "To configure under which service port name the container port is to be exposed (default `http`)."
@@ -2376,7 +2431,7 @@ spec:
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         discoveryCache:
-                          description: "Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).\nDeprecated: to be removed from trait configuration."
+                          description: "Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).\nDeprecated: no longer in use."
                           enum:
                             - "disabled"
                             - "disk"
@@ -2509,7 +2564,7 @@ spec:
                           description: "The Ingress class name as defined by the Ingress spec\nSee https://kubernetes.io/docs/concepts/services-networking/ingress/"
                           type: "string"
                         path:
-                          description: "To configure the path exposed by the ingress (default `/`)."
+                          description: "To configure the path exposed by the ingress (default `/`).\nDeprecated: In favor of `paths` - left for backward compatibility."
                           type: "string"
                         pathType:
                           description: "To configure the path type exposed by the ingress.\nOne of `Exact`, `Prefix`, `ImplementationSpecific` (default to `Prefix`)."
@@ -2518,6 +2573,11 @@ spec:
                             - "Prefix"
                             - "ImplementationSpecific"
                           type: "string"
+                        paths:
+                          description: "To configure the paths exposed by the ingress (default `['/']`)."
+                          items:
+                            type: "string"
+                          type: "array"
                         tlsHosts:
                           description: "To configure tls hosts"
                           items:
@@ -2581,6 +2641,7 @@ spec:
                           type: "string"
                         port:
                           description: "The Jolokia endpoint port (default `8778`)."
+                          format: "int32"
                           type: "integer"
                         protocol:
                           description: "The protocol to use, either `http` or `https` (default `https` for OpenShift)"
@@ -2802,14 +2863,33 @@ spec:
                           type: "string"
                       type: "object"
                     master:
-                      description: "Deprecated: for backward compatibility."
+                      description: "The configuration of Master trait"
                       properties:
+                        auto:
+                          description: "Enables automatic configuration of the trait."
+                          type: "boolean"
                         configuration:
-                          description: "TraitConfiguration parameters configuration"
+                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
-                      required:
-                        - "configuration"
+                        enabled:
+                          description: "Can be used to enable or disable a trait. All traits share this common property."
+                          type: "boolean"
+                        includeDelegateDependencies:
+                          description: "When this flag is active, the operator analyzes the source code to add dependencies required by delegate endpoints.\nE.g. when using `master:lockname:timer`, then `camel:timer` is automatically added to the set of dependencies.\nIt's enabled by default."
+                          type: "boolean"
+                        labelKey:
+                          description: "Label that will be used to identify all pods contending the lock. Defaults to \"camel.apache.org/integration\"."
+                          type: "string"
+                        labelValue:
+                          description: "Label value that will be used to identify all pods contending the lock. Defaults to the integration name."
+                          type: "string"
+                        resourceName:
+                          description: "Name of the configmap that will be used to store the lock. Defaults to \"<integration-name>-lock\".\nName of the configmap/lease resource that will be used to store the lock. Defaults to \"<integration-name>-lock\"."
+                          type: "string"
+                        resourceType:
+                          description: "Type of Kubernetes resource to use for locking (\"ConfigMap\" or \"Lease\"). Defaults to \"Lease\"."
+                          type: "string"
                       type: "object"
                     mount:
                       description: "The configuration of Mount trait"

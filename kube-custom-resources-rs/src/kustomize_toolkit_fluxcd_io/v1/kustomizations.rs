@@ -31,6 +31,12 @@ pub struct KustomizationSpec {
     /// Decrypt Kubernetes secrets before applying them on the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub decryption: Option<KustomizationDecryption>,
+    /// DeletionPolicy can be used to control garbage collection when this
+    /// Kustomization is deleted. Valid values are ('MirrorPrune', 'Delete',
+    /// 'Orphan'). 'MirrorPrune' mirrors the Prune field (orphan if false,
+    /// delete if true). Defaults to 'MirrorPrune'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
+    pub deletion_policy: Option<KustomizationDeletionPolicy>,
     /// DependsOn may contain a meta.NamespacedObjectReference slice
     /// with references to Kustomization resources that must be ready before this
     /// Kustomization can be reconciled.
@@ -147,6 +153,15 @@ pub enum KustomizationDecryptionProvider {
 pub struct KustomizationDecryptionSecretRef {
     /// Name of the referent.
     pub name: String,
+}
+
+/// KustomizationSpec defines the configuration to calculate the desired state
+/// from a Source using Kustomize.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KustomizationDeletionPolicy {
+    MirrorPrune,
+    Delete,
+    Orphan,
 }
 
 /// NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any

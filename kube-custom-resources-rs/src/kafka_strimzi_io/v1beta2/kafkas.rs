@@ -1190,6 +1190,9 @@ pub struct KafkaCruiseControlTemplatePodVolumes {
     /// ConfigMap to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaCruiseControlTemplatePodVolumesConfigMap>,
+    /// CSIVolumeSource object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<KafkaCruiseControlTemplatePodVolumesCsi>,
     /// EmptyDir to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaCruiseControlTemplatePodVolumesEmptyDir>,
@@ -1225,6 +1228,27 @@ pub struct KafkaCruiseControlTemplatePodVolumesConfigMapItems {
     pub mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+}
+
+/// CSIVolumeSource object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlTemplatePodVolumesCsi {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<KafkaCruiseControlTemplatePodVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlTemplatePodVolumesCsiNodePublishSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// EmptyDir to use to populate the volume.
@@ -2197,6 +2221,9 @@ pub struct KafkaEntityOperatorTemplatePodVolumes {
     /// ConfigMap to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaEntityOperatorTemplatePodVolumesConfigMap>,
+    /// CSIVolumeSource object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<KafkaEntityOperatorTemplatePodVolumesCsi>,
     /// EmptyDir to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaEntityOperatorTemplatePodVolumesEmptyDir>,
@@ -2232,6 +2259,27 @@ pub struct KafkaEntityOperatorTemplatePodVolumesConfigMapItems {
     pub mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+}
+
+/// CSIVolumeSource object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplatePodVolumesCsi {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<KafkaEntityOperatorTemplatePodVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplatePodVolumesCsiNodePublishSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// EmptyDir to use to populate the volume.
@@ -4063,6 +4111,9 @@ pub struct KafkaJmxTransTemplatePodVolumes {
     /// ConfigMap to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaJmxTransTemplatePodVolumesConfigMap>,
+    /// CSIVolumeSource object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<KafkaJmxTransTemplatePodVolumesCsi>,
     /// EmptyDir to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaJmxTransTemplatePodVolumesEmptyDir>,
@@ -4098,6 +4149,27 @@ pub struct KafkaJmxTransTemplatePodVolumesConfigMapItems {
     pub mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+}
+
+/// CSIVolumeSource object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaJmxTransTemplatePodVolumesCsi {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<KafkaJmxTransTemplatePodVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaJmxTransTemplatePodVolumesCsiNodePublishSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// EmptyDir to use to populate the volume.
@@ -4603,6 +4675,11 @@ pub struct KafkaKafkaListenersConfiguration {
     /// Configures the template for generating the advertised hostnames of the individual brokers. Valid placeholders that you can use in the template are `{nodeId}` and `{nodePodName}`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "advertisedHostTemplate")]
     pub advertised_host_template: Option<String>,
+    /// Configures whether to allocate NodePort automatically for the `Service` with type `LoadBalancer`.
+    /// This is a one to one with the `spec.allocateLoadBalancerNodePorts` configuration in the `Service` type
+    /// For `loadbalancer` listeners only.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
+    pub allocate_load_balancer_node_ports: Option<bool>,
     /// Bootstrap configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bootstrap: Option<KafkaKafkaListenersConfigurationBootstrap>,
@@ -6307,6 +6384,9 @@ pub struct KafkaKafkaTemplatePodVolumes {
     /// ConfigMap to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaKafkaTemplatePodVolumesConfigMap>,
+    /// CSIVolumeSource object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<KafkaKafkaTemplatePodVolumesCsi>,
     /// EmptyDir to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaKafkaTemplatePodVolumesEmptyDir>,
@@ -6342,6 +6422,27 @@ pub struct KafkaKafkaTemplatePodVolumesConfigMapItems {
     pub mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+}
+
+/// CSIVolumeSource object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaTemplatePodVolumesCsi {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<KafkaKafkaTemplatePodVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaTemplatePodVolumesCsiNodePublishSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// EmptyDir to use to populate the volume.
@@ -7346,6 +7447,9 @@ pub struct KafkaKafkaExporterTemplatePodVolumes {
     /// ConfigMap to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaKafkaExporterTemplatePodVolumesConfigMap>,
+    /// CSIVolumeSource object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<KafkaKafkaExporterTemplatePodVolumesCsi>,
     /// EmptyDir to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaKafkaExporterTemplatePodVolumesEmptyDir>,
@@ -7381,6 +7485,27 @@ pub struct KafkaKafkaExporterTemplatePodVolumesConfigMapItems {
     pub mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+}
+
+/// CSIVolumeSource object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaExporterTemplatePodVolumesCsi {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<KafkaKafkaExporterTemplatePodVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaExporterTemplatePodVolumesCsiNodePublishSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// EmptyDir to use to populate the volume.
@@ -8425,6 +8550,9 @@ pub struct KafkaZookeeperTemplatePodVolumes {
     /// ConfigMap to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaZookeeperTemplatePodVolumesConfigMap>,
+    /// CSIVolumeSource object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<KafkaZookeeperTemplatePodVolumesCsi>,
     /// EmptyDir to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaZookeeperTemplatePodVolumesEmptyDir>,
@@ -8460,6 +8588,27 @@ pub struct KafkaZookeeperTemplatePodVolumesConfigMapItems {
     pub mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+}
+
+/// CSIVolumeSource object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaZookeeperTemplatePodVolumesCsi {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<KafkaZookeeperTemplatePodVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaZookeeperTemplatePodVolumesCsiNodePublishSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// EmptyDir to use to populate the volume.

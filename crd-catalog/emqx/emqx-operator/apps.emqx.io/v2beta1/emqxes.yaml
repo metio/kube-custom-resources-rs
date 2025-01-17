@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.4"
+    controller-gen.kubebuilder.io/version: "v0.17.1"
   name: "emqxes.apps.emqx.io"
 spec:
   group: "apps.emqx.io"
@@ -2937,6 +2937,16 @@ spec:
                               format: "int32"
                               type: "integer"
                           type: "object"
+                        maxUnavailable:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          x-kubernetes-int-or-string: true
+                        minAvailable:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          x-kubernetes-int-or-string: true
                         nodeName:
                           type: "string"
                         nodeSelector:
@@ -3404,6 +3414,9 @@ spec:
                               type: "string"
                           type: "object"
                       type: "object"
+                      x-kubernetes-validations:
+                        - message: "minAvailable cannot be set when maxUnavailable is specified. These fields are mutually exclusive in PodDisruptionBudget."
+                          rule: "has(self.minAvailable) && has(self.maxUnavailable) ? false : true"
                   type: "object"
                 dashboardServiceTemplate:
                   properties:
@@ -6491,6 +6504,16 @@ spec:
                               format: "int32"
                               type: "integer"
                           type: "object"
+                        maxUnavailable:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          x-kubernetes-int-or-string: true
+                        minAvailable:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          x-kubernetes-int-or-string: true
                         nodeName:
                           type: "string"
                         nodeSelector:
@@ -6873,6 +6896,9 @@ spec:
                             type: "object"
                           type: "array"
                       type: "object"
+                      x-kubernetes-validations:
+                        - message: "minAvailable cannot be set when maxUnavailable is specified. These fields are mutually exclusive in PodDisruptionBudget."
+                          rule: "has(self.minAvailable) && has(self.maxUnavailable) ? false : true"
                   type: "object"
                 revisionHistoryLimit:
                   default: 3

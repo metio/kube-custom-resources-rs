@@ -238,6 +238,7 @@ pub struct MeshGatewayInstanceStatusLoadBalancerIngress {
     pub ports: Option<Vec<MeshGatewayInstanceStatusLoadBalancerIngressPorts>>,
 }
 
+/// PortStatus represents the error condition of a service port
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshGatewayInstanceStatusLoadBalancerIngressPorts {
     /// Error is to record the problem with the service port

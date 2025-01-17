@@ -44,9 +44,13 @@ pub struct KafkaRebalanceSpec {
     /// * `full` mode runs the rebalancing across all the brokers in the cluster.
     /// * `add-brokers` mode can be used after scaling up the cluster to move some replicas to the newly added brokers.
     /// * `remove-brokers` mode can be used before scaling down the cluster to move replicas out of the brokers to be removed.
-    /// 
+    /// * `remove-disks` mode can be used to move data across the volumes within the same broker
+    /// .
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<KafkaRebalanceMode>,
+    /// List of brokers and their corresponding volumes from which replicas need to be moved.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moveReplicasOffVolumes")]
+    pub move_replicas_off_volumes: Option<Vec<KafkaRebalanceMoveReplicasOffVolumes>>,
     /// Enables intra-broker disk balancing, which balances disk space utilization between disks on the same broker. Only applies to Kafka deployments that use JBOD storage with multiple disks. When enabled, inter-broker balancing is disabled. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebalanceDisk")]
     pub rebalance_disk: Option<bool>,
@@ -70,6 +74,18 @@ pub enum KafkaRebalanceMode {
     AddBrokers,
     #[serde(rename = "remove-brokers")]
     RemoveBrokers,
+    #[serde(rename = "remove-disks")]
+    RemoveDisks,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaRebalanceMoveReplicasOffVolumes {
+    /// ID of the broker that contains the disk from which you want to move the partition replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerId")]
+    pub broker_id: Option<i64>,
+    /// IDs of the disks from which the partition replicas need to be moved.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeIds")]
+    pub volume_ids: Option<Vec<i64>>,
 }
 
 /// The status of the Kafka rebalance.

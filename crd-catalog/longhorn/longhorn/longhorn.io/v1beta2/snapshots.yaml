@@ -70,7 +70,7 @@ spec:
                   nullable: true
                   type: "object"
                 volume:
-                  description: "the volume that this snapshot belongs to.\nThis field is immutable after creation.\nRequired"
+                  description: "the volume that this snapshot belongs to.\nThis field is immutable after creation."
                   type: "string"
               required:
                 - "volume"
