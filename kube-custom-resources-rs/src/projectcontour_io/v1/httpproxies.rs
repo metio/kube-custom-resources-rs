@@ -1009,11 +1009,14 @@ pub struct HTTPProxyRoutesRetryPolicy {
     /// - `5xx`
     /// - `gateway-error`
     /// - `reset`
+    /// - `reset-before-request`
     /// - `connect-failure`
+    /// - `envoy-ratelimited`
     /// - `retriable-4xx`
     /// - `refused-stream`
     /// - `retriable-status-codes`
     /// - `retriable-headers`
+    /// - `http3-post-connect-failure`
     /// Supported [gRPC conditions](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-grpc-on):
     /// - `cancelled`
     /// - `deadline-exceeded`
@@ -2244,6 +2247,7 @@ pub struct HTTPProxyStatusLoadBalancerIngress {
     pub ports: Option<Vec<HTTPProxyStatusLoadBalancerIngressPorts>>,
 }
 
+/// PortStatus represents the error condition of a service port
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyStatusLoadBalancerIngressPorts {
     /// Error is to record the problem with the service port

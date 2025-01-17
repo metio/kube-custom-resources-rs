@@ -27,7 +27,6 @@ pub struct SnapshotSpec {
     pub labels: Option<BTreeMap<String, String>>,
     /// the volume that this snapshot belongs to.
     /// This field is immutable after creation.
-    /// Required
     pub volume: String,
 }
 

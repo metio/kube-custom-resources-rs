@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "imagesets.operator.tigera.io"
 spec:
   group: "operator.tigera.io"
@@ -37,7 +37,7 @@ spec:
                         description: "Digest is the image identifier that will be used for the Image.\nThe field should not include a leading `@` and must be prefixed with `sha256:`."
                         type: "string"
                       image:
-                        description: "Image is an image that the operator deploys and instead of using the built in tag\nthe operator will use the Digest for the image identifier.\nThe value should be the image name without registry or tag or digest.\nFor the image `docker.io/calico/node:v3.17.1` it should be represented as `calico/node`"
+                        description: "Image is an image that the operator deploys and instead of using the built in tag\nthe operator will use the Digest for the image identifier.\nThe value should be the *original* image name without registry or tag or digest.\nFor the image `docker.io/calico/node:v3.17.1` it should be represented as `calico/node`\nThe \"Installation\" spec allows defining custom image registries, paths or prefixes.\nEven for custom images such as example.com/custompath/customprefix-calico-node:v3.17.1,\nthis value should still be `calico/node`."
                         type: "string"
                     required:
                       - "digest"

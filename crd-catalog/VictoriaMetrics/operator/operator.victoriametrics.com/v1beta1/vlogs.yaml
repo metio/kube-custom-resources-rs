@@ -2,19 +2,9 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.4"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "vlogs.operator.victoriametrics.com"
 spec:
-  conversion:
-    strategy: "Webhook"
-    webhook:
-      clientConfig:
-        service:
-          name: "webhook-service"
-          namespace: "system"
-          path: "/convert"
-      conversionReviewVersions:
-        - "v1"
   group: "operator.victoriametrics.com"
   names:
     kind: "VLogs"
@@ -28,10 +18,13 @@ spec:
           jsonPath: ".status.status"
           name: "Status"
           type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
       name: "v1beta1"
       schema:
         openAPIV3Schema:
-          description: "VLogs is the Schema for the vlogs API"
+          description: "VLogs is fast, cost-effective and scalable logs database.\nVLogs is the Schema for the vlogs API"
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -221,8 +214,22 @@ spec:
                 logNewStreams:
                   description: "LogNewStreams Whether to log creation of new streams; this can be useful for debugging of high cardinality issues with log streams; see https://docs.victoriametrics.com/victorialogs/keyconcepts/#stream-fields"
                   type: "boolean"
+                managedMetadata:
+                  description: "ManagedMetadata defines metadata that will be added to the all objects\ncreated by operator for the given CustomResource"
+                  properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations"
+                      type: "object"
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels Map of string keys and values that can be used to organize and categorize\n(scope and select) objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+                      type: "object"
+                  type: "object"
                 minReadySeconds:
-                  description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state\nHas no effect for VLogs and VMSingle"
+                  description: "MinReadySeconds defines a minimum number of seconds to wait before starting update next pod\nif previous in healthy state\nHas no effect for VLogs and VMSingle"
                   format: "int32"
                   type: "integer"
                 nodeSelector:
@@ -289,6 +296,9 @@ spec:
                         properties:
                           name:
                             description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                            type: "string"
+                          request:
+                            description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                             type: "string"
                         required:
                           - "name"
@@ -485,7 +495,7 @@ spec:
                       description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                       type: "string"
                     volumeAttributesClassName:
-                      description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                      description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
                       type: "string"
                     volumeMode:
                       description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -605,25 +615,77 @@ spec:
               description: "VLogsStatus defines the observed state of VLogs"
               properties:
                 availableReplicas:
-                  description: "AvailableReplicas Total number of available pods (ready for at least minReadySeconds) targeted by this VLogs."
+                  description: "deprecated and will be removed at v0.52.0"
                   format: "int32"
+                  type: "integer"
+                conditions:
+                  description: "Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\""
+                  items:
+                    description: "Condition defines status condition of the resource"
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another."
+                        format: "date-time"
+                        type: "string"
+                      lastUpdateTime:
+                        description: "LastUpdateTime is the last time of given type update.\nThis value is used for status TTL update and removal"
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "Type of condition in CamelCase or in name.namespace.resource.victoriametrics.com/CamelCase."
+                        maxLength: 316
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "lastUpdateTime"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "type"
+                  x-kubernetes-list-type: "map"
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
                   type: "integer"
                 reason:
-                  description: "Reason defines a reason in case of update failure"
+                  description: "Reason defines human readable error reason"
                   type: "string"
                 replicas:
-                  description: "ReplicaCount Total number of non-terminated pods targeted by this VLogs."
+                  description: "deprecated and will be removed at v0.52.0"
                   format: "int32"
                   type: "integer"
-                status:
-                  description: "UpdateStatus defines a status of vlogs instance rollout"
-                  type: "string"
                 unavailableReplicas:
-                  description: "UnavailableReplicas Total number of unavailable pods targeted by this VLogs."
+                  description: "deprecated and will be removed at v0.52.0"
                   format: "int32"
                   type: "integer"
+                updateStatus:
+                  description: "UpdateStatus defines a status for update rollout"
+                  type: "string"
                 updatedReplicas:
-                  description: "UpdatedReplicas Total number of non-terminated pods targeted by this VLogs."
                   format: "int32"
                   type: "integer"
               type: "object"

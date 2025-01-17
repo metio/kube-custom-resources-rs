@@ -51,6 +51,9 @@ pub struct NameServiceSpec {
     /// NodeSelector is a selector which must be true for the pod to fit on a node
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// Pod Annotations
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAnnotations")]
+    pub pod_annotations: Option<BTreeMap<String, String>>,
     /// PriorityClassName indicates the pod's priority
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,

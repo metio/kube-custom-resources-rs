@@ -849,6 +849,9 @@ pub struct WorkflowTemplatesJvmChaos {
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
+    /// the return value for action 'return'
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "returnValue")]
+    pub return_value: Option<String>,
     /// the byteman rule's data for action 'ruleData'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleData")]
     pub rule_data: Option<String>,
@@ -3208,6 +3211,9 @@ pub struct WorkflowTemplatesScheduleJvmChaos {
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
+    /// the return value for action 'return'
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "returnValue")]
+    pub return_value: Option<String>,
     /// the byteman rule's data for action 'ruleData'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleData")]
     pub rule_data: Option<String>,

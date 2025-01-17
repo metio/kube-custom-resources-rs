@@ -24,10 +24,14 @@ pub struct RayClusterSpec {
     pub autoscaler_options: Option<RayClusterAutoscalerOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInTreeAutoscaling")]
     pub enable_in_tree_autoscaling: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcsFaultToleranceOptions")]
+    pub gcs_fault_tolerance_options: Option<RayClusterGcsFaultToleranceOptions>,
     #[serde(rename = "headGroupSpec")]
     pub head_group_spec: RayClusterHeadGroupSpec,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "headServiceAnnotations")]
     pub head_service_annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedBy")]
+    pub managed_by: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayVersion")]
     pub ray_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -253,6 +257,128 @@ pub struct RayClusterAutoscalerOptionsVolumeMounts {
     pub sub_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalStorageNamespace")]
+    pub external_storage_namespace: Option<String>,
+    #[serde(rename = "redisAddress")]
+    pub redis_address: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisPassword")]
+    pub redis_password: Option<RayClusterGcsFaultToleranceOptionsRedisPassword>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisUsername")]
+    pub redis_username: Option<RayClusterGcsFaultToleranceOptionsRedisUsername>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisPassword {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<RayClusterGcsFaultToleranceOptionsRedisPasswordValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisPasswordValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<RayClusterGcsFaultToleranceOptionsRedisPasswordValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<RayClusterGcsFaultToleranceOptionsRedisPasswordValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<RayClusterGcsFaultToleranceOptionsRedisPasswordValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<RayClusterGcsFaultToleranceOptionsRedisPasswordValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisPasswordValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisPasswordValueFromFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisPasswordValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisPasswordValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisUsername {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<RayClusterGcsFaultToleranceOptionsRedisUsernameValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisUsernameValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<RayClusterGcsFaultToleranceOptionsRedisUsernameValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<RayClusterGcsFaultToleranceOptionsRedisUsernameValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<RayClusterGcsFaultToleranceOptionsRedisUsernameValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<RayClusterGcsFaultToleranceOptionsRedisUsernameValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisUsernameValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisUsernameValueFromFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisUsernameValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterGcsFaultToleranceOptionsRedisUsernameValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3392,6 +3518,8 @@ pub struct RayClusterHeadGroupSpecTemplateSpecVolumesVsphereVolume {
 pub struct RayClusterWorkerGroupSpecs {
     #[serde(rename = "groupName")]
     pub group_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeoutSeconds")]
+    pub idle_timeout_seconds: Option<i32>,
     #[serde(rename = "maxReplicas")]
     pub max_replicas: i32,
     #[serde(rename = "minReplicas")]
@@ -3404,6 +3532,8 @@ pub struct RayClusterWorkerGroupSpecs {
     pub replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleStrategy")]
     pub scale_strategy: Option<RayClusterWorkerGroupSpecsScaleStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspend: Option<bool>,
     pub template: RayClusterWorkerGroupSpecsTemplate,
 }
 

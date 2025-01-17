@@ -380,6 +380,7 @@ pub enum MeshCircuitBreakerFromTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 
 /// TargetRef is a reference to the resource the policy takes an effect on.
@@ -433,6 +434,7 @@ pub enum MeshCircuitBreakerTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -782,5 +784,6 @@ pub enum MeshCircuitBreakerToTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 

@@ -17,8 +17,8 @@ use self::prelude::*;
 pub struct TLSTerminatedRouteSpec {
     /// CABundle is where we read the CA bundle from to authenticate the
     /// destination (if non-empty)
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
-    pub ca_bundle: Option<TLSTerminatedRouteCaBundle>,
+    #[serde(rename = "caBundle")]
+    pub ca_bundle: TLSTerminatedRouteCaBundle,
     /// Destination is the destination URL where matching traffic is routed to.
     pub destination: String,
     /// ForwardingMTLSCert is the certificate used for mTLS between voltron and the destination. Either both ForwardingMTLSCert
@@ -50,9 +50,7 @@ pub struct TLSTerminatedRouteCaBundle {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -70,9 +68,7 @@ pub struct TLSTerminatedRouteMtlsCert {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -90,9 +86,7 @@ pub struct TLSTerminatedRouteMtlsKey {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined

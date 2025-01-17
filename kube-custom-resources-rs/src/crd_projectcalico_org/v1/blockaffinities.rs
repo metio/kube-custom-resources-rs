@@ -17,9 +17,13 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct BlockAffinitySpec {
     pub cidr: String,
-    /// Deleted indicates that this block affinity is being deleted. This field is a string for compatibility with older releases that mistakenly treat this field as a string.
+    /// Deleted indicates that this block affinity is being deleted.
+    /// This field is a string for compatibility with older releases that
+    /// mistakenly treat this field as a string.
     pub deleted: String,
     pub node: String,
     pub state: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 

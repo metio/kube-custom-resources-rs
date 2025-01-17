@@ -81,7 +81,7 @@ spec:
                     type: "object"
                   type: "array"
                 dependencies:
-                  description: "a list of Camel dependecies used by this kit"
+                  description: "a list of Camel dependencies used by this kit"
                   items:
                     type: "string"
                   type: "array"
@@ -273,8 +273,14 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        runtimeProvider:
+                          description: "The runtime provider to use for the integration. (Default, Camel K Runtime)."
+                          enum:
+                            - "quarkus"
+                            - "plain-quarkus"
+                          type: "string"
                         runtimeVersion:
-                          description: "The camel-k-runtime version to use for the integration. It overrides the default version set in the Integration Platform.\nYou can use a fixed version (for example \"3.2.3\") or a semantic version (for example \"3.x\") which will try to resolve\nto the best matching Catalog existing on the cluster."
+                          description: "The runtime version to use for the integration. It overrides the default version set in the Integration Platform.\nYou can use a fixed version (for example \"3.2.3\") or a semantic version (for example \"3.x\") which will try to resolve\nto the best matching Catalog existing on the cluster (Default, the one provided by the operator version)."
                           type: "string"
                       type: "object"
                     quarkus:

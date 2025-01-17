@@ -788,6 +788,8 @@ pub struct PerconaServerMySQLBackupPitrBinlogServerPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PerconaServerMySQLBackupPitrBinlogServerPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
@@ -1635,6 +1637,8 @@ pub struct PerconaServerMySQLBackupStoragesPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PerconaServerMySQLBackupStoragesPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
@@ -2502,6 +2506,8 @@ pub struct PerconaServerMySQLMysqlPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PerconaServerMySQLMysqlPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
@@ -4810,6 +4816,8 @@ pub struct PerconaServerMySQLOrchestratorPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PerconaServerMySQLOrchestratorPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
@@ -5898,6 +5906,8 @@ pub struct PerconaServerMySQLProxyHaproxyPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PerconaServerMySQLProxyHaproxyPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
@@ -6866,6 +6876,8 @@ pub struct PerconaServerMySQLProxyRouterPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PerconaServerMySQLProxyRouterPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]

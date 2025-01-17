@@ -1321,6 +1321,9 @@ apiVersion `gateway.nginx.org/v1alpha1`:
 - `NginxProxy`
 - `ObservabilityPolicy`
 
+apiVersion `gateway.nginx.org/v1alpha2`:
+- `ObservabilityPolicy`
+
 ## getambassador_io
 
 apiVersion `getambassador.io/v3alpha1`:
@@ -1353,6 +1356,11 @@ apiVersion `grafana.integreatly.org/v1beta1`:
 ## groupsnapshot_storage_k8s_io
 
 apiVersion `groupsnapshot.storage.k8s.io/v1alpha1`:
+- `VolumeGroupSnapshotClass`
+- `VolumeGroupSnapshotContent`
+- `VolumeGroupSnapshot`
+
+apiVersion `groupsnapshot.storage.k8s.io/v1beta1`:
 - `VolumeGroupSnapshotClass`
 - `VolumeGroupSnapshotContent`
 - `VolumeGroupSnapshot`
@@ -1798,6 +1806,10 @@ apiVersion `kms.services.k8s.aws/v1alpha1`:
 - `Key`
 
 ## kuadrant_io
+
+apiVersion `kuadrant.io/v1`:
+- `AuthPolicy`
+- `RateLimitPolicy`
 
 apiVersion `kuadrant.io/v1alpha1`:
 - `DNSRecord`

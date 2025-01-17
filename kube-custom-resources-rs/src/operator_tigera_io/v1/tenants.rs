@@ -33,8 +33,7 @@ pub struct TenantSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "esKubeControllerDeployment")]
     pub es_kube_controller_deployment: Option<TenantEsKubeControllerDeployment>,
     /// ID is the unique identifier for this tenant.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
+    pub id: String,
     /// Indices defines the how to store a tenant's data
     pub indices: Vec<TenantIndices>,
     /// LinseedDeployment configures the linseed Deployment.

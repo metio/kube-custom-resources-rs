@@ -1875,6 +1875,24 @@ spec:
                         type: "object"
                     type: "object"
                   type: "array"
+                hostAliases:
+                  description: "HostAliases is an optional list of IPs and hostnames that will be injected into the pod's hosts file if specified."
+                  items:
+                    description: "HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the\npod's hosts file."
+                    properties:
+                      hostnames:
+                        description: "Hostnames for the above IP address."
+                        items:
+                          type: "string"
+                        type: "array"
+                        x-kubernetes-list-type: "atomic"
+                      ip:
+                        description: "IP address of the host file entry."
+                        type: "string"
+                    required:
+                      - "ip"
+                    type: "object"
+                  type: "array"
                 image:
                   description: "Fluentd image."
                   type: "string"

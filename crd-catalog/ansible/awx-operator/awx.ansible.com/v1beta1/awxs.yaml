@@ -912,7 +912,6 @@ spec:
                     - "_No_"
                   type: "string"
                 public_base_url:
-                  default: ""
                   description: "Public base URL"
                   type: "string"
                 receptor_log_level:

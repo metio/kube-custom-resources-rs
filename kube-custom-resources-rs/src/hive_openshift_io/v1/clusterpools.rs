@@ -491,6 +491,13 @@ pub struct ClusterPoolPlatformGcp {
     /// CredentialsSecretRef refers to a secret that contains the GCP account access credentials.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecretRef")]
     pub credentials_secret_ref: Option<ClusterPoolPlatformGcpCredentialsSecretRef>,
+    /// DiscardLocalSsdOnHibernate passes the specified value through to the GCP API to indicate
+    /// whether the content of any local SSDs should be preserved or discarded. See
+    /// https://cloud.google.com/compute/docs/disks/local-ssd#stop_instance
+    /// This field is required when attempting to hibernate clusters with instances possessing
+    /// SSDs -- e.g. those with GPUs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discardLocalSsdOnHibernate")]
+    pub discard_local_ssd_on_hibernate: Option<bool>,
     /// PrivateSericeConnect allows users to enable access to the cluster's API server using GCP
     /// Private Service Connect. It includes a forwarding rule paired with a Service Attachment
     /// across GCP accounts and allows clients to connect to services using GCP internal networking

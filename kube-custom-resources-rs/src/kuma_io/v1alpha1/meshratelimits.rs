@@ -194,6 +194,7 @@ pub enum MeshRateLimitFromTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 
 /// TargetRef is a reference to the resource the policy takes an effect on.
@@ -247,6 +248,7 @@ pub enum MeshRateLimitTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -412,5 +414,6 @@ pub enum MeshRateLimitToTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 
